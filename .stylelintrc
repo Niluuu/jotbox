@@ -1,0 +1,19 @@
+{
+  "extends": ["stylelint-config-sass-guidelines"],
+  "ignoreFiles": ["**/*.js", "**/*.tsx", "**/*.svg"],
+  "rules": {
+    "order/properties-alphabetical-order": null,
+    "selector-pseudo-element-colon-notation": null,
+    "max-nesting-depth": null,
+    "selector-class-pattern": null,
+    "selector-max-compound-selectors": null,
+    "order/order": [
+      [
+        "custom-properties",
+        "dollar-variables",
+        "declarations",
+        "rules"
+      ]
+    ]
+  }
+}

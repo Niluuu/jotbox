@@ -1,0 +1,42 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.chip {
+  background: $gray-color2;
+  color: $primary-black;
+  border-radius: 17px;
+  margin-right: 20px;
+  padding: 3px 5px;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+
+  &:hover {
+    svg {
+      opacity: 1;
+    }
+
+    span {
+      width: 90%;
+    }
+  }
+
+  span {
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+
+  svg {
+    width: 11px !important;
+    position: absolute;
+    right: 8px;
+    opacity: 0;
+
+    &:hover + svg {
+      background: $gray-color1;
+    }
+  }
+}

@@ -1,0 +1,163 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.main {
+  padding: auto;
+
+  &_input {
+    width: 600px;
+    max-width: 600px;
+    box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0 8px;
+
+    .textarea[contenteditable]:empty::before {
+      content: 'Заметка…';
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &_header {
+    width: 100%;
+    display: none;
+
+    &.show {
+      display: flex;
+      visibility: visible;
+    }
+
+    .textarea {
+      font-weight: $font-weight-medium;
+    }
+
+    .textarea[contenteditable]:empty::before {
+      content: 'Введите заголовок';
+    }
+  }
+
+  &_row {
+    width: 100%;
+  }
+
+  &_chips {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 98%;
+    margin: 0 20px;
+  }
+}
+
+.textarea {
+  width: 95%;
+  font-size: inherit;
+  padding: 1px 6px;
+  outline: none;
+  margin: 10px 0;
+  display: block;
+  overflow: hidden;
+  resize: none;
+  min-height: 25px;
+  line-height: 20px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.textarea[contenteditable]:empty::before {
+  color: $gray-color4;
+  font-weight: $font-weight-normal;
+}
+
+.main_tools {
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  .icon_btn {
+    width: 39px;
+    height: 39px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    padding: 0;
+    margin: 0 10px;
+
+    &:hover {
+      background: $gray-color4;
+
+      svg {
+        fill: $primary-black;
+      }
+    }
+  }
+}
+
+.input_navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+
+  .main_tools {
+    position: relative;
+  }
+
+  .icon_btn {
+    padding: 10px;
+    margin: 0;
+  }
+
+  .btn {
+    border-radius: 0;
+  }
+
+  .icon_rotate {
+    transform: scaleX(-1);
+  }
+}
+
+.toltip {
+  background: $primary-black;
+  padding: 8px 5px;
+  position: absolute;
+  top: 30px;
+  left: 72px;
+  color: $color-white;
+  display: none;
+  border-radius: 8px;
+  align-items: center;
+  box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+
+  svg {
+    width: 15px;
+    height: 12px;
+    margin-right: 8px;
+  }
+
+  a {
+    color: $color-white;
+    font-weight: $font-weight-normal;
+  }
+
+  a:hover {
+    color: $color-white !important;
+    border-bottom: 1px solid $color-white;
+  }
+}
+
+.show {
+  display: block;
+}

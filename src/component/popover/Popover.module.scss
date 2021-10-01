@@ -1,0 +1,28 @@
+@import '/src/styles//base/variables';
+
+$base-nav-z-index: 100;
+
+.popover {
+  z-index: $base-nav-z-index + 10;
+  background: $color-white;
+  margin-top: 10px;
+  border-radius: 4px !important;
+  padding: 0;
+  box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+
+  &.bottom-start {
+    margin-left: -40px;
+
+    &::before {
+      left: 50px;
+    }
+  }
+
+  &.bottom-end {
+    margin-right: -40px;
+
+    &::before {
+      right: 50px;
+    }
+  }
+}

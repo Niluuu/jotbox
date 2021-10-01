@@ -1,0 +1,16 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.header {
+  display: flex;
+  border-width: 0 0 0 4px;
+  position: relative;
+  padding: 10px;
+  border-bottom: 1px solid $gray-color3;
+
+  &_row {
+    display: flex;
+    justify-content: center;
+    padding-right: 70px;
+  }
+}

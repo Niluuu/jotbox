@@ -1,0 +1,177 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles/base/variables';
+
+html {
+  box-sizing: border-box;
+  font-family: sans-serif;
+  font-size: 62.5%;
+  line-height: 1.15;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  text-transform: none; // mac ff fix
+  -webkit-font-smoothing: antialiased; // safari mac nicer
+  -moz-osx-font-smoothing: grayscale; // fix fatty ff on mac
+  // Have no visual effect
+
+  line-height: 1;
+  text-rendering: optimizeLegibility;
+  font-style: normal;
+  font-variant: normal;
+  // Wrong visual effect:
+
+  -webkit-font-smoothing: subpixel-antialiased !important; //more fatty in safari
+  text-rendering: geometricPrecision !important; //more fatty in safari
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+svg {
+  box-sizing: initial !important;
+}
+
+body {
+  background: $color-white;
+  line-height: em(27, 18);
+  color: $primary-black;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0;
+  overflow-x: hidden;
+  position: relative;
+
+  @include tablet-landscape() {
+    // font-size: 20px;
+    line-height: em(32, 20);
+  }
+
+  .no-scroll {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+
+    &.page:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.47);
+    }
+  }
+}
+
+.page {
+  min-width: 320px;
+  width: 100%;
+  // overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  transition: $transition;
+  text-decoration: none;
+  color: $gray-color4;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+    color: $gray-color4;
+  }
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+
+  li {
+    position: relative;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// img,
+// svg {
+//   max-width: 100%;
+// }
+
+// img {
+//   height: auto;
+//   width: auto;
+// }
+
+svg path {
+  fill: $gray-color1 !important;
+}
+
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+button {
+  outline: none !important;
+  border: 0;
+  margin: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+}
+
+label {
+  margin-bottom: 1rem;
+}
+
+input:focus {
+  outline: none;
+}
+
+textarea {
+  font: 400;
+}
+
+.scroll-bar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    padding: 2px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $gray-color2;
+    border-radius: 30px;
+    padding: 2px;
+  }
+}

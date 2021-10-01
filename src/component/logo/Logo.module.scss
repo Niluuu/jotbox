@@ -1,0 +1,28 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles/base/variables';
+
+.logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: $color-black;
+  font-size: 42px;
+  line-height: 1em;
+  font-size: 22px;
+  line-height: 24px;
+
+  .icon,
+  img {
+    flex-shrink: 0;
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  &__title {
+    font-family: 'Product';
+    color: $gray-color1;
+    opacity: 1;
+    margin-right: 70px;
+  }
+}

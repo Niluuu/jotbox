@@ -1,0 +1,29 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+button {
+  border: 1px solid transparent;
+  display: inline-block;
+  border-radius: 50%;
+  cursor: pointer !important;
+  background-color: $color-white;
+  padding: 12px;
+
+  &:hover {
+    background: $light-gray-hover !important;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+
+    path {
+      fill: $gray-color1;
+      opacity: 1;
+    }
+  }
+
+  input {
+    display: none;
+  }
+}

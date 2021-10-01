@@ -1,0 +1,29 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.avatar {
+  cursor: pointer;
+  display: inline-flex;
+  border: 6px solid transparent;
+  border-radius: 50%;
+
+  &:hover {
+    border-color: $gray-color3;
+  }
+
+  img {
+    border-radius: 50%;
+  }
+}
+
+.img_avatar {
+  cursor: pointer;
+  display: inline-block;
+  border: 6px solid transparent;
+  border-radius: 50%;
+
+  img {
+    border-radius: 50%;
+    width: 85px;
+  }
+}

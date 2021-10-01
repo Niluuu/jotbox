@@ -1,0 +1,97 @@
+/* Fonts generator */
+@mixin font-face($font-name, $font-path, $font-weight: 400, $font-style: normal) {
+  @font-face {
+    font-family: $font-name;
+    font-style: $font-style;
+    font-weight: $font-weight;
+    font-display: swap;
+    src: url('#{$font-path}.woff2') format('woff2'), url('#{$font-path}.woff') format('woff');
+  }
+}
+
+/* Inline-block */
+@mixin inlineblock($value: top) {
+  display: inline-block;
+  vertical-align: $value;
+}
+
+/* Absolute centered */
+@mixin center {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* Clearfix */
+@mixin clearfix {
+  &:before,
+  &:after {
+    content: '';
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+/* Media queries max-width */
+@mixin media-max($max-width: 1200px) {
+  @media (max-width: $max-width - 1) {
+    @content;
+  }
+}
+
+/* Media queries min-width */
+@mixin media($min-width: 1200px) {
+  @media (min-width: $min-width) {
+    @content;
+  }
+}
+
+@mixin tablet-portrait() {
+  @media (min-width: $xs) {
+    @content;
+  }
+}
+
+@mixin tablet-landscape() {
+  @media (min-width: $sm) {
+    @content;
+  }
+}
+@mixin desktop() {
+  @media (min-width: $md) {
+    @content;
+  }
+}
+
+@mixin desktop-large() {
+  @media (min-width: $lg) {
+    @content;
+  }
+}
+
+/* Media queries mix */
+@mixin media-mix($min-width: 768px, $max-width: 1200px) {
+  @media (min-width: $min-width) and (max-width: $max-width - 1) {
+    @content;
+  }
+}
+
+$browser-context: 16; // Default
+
+@function em($pixels, $context: $browser-context) {
+  @return #{$pixels/$context}em;
+}
+
+@function rem($pixels, $context: $browser-context) {
+  @return #{$pixels/$context}rem;
+}
+
+@function vw($pixels, $viewport) {
+  @return #{$pixels * 100 / $viewport}vw;
+}

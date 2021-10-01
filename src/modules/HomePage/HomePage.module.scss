@@ -1,0 +1,13 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.home_page {
+  width: 100%;
+
+  &__main_input {
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

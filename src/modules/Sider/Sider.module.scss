@@ -1,0 +1,139 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles/base/variables';
+
+.sider {
+  height: 100vh;
+  max-width: 70px;
+  min-width: 70px;
+  width: 70px;
+  transition: width, max-width, min-width, flex, display, border-radius 2s;
+
+  &:hover {
+    flex: 0 0 260px;
+    max-width: 260px;
+    min-width: 260px;
+    width: 260px;
+
+    .menu_item__title {
+      display: block;
+    }
+
+    .sider_submenu:hover {
+      border-radius: 0 25px 25px 0;
+    }
+
+    .sider_submenu__menu_item {
+      border-radius: 0 25px 25px 0 !important;
+      width: 100%;
+    }
+  }
+
+  .menu_item__title {
+    display: none;
+    padding-left: 20px;
+    color: $gray-color1;
+  }
+
+  &_children {
+    padding: 0;
+  }
+
+  &_menu {
+    padding: auto;
+  }
+
+  &_submenu {
+    padding: auto;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-color3;
+      border-radius: 50%;
+    }
+
+    &__menu_item {
+      box-sizing: border-box;
+      box-sizing: border-box;
+      border: 1px solid transparent;
+      border-radius: 0 25px 25px 0;
+      color: #202124;
+      display: box;
+      display: flex;
+      display: flex;
+      align-items: center;
+      align-items: center;
+      letter-spacing: 0.01785714em;
+      font-weight: 500;
+      line-height: 1.25rem;
+      height: 48px;
+      min-width: 48px;
+      overflow: hidden;
+      width: 47px;
+      border-radius: 50%;
+
+      svg {
+        padding-left: 9px;
+      }
+    }
+  }
+}
+
+.active {
+  background: $yellow;
+}
+
+.open {
+  flex: 0 0 260px !important;
+  max-width: 260px !important;
+  min-width: 260px !important;
+  width: 260px !important;
+
+  .menu_item__title {
+    display: block !important;
+  }
+
+  .sider_submenu:hover {
+    border-radius: 0 25px 25px 0;
+  }
+
+  .sider_submenu__menu_item {
+    border-radius: 0 25px 25px 0;
+    width: 100%;
+  }
+}
+
+.gaps {
+  padding: 10px;
+  display: flex;
+
+  &_icons_row {
+    padding: auto;
+  }
+
+  input {
+    border: 1px solid transparent;
+    padding: 5px 10px;
+
+    &:focus {
+      border-bottom: 1px solid $gray-color2;
+    }
+  }
+}
+
+.bottom_btn {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid $gray-color2;
+  padding-top: 20px;
+  width: 100%;
+
+  button {
+    padding: 12px 15px;
+    background: $color-white;
+    border-radius: 0%;
+
+    &:hover {
+      background: $color-white;
+    }
+  }
+}

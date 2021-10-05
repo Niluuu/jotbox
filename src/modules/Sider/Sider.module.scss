@@ -6,18 +6,16 @@
   max-width: 70px;
   min-width: 70px;
   width: 70px;
-  transition: width, max-width, min-width, flex, display, border-radius 2s;
-
   &:hover {
     flex: 0 0 260px;
     max-width: 260px;
     min-width: 260px;
     width: 260px;
-
+    box-shadow: 0 10px 10px $gray-color5;
     .menu_item__title {
       display: block;
     }
-
+    
     .sider_submenu:hover {
       border-radius: 0 25px 25px 0;
     }
@@ -25,13 +23,16 @@
     .sider_submenu__menu_item {
       border-radius: 0 25px 25px 0 !important;
       width: 100%;
+      padding-left: 10px;
+      margin-left: 0;
     }
   }
 
   .menu_item__title {
     display: none;
-    padding-left: 20px;
-    color: $gray-color1;
+    padding-left: 55px;
+    color: $gray-color1; 
+    white-space: nowrap;   
   }
 
   &_children {
@@ -45,12 +46,10 @@
   &_submenu {
     padding: auto;
     cursor: pointer;
-
     &:hover {
       background: $gray-color3;
       border-radius: 50%;
     }
-
     &__menu_item {
       box-sizing: border-box;
       box-sizing: border-box;
@@ -70,36 +69,43 @@
       overflow: hidden;
       width: 47px;
       border-radius: 50%;
-
+      margin-left: 10px;
+      transition: all 0.1s linear;
+      position: relative;
       svg {
-        padding-left: 9px;
+        padding-left: 11px;
+        position: absolute;
       }
+    }
+  }
+  &.open {
+    flex: 0 0 260px !important;
+    max-width: 260px !important;
+    min-width: 260px !important;
+    width: 260px !important;
+    padding-left: 0;
+    &:hover {
+      box-shadow: none;
+    }
+    .menu_item__title {
+      display: block !important;
+    }
+    
+    .sider_submenu:hover {
+      border-radius: 0 25px 25px 0;
+    }
+    
+    .sider_submenu__menu_item {
+      border-radius: 0 25px 25px 0;
+      width: 100%;
+      padding-left: 10px;
+      margin-left: 0;
     }
   }
 }
 
 .active {
   background: $yellow;
-}
-
-.open {
-  flex: 0 0 260px !important;
-  max-width: 260px !important;
-  min-width: 260px !important;
-  width: 260px !important;
-
-  .menu_item__title {
-    display: block !important;
-  }
-
-  .sider_submenu:hover {
-    border-radius: 0 25px 25px 0;
-  }
-
-  .sider_submenu__menu_item {
-    border-radius: 0 25px 25px 0;
-    width: 100%;
-  }
 }
 
 .gaps {

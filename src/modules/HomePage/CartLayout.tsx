@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
@@ -137,16 +138,18 @@ const carts = [
 
 interface CartLayoutProps {
   isLogin?: boolean;
+  gridType: boolean;
 }
 
-const CartLayout: FC<CartLayoutProps> = ({ isLogin }) => {
+const CartLayout: FC<CartLayoutProps> = ({ isLogin, gridType }) => {
   return (
-    <div className={styles.layout}>
+    <div className={classNames(styles.layout, gridType? styles.grid4 : null)}>
       <h1 className={styles.layout_title}>Архив</h1>
-      <div className={styles.carts_layout}>
+      <div className={classNames(styles.carts_layout, gridType? styles.grid4 : null)}>
         {carts &&
           carts.map(({ id, title, text, link, img, chips }) => (
-            <Cart key={id} id={id} title={title} text={text} link={link} img={img} chips={chips} />
+            <Cart key={id} id={id} title={title} text={text} 
+              link={link} img={img} chips={chips} gridType={gridType} />
           ))}
       </div>
     </div>

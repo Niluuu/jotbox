@@ -8,18 +8,18 @@ import { googleLinks1, googleLinks2 } from '../../utils/google-links';
 
 export interface NavbarProps {
   isLoggedIn: boolean;
+  gridType: boolean;
+  changeGrid: () => void;
 }
 
 /**
  * Main Header component for user interaction
  */
 
-export const Navbar: FC<NavbarProps> = ({ isLoggedIn }) => {
-  const [gridType, setGridType] = useState(false);
+export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) => {
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
-
-  const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
+  
   const loadChanges = useCallback(() => {
     const completeUpdate = (val) =>
       setTimeout(() => {

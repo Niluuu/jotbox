@@ -7,8 +7,9 @@ import { Chip } from '../chip/Chip';
 
 interface MainInputProps {
   isLogin?: boolean;
+  gridType: boolean;
 }
-const MainInput: FC<MainInputProps> = ({ isLogin }) => {
+const MainInput: FC<MainInputProps> = ({ isLogin, gridType }) => {
   const [focus, setFocus] = useState(true);
   const [nodeText, setNodeText] = useState('');
   const [nodeTitle, setNodeTitle] = useState('');
@@ -45,7 +46,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin }) => {
 
   return (
     <div
-      className={styles.main_input}
+      className={classNames(styles.main_input, gridType? styles.grid4: null)}
       tabIndex={-1}
       onFocus={() => setFocus(true)}
       onBlur={(e) => onFocusOut(e)}

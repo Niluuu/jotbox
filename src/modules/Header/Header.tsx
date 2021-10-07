@@ -10,17 +10,19 @@ import { Navbar } from './Navbar';
 
 export interface HeaderProps {
   isLoggedIn?: boolean;
+  gridType: boolean;
   /**
    * onclick for toggle sidebar
    */
   onClick: () => void;
+  changeGrid: () => void;
 }
 
 /**
  * Main Header component for user interaction
  */
 
-export const Header: FC<HeaderProps> = ({ isLoggedIn, onClick }) => {
+export const Header: FC<HeaderProps> = ({ isLoggedIn, onClick, changeGrid, gridType }) => {
   return (
     <header className={styles.header}>
       <div className={styles.header_row}>
@@ -30,7 +32,7 @@ export const Header: FC<HeaderProps> = ({ isLoggedIn, onClick }) => {
 
       <SearchInput />
 
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} changeGrid={changeGrid} gridType={gridType} />
     </header>
   );
 };

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
@@ -11,13 +12,14 @@ interface CartProps {
   img: any;
   link: string;
   chips: any;
+  gridType: boolean;
 }
 
-const Cart: FC<CartProps> = ({ id, title, text, link, img, chips }) => {
+const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) => {
   const chipLength = chips && chips.length;
 
   return (
-    <div className={styles.cart} id={id}>
+    <div className={classNames(styles.cart, gridType ? styles.grid4 : null)} id={id}>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
 
       <div className={styles.cart_content}>

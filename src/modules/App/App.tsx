@@ -12,14 +12,18 @@ const App: FC = () => {
   const toggleSider = useCallback(() => setisSidebarOpen(!isSidebarOpen), [isSidebarOpen]);
   console.log(isSidebarOpen);
 
+  const [gridType, setGridType] = useState(false);
+  const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
+
   return (
     <div>
-      <Header isLoggedIn={isLoggedIn} onClick={toggleSider} />
+      <Header isLoggedIn={isLoggedIn} gridType={gridType}
+        onClick={toggleSider} changeGrid={changeGrid} />
       <section className="layout">
         <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
         <Switch>
           <Route exact path="/">
-            <HomePage />
+            <HomePage gridType={gridType} />
           </Route>
           <Route path="/reminders">
             <div>remninders</div>

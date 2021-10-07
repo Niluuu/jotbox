@@ -16,9 +16,11 @@
 
 .carts_layout {
   padding: 0 10px;
-  margin: 0 auto;
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(6, auto);
-  grid-gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  
+  &.grid4 {
+    flex-direction: column;
+  }
 }

@@ -6,16 +6,20 @@
   max-width: 70px;
   min-width: 70px;
   width: 70px;
+  margin-right: 120px;
+
   &:hover {
     flex: 0 0 260px;
     max-width: 260px;
     min-width: 260px;
     width: 260px;
     box-shadow: 0 10px 10px $gray-color5;
+    margin-right: 45px;
+
     .menu_item__title {
       display: block;
     }
-    
+
     .sider_submenu:hover {
       border-radius: 0 25px 25px 0;
     }
@@ -30,9 +34,10 @@
 
   .menu_item__title {
     display: none;
+
     padding-left: 55px;
-    color: $gray-color1; 
-    white-space: nowrap;   
+    color: $gray-color1;
+    white-space: nowrap;
   }
 
   &_children {
@@ -46,10 +51,12 @@
   &_submenu {
     padding: auto;
     cursor: pointer;
+
     &:hover {
       background: $gray-color3;
       border-radius: 50%;
     }
+
     &__menu_item {
       box-sizing: border-box;
       box-sizing: border-box;
@@ -70,31 +77,36 @@
       width: 47px;
       border-radius: 50%;
       margin-left: 10px;
-      transition: all 0.1s linear;
+      transition: all 0.1s ease-out;
       position: relative;
+
       svg {
         padding-left: 11px;
         position: absolute;
       }
     }
   }
+
   &.open {
     flex: 0 0 260px !important;
     max-width: 260px !important;
     min-width: 260px !important;
     width: 260px !important;
     padding-left: 0;
+    margin-right: 15px;
+
     &:hover {
       box-shadow: none;
     }
+    
     .menu_item__title {
       display: block !important;
     }
-    
+
     .sider_submenu:hover {
       border-radius: 0 25px 25px 0;
     }
-    
+
     .sider_submenu__menu_item {
       border-radius: 0 25px 25px 0;
       width: 100%;

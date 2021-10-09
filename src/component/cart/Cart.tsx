@@ -8,7 +8,7 @@ import { InputNavbar } from '../input/InputNavbar';
 interface CartProps {
   id: any;
   title: string;
-  text: string;
+  text: any;
   img: any;
   link: string;
   chips: any;
@@ -34,9 +34,7 @@ const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) =>
           </button>
         </div>
         <div className={styles.cart_text}> 
-          { !gridType  
-            ? (title.length < 125 && title || `${title.slice(0, 125)}...`)
-            : (title.length < 325 && title || `${title.slice(0, 325)}...`) }
+          <span dangerouslySetInnerHTML={{__html: `${text.slice(0, 100)}...`}} />
         </div>
 
         <div className={styles.main_chips}>
@@ -44,7 +42,7 @@ const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) =>
             chips.map((chip, i) =>
               i < 3 ? (
                 <Chip onDelate={(e) => console.log(e)} delateIcon>
-                  {chip}
+                  {chip} 
                 </Chip>
               ) : null,
             )}

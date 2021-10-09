@@ -17,7 +17,7 @@
     margin: 7px;
     width: 550px;
     max-width: 550px;
-
+    
     .textarea[contenteditable]:empty::before {
       content: 'Заметка…';
     }
@@ -95,6 +95,7 @@
     background: transparent;
     padding: 0;
     margin: 0 10px;
+    position: relative;
 
     &:hover {
       background: $gray-color4;

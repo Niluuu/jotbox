@@ -10,7 +10,6 @@ const App: FC = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
 
   const toggleSider = useCallback(() => setisSidebarOpen(!isSidebarOpen), [isSidebarOpen]);
-  console.log(isSidebarOpen);
 
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);

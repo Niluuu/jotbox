@@ -6,9 +6,11 @@ import { Icon } from '../Icon/Icon';
 interface InputNavbarProps {
   isLogin?: boolean;
   withHistory?: boolean;
+  onOptionEditMode?: () => void;
+  onSetCart?: () => void;
 }
 
-export const InputNavbar: FC<InputNavbarProps> = ({ isLogin, withHistory }) => {
+export const InputNavbar: FC<InputNavbarProps> = ({ isLogin, onOptionEditMode, onSetCart, withHistory }) => {
   return (
     <div className={styles.input_navbar}>
       <div className={styles.main_tools}>
@@ -27,7 +29,7 @@ export const InputNavbar: FC<InputNavbarProps> = ({ isLogin, withHistory }) => {
         <button type="button" className={styles.icon_btn}>
           <Icon name="dowland" color="premium" size="xs" />
         </button>
-        <button type="button" className={styles.icon_btn}>
+        <button type="button" onClick={onOptionEditMode} className={styles.icon_btn}>
           <Icon name="other" color="premium" size="xs" />
         </button>
         {withHistory ? (
@@ -41,11 +43,9 @@ export const InputNavbar: FC<InputNavbarProps> = ({ isLogin, withHistory }) => {
           </>
         ) : null}
       </div>
-      {withHistory ? (
-        <button type="button" className={styles.btn}>
+        <button onClick={onSetCart} type="button" className={styles.btn}>
           Закрыть
         </button>
-      ) : null}
     </div>
   );
 };

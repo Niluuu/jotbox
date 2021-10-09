@@ -83,7 +83,9 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType, onSetCart, onOptionE
       <div className={styles.main_row}>
         <div id="text" ref={textRef} className={styles.textarea} role={styles.textbox} contentEditable
           suppressContentEditableWarning onInput={(e) => console.log('e', e)}> 
-          {text}  
+          { text.map(hypo => {
+            return <> <a href={`${hypo.link}`} style={{color: "blue"}} > {hypo.text} </a> &nbsp; </> } 
+          )}
         </div>
       </div>
       <div className={styles.main_chips}>

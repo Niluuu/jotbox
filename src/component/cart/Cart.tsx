@@ -17,7 +17,6 @@ interface CartProps {
 
 const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) => {
   const chipLength = chips && chips.length;
-  
   return (
     <div className={classNames(styles.cart, gridType ? styles.grid4 : null)} id={id}>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
@@ -33,9 +32,7 @@ const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) =>
             <Icon name="pin" color="premium" size="xs" />
           </button>
         </div>
-        <div className={styles.cart_text}> 
-          <span dangerouslySetInnerHTML={{__html: `${text.slice(0, 100)}...`}} />
-        </div>
+        <span className={styles.cart_text} dangerouslySetInnerHTML={{__html: text}} /> 
 
         <div className={styles.main_chips}>
           {chips &&

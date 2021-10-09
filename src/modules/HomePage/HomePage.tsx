@@ -163,10 +163,8 @@ const HomePage: FC<HomePageProps> = ( { gridType } ) => {
     setHyperLinkEditMode(true)
     setOtherOptions(false)
   }, [hyperLinkEditMode])
-
-  const LinkItem = () => <> <a href={`${hyperLink}`} style={{color: "blue"}} > {hyperText} </a> &nbsp; </>
   const onSetHyperLink = () => {
-    setText([...text, <LinkItem />])
+    setText([...text, { text: hyperText, link: hyperLink }])
     setLink(hyperLink)
     setHyperLinkEditMode(pre => !pre)
   }

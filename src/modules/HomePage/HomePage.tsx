@@ -182,12 +182,6 @@ const HomePage: FC<HomePageProps> = ( { gridType } ) => {
     <div className={classNames(styles.home_page, gridType ? styles.grid4: null)}>
       <div className={styles.home_page__main_input}>
         <MainInput onHyperLinkEditMode={onHyperLinkEditMode} onSetCart={onSetCart} hyperLinkEditMode={hyperLinkEditMode} titleRef={titleRef} textRef={textRef} gridType={gridType} hyper={hyper} />
-        {/* { otherOptions && 
-          <ul className={styles.other_options}>
-            <li onClick={onHyperLinkEditMode}> Add Link </li>
-            <li> Option 2 </li>
-            <li> Option 3</li>
-          </ul> } */}
           <Modal title="Изменение ярлыков" isOpen={hyperLinkEditMode} toggleModal={onHyperLinkEditMode}>
             <div className={styles.gaps}> 
               Text

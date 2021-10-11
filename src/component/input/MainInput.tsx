@@ -8,15 +8,15 @@ import { Chip } from '../chip/Chip';
 interface MainInputProps {
   isLogin?: boolean;
   gridType: boolean;
-  onOptionEditMode?: () => void;
-  text: any;
-  link: string;
+  onHyperLinkEditMode?: () => void;
+  hyper: any;
   hyperLinkEditMode: boolean;
   textRef?: any;
+  titleRef?: any;
   onSetCart: () => void;
 }
 
-const MainInput: FC<MainInputProps> = ({ isLogin, gridType, onSetCart, onOptionEditMode, hyperLinkEditMode, text, link, textRef}) => {
+const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, onHyperLinkEditMode, gridType, onSetCart, hyperLinkEditMode, hyper, textRef}) => {
   const [focus, setFocus] = useState(true);
   const [nodeText, setNodeText] = useState('');
   const [nodeTitle, setNodeTitle] = useState('');
@@ -59,7 +59,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType, onSetCart, onOptionE
       onBlur={(e) => onFocusOut(e)}
     >
       <div className={classNames(styles.main_header, focus ? styles.show : undefined)}>
-        <div id="title" className={styles.textarea} contentEditable
+        <div ref={titleRef} id="title" className={styles.textarea} contentEditable
           suppressContentEditableWarning aria-multiline role="textbox" spellCheck >
           {nodeText}
           <div>
@@ -83,8 +83,8 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType, onSetCart, onOptionE
       <div className={styles.main_row}>
         <div id="text" ref={textRef} className={styles.textarea} role={styles.textbox} contentEditable
           suppressContentEditableWarning onInput={(e) => console.log('e', e)}> 
-          { text.map(hypo => {
-            return <> <a href={`${hypo.link}`} style={{color: "blue"}} > {hypo.text} </a> &nbsp; </> } 
+          { hyper.map(h => {
+            return <> <a href={`${h.link}`} style={{color: "blue"}} > {h.text} </a></> } 
           )}
         </div>
       </div>
@@ -109,7 +109,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType, onSetCart, onOptionE
           </button>
         </div>
       ) : null}
-      {focus ? <InputNavbar onSetCart={onSetCart} onOptionEditMode={onOptionEditMode} withHistory /> : null}
+      {focus ? <InputNavbar onHyperLinkEditMode={onHyperLinkEditMode} onSetCart={onSetCart} withHistory /> : null}
     </div>
   );
 };

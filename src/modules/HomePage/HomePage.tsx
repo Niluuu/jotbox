@@ -146,48 +146,48 @@ const carts = [
 const HomePage: FC<HomePageProps> = ( { gridType } ) => {
   const [cart, setCart] = useState<any>(carts)
 
-  const [otherOptions, setOtherOptions] = useState(false);
   const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
-  const [text, setText] = useState([]);
-  const [link, setLink] = useState('');
+  const [hyper, setHyper] = useState([]);
+  const titleRef = useRef<HTMLDivElement>();
   const textRef = useRef<HTMLDivElement>()
-
-  const onOptionEditMode = useCallback(() => { 
-    setOtherOptions(pre => !pre)
-    setHyperLinkEditMode(false)
-  }, [otherOptions]);
 
   const onHyperLinkEditMode = useCallback(() => {
     setHyperLinkEditMode(true)
-    setOtherOptions(false)
   }, [hyperLinkEditMode])
   const onSetHyperLink = () => {
-    setText([...text, { text: hyperText, link: hyperLink }])
-    setLink(hyperLink)
+    setHyper([...hyper, { text: hyperText, link: hyperLink }])
     setHyperLinkEditMode(pre => !pre)
   }
   const onSetCart = () => {
-    setCart(pre => [{
-      id: Math.random(),
-      title: 'great title',
-      text: textRef.current.innerHTML,
-      link: 'link',
-      img: null,
-      chips: ['gap1'],
-    }, ...pre])
+    new Promise((resolve, reject) => {
+      setCart(pre => [{
+        id: Date.now(),
+        title: titleRef.current.innerText,
+        text: textRef.current.innerHTML,
+        link: 'link',
+        img: null,
+        chips: ['gap1'],
+      }, ...pre])
+      resolve(true);
+    }).then((resolve) => {
+      if (resolve) {
+        titleRef.current.innerHTML = ''
+        textRef.current.innerHTML = ''
+      }
+    });
   }  
   return (
     <div className={classNames(styles.home_page, gridType ? styles.grid4: null)}>
       <div className={styles.home_page__main_input}>
-        <MainInput onSetCart={onSetCart} hyperLinkEditMode={hyperLinkEditMode} textRef={textRef} gridType={gridType} onOptionEditMode={onOptionEditMode} text={text} link={link} />
-        { otherOptions && 
+        <MainInput onHyperLinkEditMode={onHyperLinkEditMode} onSetCart={onSetCart} hyperLinkEditMode={hyperLinkEditMode} titleRef={titleRef} textRef={textRef} gridType={gridType} hyper={hyper} />
+        {/* { otherOptions && 
           <ul className={styles.other_options}>
             <li onClick={onHyperLinkEditMode}> Add Link </li>
             <li> Option 2 </li>
             <li> Option 3</li>
-          </ul> }
+          </ul> } */}
           <Modal title="Изменение ярлыков" isOpen={hyperLinkEditMode} toggleModal={onHyperLinkEditMode}>
             <div className={styles.gaps}> 
               Text
@@ -198,7 +198,7 @@ const HomePage: FC<HomePageProps> = ( { gridType } ) => {
               <input style={{width: "100%"}} value={hyperLink} onChange={e => setHyperLink(e.currentTarget.value)} /> <br />
             </div> 
             <div className={styles.bottom_btn}>
-              <button type="button" onClick={onSetHyperLink} >Done</button>
+              <button type="button" onClick={onSetHyperLink}>Done</button>
             </div>
           </Modal>
       </div>

@@ -8,8 +8,15 @@ import { Chip } from '../chip/Chip';
 interface MainInputProps {
   isLogin?: boolean;
   gridType: boolean;
+  onHyperLinkEditMode?: () => void;
+  hyper: any;
+  hyperLinkEditMode: boolean;
+  textRef?: any;
+  titleRef?: any;
+  onSetCart: () => void;
 }
-const MainInput: FC<MainInputProps> = ({ isLogin, gridType }) => {
+
+const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, onHyperLinkEditMode, gridType, onSetCart, hyperLinkEditMode, hyper, textRef}) => {
   const [focus, setFocus] = useState(true);
   const [nodeText, setNodeText] = useState('');
   const [nodeTitle, setNodeTitle] = useState('');
@@ -52,25 +59,13 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType }) => {
       onBlur={(e) => onFocusOut(e)}
     >
       <div className={classNames(styles.main_header, focus ? styles.show : undefined)}>
-        <div
-          id="title"
-          ref={ref}
-          className={styles.textarea}
-          contentEditable
-          suppressContentEditableWarning
-          aria-multiline
-          role="textbox"
-          spellCheck
-        >
+        <div ref={titleRef} id="title" className={styles.textarea} contentEditable
+          suppressContentEditableWarning aria-multiline role="textbox" spellCheck >
           {nodeText}
           <div>
             Bla bla{' '}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href="http://google.com"
-              onClick={() => setShow(true)}
-            >
+            <a target="_blank" rel="noreferrer" href="http://google.com"
+              onClick={() => setShow(true)} >
               Google
             </a>{' '}
             {show ? <Link path="http://google.com" show={show} setShow={setShow} /> : null}
@@ -86,16 +81,11 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType }) => {
       </div>
 
       <div className={styles.main_row}>
-        <div
-          id="text"
-          ref={ref}
-          className={styles.textarea}
-          role={styles.textbox}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={(e) => console.log('e', e)}
-        >
-          {nodeTitle}
+        <div id="text" ref={textRef} className={styles.textarea} role={styles.textbox} contentEditable
+          suppressContentEditableWarning onInput={(e) => console.log('e', e)}> 
+          { hyper.map(h => {
+            return <> <a href={`${h.link}`} style={{color: "blue"}} > {h.text} </a></> } 
+          )}
         </div>
       </div>
       <div className={styles.main_chips}>
@@ -119,7 +109,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin, gridType }) => {
           </button>
         </div>
       ) : null}
-      {focus ? <InputNavbar withHistory /> : null}
+      {focus ? <InputNavbar onHyperLinkEditMode={onHyperLinkEditMode} onSetCart={onSetCart} withHistory /> : null}
     </div>
   );
 };

@@ -60,18 +60,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, onHyperLinkEditMode,
     >
       <div className={classNames(styles.main_header, focus ? styles.show : undefined)}>
         <div ref={titleRef} id="title" className={styles.textarea} contentEditable
-          suppressContentEditableWarning aria-multiline role="textbox" spellCheck >
-          {nodeText}
-          <div>
-            Bla bla{' '}
-            <a target="_blank" rel="noreferrer" href="http://google.com"
-              onClick={() => setShow(true)} >
-              Google
-            </a>{' '}
-            {show ? <Link path="http://google.com" show={show} setShow={setShow} /> : null}
-            Bla bla
-          </div>
-        </div>
+          suppressContentEditableWarning aria-multiline role="textbox" spellCheck />
 
         <div className={styles.main_tools}>
           <button type="button" className={styles.icon_btn}>
@@ -84,19 +73,11 @@ const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, onHyperLinkEditMode,
         <div id="text" ref={textRef} className={styles.textarea} role={styles.textbox} contentEditable
           suppressContentEditableWarning onInput={(e) => console.log('e', e)}> 
           { hyper.map(h => {
-            return <> <a href={`${h.link}`} style={{color: "blue"}} > {h.text} </a></> } 
+            return <> <a href={`${h.link}`} style={{color: "blue"}} > {h.text} </a> </> } 
           )}
         </div>
       </div>
-      <div className={styles.main_chips}>
-        <Chip onDelate={onDelate} delateIcon>
-          gap1aaaaaaaaaaaaaaaaaaaa
-        </Chip>
-        <Chip onDelate={onDelate} delateIcon>
-          gap2
-        </Chip>
-      </div>
-      {!focus ? (
+      { !focus ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
           <button type="button" className={styles.icon_btn}>
             <Icon name="edit-bordered" color="premium" size="xs" />
@@ -109,7 +90,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, onHyperLinkEditMode,
           </button>
         </div>
       ) : null}
-      {focus ? <InputNavbar onHyperLinkEditMode={onHyperLinkEditMode} onSetCart={onSetCart} withHistory /> : null}
+      {focus ? <InputNavbar onHyperLinkEditMode={onHyperLinkEditMode} ontoggle={() => onSetCart()} withHistory /> : null}
     </div>
   );
 };

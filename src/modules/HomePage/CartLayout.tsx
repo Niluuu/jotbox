@@ -1,11 +1,17 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
+interface CartProps {
+  id: string;
+  name: string;
+  description: string;
+}
+
 interface CartLayoutProps {
   gridType: boolean;
-  carts: any;
+  carts: CartProps[];
 }
 
 const CartLayout: FC<CartLayoutProps> = ({ gridType, carts }) => {

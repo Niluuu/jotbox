@@ -35,8 +35,6 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const todos = todoData.data.listTodos.items;
-
-      console.log('todos', todos);
       setCart(todos);
     } catch (err) {
       console.log('error fetching todos');
@@ -60,8 +58,6 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
   const onSetCart = useCallback(async () => {
     try {
-      // if (titleRef.current.innerText && textRef.current.innerText) return;
-
       const cart = {
         id: Date.now(),
         name: titleRef.current.innerText,

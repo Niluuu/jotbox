@@ -7,11 +7,18 @@ import { InputNavbar } from '../input/InputNavbar';
 import Modal from '../modal/Modal';
 
 interface CartProps {
-  cart: any;
+  id: string;
+  name: string;
+  description: string;
+  chips?: any;
+}
+
+interface CartsProps {
+  cart: CartProps;
   gridType: boolean;
 }
 
-const Cart: FC<CartProps> = ({ cart, gridType }) => {
+const Cart: FC<CartsProps> = ({ cart, gridType }) => {
   const { chips, name, description, id } = cart;
   const chipLength = chips && chips.length;
   const [isOpen, setIsOpen] = useState(false);

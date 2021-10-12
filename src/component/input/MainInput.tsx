@@ -1,11 +1,10 @@
-import { FC, useState, useRef, useEffect, useCallback, createRef } from 'react';
+import { FC, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
 
 interface MainInputProps {
-  isLogin?: boolean;
   gridType: boolean;
   onHyperLinkEditMode?: () => void;
   hyper: any;
@@ -15,47 +14,14 @@ interface MainInputProps {
   onSetCart: () => void;
 }
 
-const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, onHyperLinkEditMode, gridType, onSetCart, hyperLinkEditMode, hyper, textRef}) => {
+const MainInput: FC<MainInputProps> = ({ titleRef, onHyperLinkEditMode, gridType, onSetCart, hyper, textRef}) => {
   const [focus, setFocus] = useState(true);
-  const [nodeText, setNodeText] = useState('');
-  const [nodeTitle, setNodeTitle] = useState('');
-  const ref = createRef<HTMLDivElement>();
-  const [show, setShow] = useState(false);
-
-  const onFocusOut = useCallback((e) => {
-    if (e.currentTarget.contains(document.activeElement)) {
-      console.log('focus out', e.currentTarget.contains(document.activeElement));
-      // You can invoke a callback or add custom logic here
-      // setFocus(false);
-    }
-  }, []);
-
-  const onDelate = useCallback((e) => {
-    console.log('delate chip');
-  }, []);
-
-  // cant set value from ref
-  // useEffect(() => {
-  //   console.log('id', ref.current.id);
-
-  //   if (ref.current.id === 'title') {
-  //     const title = ref.current.innerText;
-  //     setNodeTitle(title);
-  //   }
-
-  //   if (ref.current.id === 'text') {
-  //     const text = ref.current.innerText;
-  //     console.log('text', text);
-  //     setNodeText(text);
-  //   }
-  // }, [nodeText, nodeTitle]);
 
   return (
     <div
       className={classNames(styles.main_input, gridType? styles.grid4: null)}
       tabIndex={-1}
       onFocus={() => setFocus(true)}
-      onBlur={(e) => onFocusOut(e)}
     >
       <div className={classNames(styles.main_header, focus ? styles.show : undefined)}>
         <div ref={titleRef} id="title" className={styles.textarea} contentEditable

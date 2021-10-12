@@ -29,6 +29,14 @@ $base-nav-z-index: 100;
   margin: 0 auto;
   padding: 20px !important;
   min-width: 200px !important;
+  
+  &.large {
+    min-width: 600px !important;
+
+    .popup_exit_icon {
+      padding-right: 5px;
+    }
+  }
 
   &-container {
     pointer-events: none;

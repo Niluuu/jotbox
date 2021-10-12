@@ -7,16 +7,12 @@ import { InputNavbar } from '../input/InputNavbar';
 import Modal from '../modal/Modal';
 
 interface CartProps {
-  id: any;
-  title: string;
-  text: any;
-  img: any;
-  link: string;
-  chips: any;
+  cart: any;
   gridType: boolean;
 }
 
-const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) => {
+const Cart: FC<CartProps> = ({ cart, gridType }) => {
+  const { chips, name, description, id } = cart;
   const chipLength = chips && chips.length;
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => setIsOpen((pre) => !pre);
@@ -26,12 +22,12 @@ const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) =>
       <>
         <div className={styles.cart_content}>
           <div className={styles.cart_title}>
-            <h1> {title}</h1>
+            <h1> {name}</h1>
             <button type="button" className={styles.icon_btn}>
               <Icon name="pin" color="premium" size="xs" />
             </button>
           </div>
-          <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: text }} />
+          <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
           <div className={styles.main_chips}>
             {chips &&
               chips.map((chip, i) =>
@@ -57,13 +53,12 @@ const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) =>
       <div
         onClick={() => setIsOpen(true)}
         id={id}
-        className={classNames(styles.cart, gridType ? styles.grid4 : null)}>
+        className={classNames(styles.cart, gridType && styles.grid4)}
+      >
         <Content />
       </div>
       <Modal isLarge={!!true} title="Изменить Заметку" isOpen={isOpen} toggleModal={toggleModal}>
-        <div
-          id={id}
-          className={classNames(styles.cart, styles.popup)}>
+        <div id={id} className={classNames(styles.cart, styles.popup)}>
           <Content />
         </div>
       </Modal>

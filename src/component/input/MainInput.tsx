@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
-import { Chip } from '../chip/Chip';
 
 interface MainInputProps {
   isLogin?: boolean;

@@ -87,6 +87,11 @@
     float: right;
     height: 30px;
     
+    .pinned {
+      width: 19px;
+      height: 19px;
+    }
+    
     &:hover {
       svg {
         fill: $primary-black;

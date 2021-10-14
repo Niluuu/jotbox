@@ -1,9 +1,10 @@
 import { FC, useState, useCallback } from 'react';
 import { Switch, Route, useParams } from 'react-router-dom';
-
 import { Header } from '../Header/Header';
 import { Sider } from '../Sider/Sider';
 import HomePage from '../HomePage/HomePage';
+import ArchievePage from '../HomePage/ArchievePage';
+import TrashPage from '../HomePage/TrashPage';
 
 const App: FC = () => {
   const [isLoggedIn, setisLoggedIn] = useState(false);
@@ -28,10 +29,10 @@ const App: FC = () => {
             <div>remninders</div>
           </Route>
           <Route path="/archives">
-            <div>archisves</div>
+            <ArchievePage gridType={gridType} />
           </Route>
           <Route path="/trash">
-            <div>trasg</div>
+            <TrashPage gridType={gridType} />
           </Route>
 
           <Route path="/gap/:id">

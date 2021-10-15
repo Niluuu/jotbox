@@ -6,7 +6,7 @@ import MainInput from '../../component/input/MainInput';
 import CartLayout from './CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import useOnClickOutside from '../../utils/hooks/useOnClickOutside'
+import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { createTodo, deleteTodo } from '../../graphql/mutations';
 import { listTodos } from '../../graphql/queries';
 
@@ -16,15 +16,15 @@ export interface HomePageProps {
 
 const fake = {
   id: Date.now(),
-  name: "fakeTitle",
-  description: "fakeText"
-}
+  name: 'fakeTitle',
+  description: 'fakeText',
+};
 
 const HomePage: FC<HomePageProps> = ({ gridType }) => {
   const [carts, setCart] = useState<any>([]);
 
   const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
-  
+
   const [hyper, setHyper] = useState([]);
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
@@ -35,14 +35,14 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
 
-  const [focused, setFocused] = useState(false)
-  const outsideRef = useRef(null)
+  const [focused, setFocused] = useState(false);
+  const outsideRef = useRef(null);
 
-  const handleClickOutside = () => setFocused(false)
-  const handleClickInside = () => setFocused(true)
+  const handleClickOutside = () => setFocused(false);
+  const handleClickInside = () => setFocused(true);
 
-  useOnClickOutside(outsideRef, handleClickOutside)
-  
+  useOnClickOutside(outsideRef, handleClickOutside);
+
   async function fetchTodos() {
     try {
       const todoData = await API.graphql(graphqlOperation(listTodos));
@@ -60,42 +60,53 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
   }, []);
 
   const onHyperLinkEditMode = useCallback(() => {
-    setHyperLinkEditMode(true)
+    setHyperLinkEditMode(true);
   }, [hyperLinkEditMode]);
 
   const onSetHyperLink = () => {
     setHyperText('');
     setHyperLink('');
-    setFocused(true)
+    setFocused(true);
     setHyper([...hyper, { text: hyperText, link: hyperLink }]);
     setHyperLinkEditMode((pre) => !pre);
   };
 
-  const onRemoveCart = useCallback(async (id) => {
-    try {
-      const deletedCart = { id }
-      setCart(pre => pre.filter(cart => cart.id !== id))
-      await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
-    } catch (err) {
-      console.log('error deleting todo:', err);
-    }
-  }, [carts]) 
+  const onRemoveCart = useCallback(
+    async (id) => {
+      try {
+        const deletedCart = { id };
+        setCart((pre) => pre.filter((cart) => cart.id !== id));
+        await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
+      } catch (err) {
+        console.log('error deleting todo:', err);
+      }
+    },
+    [carts],
+  );
 
-  const onChangePin = useCallback(async (id) => {
-    try {
-      setCart(pre => pre.map((cart) => cart.id === id ? { ...cart, pinned: !cart.pinned } : cart))
-      // await API.graphql(graphqlOperation(deleteTodo, {  }));
-    } catch (err) {
-      console.log('error updating todo:', err);
-    }
-  }, [carts]) 
+  const onChangePin = useCallback(
+    async (id) => {
+      try {
+        setCart((pre) =>
+          pre.map((cart) => (cart.id === id ? { ...cart, pinned: !cart.pinned } : cart)),
+        );
+        // await API.graphql(graphqlOperation(deleteTodo, {  }));
+      } catch (err) {
+        console.log('error updating todo:', err);
+      }
+    },
+    [carts],
+  );
 
   const onSetCart = useCallback(async () => {
     try {
       const cart = {
         id: Date.now(),
-        name: titleRef.current.innerText,
+        title: titleRef.current.innerText,
         description: textRef.current.innerHTML,
+        gaps: null,
+        pined: false,
+        archived: false,
       };
       setCart([...carts, cart]);
 
@@ -117,34 +128,55 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
   return (
     <div className={classNames(styles.home_page, gridType && styles.grid4)}>
       <div className={styles.home_page__main_input}>
-        <MainInput focused={focused} 
-          outsideRef={outsideRef} handleClickInside={handleClickInside} 
-          onHyperLinkEditMode={onHyperLinkEditMode} onSetCart={onSetCart} 
-          titleRef={titleRef} hyperLinkEditMode={hyperLinkEditMode} 
-          textRef={textRef} gridType={gridType} 
-          hyper={hyper} />
+        <MainInput
+          focused={focused}
+          outsideRef={outsideRef}
+          handleClickInside={handleClickInside}
+          onHyperLinkEditMode={onHyperLinkEditMode}
+          onSetCart={onSetCart}
+          titleRef={titleRef}
+          hyperLinkEditMode={hyperLinkEditMode}
+          textRef={textRef}
+          gridType={gridType}
+          hyper={hyper}
+        />
         <Modal title="Добавить линк" isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
           <div className={styles.gaps}>
             <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-            <input type="text" value={hyperText}
-              onChange={(e) => setHyperText(e.currentTarget.value)} placeholder="Введите текст..."
-              onFocus={() => setTextFocus(true)} onBlur={() => setTextFocus(false)} />
-            { textFocus && <Icon name="done" color="premium" size="xs" /> }
+            <input
+              type="text"
+              value={hyperText}
+              onChange={(e) => setHyperText(e.currentTarget.value)}
+              placeholder="Введите текст..."
+              onFocus={() => setTextFocus(true)}
+              onBlur={() => setTextFocus(false)}
+            />
+            {textFocus && <Icon name="done" color="premium" size="xs" />}
           </div>
           <div className={styles.gaps}>
             <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-            <input type="text" value={hyperLink}
-              onChange={(e) => setHyperLink(e.currentTarget.value)} placeholder="Введите линк..."
-              onFocus={() => setLinkFocus(true)} onBlur={() => setLinkFocus(false)} />
-            { linkFocus && <Icon name="done" color="premium" size="xs" /> }
+            <input
+              type="text"
+              value={hyperLink}
+              onChange={(e) => setHyperLink(e.currentTarget.value)}
+              placeholder="Введите линк..."
+              onFocus={() => setLinkFocus(true)}
+              onBlur={() => setLinkFocus(false)}
+            />
+            {linkFocus && <Icon name="done" color="premium" size="xs" />}
           </div>
           <div className={styles.bottom_btn} onClick={onSetHyperLink}>
             <button type="button">Done</button>
           </div>
         </Modal>
       </div>
-      <CartLayout isNotification={!!true} onChangePin={onChangePin} onRemoveCart={onRemoveCart} 
-        carts={carts} gridType={gridType} />
+      <CartLayout
+        isNotification={!!true}
+        onChangePin={onChangePin}
+        onRemoveCart={onRemoveCart}
+        carts={carts}
+        gridType={gridType}
+      />
     </div>
   );
 };

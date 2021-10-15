@@ -6,8 +6,11 @@ export const getTodo = /* GraphQL */ `
   query GetTodo($id: ID!) {
     getTodo(id: $id) {
       id
-      name
+      title
       description
+      gaps
+      pined
+      archived
       createdAt
       updatedAt
     }
@@ -22,8 +25,11 @@ export const listTodos = /* GraphQL */ `
     listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        title
         description
+        gaps
+        pined
+        archived
         createdAt
         updatedAt
       }

@@ -44,7 +44,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                   <Cart
                     key={cart.id}
                     id={cart.id}
-                    name={cart.title}
+                    title={cart.title}
                     gridType={gridType}
                     description={cart.description}
                     pinned={cart.pinned}

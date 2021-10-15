@@ -2,6 +2,15 @@
 @import '/src/styles//base/variables';
 
 .layout {
+  &_div {
+    justify-content: start;
+    
+    &.grid4 {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
   &_title {
     color: $gray-color4;
     letter-spacing: 0.07272727em;
@@ -11,6 +20,7 @@
     text-transform: uppercase;
     margin: 32px 32px 8px;
     font-weight: $font-weight-bold;
+    width: 550px;
   }
 }
 
@@ -18,9 +28,13 @@
   padding: 0;
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: start;
+  align-items: flex-start;
   
   &.grid4 {
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }

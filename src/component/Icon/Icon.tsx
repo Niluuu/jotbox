@@ -48,6 +48,7 @@ export type iconNames =
   | 'other'
   | 'user-add'
   | 'link'
+  | 'pin-black'
   | string;
 
 export interface IconProps {

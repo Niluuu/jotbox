@@ -11,14 +11,8 @@ export interface TrashPageProps {
   gridType: boolean;
 }
 
-const fakeArchieveItem = {
-  id: Date.now(),
-  name: "trashTitle",
-  description: "trashText"
-}
-
 const TrashPage: FC<TrashPageProps> = ({ gridType }) => {
-  const [carts, setCart] = useState<any>([fakeArchieveItem]);
+  const [carts, setCart] = useState<any>([]);
 
   // async function fetchTodos() {
   //   try {
@@ -33,13 +27,13 @@ const TrashPage: FC<TrashPageProps> = ({ gridType }) => {
   // }
 
   // useEffect(() => {
-    // fetchTodos();
+  //   fetchTodos();
   // }, []);
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.grid4)}>
       <p> Items in Trash will expire after 7 days </p>
-      <CartLayout isTrash={!!true} carts={carts} gridType={gridType} />
+      <CartLayout isTrashPage={!!true} carts={carts} gridType={gridType} />
     </div>
   );
 };

@@ -1,41 +1,37 @@
-import { FC, useCallback, useState, useEffect } from 'react';
+import { FC, useCallback, useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { API, graphqlOperation } from 'aws-amplify';
 import styles from './HomePage.module.scss';
-import CartLayout from './CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import { deleteTodo } from '../../graphql/mutations';
+import { listTodos } from '../../graphql/queries';
+import ArchiveCartLayout from './ArchiveCartLayout';
 
 export interface ArchievePageProps {
   gridType: boolean;
 }
 
-const fakeArchieveItem = {
-  id: Date.now(),
-  name: "archieveTitle",
-  description: "archieveText"
-}
-
 const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
-  const [carts, setCart] = useState<any>([fakeArchieveItem]);
+  const [carts, setCart] = useState<any>([]);
 
   const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
-  
+
   const [hyper, setHyper] = useState([]);
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
 
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
-
+  
   async function fetchTodos() {
     try {
-      // const todoData = await API.graphql(graphqlOperation(listTodos));
+      const todoData = await API.graphql(graphqlOperation(listTodos));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      // const todos = todoData.data.listTodos.items;
-      // setCart(todos);
+      const todos = todoData.data.listTodos.items;
+      
+      setCart(todos.filter(todo => todo.archived));
     } catch (err) {
       console.log('error fetching todos');
     }
@@ -55,7 +51,7 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
   const onRemoveCart = useCallback(async (id) => {
     try {
       const deletedCart = { id }
-      setCart(pre => pre.filter(cart => cart.id !== id))
+      setCart(carts.filter(cart => cart.id !== id))
       await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
     } catch (err) {
       console.log('error deleting todo:', err);
@@ -64,7 +60,8 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
 
   const onChangePin = useCallback(async (id) => {
     try {
-      setCart(pre => pre.map((cart) => cart.id === id ? { ...cart, pinned: !cart.pinned } : cart))
+      setCart(carts.map((cart) => cart.id === id ? { ...cart, pined: !cart.pined } : cart))
+      // await API.graphql(graphqlOperation(updateTodo, {  }));
     } catch (err) {
       console.log('error updating todo:', err);
     }
@@ -78,29 +75,43 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.grid4)}>
-      <Modal title="Добавить линк" isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
-        <div className={styles.gaps}>
-          <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-          <input type="text" value={hyperText} placeholder="Введите текст..."
-            onChange={(e) => setHyperText(e.currentTarget.value)}
-            onFocus={() => setTextFocus(true)}
-            onBlur={() => setTextFocus(false)} />
-          { textFocus && <Icon name="done" color="premium" size="xs" /> }
-        </div>
-        <div className={styles.gaps}>
-          <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-          <input type="text" value={hyperLink} placeholder="Введите линк..."
-            onChange={(e) => setHyperLink(e.currentTarget.value)}
-            onFocus={() => setLinkFocus(true)}
-            onBlur={() => setLinkFocus(false)} />
-          { linkFocus && <Icon name="done" color="premium" size="xs" /> }
-        </div>
-        <div className={styles.bottom_btn} onClick={onSetHyperLink}>
-          <button type="button">Done</button>
-        </div>
-      </Modal>
-      <CartLayout onChangePin={onChangePin}
-        onRemoveCart={onRemoveCart} carts={carts} gridType={gridType} />
+      <div className={styles.home_page__main_input}>
+        <Modal title="Добавить линк" isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
+          <div className={styles.gaps}>
+            <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
+            <input
+              type="text"
+              value={hyperText}
+              onChange={(e) => setHyperText(e.currentTarget.value)}
+              placeholder="Введите текст..."
+              onFocus={() => setTextFocus(true)}
+              onBlur={() => setTextFocus(false)}
+            />
+            {textFocus && <Icon name="done" color="premium" size="xs" />}
+          </div>
+          <div className={styles.gaps}>
+            <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
+            <input
+              type="text"
+              value={hyperLink}
+              onChange={(e) => setHyperLink(e.currentTarget.value)}
+              placeholder="Введите линк..."
+              onFocus={() => setLinkFocus(true)}
+              onBlur={() => setLinkFocus(false)}
+            />
+            {linkFocus && <Icon name="done" color="premium" size="xs" />}
+          </div>
+          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
+            <button type="button">Done</button>
+          </div>
+        </Modal>
+      </div>
+      <ArchiveCartLayout
+        onChangePin={onChangePin}
+        onRemoveCart={onRemoveCart}
+        carts={carts}
+        gridType={gridType}
+      />
     </div>
   );
 };

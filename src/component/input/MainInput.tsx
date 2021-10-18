@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
+import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 
 interface MainInputProps {
   isLogin?: boolean;
@@ -13,15 +14,24 @@ interface MainInputProps {
   hyperLinkEditMode: boolean;
   textRef?: any;
   titleRef?: any;
+  focused: boolean;
+  defaultPin: boolean;
+  onDefaultPin: () => void
   onSetCart: () => void;
-  handleClickInside?: () => void;
-  focused?: boolean;
+  onSetArchive: () => void;
+  setFocused: (i: any) => void;
   outsideRef?: any;
 }
 
-const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, outsideRef, focused, handleClickInside, onHyperLinkEditMode, gridType, onSetCart, hyperLinkEditMode, hyper, textRef}) => {
-  const [focus, setFocus] = useState(true);
+const MainInput: FC<MainInputProps> = ({ isLogin, onSetArchive, defaultPin, onDefaultPin, setFocused, focused, titleRef, onHyperLinkEditMode, gridType, onSetCart, hyperLinkEditMode, hyper, textRef}) => {
 
+  const outsideRef = useRef(null)
+
+  const handleClickOutside = () => setTimeout(() => setFocused(false), 250); 
+  const handleClickInside = () => setTimeout(() => setFocused(true), 250); 
+
+  useOnClickOutside(outsideRef, handleClickOutside)
+  
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
       console.log('focus out', e.currentTarget.contains(document.activeElement));
@@ -53,14 +63,16 @@ const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, outsideRef, focused,
   const [edit, setEdit] = useState(true)
   return (
     <div className={classNames(styles.main_input, gridType? styles.grid4: null)}
-      tabIndex={-1} onFocus={() => setFocus(true)} onBlur={(e) => onFocusOut(e)}
+      tabIndex={-1} onFocus={() => setFocused(true)} onBlur={(e) => onFocusOut(e)}
       onClick={handleClickInside} ref={outsideRef} >
-      <div className={classNames(styles.main_header, focus ? styles.show : undefined)}>
+      <div className={classNames(styles.main_header, focused ? styles.show : undefined)}>
         <div ref={titleRef} id="title" className={styles.textarea} contentEditable
           suppressContentEditableWarning aria-multiline role="textbox" spellCheck />
         <div className={styles.main_tools}>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="pin" color="premium" size="xs" />
+          <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
+            { !defaultPin 
+              ? <Icon name="pin" color="premium" size="xs" />
+              : <Icon name="pin-black" color="premium" size="xs" /> }
           </button>
         </div>
       </div>
@@ -74,7 +86,7 @@ const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, outsideRef, focused,
             </> )}
         </div>
       </div>
-      { !focus ? (
+      { !focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
           <button type="button" className={styles.icon_btn}>
             <Icon name="edit-bordered" color="premium" size="xs" />
@@ -87,8 +99,8 @@ const MainInput: FC<MainInputProps> = ({ isLogin, titleRef, outsideRef, focused,
           </button>
         </div>
       ) : null}
-      { focus ? <InputNavbar focused={focused} onHyperLinkEditMode={onHyperLinkEditMode} 
-          ontoggle={() => onSetCart()} withHistory /> : null }
+      { focused ? <InputNavbar focused={focused} onHyperLinkEditMode={onHyperLinkEditMode} 
+        isMainInput={!!true}  onSetArchive={onSetArchive}  ontoggle={() => onSetCart()} withHistory /> : null }
     </div>
   );
 };

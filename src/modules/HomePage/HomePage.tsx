@@ -25,22 +25,21 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
   const [defaultPin, setDefaultPin] = useState(false);
   const onDefaultPin = useCallback(() => {
-    setDefaultPin(pre => !pre)
-  }, [defaultPin])
+    setDefaultPin((pre) => !pre);
+  }, [defaultPin]);
 
   const titleRef = useRef<HTMLDivElement>();
   const textRef = useRef<HTMLDivElement>();
 
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
-  
   async function fetchTodos() {
     try {
       const todoData = await API.graphql(graphqlOperation(listTodos));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const todos = todoData.data.listTodos.items;
-      
+
       setCart(todos);
     } catch (err) {
       console.log('error fetching todos');
@@ -53,7 +52,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
   const onHyperLinkEditMode = useCallback(() => {
     setHyperLinkEditMode(true);
-  }, [hyperLinkEditMode]);
+  }, []);
 
   const onSetHyperLink = () => {
     setHyperText('');
@@ -63,33 +62,44 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
     setHyperLinkEditMode((pre) => !pre);
   };
 
-  const onRemoveCart = useCallback(async (id) => {
-    try {
-      const deletedCart = { id }
-      setCart(carts.filter(cart => cart.id !== id))
-      await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
-    } catch (err) {
-      console.log('error deleting todo:', err);
-    }
-  }, [carts]) 
+  const onRemoveCart = useCallback(
+    async (id) => {
+      try {
+        const deletedCart = { id };
+        setCart(carts.filter((cart) => cart.id !== id));
+        await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
+      } catch (err) {
+        console.log('error deleting todo:', err);
+      }
+    },
+    [carts],
+  );
 
-  const onChangePin = useCallback(async (id) => {
-    try {
-      setCart(carts.map((cart) => cart.id === id ? { ...cart, pined: !cart.pined } : cart))
-      // await API.graphql(graphqlOperation(updateTodo, {  }));
-    } catch (err) {
-      console.log('error updating todo:', err);
-    }
-  }, [carts]) 
+  const onChangePin = useCallback(
+    async (id) => {
+      try {
+        setCart(carts.map((cart) => (cart.id === id ? { ...cart, pined: !cart.pined } : cart)));
+        // await API.graphql(graphqlOperation(updateTodo, {  }));
+      } catch (err) {
+        console.log('error updating todo:', err);
+      }
+    },
+    [carts],
+  );
 
-  const onChangeArchived = useCallback(async (id) => {
-    try {
-      setCart(carts.map((cart) => cart.id === id ? { ...cart, archived: !cart.archived } : cart))
-      // await API.graphql(graphqlOperation(updateTodo, {  }));
-    } catch (err) {
-      console.log('error updating todo:', err);
-    }
-  }, [carts]) 
+  const onChangeArchived = useCallback(
+    async (id) => {
+      try {
+        setCart(
+          carts.map((cart) => (cart.id === id ? { ...cart, archived: true, pined: false } : cart)),
+        );
+        // await API.graphql(graphqlOperation(updateTodo, {  }));
+      } catch (err) {
+        console.log('error updating todo:', err);
+      }
+    },
+    [carts],
+  );
 
   const onSetCart = useCallback(async () => {
     try {
@@ -99,11 +109,11 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
         description: textRef.current.innerHTML,
         pined: defaultPin,
         archived: false,
-        gaps: null
+        gaps: null,
       };
       setCart([...carts, cart]);
 
-      setDefaultPin(false)
+      setDefaultPin(false);
       titleRef.current.innerHTML = '';
       textRef.current.innerHTML = '';
 
@@ -121,11 +131,11 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
         description: textRef.current.innerHTML,
         pined: false,
         archived: true,
-        gaps: null
+        gaps: null,
       };
       setCart([...carts, cart]);
 
-      setDefaultPin(false)
+      setDefaultPin(false);
       titleRef.current.innerHTML = '';
       textRef.current.innerHTML = '';
 
@@ -144,13 +154,20 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
   return (
     <div className={classNames(styles.home_page, gridType && styles.grid4)}>
       <div className={styles.home_page__main_input}>
-        <MainInput focused={focused} setFocused={(e) => setFocused(e)}
-          onHyperLinkEditMode={onHyperLinkEditMode} 
-          onSetArchive={onSetArchive} onSetCart={onSetCart} 
-          titleRef={titleRef} hyperLinkEditMode={hyperLinkEditMode} 
-          textRef={textRef} gridType={gridType} 
-          defaultPin={defaultPin} onDefaultPin={onDefaultPin}
-          hyper={hyper} />
+        <MainInput
+          focused={focused}
+          setFocused={(e) => setFocused(e)}
+          onHyperLinkEditMode={onHyperLinkEditMode}
+          onSetArchive={onSetArchive}
+          onSetCart={onSetCart}
+          titleRef={titleRef}
+          hyperLinkEditMode={hyperLinkEditMode}
+          textRef={textRef}
+          gridType={gridType}
+          defaultPin={defaultPin}
+          onDefaultPin={onDefaultPin}
+          hyper={hyper}
+        />
         <Modal title="Добавить линк" isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
           <div className={styles.gaps}>
             <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
@@ -194,7 +211,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
 export default HomePage;
 
-export const urlify = (str) => {
+export const urlify = (str: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return str.replace(urlRegex, (url) => {
     return `<a style="color: blue;" href="${url}" > ${url} </a> `;

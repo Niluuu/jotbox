@@ -15,15 +15,26 @@ interface InputNavbarProps {
   onSetArchive?: () => void;
   focused?: boolean;
   onRemoveCart?: () => void;
-  onChangeArchived?: (id: any) => void;
-  id?: any
+  onChangeArchived?: () => void;
 }
 
-export const InputNavbar: FC<InputNavbarProps> = ({ isLogin, isMainInput, id, onChangeArchived, onSetArchive, isOpen, onHyperLinkEditMode, onOptionEditMode, withHistory, ontoggle, focused = true, onRemoveCart }) => {
+export const InputNavbar: FC<InputNavbarProps> = ({
+  isLogin,
+  isMainInput,
+  onChangeArchived,
+  onSetArchive,
+  isOpen,
+  onHyperLinkEditMode,
+  onOptionEditMode,
+  withHistory,
+  ontoggle,
+  focused = true,
+  onRemoveCart,
+}) => {
   const toArchive = () => {
-    if (isMainInput) onSetArchive()
-    else onChangeArchived(id)
-  }
+    if (isMainInput) onSetArchive();
+    else onChangeArchived();
+  };
   return (
     <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
       <div className={styles.main_tools}>
@@ -39,19 +50,30 @@ export const InputNavbar: FC<InputNavbarProps> = ({ isLogin, isMainInput, id, on
         <button onClick={toArchive} type="button" className={styles.icon_btn}>
           <Icon name="dowland" color="premium" size="xs" />
         </button>
-        <Popover content={
-          <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
-            <ul className={styles.popover_content}>
-              <li key="1" onClick={onHyperLinkEditMode}> <a href="#">Добавить линк</a> </li>
-              { onRemoveCart && 
-              <li key="2" onClick={onRemoveCart}> <a href="#">Удалить карточку</a> </li> }
-            </ul>
-          </div> } placement="bottom-start" >
+        <Popover
+          content={
+            <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
+              <ul className={styles.popover_content}>
+                <li key="1" onClick={onHyperLinkEditMode}>
+                  {' '}
+                  <a href="#">Добавить линк</a>{' '}
+                </li>
+                {onRemoveCart && (
+                  <li key="2" onClick={onRemoveCart}>
+                    {' '}
+                    <a href="#">Удалить карточку</a>{' '}
+                  </li>
+                )}
+              </ul>
+            </div>
+          }
+          placement="bottom-start"
+        >
           <button type="button" className={styles.icon_btn}>
             <Icon name="other" color="premium" size="xs" />
           </button>
         </Popover>
-        { withHistory ? (
+        {withHistory ? (
           <>
             <button type="button" className={styles.icon_btn}>
               <Icon name="back" color="premium" size="xs" />

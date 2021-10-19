@@ -23,15 +23,15 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
 
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
-  
+
   async function fetchTodos() {
     try {
       const todoData = await API.graphql(graphqlOperation(listTodos));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const todos = todoData.data.listTodos.items;
-      
-      setCart(todos.filter(todo => todo.archived));
+
+      setCart(todos.filter((todo) => todo.archived));
     } catch (err) {
       console.log('error fetching todos');
     }
@@ -48,24 +48,48 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
     setHyperLinkEditMode((pre) => !pre);
   };
 
-  const onRemoveCart = useCallback(async (id) => {
-    try {
-      const deletedCart = { id }
-      setCart(carts.filter(cart => cart.id !== id))
-      await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
-    } catch (err) {
-      console.log('error deleting todo:', err);
-    }
-  }, [carts]) 
+  const onRemoveCart = useCallback(
+    async (id) => {
+      try {
+        const deletedCart = { id };
+        setCart(carts.filter((cart) => cart.id !== id));
+        await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
+      } catch (err) {
+        console.log('error deleting todo:', err);
+      }
+    },
+    [carts],
+  );
 
-  const onChangePin = useCallback(async (id) => {
-    try {
-      setCart(carts.map((cart) => cart.id === id ? { ...cart, pined: !cart.pined } : cart))
-      // await API.graphql(graphqlOperation(updateTodo, {  }));
-    } catch (err) {
-      console.log('error updating todo:', err);
-    }
-  }, [carts]) 
+  const onChangeArchived = useCallback(
+    async (id) => {
+      try {
+        setCart(
+          carts.map((cart) => (cart.id === id ? { ...cart, archived: false, pined: false } : cart)),
+        );
+        // await API.graphql(graphqlOperation(updateTodo, {  }));
+      } catch (err) {
+        console.log('error updating todo:', err);
+      }
+    },
+    [carts],
+  );
+
+  const onChangePin = useCallback(
+    async (id) => {
+      try {
+        setCart(
+          carts.map((cart) =>
+            cart.id === id ? { ...cart, pined: !cart.pined, archived: false } : cart,
+          ),
+        );
+        // await API.graphql(graphqlOperation(updateTodo, {  }));
+      } catch (err) {
+        console.log('error updating todo:', err);
+      }
+    },
+    [carts],
+  );
 
   const onCloseModal = useCallback(() => {
     setHyperText('');
@@ -107,6 +131,7 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
         </Modal>
       </div>
       <ArchiveCartLayout
+        onChangeArchived={onChangeArchived}
         onChangePin={onChangePin}
         onRemoveCart={onRemoveCart}
         carts={carts}

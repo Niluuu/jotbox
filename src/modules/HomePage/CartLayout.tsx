@@ -13,7 +13,6 @@ interface CartProps {
 
 interface CartLayoutProps {
   gridType: boolean;
-  isTrashPage?: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any) => void;
@@ -21,40 +20,62 @@ interface CartLayoutProps {
   onHyperLinkEditMode?: () => void;
 }
 
-const CartLayout: FC<CartLayoutProps> = ({ isTrashPage, gridType, onChangeArchived, onChangePin, onRemoveCart, carts }) => {
-  const notifications = carts.filter((cart) => !cart.archived)
+const CartLayout: FC<CartLayoutProps> = ({
+  gridType,
+  onChangeArchived,
+  onChangePin,
+  onRemoveCart,
+  carts,
+}) => {
+  const notifications = carts.filter((cart) => !cart.archived);
+
   return (
     <div className={classNames(styles.layout, gridType && styles.grid4)}>
-      { notifications.some((cart) => cart.pined) && 
+      {notifications.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.grid4)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
-        </div> }
+        </div>
+      )}
       <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
-        { notifications && notifications
-          .filter((cart) => cart.pined)
-          .map((cart) => 
-            <Cart key={cart.id} id={cart.id} title={cart.title} 
-              gridType={gridType} description={cart.description} 
-              pined={cart.pined} onChangeArchived={onChangeArchived}
-              onChangePin={onChangePin}
-              onRemoveCart={onRemoveCart}
-            />
-          )
-        }
+        {notifications &&
+          notifications
+            .filter((cart) => cart.pined)
+            .map((cart) => (
+              <Cart
+                key={cart.id}
+                id={cart.id}
+                title={cart.title}
+                gridType={gridType}
+                description={cart.description}
+                pined={cart.pined}
+                onChangeArchived={onChangeArchived}
+                onChangePin={onChangePin}
+                onRemoveCart={onRemoveCart}
+              />
+            ))}
       </div>
-      { notifications.some((cart) => !cart.pined) && 
-        <div className={classNames(styles.layout_div, gridType && styles.grid4)}> 
-          <h1 className={styles.layout_title}> Заметки </h1> 
-        </div> }
-        <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
-        { notifications && notifications
-          .filter((cart) => !cart.pined)
-          .map((cart) => 
-            <Cart key={cart.id} id={cart.id} title={cart.title} 
-              gridType={gridType} description={cart.description} 
-              pined={cart.pined} onChangeArchived={onChangeArchived}
-              isTrashPage={isTrashPage} onChangePin={onChangePin} 
-              onRemoveCart={onRemoveCart} />)}
+      {notifications.some((cart) => !cart.pined) && (
+        <div className={classNames(styles.layout_div, gridType && styles.grid4)}>
+          <h1 className={styles.layout_title}> Заметки </h1>
+        </div>
+      )}
+      <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
+        {notifications &&
+          notifications
+            .filter((cart) => !cart.pined)
+            .map((cart) => (
+              <Cart
+                key={cart.id}
+                id={cart.id}
+                title={cart.title}
+                gridType={gridType}
+                description={cart.description}
+                pined={cart.pined}
+                onChangeArchived={onChangeArchived}
+                onChangePin={onChangePin}
+                onRemoveCart={onRemoveCart}
+              />
+            ))}
       </div>
     </div>
   );

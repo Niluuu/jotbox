@@ -14,30 +14,41 @@ interface CartProps {
 interface ArchiveCartLayout {
   gridType: boolean;
   isNotification?: boolean;
-  isTrashPage?: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any) => void;
+  onChangeArchived?: (id: any) => void;
   onHyperLinkEditMode?: () => void;
 }
 
-const ArchiveCartLayout: FC<ArchiveCartLayout> = ({ isNotification, isTrashPage, gridType, onChangePin, onRemoveCart, carts }) => {
+const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
+  onChangeArchived,
+  gridType,
+  onChangePin,
+  onRemoveCart,
+  carts,
+}) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.grid4)}>
-        <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
-          { carts && carts
+      <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
+        {carts &&
+          carts
             .filter((cart) => cart.archived)
             .filter((cart) => !cart.pined)
-            .map((cart) => 
-              <Cart key={cart.id} id={cart.id} title={cart.title} 
-                gridType={gridType} description={cart.description} 
+            .map((cart) => (
+              <Cart
+                key={cart.id}
+                id={cart.id}
+                title={cart.title}
+                gridType={gridType}
+                description={cart.description}
                 pined={cart.pined}
+                onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
               />
-            )
-          }
-        </div>
+            ))}
+      </div>
     </div>
   );
 };

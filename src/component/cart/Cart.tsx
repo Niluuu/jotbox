@@ -17,6 +17,8 @@ interface CartProps {
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any) => void;
   onChangeArchived?: (id: any) => void;
+  onRestoreTrash?: (id: any) => void;
+  onRemoveTrash?: (id: any) => void;
 }
 
 const Cart: FC<CartProps> = ({
@@ -28,6 +30,8 @@ const Cart: FC<CartProps> = ({
   isTrashPage,
   onChangePin,
   onChangeArchived,
+  onRestoreTrash,
+  onRemoveTrash,
   onRemoveCart,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,23 +43,38 @@ const Cart: FC<CartProps> = ({
         <div className={styles.cart_content} onClick={() => setIsOpen(true)}>
           <div className={styles.cart_title}>
             <h1> {title} </h1>
-            { !isTrashPage && 
+            {!isTrashPage && (
               <button type="button" onClick={() => onChangePin(id)} className={styles.icon_btn}>
-              { !pined 
-                ? <Icon name="pin" color="premium" size="xs" />
-                : <Icon name="pin-black" color="premium" size="xs" /> }
-            </button> }
+                {!pined ? (
+                  <Icon name="pin" color="premium" size="xs" />
+                ) : (
+                  <Icon name="pin-black" color="premium" size="xs" />
+                )}
+              </button>
+            )}
           </div>
           <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
           <div className={styles.main_chips} />
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.input_navbar}>
-          { isTrashPage 
-            ? <TrashInputNavbar withHistory={!!true} ontoggle={() => setIsOpen(false)}/> 
-            : <InputNavbar onRemoveCart={() => onRemoveCart(id)}
-                isOpen={isOpen} withHistory={!!true} id={id} isMainInput={!true}
-                onChangeArchived={onChangeArchived} ontoggle={() => setIsOpen(false)} /> }
+          {isTrashPage ? (
+            <TrashInputNavbar
+              onRestoreTrash={() => onRestoreTrash(id)}
+              onRemoveTrash={() => onRemoveTrash(id)}
+              withHistory={!!true}
+              ontoggle={() => setIsOpen(false)}
+            />
+          ) : (
+            <InputNavbar
+              onRemoveCart={() => onRemoveCart(id)}
+              isOpen={isOpen}
+              withHistory={!!true}
+              isMainInput={!true}
+              onChangeArchived={() => onChangeArchived(id)}
+              ontoggle={() => setIsOpen(false)}
+            />
+          )}
         </div>
       </>
     );
@@ -66,7 +85,12 @@ const Cart: FC<CartProps> = ({
       <div id={id} className={classNames(styles.cart, gridType ? styles.grid4 : null)}>
         <Content />
       </div>
-      <Modal isLarge={!!true} removeIcon={isTrashPage && true} isOpen={isOpen} toggleModal={toggleModal}>
+      <Modal
+        isLarge={!!true}
+        removeIcon={!isTrashPage && true}
+        isOpen={isOpen}
+        toggleModal={toggleModal}
+      >
         <div id={id} className={classNames(styles.cart, styles.popup)}>
           <Content />
         </div>

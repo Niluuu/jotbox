@@ -4,7 +4,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import styles from './HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import { deleteTodo } from '../../graphql/mutations';
+import { deleteTodo, updateTodo } from '../../graphql/mutations';
 import { listTodos } from '../../graphql/queries';
 import ArchiveCartLayout from './ArchiveCartLayout';
 
@@ -48,12 +48,17 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
     setHyperLinkEditMode((pre) => !pre);
   };
 
+  const onCloseModal = useCallback(() => {
+    setHyperText('');
+    setHyperLink('');
+    setHyperLinkEditMode(false);
+  }, [hyperLinkEditMode]);
+
   const onRemoveCart = useCallback(
     async (id) => {
       try {
-        const deletedCart = { id };
         setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
+        await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
       } catch (err) {
         console.log('error deleting todo:', err);
       }
@@ -67,7 +72,9 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
         setCart(
           carts.map((cart) => (cart.id === id ? { ...cart, archived: false, pined: false } : cart)),
         );
-        // await API.graphql(graphqlOperation(updateTodo, {  }));
+        await API.graphql(
+          graphqlOperation(updateTodo, { input: { archived: false, pined: false } }),
+        );
       } catch (err) {
         console.log('error updating todo:', err);
       }
@@ -79,23 +86,17 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
     async (id) => {
       try {
         setCart(
-          carts.map((cart) =>
-            cart.id === id ? { ...cart, pined: !cart.pined, archived: false } : cart,
-          ),
+          carts.map((cart) => (cart.id === id ? { ...cart, archived: false, pined: true } : cart)),
         );
-        // await API.graphql(graphqlOperation(updateTodo, {  }));
+        await API.graphql(
+          graphqlOperation(updateTodo, { input: { id, archived: false, pined: true } }),
+        );
       } catch (err) {
         console.log('error updating todo:', err);
       }
     },
     [carts],
   );
-
-  const onCloseModal = useCallback(() => {
-    setHyperText('');
-    setHyperLink('');
-    setHyperLinkEditMode(false);
-  }, [hyperLinkEditMode]);
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.grid4)}>

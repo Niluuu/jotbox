@@ -40,7 +40,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
       //  @ts-ignore
       const todos = todoData.data.listTodos.items;
 
-      setCart(todos);
+      setCart(todos.filter((todo) => !todo.archived));
     } catch (err) {
       console.log('error fetching todos');
     }
@@ -62,12 +62,17 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
     setHyperLinkEditMode((pre) => !pre);
   };
 
+  const onCloseModal = useCallback(() => {
+    setHyperText('');
+    setHyperLink('');
+    setHyperLinkEditMode(false);
+  }, [hyperLinkEditMode]);
+
   const onRemoveCart = useCallback(
     async (id) => {
       try {
-        const deletedCart = { id };
         setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
+        await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
       } catch (err) {
         console.log('error deleting todo:', err);
       }
@@ -79,7 +84,11 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
     async (id) => {
       try {
         setCart(carts.map((cart) => (cart.id === id ? { ...cart, pined: !cart.pined } : cart)));
-        // await API.graphql(graphqlOperation(updateTodo, {  }));
+        await API.graphql(
+          graphqlOperation(updateTodo, {
+            input: { id, pined: !carts.find((cart) => cart.id === id).pined },
+          }),
+        );
       } catch (err) {
         console.log('error updating todo:', err);
       }
@@ -93,7 +102,9 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
         setCart(
           carts.map((cart) => (cart.id === id ? { ...cart, archived: true, pined: false } : cart)),
         );
-        // await API.graphql(graphqlOperation(updateTodo, {  }));
+        await API.graphql(
+          graphqlOperation(updateTodo, { input: { id, archived: true, pined: false } }),
+        );
       } catch (err) {
         console.log('error updating todo:', err);
       }
@@ -143,13 +154,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
     } catch (err) {
       console.log('error creating todo:', err);
     }
-  }, [carts, defaultPin]);
-
-  const onCloseModal = useCallback(() => {
-    setHyperText('');
-    setHyperLink('');
-    setHyperLinkEditMode(false);
-  }, [hyperLinkEditMode]);
+  }, [carts]);
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.grid4)}>

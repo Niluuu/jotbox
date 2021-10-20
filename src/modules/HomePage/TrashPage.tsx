@@ -42,9 +42,11 @@ const TrashPage: FC<TrashPageProps> = ({ gridType }) => {
   const onRemoveTrash = useCallback(
     async (id) => {
       try {
-        const deletedCart = { id };
+        // should delete from trash api
+        // await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
+
+        // should delete from local state
         setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(graphqlOperation(deleteTodo, { input: deletedCart }));
       } catch (err) {
         console.log('error deleting todo:', err);
       }
@@ -55,10 +57,16 @@ const TrashPage: FC<TrashPageProps> = ({ gridType }) => {
   const onRestoreTrash = useCallback(
     async (id) => {
       try {
+        const restoredTrash = carts.find((cart) => cart.id === id);
+
+        // should delete from trash api
+        // await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
+
+        // should delete from local state
         setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(
-          graphqlOperation(createTodo, { input: carts.find((cart) => cart.id === id) }),
-        );
+
+        // should restore and createTodo at main api
+        await API.graphql(graphqlOperation(createTodo, { input: restoredTrash }));
       } catch (err) {
         console.log('error creating todo:', err);
       }

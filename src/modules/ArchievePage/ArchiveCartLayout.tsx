@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import styles from './CartLayout.module.scss';
+import styles from '../../component/cart-layout/CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
 interface CartProps {
@@ -15,9 +15,9 @@ interface ArchiveCartLayout {
   gridType: boolean;
   isNotification?: boolean;
   carts: CartProps[];
-  onRemoveCart?: (id: any) => void;
-  onChangePin?: (id: any) => void;
-  onChangeArchived?: (id: any) => void;
+  onRemoveCart?: (id: string) => void;
+  onChangePin?: (id: string) => void;
+  onChangeArchived?: (id: string) => void;
   onHyperLinkEditMode?: () => void;
 }
 

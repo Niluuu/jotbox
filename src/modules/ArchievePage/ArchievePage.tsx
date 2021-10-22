@@ -1,7 +1,7 @@
 import { FC, useCallback, useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { API, graphqlOperation } from 'aws-amplify';
-import styles from './HomePage.module.scss';
+import styles from '../HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import { deleteTodo, updateTodo } from '../../graphql/mutations';

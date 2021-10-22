@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './CartLayout.module.scss';
-import Cart from '../../component/cart/Cart';
+import Cart from '../cart/Cart';
 
 interface CartProps {
   id: string;

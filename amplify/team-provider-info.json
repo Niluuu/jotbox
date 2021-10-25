@@ -10,6 +10,17 @@
       "StackName": "amplify-jotbox-dev-144701",
       "StackId": "arn:aws:cloudformation:us-east-1:917404573494:stack/amplify-jotbox-dev-144701/5da7a820-2b41-11ec-9899-0a0feb48b3e3",
       "AmplifyAppId": "d1z8p9jtx7mgly"
+    },
+    "categories": {
+      "auth": {
+        "jotbox46b15225": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1z8p9jtx7mgly",
+          "type": "manual"
+        }
+      }
     }
   }
 }

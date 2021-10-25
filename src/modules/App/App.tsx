@@ -3,8 +3,8 @@ import { Switch, Route, useParams } from 'react-router-dom';
 import { Header } from '../Header/Header';
 import { Sider } from '../Sider/Sider';
 import HomePage from '../HomePage/HomePage';
-import ArchievePage from '../HomePage/ArchievePage';
-import TrashPage from '../HomePage/TrashPage';
+import ArchievePage from '../ArchievePage/ArchievePage';
+import TrashPage from '../TrashPage/TrashPage';
 
 const App: FC = () => {
   const [isLoggedIn, setisLoggedIn] = useState(false);
@@ -17,8 +17,12 @@ const App: FC = () => {
 
   return (
     <div>
-      <Header isLoggedIn={isLoggedIn} gridType={gridType}
-        onClick={toggleSider} changeGrid={changeGrid} />
+      <Header
+        isLoggedIn={isLoggedIn}
+        gridType={gridType}
+        onClick={toggleSider}
+        changeGrid={changeGrid}
+      />
       <section className="layout">
         <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
         <Switch>

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { API, graphqlOperation } from 'aws-amplify';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
-import CartLayout from './CartLayout';
+import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
@@ -24,6 +24,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
   const [hyperLink, setHyperLink] = useState('');
 
   const [defaultPin, setDefaultPin] = useState(false);
+  
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
   }, [defaultPin]);
@@ -33,22 +34,23 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
+
   async function fetchTodos() {
     try {
       const todoData = await API.graphql(graphqlOperation(listTodos));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      const todos = todoData.data.listTodos.items;
-
-      setCart(todos.filter((todo) => !todo.archived));
+      // const todos = todoData.data.listTodos.items;
+      console.log('dasda', todoData);
+      // setCart(todos);
     } catch (err) {
-      console.log('error fetching todos');
+      console.log(`err`, err);
     }
   }
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [carts]);
 
   const onHyperLinkEditMode = useCallback(() => {
     setHyperLinkEditMode(true);
@@ -74,7 +76,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
         setCart(carts.filter((cart) => cart.id !== id));
         await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
       } catch (err) {
-        console.log('error deleting todo:', err);
+        throw new Error(err);
       }
     },
     [carts],
@@ -90,7 +92,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
           }),
         );
       } catch (err) {
-        console.log('error updating todo:', err);
+        throw new Error(err);
       }
     },
     [carts],
@@ -106,7 +108,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
           graphqlOperation(updateTodo, { input: { id, archived: true, pined: false } }),
         );
       } catch (err) {
-        console.log('error updating todo:', err);
+        throw new Error(err);
       }
     },
     [carts],
@@ -130,7 +132,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
       await API.graphql(graphqlOperation(createTodo, { input: cart }));
     } catch (err) {
-      console.log('error creating todo:', err);
+      throw new Error(err);
     }
   }, [carts, defaultPin]);
 
@@ -152,7 +154,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
 
       await API.graphql(graphqlOperation(createTodo, { input: cart }));
     } catch (err) {
-      console.log('error creating todo:', err);
+      throw new Error(err);
     }
   }, [carts]);
 

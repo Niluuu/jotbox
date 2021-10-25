@@ -1,9 +1,7 @@
 import { FC, useCallback, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { API, graphqlOperation } from 'aws-amplify';
-import styles from './HomePage.module.scss';
-import Modal from '../../component/modal/Modal';
-import { Icon } from '../../component/Icon/Icon';
+import styles from '../HomePage/HomePage.module.scss';
 import { createTodo, deleteTodo } from '../../graphql/mutations';
 import TrashCartLayout from './TrashCartLayout';
 

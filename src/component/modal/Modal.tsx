@@ -22,6 +22,7 @@ export interface ModalProps {
    */
   title?: string;
   isLarge?: boolean;
+  isTop?: boolean;
   removeIcon?: boolean;
 }
 
@@ -32,6 +33,7 @@ const Modal: FC<ModalProps> = ({
   removeIcon,
   isOpen,
   isLarge,
+  isTop,
   labels,
   children,
   title,
@@ -39,8 +41,9 @@ const Modal: FC<ModalProps> = ({
   return (
     <>
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
-      <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
-        <div className={classNames(styles.popup, isLarge && styles.large)} id="popup-login">
+      <div
+        className={classNames(styles['popup-container'], {[styles.isOpen]: isOpen})}>
+        <div className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large)} id="popup-login">
           <div className={styles.popup__title}>
             {title}
             {!removeIcon && (

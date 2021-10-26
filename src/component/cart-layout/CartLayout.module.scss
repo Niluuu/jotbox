@@ -5,7 +5,7 @@
   &_div {
     justify-content: start;
     
-    &.grid4 {
+    &.column {
       display: flex;
       justify-content: center;
     }
@@ -32,7 +32,7 @@
   justify-content: start;
   align-items: flex-start;
   
-  &.grid4 {
+  &.column {
     flex-direction: column;
     justify-content: center;
     align-items: center;

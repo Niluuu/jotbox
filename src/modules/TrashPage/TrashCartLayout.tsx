@@ -32,8 +32,8 @@ const TrashCartLayout: FC<TrashCartLayoutProps> = ({
   carts,
 }) => {
   return (
-    <div className={classNames(styles.layout, gridType && styles.grid4)}>
-      <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
+    <div className={classNames(styles.layout, gridType && styles.column)}>
+      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
         {carts &&
           carts.map((cart) => (
             <Cart

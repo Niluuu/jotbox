@@ -99,7 +99,7 @@ const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
   );
 
   return (
-    <div className={classNames(styles.home_page, gridType && styles.grid4)}>
+    <div className={classNames(styles.home_page, gridType && styles.column)}>
       <div className={styles.home_page__main_input}>
         <Modal title="Добавить линк" isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
           <div className={styles.gaps}>

@@ -5,6 +5,8 @@ import { Sider } from '../Sider/Sider';
 import HomePage from '../HomePage/HomePage';
 import ArchievePage from '../ArchievePage/ArchievePage';
 import TrashPage from '../TrashPage/TrashPage';
+import SignInPage from '../SignInPage/SignInPage';
+import SignUpPage from '../SignUpPage/SignUpPage';
 
 const App: FC = () => {
   const [isLoggedIn, setisLoggedIn] = useState(false);

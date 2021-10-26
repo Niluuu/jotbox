@@ -28,6 +28,11 @@ $base-nav-z-index: 5;
   margin: 0 auto;
   padding: 20px !important;
   min-width: 200px !important;
+  z-index: $base-nav-z-index + 5;
+  
+  &.top {
+    z-index: $base-nav-z-index + 10 !important;
+  }
   
   &.large {
     padding-bottom: 10px !important;

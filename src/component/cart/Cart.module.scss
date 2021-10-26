@@ -15,7 +15,7 @@
   overflow: hidden;
   margin: 6px;
 
-  &.grid4 {
+  &.column {
     min-width: 550px;
     max-width: 550px;
     width: 550px;
@@ -51,11 +51,16 @@
       justify-content: space-between;
       min-height: 50px;
       word-break: break-all;
-
-      h1 {
+            
+      
+      p {
         text-transform: initial;
         font-size: 20px;
         font-weight: $font-weight-bold;
+        
+        &:focus {
+          outline: none;
+        }
       }
     }
 
@@ -68,6 +73,10 @@
       word-break: break-all;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     .main_chips {

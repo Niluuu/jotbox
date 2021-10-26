@@ -29,8 +29,8 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
   carts,
 }) => {
   return (
-    <div className={classNames(styles.layout, gridType && styles.grid4)}>
-      <div className={classNames(styles.carts_layout, gridType && styles.grid4)}>
+    <div className={classNames(styles.layout, gridType && styles.column)}>
+      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
         {carts &&
           carts
             .filter((cart) => cart.archived)

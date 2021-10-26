@@ -11,7 +11,7 @@ interface MainInputProps {
   gridType: boolean;
   onHyperLinkEditMode?: () => void;
   hyper: any;
-  hyperLinkEditMode: boolean;
+  hyperLinkEditMode?: boolean;
   textRef?: any;
   titleRef?: any;
   focused: boolean;
@@ -21,6 +21,7 @@ interface MainInputProps {
   onSetArchive: () => void;
   setFocused: (i: any) => void;
   outsideRef?: any;
+  onSetIsMain?: (bool: boolean) => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -37,6 +38,7 @@ const MainInput: FC<MainInputProps> = ({
   hyperLinkEditMode,
   hyper,
   textRef,
+  onSetIsMain,
 }) => {
   const outsideRef = useRef(null);
 
@@ -56,14 +58,14 @@ const MainInput: FC<MainInputProps> = ({
   const [edit, setEdit] = useState(true);
   return (
     <div
-      className={classNames(styles.main_input, gridType ? styles.grid4 : null)}
+      className={classNames(styles.main_input, gridType && styles.column)}
       tabIndex={-1}
       onFocus={() => setFocused(true)}
       onBlur={(e) => onFocusOut(e)}
       onClick={handleClickInside}
       ref={outsideRef}
     >
-      <div className={classNames(styles.main_header, focused ? styles.show : undefined)}>
+      <div className={classNames(styles.main_header, focused && styles.show)}>
         <div
           ref={titleRef}
           id="title"
@@ -99,7 +101,7 @@ const MainInput: FC<MainInputProps> = ({
               {' '}
               <a onClick={() => setEdit(false)} href={hyp.link} style={{ color: 'blue' }}>
                 {hyp.text}
-              </a>
+              </a>{' '}
             </>
           ))}
         </div>
@@ -124,6 +126,7 @@ const MainInput: FC<MainInputProps> = ({
           isMainInput={!!true}
           onSetArchive={onSetArchive}
           ontoggle={() => onSetCart()}
+          onSetIsMain={onSetIsMain}
           withHistory
         />
       ) : null}

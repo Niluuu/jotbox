@@ -2,6 +2,14 @@
 // @include font-face('Roboto', '../../assets/fonts/Roboto-Regular', 400);
 // @include font-face('Roboto', '../../assets/fonts/Roboto-Medium', 500);
 // @include font-face('Roboto', '../../assets/fonts/Roboto-Bold', 700);
-
-// @include font-face('Product', '../../assets/fonts/Product-Sans-Regular', 400);
 // @include font-face('Product-Bold', '../../assets/fonts/Product-Sans-Bold', 700);
+
+@font-face {
+  font-family: 'Product';
+  src: url('../../assets/fonts/Product -Sans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('../../assets/fonts/Roboto-Regular.ttf') format('truetype');
+}

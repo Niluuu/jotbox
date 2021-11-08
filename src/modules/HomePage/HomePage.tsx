@@ -44,7 +44,7 @@ const HomePage: FC<HomePageProps> = ({ gridType }) => {
       const todoData = await API.graphql(graphqlOperation(listTodos));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      // const todos = todoData.data.listTodos.items;
+      const todos = todoData.data.listTodos.items;
       console.log('dasda', todoData);
       // setCart(todos);
     } catch (err) {

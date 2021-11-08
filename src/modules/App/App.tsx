@@ -18,39 +18,58 @@ const App: FC = () => {
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
 
   return (
-    <div>
-      <Header
-        isLoggedIn={isLoggedIn}
-        gridType={gridType}
-        onClick={toggleSider}
-        changeGrid={changeGrid}
-      />
-      <section className="layout">
-        <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
-        <Switch>
-          <Route exact path="/">
-            <HomePage gridType={gridType} />
-          </Route>
-          <Route path="/reminders">
-            <div>remninders</div>
-          </Route>
-          <Route path="/archives">
-            <ArchievePage gridType={gridType} />
-          </Route>
-          <Route path="/trash">
-            <TrashPage gridType={gridType} />
-          </Route>
+    <>
+      {isLoggedIn ? (
+        <div>
+          <Header
+            isLoggedIn={isLoggedIn}
+            gridType={gridType}
+            onClick={toggleSider}
+            changeGrid={changeGrid}
+          />
+          <section className="layout">
+            <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
+            <Switch>
+              <Route exact path="/">
+                <HomePage gridType={gridType} />
+              </Route>
+              <Route path="/reminders">
+                <div>remninders</div>
+              </Route>
+              <Route path="/archives">
+                <ArchievePage gridType={gridType} />
+              </Route>
+              <Route path="/trash">
+                <TrashPage gridType={gridType} />
+              </Route>
 
-          <Route path="/gap/:id">
-            <Gap />
-          </Route>
+              <Route path="/gap/:id">
+                <Gap />
+              </Route>
 
-          <Route path="*">
-            <div>UNDEFINED PAGE</div>
-          </Route>
-        </Switch>
-      </section>
-    </div>
+              <Route path="*">
+                <div>UNDEFINED PAGE</div>
+              </Route>
+            </Switch>
+          </section>
+        </div>
+      ) : (
+        <div>
+          <Switch>
+            <Route exact path="/signUp">
+              <SignUpPage />
+            </Route>
+            <Route exact path="/signIn">
+              <SignInPage />
+            </Route>
+
+            <Route path="*">
+              <div>UNDEFINED PAGE</div>
+            </Route>
+          </Switch>
+        </div>
+      )}
+    </>
   );
 };
 

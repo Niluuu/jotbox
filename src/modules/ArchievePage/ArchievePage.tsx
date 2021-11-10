@@ -8,95 +8,52 @@ import { deleteTodo, updateTodo } from '../../graphql/mutations';
 import { listTodos } from '../../graphql/queries';
 import ArchiveCartLayout from './ArchiveCartLayout';
 
-export interface ArchievePageProps {
-  gridType: boolean;
+
+interface CartProps {
+  id: any;
+  title: string;
+  description: string;
+  pined: boolean;
+  archived: boolean;
+  gaps: any[]
 }
 
-const ArchievePage: FC<ArchievePageProps> = ({ gridType }) => {
-  const [carts, setCart] = useState<any>([]);
+export interface ArchievePageProps {
+  gridType: boolean;
+  focused: boolean;
+  onCloseModal: () => void;
+  onSetHyperLink: () => void;
+  onSetArchive: () => void;
+  hyperLinkEditMode: boolean;
+  setFocused: (i: boolean) => void;
+  carts: CartProps[];
+  onRemoveCart?: (id: any) => void;
+  onReSetCart?: (id: any, title: string, description: any) => void;
+  onChangeArchived?: (id: any, title: string, description: any) => void;
+  onChangePin?: (id: any, title: string, description: any) => void;
+  onSetIsMain?: (bool: boolean) => void;
+  setHyperText: (e: any) => void;
+  setHyperLink: (e: any) => void;
+  hyperText: any;
+  hyperLink: any;
+}
 
-  const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
-
-  const [hyper, setHyper] = useState([]);
-  const [hyperText, setHyperText] = useState('');
-  const [hyperLink, setHyperLink] = useState('');
-
+const ArchievePage: FC<ArchievePageProps> = ({
+  gridType,
+  setHyperLink,
+  setHyperText,
+  hyperText,
+  hyperLink,
+  onCloseModal,
+  onSetHyperLink,
+  carts,
+  onChangeArchived,
+  onChangePin,
+  onRemoveCart,
+  hyperLinkEditMode,
+}) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
-
-  async function fetchTodos() {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listTodos));
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      const todos = todoData.data.listTodos.items;
-
-      setCart(todos.filter((todo) => todo.archived));
-    } catch (err) {
-      console.log('error fetching todos');
-    }
-  }
-
-  useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  const onSetHyperLink = () => {
-    setHyperText('');
-    setHyperLink('');
-    setHyper([...hyper, { text: hyperText, link: hyperLink }]);
-    setHyperLinkEditMode((pre) => !pre);
-  };
-
-  const onCloseModal = useCallback(() => {
-    setHyperText('');
-    setHyperLink('');
-    setHyperLinkEditMode(false);
-  }, [hyperLinkEditMode]);
-
-  const onRemoveCart = useCallback(
-    async (id) => {
-      try {
-        setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
-      } catch (err) {
-        console.log('error deleting todo:', err);
-      }
-    },
-    [carts],
-  );
-
-  const onChangeArchived = useCallback(
-    async (id) => {
-      try {
-        setCart(
-          carts.map((cart) => (cart.id === id ? { ...cart, archived: false, pined: false } : cart)),
-        );
-        await API.graphql(
-          graphqlOperation(updateTodo, { input: { archived: false, pined: false } }),
-        );
-      } catch (err) {
-        console.log('error updating todo:', err);
-      }
-    },
-    [carts],
-  );
-
-  const onChangePin = useCallback(
-    async (id) => {
-      try {
-        setCart(
-          carts.map((cart) => (cart.id === id ? { ...cart, archived: false, pined: true } : cart)),
-        );
-        await API.graphql(
-          graphqlOperation(updateTodo, { input: { id, archived: false, pined: true } }),
-        );
-      } catch (err) {
-        console.log('error updating todo:', err);
-      }
-    },
-    [carts],
-  );
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.column)}>

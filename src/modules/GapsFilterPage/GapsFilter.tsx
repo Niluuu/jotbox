@@ -1,7 +1,7 @@
 import { FC, useCallback, useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { API, graphqlOperation } from 'aws-amplify';
-import styles from './HomePage.module.scss';
+import styles from './GapsFilter.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
@@ -18,7 +18,7 @@ interface CartProps {
   gaps: any[]
 }
 
-export interface HomePageProps {
+export interface GapsFilterProps {
   gridType: boolean;
   focused: boolean;
   onHyperLinkEditMode: () => void;
@@ -46,9 +46,10 @@ export interface HomePageProps {
   setHyperLink: (e: any) => void;
   hyperText: any;
   hyperLink: any;
+  filter: string;
 }
 
-const HomePage: FC<HomePageProps> = ({
+const GapsFilter: FC<GapsFilterProps> = ({
   gridType,
   setHyperLink,
   setHyperText,
@@ -76,7 +77,9 @@ const HomePage: FC<HomePageProps> = ({
   onSetCart,
   onDefaultPin,
   onSetIsMain,
+  filter,
 }) => {
+  
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
 
@@ -99,15 +102,16 @@ const HomePage: FC<HomePageProps> = ({
             hyper={hyper}
           />
         </div>
+        {filter}
         <CartLayout
           onChangePin={onChangePin}
+          onHyperLinkEditMode={onHyperLinkEditMode}
           onReSetCart={onReSetCart}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
-          carts={carts}
-          cartHyper={cartHyper}
-          onHyperLinkEditMode={onHyperLinkEditMode}
+          carts={carts.filter((cart) => cart.gaps.some((sub) => sub === filter))}
           onSetIsMain={onSetIsMain}
+          cartHyper={cartHyper}
           gridType={gridType}
         />
       </div>
@@ -149,7 +153,7 @@ const HomePage: FC<HomePageProps> = ({
   );
 };
 
-export default HomePage;
+export default GapsFilter;
 
 export const urlify = (str: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;

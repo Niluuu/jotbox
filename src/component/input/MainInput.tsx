@@ -19,7 +19,7 @@ interface MainInputProps {
   onDefaultPin: () => void;
   onSetCart: () => void;
   onSetArchive: () => void;
-  setFocused: (i: any) => void;
+  setFocused: (i: boolean) => void;
   outsideRef?: any;
   onSetIsMain?: (bool: boolean) => void;
 }

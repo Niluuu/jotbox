@@ -9,6 +9,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
+  gaps: any[];
 }
 
 interface ArchiveCartLayout {
@@ -16,8 +17,8 @@ interface ArchiveCartLayout {
   isNotification?: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: string) => void;
-  onChangePin?: (id: string) => void;
-  onChangeArchived?: (id: string) => void;
+  onChangeArchived?: (id: any, title: string, description: any) => void;
+  onChangePin?: (id: any, title: string, description: any) => void;
   onHyperLinkEditMode?: () => void;
 }
 
@@ -41,6 +42,7 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
                 id={cart.id}
                 title={cart.title}
                 gridType={gridType}
+                gaps={cart.gaps}
                 description={cart.description}
                 pined={cart.pined}
                 onChangeArchived={onChangeArchived}

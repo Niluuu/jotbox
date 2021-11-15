@@ -14,6 +14,7 @@ interface CartProps {
   gridType: boolean;
   pined: boolean;
   isTrashPage?: boolean;
+  gaps?: any[];
   cartHyper?: any;
   onHyperLinkEditMode?: () => void;
   onRemoveCart?: (id: any) => void;
@@ -31,6 +32,7 @@ const Cart: FC<CartProps> = ({
   pined,
   description,
   gridType,
+  gaps,
   isTrashPage,
   cartHyper,
   onChangePin,
@@ -65,7 +67,9 @@ const Cart: FC<CartProps> = ({
             )}
           </div>
           <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
-          <div className={styles.main_chips} />
+          <div className={styles.main_chips}>
+            { gaps.map((gap) => <div> {gap} </div>) } 
+          </div>
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.input_navbar}>

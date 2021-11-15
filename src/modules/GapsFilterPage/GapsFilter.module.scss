@@ -1,0 +1,60 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.home_page {
+  width: 100%;
+  min-height: 167px;
+
+  &__main_input {
+    padding: 20px 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    .other_options {
+      position: absolute;
+      bottom: -15%;
+      left: 40%;
+      background: rgb(212, 212, 212);
+    }
+  }
+  
+  &.column {
+    width: 100%;
+    grid-template-columns: repeat(1, auto);
+    
+    .home_page__main_input {
+      padding: 20px 0 0;
+    }
+  }
+}
+
+.bottom_btn {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0 0;
+
+  button {
+    padding: 7px 15px;
+    border-radius: 0;
+  }
+}
+
+
+.gaps {
+  padding: 10px;
+  display: flex;
+
+  &_icons_row {
+    padding: auto;
+  }
+
+  input {
+    border: 1px solid transparent;
+    padding: 5px 10px;
+
+    &:focus {
+      border-bottom: 1px solid $gray-color2;
+    }
+  }
+}

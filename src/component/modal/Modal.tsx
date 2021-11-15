@@ -22,25 +22,39 @@ export interface ModalProps {
    */
   title?: string;
   isLarge?: boolean;
+  isTop?: boolean;
+  removeIcon?: boolean;
 }
 
 // TODO: implement pure function with testable storybook
 
-const Modal: FC<ModalProps> = ({ toggleModal, isOpen, isLarge, labels, children, title }) => {
+const Modal: FC<ModalProps> = ({
+  toggleModal,
+  removeIcon,
+  isOpen,
+  isLarge,
+  isTop,
+  labels,
+  children,
+  title,
+}) => {
   return (
     <>
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
-      <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
-        <div className={classNames(styles.popup, isLarge && styles.large)} id="popup-login">
+      <div
+        className={classNames(styles['popup-container'], {[styles.isOpen]: isOpen})}>
+        <div className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large)} id="popup-login">
           <div className={styles.popup__title}>
             {title}
-            <Icon
-              name="exit"
-              size="xs"
-              color="premium"
-              className={styles.popup_exit_icon}
-              onClick={toggleModal}
-            />
+            {!removeIcon && (
+              <Icon
+                name="exit"
+                size="xs"
+                color="premium"
+                className={styles.popup_exit_icon}
+                onClick={toggleModal}
+              />
+            )}
           </div>
           {children}
         </div>

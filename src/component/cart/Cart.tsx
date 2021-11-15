@@ -1,70 +1,160 @@
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
+import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import Modal from '../modal/Modal';
 
 interface CartProps {
   id: any;
   title: string;
-  text: any;
-  img: any;
-  link: string;
-  chips: any;
+  description: string;
   gridType: boolean;
+  pined: boolean;
+  isTrashPage?: boolean;
+  gaps?: any[];
+  cartHyper?: any;
+  onHyperLinkEditMode?: () => void;
+  onRemoveCart?: (id: any) => void;
+  onChangePin?: (id: any, title: string, description: any) => void;
+  onReSetCart?: (id: any, title: string, description: any) => void;
+  onChangeArchived?: (id: any, title: string, description: any) => void;
+  onRestoreTrash?: (id: any) => void;
+  onRemoveTrash?: (id: any) => void;
+  onSetIsMain?: (bool: boolean) => void;
 }
 
-const Cart: FC<CartProps> = ({ id, title, text, link, img, chips, gridType }) => {
-  const chipLength = chips && chips.length;
+const Cart: FC<CartProps> = ({
+  id,
+  title,
+  pined,
+  description,
+  gridType,
+  gaps,
+  isTrashPage,
+  cartHyper,
+  onChangePin,
+  onChangeArchived,
+  onRestoreTrash,
+  onRemoveTrash,
+  onSetIsMain,
+  onRemoveCart,
+  onReSetCart,
+  onHyperLinkEditMode,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => setIsOpen((pre) => !pre);
+  
+  const cartTitleRef = useRef<HTMLParagraphElement>();
+  const cartTextRef = useRef<HTMLParagraphElement>();
 
-  const Content = () => {
-    return (
-      <>
-        <div className={styles.cart_content}>
+  return (
+    <>
+      <div id={id} className={classNames(styles.cart, gridType && styles.column)}>
+        <div className={styles.cart_content} onClick={() => setIsOpen(true)}>
           <div className={styles.cart_title}>
-            <h1> {title}</h1>
-            <button type="button" className={styles.icon_btn}>
-              <Icon name="pin" color="premium" size="xs" />
-            </button>
+            <p> {title} </p>
+            {!isTrashPage && (
+              <button type="button" onClick={() => onChangePin(id, title, description)} className={styles.icon_btn}>
+                {!pined ? (
+                  <Icon name="pin" color="premium" size="xs" />
+                ) : (
+                  <Icon name="pin-black" color="premium" size="xs" />
+                )}
+              </button>
+            )}
           </div>
-          <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: text }} />
+          <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
           <div className={styles.main_chips}>
-            {chips &&
-              chips.map((chip, i) =>
-                i < 3 ? (
-                  <Chip onDelate={(e) => console.log(e)} delateIcon>
-                    {chip}
-                  </Chip>
-                ) : null,
-              )}
-            {chipLength > 3 ? <div className={styles.chips_length}> + {chipLength - 3}</div> : null}
+            { gaps.map((gap) => <div> {gap} </div>) } 
           </div>
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.input_navbar}>
-          <InputNavbar withHistory={!!true} ontoggle={() => setIsOpen(false)} />
+          {isTrashPage ? (
+            <TrashInputNavbar
+              onRestoreTrash={() => onRestoreTrash(id)}
+              onRemoveTrash={() => onRemoveTrash(id)}
+              withHistory={!!true}
+              ontoggle={() => setIsOpen(false)}
+            />
+          ) : (
+            <InputNavbar
+              onRemoveCart={() => onRemoveCart(id)}
+              withHistory={!!true}
+              isMainInput={!true}
+              onSetIsMain={onSetIsMain}
+              onHyperLinkEditMode={() => {
+                setIsOpen(true)
+                onHyperLinkEditMode()
+              }}
+              onChangeArchived={() => onChangeArchived(id,  title, description)}
+              ontoggle={() => setIsOpen(false)}
+            />
+          )}
         </div>
-      </>
-    );
-  };
-
-  return (
-    <>
-      <div
-        onClick={() => setIsOpen(true)}
-        id={id}
-        className={classNames(styles.cart, gridType ? styles.grid4 : null)}>
-        <Content />
       </div>
-      <Modal isLarge={!!true} title="Изменить Заметку" isOpen={isOpen} toggleModal={toggleModal}>
-        <div
-          id={id}
-          className={classNames(styles.cart, styles.popup)}>
-          <Content />
+      <Modal
+        isLarge={!!true}
+        isOpen={isOpen}
+        removeIcon={!isTrashPage && true}
+        toggleModal={toggleModal}
+      >
+        <div id={id} className={classNames(styles.cart, styles.popup)}>
+          <div className={styles.cart_content} onClick={() => setIsOpen(true)}>
+            <div className={styles.cart_title}>
+              <p ref={cartTitleRef} contentEditable>
+                {' '}
+                {title}{' '}
+              </p>
+              {!isTrashPage && (
+                <button type="button" onClick={() => onChangePin(id,  title, description)} className={styles.icon_btn}>
+                  {!pined ? (
+                    <Icon name="pin" color="premium" size="xs" />
+                  ) : (
+                    <Icon name="pin-black" color="premium" size="xs" />
+                  )}
+                </button>
+              )}
+            </div>
+            <span className={styles.cart_text} contentEditable ref={cartTextRef}>
+              <span dangerouslySetInnerHTML={{ __html: description }} />
+              { cartHyper && cartHyper.map((hyp) => (
+                <>
+                  {' '}
+                  <a href={hyp.link} style={{ color: 'blue' }}>
+                    {hyp.text}
+                  </a>{' '}
+                </>
+              ))}
+            </span>
+            <div className={styles.main_chips} />
+          </div>
+          <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
+          <div className={styles.input_navbar}>
+            {isTrashPage ? (
+              <TrashInputNavbar
+                onRestoreTrash={() => onRestoreTrash(id)}
+                onRemoveTrash={() => onRemoveTrash(id)}
+                withHistory={!!true}
+                ontoggle={() => setIsOpen(false)}
+              />
+            ) : (
+              <InputNavbar
+                onRemoveCart={() => onRemoveCart(id)}
+                withHistory={!!true}
+                onHyperLinkEditMode={onHyperLinkEditMode}
+                onChangeArchived={() => onChangeArchived(id,  title, description)}
+                onSetIsMain={onSetIsMain}
+                ontoggle={() => {
+                  onReSetCart(id, cartTitleRef.current.innerText, cartTextRef.current.innerHTML);
+                  setIsOpen(false);
+                }}
+              />
+            )}
+          </div>
         </div>
       </Modal>
     </>

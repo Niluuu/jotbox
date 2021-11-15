@@ -37,17 +37,20 @@ export type iconNames =
   | 'filled-label'
   | 'exit'
   | 'delete'
+  | 'delete-forever'
   | 'done'
   | 'add'
   | 'edit-bordered'
   | 'img'
   | 'back'
   | 'color-picer'
+  | 'restore'
   | 'dowland'
   | 'notification-add'
   | 'other'
   | 'user-add'
   | 'link'
+  | 'pin-black'
   | string;
 
 export interface IconProps {

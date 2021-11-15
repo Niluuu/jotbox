@@ -21,13 +21,14 @@ export interface SiderProps {
    * sidebar is open or not
    */
   isSidebarOpen: boolean;
+  filtered: any;
 }
 
 /**
  * Main Sider component for user interaction
  */
 
-export const Sider: FC<SiderProps> = ({ className, isSidebarOpen }) => {
+export const Sider: FC<SiderProps> = ({ className, filtered, isSidebarOpen }) => {
   const [labels, setlabels] = useState([
     { name: 'gap1', icon: 'gaps', active: false, url: '/gap/1', modal: false },
   ]);
@@ -49,7 +50,7 @@ export const Sider: FC<SiderProps> = ({ className, isSidebarOpen }) => {
   return (
     <aside className={classNames(styles.sider, isSidebarOpen ? styles.open : null)}>
       <div className={styles.sider_childern}>
-        <Submenu arraySubmenu={arraySubMenu} labels={labels} />
+        <Submenu filtered={filtered} arraySubmenu={arraySubMenu} labels={labels} />
       </div>
     </aside>
   );

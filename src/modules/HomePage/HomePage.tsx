@@ -1,142 +1,159 @@
-import { createRef, FC, forwardRef, useCallback, useRef, useState } from 'react';
-import { Link, NavLink, Redirect } from 'react-router-dom';
+import { FC, useCallback, useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
+import { API, graphqlOperation } from 'aws-amplify';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
-import CartLayout from './CartLayout';
+import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
+import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
+import { listTodos } from '../../graphql/queries';
+
+interface CartProps {
+  id: any;
+  title: string;
+  description: string;
+  pined: boolean;
+  archived: boolean;
+  gaps: any[]
+}
 
 export interface HomePageProps {
   gridType: boolean;
+  focused: boolean;
+  onHyperLinkEditMode: () => void;
+  onDefaultPin: () => void;
+  onSetCart: () => void;
+  onCloseModal: () => void;
+  onSetHyperLink: () => void;
+  onSetArchive: () => void;
+  textRef?: any;
+  titleRef?: any;
+  defaultPin: boolean;
+  hyperLinkEditMode: boolean;
+  hyper: any;
+  setFocused: (i: boolean) => void;
+  carts: CartProps[];
+  cartTitleRef?: any;
+  cartTextRef?: any;
+  cartHyper?: any;
+  onRemoveCart?: (id: any) => void;
+  onChangePin?: (id: any, title: string, description: any) => void;
+  onReSetCart?: (id: any, title: string, description: any) => void;
+  onChangeArchived?: (id: any, title: string, description: any) => void;
+  onSetIsMain?: (bool: boolean) => void;
+  setHyperText: (e: any) => void;
+  setHyperLink: (e: any) => void;
+  hyperText: any;
+  hyperLink: any;
 }
 
-const carts = [
-  {
-    id: 1,
-    title: 'first',
-    text: 'first-first',
-    link: 'link-first',
-    img: null,
-    chips: [],
-  },
-  {
-    id: 2,
-    title: 'second',
-    text: 'second-second',
-    link: 'link-second',
-    img: null,
-    chips: [],
-  },
-];
-
-const HomePage: FC<HomePageProps> = ({ gridType }) => {
-  const [cart, setCart] = useState<any>(carts);
-
-  const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
-  const [hyperText, setHyperText] = useState('');
-  const [hyperLink, setHyperLink] = useState('');
-  const [hyper, setHyper] = useState([]);
-  const titleRef = useRef<HTMLDivElement>();
-  const textRef = useRef<HTMLDivElement>();
-
+const HomePage: FC<HomePageProps> = ({
+  gridType,
+  setHyperLink,
+  setHyperText,
+  hyperText,
+  hyperLink,
+  onCloseModal,
+  onSetHyperLink,
+  setFocused,
+  carts,
+  cartHyper,
+  cartTextRef,
+  cartTitleRef,
+  onChangeArchived,
+  onChangePin,
+  onReSetCart,
+  onRemoveCart,
+  textRef,
+  hyperLinkEditMode,
+  titleRef,
+  defaultPin,
+  hyper,
+  focused,
+  onHyperLinkEditMode,
+  onSetArchive,
+  onSetCart,
+  onDefaultPin,
+  onSetIsMain,
+}) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
 
-  const onHyperLinkEditMode = useCallback(() => {
-    setHyperLinkEditMode(true);
-  }, [hyperLinkEditMode]);
-
-  const onSetHyperLink = () => {
-    setHyperText('')
-    setHyperLink('')
-    setHyper([...hyper, { text: hyperText, link: hyperLink }]);
-    setHyperLinkEditMode((pre) => !pre);
-  };
-  const onSetCart = useCallback(() => {
-    if (titleRef.current.innerText && textRef.current.innerText) {
-      new Promise((resolve, reject) => {
-        setCart(pre => [
-          { id: Date.now(), 
-            title: titleRef.current.innerText,
-            text: textRef.current.innerHTML, 
-            link: 'link',
-            img: null, 
-            chips: [],
-          },
-          ...pre,
-        ]);
-        resolve(true);
-      }).then((resolve) => {
-        if (resolve) {
-          titleRef.current.innerHTML = '';
-          textRef.current.innerHTML = '';
-        }
-      });
-    }
-  }, [carts]);
-  
-  const onCloseModal = () => {
-    setHyperText('')
-    setHyperLink('')
-    setHyperLinkEditMode(false)
-  }
   return (
-    <div className={classNames(styles.home_page, gridType ? styles.grid4 : null)}>
-      <div className={styles.home_page__main_input}>
-        <MainInput
-          onHyperLinkEditMode={onHyperLinkEditMode}
-          onSetCart={onSetCart}
-          hyperLinkEditMode={hyperLinkEditMode}
-          titleRef={titleRef}
-          textRef={textRef}
-          gridType={gridType}
-          hyper={hyper}
+    <>
+      <div className={classNames(styles.home_page, gridType && styles.column)}>
+        <div className={styles.home_page__main_input}>
+          <MainInput
+            focused={focused}
+            setFocused={(e) => setFocused(e)}
+            onHyperLinkEditMode={onHyperLinkEditMode}
+            onSetArchive={onSetArchive}
+            onSetCart={onSetCart}
+            titleRef={titleRef}
+            textRef={textRef}
+            gridType={gridType}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            onSetIsMain={onSetIsMain}
+            hyper={hyper}
           />
-        <Modal
-          title="Добавить линк"
-          isOpen={hyperLinkEditMode}
-          toggleModal={onCloseModal}>
-            <div className={styles.gaps}>
-              <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-              <input
-                type="text"
-                value={hyperText}
-                onChange={(e) => setHyperText(e.currentTarget.value)}
-                placeholder="Введите текст..."
-                onFocus={() => setTextFocus(true)}
-                onBlur={() => setTextFocus(false)}
-              />
-              {textFocus ? <Icon name="done" color="premium" size="xs" /> : null}
-            </div>
-            <div className={styles.gaps}>
-              <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-              <input
-                type="text"
-                value={hyperLink}
-                onChange={(e) => setHyperLink(e.currentTarget.value)}
-                placeholder="Введите линк..."
-                onFocus={() => setLinkFocus(true)}
-                onBlur={() => setLinkFocus(false)}
-              />
-              {linkFocus ? <Icon name="done" color="premium" size="xs" /> : null}
-            </div>
-          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
-            <button type="button">Done</button>
-          </div>
-        </Modal>
+        </div>
+        <CartLayout
+          onChangePin={onChangePin}
+          onReSetCart={onReSetCart}
+          onChangeArchived={onChangeArchived}
+          onRemoveCart={onRemoveCart}
+          carts={carts}
+          cartHyper={cartHyper}
+          onHyperLinkEditMode={onHyperLinkEditMode}
+          onSetIsMain={onSetIsMain}
+          gridType={gridType}
+        />
       </div>
-      <CartLayout cart={cart} gridType={gridType} />
-    </div>
+      <Modal
+        title="Добавить линк"
+        isTop={!!true}
+        isOpen={hyperLinkEditMode}
+        toggleModal={onCloseModal}
+      >
+        <div className={styles.gaps}>
+          <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
+          <input
+            type="text"
+            value={hyperText}
+            onChange={(e) => setHyperText(e.currentTarget.value)}
+            placeholder="Введите текст..."
+            onFocus={() => setTextFocus(true)}
+            onBlur={() => setTextFocus(false)}
+          />
+          {textFocus && <Icon name="done" color="premium" size="xs" />}
+        </div>
+        <div className={styles.gaps}>
+          <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
+          <input
+            type="text"
+            value={hyperLink}
+            onChange={(e) => setHyperLink(e.currentTarget.value)}
+            placeholder="Введите линк..."
+            onFocus={() => setLinkFocus(true)}
+            onBlur={() => setLinkFocus(false)}
+          />
+          {linkFocus && <Icon name="done" color="premium" size="xs" />}
+        </div>
+        <div className={styles.bottom_btn} onClick={onSetHyperLink}>
+          <button type="button">Done</button>
+        </div>
+      </Modal>
+    </>
   );
 };
 
 export default HomePage;
 
-export const urlify = (str) => {
+export const urlify = (str: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return str.replace(urlRegex, (url) => {
-      return `<a style="color: blue;" href="${url}" > ${url} </a> `
-    }
-  )
-} 
+  return str.replace(urlRegex, (url) => {
+    return `<a style="color: blue;" href="${url}" > ${url} </a> `;
+  });
+};

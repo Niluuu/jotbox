@@ -1,17 +1,17 @@
-import { FC, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { FC, useState } from 'react';
+import { Link , useHistory} from 'react-router-dom';
 import { Auth } from 'aws-amplify';
-import GoogleLogo from '../../assets/images/svg-icons/GoogleLogo';
-import GoogleSuperLogo from '../../assets/images/svg-icons/GoogleSuperLogo';
 import styles from './SignUpPage.module.scss';
 
 const SignUpPage: FC = () => {
+  const history = useHistory();
+  const [typePassword, settypePassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("")
   const [userState, setUserState] = useState({
     userName: '',
     password: '',
   });
-  const [typePassword, settypePassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("")
+
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -23,9 +23,11 @@ const SignUpPage: FC = () => {
           username: userState.userName,
           password: userState.password,
         });
-        console.log(user);
+        
+        history.push("/confirmCode");
+        localStorage.setItem("userName", userState.userName)
       } catch (error) {
-        console.log('error signing up:', error);
+        console.log('error sign Up:', error);
       }
     }
   };
@@ -48,7 +50,6 @@ const SignUpPage: FC = () => {
     <div className={styles.sign}>
       <div className={styles.sign__wrapper}>
         <form className={styles.sign__form} onSubmit={(e) => signUp(e)}>
-          <GoogleLogo />
           <h1 className={styles.sign__title}> Create your Google account </h1>
           <div className={styles.sign__inputDiv}>
             <input
@@ -81,12 +82,11 @@ const SignUpPage: FC = () => {
             </div>
           </div>
           <div className={styles.sign__buttonDiv}>
-            <Link to="/signIn">Sign in instead</Link>
+            <Link to="/signin">Sign in instead</Link>
             <button type="submit"> submit </button>
           </div>
         </form>
         <div className={styles.sign__image}>
-          <GoogleSuperLogo />
           One account. All of Google <br /> Working for you.
         </div>
       </div>

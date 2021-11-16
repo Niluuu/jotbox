@@ -1,13 +1,12 @@
 import { FC, useCallback, useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { API, graphqlOperation } from 'aws-amplify';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
-import { listTodos } from '../../graphql/queries';
+import { Header } from '../Header/Header';
+import { Sider } from '../Sider/Sider';
 
 interface CartProps {
   id: any;
@@ -15,7 +14,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: any[];
 }
 
 export interface HomePageProps {
@@ -46,6 +45,10 @@ export interface HomePageProps {
   setHyperLink: (e: any) => void;
   hyperText: any;
   hyperLink: any;
+  toggleSider: () => void;
+  changeGrid: () => void;
+  filtered: any;
+  isSidebarOpen: boolean
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -76,75 +79,87 @@ const HomePage: FC<HomePageProps> = ({
   onSetCart,
   onDefaultPin,
   onSetIsMain,
+  toggleSider,
+  changeGrid,
+  filtered,
+  isSidebarOpen,
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
 
   return (
     <>
-      <div className={classNames(styles.home_page, gridType && styles.column)}>
-        <div className={styles.home_page__main_input}>
-          <MainInput
-            focused={focused}
-            setFocused={(e) => setFocused(e)}
+      <Header
+        gridType={gridType}
+        onClick={toggleSider}
+        changeGrid={changeGrid}
+      />
+      <section className="layout">
+        <Sider filtered={filtered} isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
+        <div className={classNames(styles.home_page, gridType && styles.column)}>
+          <div className={styles.home_page__main_input}>
+            <MainInput
+              focused={focused}
+              setFocused={(e) => setFocused(e)}
+              onHyperLinkEditMode={onHyperLinkEditMode}
+              onSetArchive={onSetArchive}
+              onSetCart={onSetCart}
+              titleRef={titleRef}
+              textRef={textRef}
+              gridType={gridType}
+              defaultPin={defaultPin}
+              onDefaultPin={onDefaultPin}
+              onSetIsMain={onSetIsMain}
+              hyper={hyper}
+            />
+          </div>
+          <CartLayout
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts}
+            cartHyper={cartHyper}
             onHyperLinkEditMode={onHyperLinkEditMode}
-            onSetArchive={onSetArchive}
-            onSetCart={onSetCart}
-            titleRef={titleRef}
-            textRef={textRef}
-            gridType={gridType}
-            defaultPin={defaultPin}
-            onDefaultPin={onDefaultPin}
             onSetIsMain={onSetIsMain}
-            hyper={hyper}
+            gridType={gridType}
           />
         </div>
-        <CartLayout
-          onChangePin={onChangePin}
-          onReSetCart={onReSetCart}
-          onChangeArchived={onChangeArchived}
-          onRemoveCart={onRemoveCart}
-          carts={carts}
-          cartHyper={cartHyper}
-          onHyperLinkEditMode={onHyperLinkEditMode}
-          onSetIsMain={onSetIsMain}
-          gridType={gridType}
-        />
-      </div>
-      <Modal
-        title="Добавить линк"
-        isTop={!!true}
-        isOpen={hyperLinkEditMode}
-        toggleModal={onCloseModal}
-      >
-        <div className={styles.gaps}>
-          <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-          <input
-            type="text"
-            value={hyperText}
-            onChange={(e) => setHyperText(e.currentTarget.value)}
-            placeholder="Введите текст..."
-            onFocus={() => setTextFocus(true)}
-            onBlur={() => setTextFocus(false)}
-          />
-          {textFocus && <Icon name="done" color="premium" size="xs" />}
-        </div>
-        <div className={styles.gaps}>
-          <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-          <input
-            type="text"
-            value={hyperLink}
-            onChange={(e) => setHyperLink(e.currentTarget.value)}
-            placeholder="Введите линк..."
-            onFocus={() => setLinkFocus(true)}
-            onBlur={() => setLinkFocus(false)}
-          />
-          {linkFocus && <Icon name="done" color="premium" size="xs" />}
-        </div>
-        <div className={styles.bottom_btn} onClick={onSetHyperLink}>
-          <button type="button">Done</button>
-        </div>
-      </Modal>
+        <Modal
+          title="Добавить линк"
+          isTop={!!true}
+          isOpen={hyperLinkEditMode}
+          toggleModal={onCloseModal}
+        >
+          <div className={styles.gaps}>
+            <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
+            <input
+              type="text"
+              value={hyperText}
+              onChange={(e) => setHyperText(e.currentTarget.value)}
+              placeholder="Введите текст..."
+              onFocus={() => setTextFocus(true)}
+              onBlur={() => setTextFocus(false)}
+            />
+            {textFocus && <Icon name="done" color="premium" size="xs" />}
+          </div>
+          <div className={styles.gaps}>
+            <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
+            <input
+              type="text"
+              value={hyperLink}
+              onChange={(e) => setHyperLink(e.currentTarget.value)}
+              placeholder="Введите линк..."
+              onFocus={() => setLinkFocus(true)}
+              onBlur={() => setLinkFocus(false)}
+            />
+            {linkFocus && <Icon name="done" color="premium" size="xs" />}
+          </div>
+          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
+            <button type="button">Done</button>
+          </div>
+        </Modal>
+      </section>
     </>
   );
 };

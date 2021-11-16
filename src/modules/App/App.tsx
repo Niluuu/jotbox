@@ -6,10 +6,10 @@ import HomePage from '../HomePage/HomePage';
 
 import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
-import GapsFilter from '../GapsFilterPage/GapsFilter';
 import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import TrashPage from '../TrashPage/TrashPage';
+
 import ArchievePage from '../ArchievePage/ArchievePage';
 
 import ConfirmPage from '../SignUpPage/Confirm';
@@ -30,33 +30,7 @@ const App: FC = () => {
 
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
-  const [carts, setCart] = useState<CartProps[]>([
-    {
-      title: '1',
-      id: '1',
-      description: 'gap',
-      pined: false,
-      archived: false,
-      gaps: ['science', 'english'],
-    },
-    { title: '2', id: '2', description: 'gap', pined: false, archived: false, gaps: ['english'] },
-    {
-      title: '3',
-      id: '3',
-      description: 'gap',
-      pined: false,
-      archived: false,
-      gaps: ['science', 'education'],
-    },
-    {
-      title: '4',
-      id: '4',
-      description: 'gap',
-      pined: false,
-      archived: false,
-      gaps: ['education', 'english'],
-    },
-  ]);
+  const [carts, setCart] = useState<CartProps[]>([]);
 
   const [focused, setFocused] = useState(false);
 
@@ -85,8 +59,8 @@ const App: FC = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const todos = todoData.data.listTodos.items;
-      console.log('dasda', todoData);
-      // setCart(todos);
+      console.log('todos', todos);
+      setCart(todos);
     } catch (err) {
       console.log(`err`, err);
     }

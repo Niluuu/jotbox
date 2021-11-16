@@ -27,9 +27,7 @@ export interface SiderProps {
  */
 
 export const Sider: FC<SiderProps> = ({ className, isSidebarOpen }) => {
-  const [labels, setlabels] = useState([
-    { name: 'gap1', icon: 'gaps', active: false, url: '/gap/1', modal: false },
-  ]);
+  const [labels, setlabels] = useState([]);
 
   const arraySubMenu = [
     { name: 'Заметки', icon: 'notes', active: true, url: '/', modal: false },

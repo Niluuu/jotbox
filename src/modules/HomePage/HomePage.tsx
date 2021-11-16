@@ -5,8 +5,7 @@ import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import { Header } from '../Header/Header';
-import { Sider } from '../Sider/Sider';
+import Layout from '../../atoms/layout/Layout';
 
 interface CartProps {
   id: any;
@@ -47,7 +46,7 @@ export interface HomePageProps {
   hyperLink: any;
   toggleSider: () => void;
   changeGrid: () => void;
-  isSidebarOpen: boolean
+  isSidebarOpen: boolean;
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -61,8 +60,6 @@ const HomePage: FC<HomePageProps> = ({
   setFocused,
   carts,
   cartHyper,
-  cartTextRef,
-  cartTitleRef,
   onChangeArchived,
   onChangePin,
   onReSetCart,
@@ -86,43 +83,40 @@ const HomePage: FC<HomePageProps> = ({
   const [linkFocus, setLinkFocus] = useState(false);
 
   return (
-    <>
-      <Header
-        gridType={gridType}
-        onClick={toggleSider}
-        changeGrid={changeGrid}
-      />
-      <section className="layout">
-        <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
-        <div className={classNames(styles.home_page, gridType && styles.column)}>
-          <div className={styles.home_page__main_input}>
-            <MainInput
-              focused={focused}
-              setFocused={setFocused}
-              onHyperLinkEditMode={onHyperLinkEditMode}
-              onSetArchive={onSetArchive}
-              onSetCart={onSetCart}
-              titleRef={titleRef}
-              textRef={textRef}
-              gridType={gridType}
-              defaultPin={defaultPin}
-              onDefaultPin={onDefaultPin}
-              onSetIsMain={onSetIsMain}
-              hyper={hyper}
-            />
-          </div>
-          <CartLayout
-            onChangePin={onChangePin}
-            onReSetCart={onReSetCart}
-            onChangeArchived={onChangeArchived}
-            onRemoveCart={onRemoveCart}
-            carts={carts}
-            cartHyper={cartHyper}
+    <Layout
+      gridType={gridType}
+      toggleSider={toggleSider}
+      isSidebarOpen={isSidebarOpen}
+      changeGrid={changeGrid}
+    >
+      <div className={classNames(styles.home_page, gridType && styles.column)}>
+        <div className={styles.home_page__main_input}>
+          <MainInput
+            focused={focused}
+            setFocused={setFocused}
             onHyperLinkEditMode={onHyperLinkEditMode}
-            onSetIsMain={onSetIsMain}
+            onSetArchive={onSetArchive}
+            onSetCart={onSetCart}
+            titleRef={titleRef}
+            textRef={textRef}
             gridType={gridType}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            onSetIsMain={onSetIsMain}
+            hyper={hyper}
           />
         </div>
+        <CartLayout
+          onChangePin={onChangePin}
+          onReSetCart={onReSetCart}
+          onChangeArchived={onChangeArchived}
+          onRemoveCart={onRemoveCart}
+          carts={carts}
+          cartHyper={cartHyper}
+          onHyperLinkEditMode={onHyperLinkEditMode}
+          onSetIsMain={onSetIsMain}
+          gridType={gridType}
+        />
         <Modal
           title="Добавить линк"
           isTop={!!true}
@@ -157,16 +151,9 @@ const HomePage: FC<HomePageProps> = ({
             <button type="button">Done</button>
           </div>
         </Modal>
-      </section>
-    </>
+      </div>
+    </Layout>
   );
 };
 
 export default HomePage;
-
-export const urlify = (str: string) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return str.replace(urlRegex, (url) => {
-    return `<a style="color: blue;" href="${url}" > ${url} </a> `;
-  });
-};

@@ -1,12 +1,12 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
-import { listTodos } from '../../graphql/queries';
+// import { listTodos } from '../../graphql/queries';
 import HomePage from '../HomePage/HomePage';
 
 import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
-import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
+// import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import TrashPage from '../TrashPage/TrashPage';
 
@@ -55,7 +55,7 @@ const App: FC = () => {
 
   async function fetchTodos() {
     try {
-      const todoData = await API.graphql(graphqlOperation(listTodos));
+      const todoData = await API.graphql(graphqlOperation());
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const todos = todoData.data.listTodos.items;

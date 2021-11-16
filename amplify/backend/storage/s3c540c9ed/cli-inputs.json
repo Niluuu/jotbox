@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3c540c9ed",
+  "policyUUID": "c540c9ed",
+  "bucketName": "jotbox8001c014a3384d8b81bab2850ca869fc",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "S3Trigger3d563986",
+  "groupAccess": {}
+}

@@ -20,6 +20,12 @@
           "appId": "d1z8p9jtx7mgly",
           "type": "manual"
         }
+      },
+      "function": {
+        "S3Trigger3d563986": {
+          "deploymentBucketName": "amplify-jotbox-dev-144701-deployment",
+          "s3Key": "amplify-builds/S3Trigger3d563986-3135496948326a436232-build.zip"
+        }
       }
     }
   }

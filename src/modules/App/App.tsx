@@ -1,17 +1,15 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
-// import { listTodos } from '../../graphql/queries';
-import HomePage from '../HomePage/HomePage';
+import { DataStore } from '@aws-amplify/datastore';
+import { Node } from '../../models';
 
+import HomePage from '../HomePage/HomePage';
 import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
-// import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import TrashPage from '../TrashPage/TrashPage';
-
 import ArchievePage from '../ArchievePage/ArchievePage';
-
 import ConfirmPage from '../SignUpPage/Confirm';
 
 interface CartProps {
@@ -25,25 +23,18 @@ interface CartProps {
 
 const App: FC = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
-
   const toggleSider = useCallback(() => setisSidebarOpen(!isSidebarOpen), [isSidebarOpen]);
-
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
   const [carts, setCart] = useState<CartProps[]>([]);
-
   const [focused, setFocused] = useState(false);
-
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
-
   const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
   const [hyper, setHyper] = useState([]);
   const [cartHyper, setCartHyper] = useState([]);
-
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
-
   const [defaultPin, setDefaultPin] = useState(false);
 
   const onDefaultPin = useCallback(() => {
@@ -55,11 +46,9 @@ const App: FC = () => {
 
   async function fetchTodos() {
     try {
-      const todoData = await API.graphql(graphqlOperation());
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      const todos = await DataStore.query(Node);
+      console.log("models",todos); // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      const todos = todoData.data.listTodos.items;
-      console.log('todos', todos);
       setCart(todos);
     } catch (err) {
       console.log(`err`, err);
@@ -68,7 +57,7 @@ const App: FC = () => {
 
   useEffect(() => {
     fetchTodos();
-  }, [carts]);
+  }, []);
 
   const onHyperLinkEditMode = useCallback(() => {
     setHyperLinkEditMode(true);
@@ -95,7 +84,7 @@ const App: FC = () => {
     async (id) => {
       try {
         setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
+        // await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
       } catch (err) {
         console.log(err);
       }
@@ -111,11 +100,11 @@ const App: FC = () => {
             cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart,
           ),
         );
-        await API.graphql(
-          graphqlOperation(updateTodo, {
-            input: { id, title, description, pined: !carts.find((cart) => cart.id === id).pined },
-          }),
-        );
+        // await API.graphql(
+        //   graphqlOperation(updateTodo, {
+        //     input: { id, title, description, pined: !carts.find((cart) => cart.id === id).pined },
+        //   }),
+        // );
       } catch (err) {
         console.log(err);
       }
@@ -131,11 +120,11 @@ const App: FC = () => {
             cart.id === id ? { ...cart, title, description, archived: true, pined: false } : cart,
           ),
         );
-        await API.graphql(
-          graphqlOperation(updateTodo, {
-            input: { id, title, description, archived: true, pined: false },
-          }),
-        );
+        // await API.graphql(
+        //   graphqlOperation(updateTodo, {
+        //     input: { id, title, description, archived: true, pined: false },
+        //   }),
+        // );
       } catch (err) {
         console.log(err);
       }
@@ -160,7 +149,7 @@ const App: FC = () => {
         titleRef.current.innerHTML = '';
         textRef.current.innerHTML = '';
 
-        await API.graphql(graphqlOperation(createTodo, { input: cart }));
+        // await API.graphql(graphqlOperation(createTodo, { input: cart }));
       } catch (err) {
         console.log(err);
       }
@@ -171,7 +160,7 @@ const App: FC = () => {
       try {
         setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
         setCartHyper([]);
-        await API.graphql(graphqlOperation(updateTodo, { input: { id, title, description } }));
+        // await API.graphql(graphqlOperation(updateTodo, { input: { id, title, description } }));
       } catch (err) {
         console.log('error updating todo:', err);
       }
@@ -195,12 +184,11 @@ const App: FC = () => {
       titleRef.current.innerHTML = '';
       textRef.current.innerHTML = '';
 
-      await API.graphql(graphqlOperation(createTodo, { input: cart }));
+      // await API.graphql(graphqlOperation(createTodo, { input: cart }));
     } catch (err) {
       console.log(err);
     }
   }, [carts]);
-
 
   return (
     <BrowserRouter>

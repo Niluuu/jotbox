@@ -1,4 +1,4 @@
-import { FC, useCallback, useRef, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -31,7 +31,7 @@ export interface HomePageProps {
   defaultPin: boolean;
   hyperLinkEditMode: boolean;
   hyper: any;
-  setFocused: (i: boolean) => void;
+  setFocused: (e: boolean) => void;
   carts: CartProps[];
   cartTitleRef?: any;
   cartTextRef?: any;
@@ -47,7 +47,6 @@ export interface HomePageProps {
   hyperLink: any;
   toggleSider: () => void;
   changeGrid: () => void;
-  filtered: any;
   isSidebarOpen: boolean
 }
 
@@ -81,7 +80,6 @@ const HomePage: FC<HomePageProps> = ({
   onSetIsMain,
   toggleSider,
   changeGrid,
-  filtered,
   isSidebarOpen,
 }) => {
   const [textFocus, setTextFocus] = useState(false);
@@ -95,12 +93,12 @@ const HomePage: FC<HomePageProps> = ({
         changeGrid={changeGrid}
       />
       <section className="layout">
-        <Sider filtered={filtered} isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
+        <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
         <div className={classNames(styles.home_page, gridType && styles.column)}>
           <div className={styles.home_page__main_input}>
             <MainInput
               focused={focused}
-              setFocused={(e) => setFocused(e)}
+              setFocused={setFocused}
               onHyperLinkEditMode={onHyperLinkEditMode}
               onSetArchive={onSetArchive}
               onSetCart={onSetCart}

@@ -1,7 +1,6 @@
-import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { FC,useState } from 'react';
 import classNames from 'classnames';
 import styles from './Sider.module.scss';
-import { Icon } from '../../component/Icon/Icon';
 import { Submenu } from '../../component/submenu/Submenu';
 
 export interface SiderProps {
@@ -21,14 +20,13 @@ export interface SiderProps {
    * sidebar is open or not
    */
   isSidebarOpen: boolean;
-  filtered: any;
 }
 
 /**
  * Main Sider component for user interaction
  */
 
-export const Sider: FC<SiderProps> = ({ className, filtered, isSidebarOpen }) => {
+export const Sider: FC<SiderProps> = ({ className, isSidebarOpen }) => {
   const [labels, setlabels] = useState([
     { name: 'gap1', icon: 'gaps', active: false, url: '/gap/1', modal: false },
   ]);
@@ -45,12 +43,10 @@ export const Sider: FC<SiderProps> = ({ className, filtered, isSidebarOpen }) =>
     { name: 'Корзина', icon: 'basket', active: false, url: '/trash', modal: false },
   ];
 
-  const [sidebarLinks, setsidebarLinks] = useState(arraySubMenu);
-
   return (
     <aside className={classNames(styles.sider, isSidebarOpen ? styles.open : null)}>
       <div className={styles.sider_childern}>
-        <Submenu filtered={filtered} arraySubmenu={arraySubMenu} labels={labels} />
+        <Submenu  arraySubmenu={arraySubMenu} labels={labels} />
       </div>
     </aside>
   );

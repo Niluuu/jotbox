@@ -10,6 +10,8 @@ import GapsFilter from '../GapsFilterPage/GapsFilter';
 import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import TrashPage from '../TrashPage/TrashPage';
+import ArchievePage from '../ArchievePage/ArchievePage';
+
 import ConfirmPage from '../SignUpPage/Confirm';
 
 interface CartProps {
@@ -22,7 +24,6 @@ interface CartProps {
 }
 
 const App: FC = () => {
-  const [isLoggedIn, setisLoggedIn] = useState(false);
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
 
   const toggleSider = useCallback(() => setisSidebarOpen(!isSidebarOpen), [isSidebarOpen]);
@@ -226,134 +227,98 @@ const App: FC = () => {
     }
   }, [carts]);
 
-  const gap = Array.from(carts.flatMap(({ gaps }) => gaps));
-  const filtered = Object.keys(Object.fromEntries(gap.map((group) => [group])));
 
   return (
     <BrowserRouter>
       <ProtectedRoute
         exact
         path="/"
-        component={Page}
-        // setHyperText={(e) => setHyperText(e)}
-        // setHyperLink={(e) => setHyperLink(e)}
-        // hyperText={hyperText}
-        // hyperLink={hyperLink}
-        // onSetHyperLink={onSetHyperLink}
-        // onCloseModal={onCloseModal}
-        // setFocused={(e) => setFocused(e)}
-        // hyperLinkEditMode={hyperLinkEditMode}
-        // onHyperLinkEditMode={onHyperLinkEditMode}
-        // onSetArchive={onSetArchive}
-        // onSetCart={onSetCart}
-        // titleRef={titleRef}
-        // textRef={textRef}
-        // gridType={gridType}
-        // defaultPin={defaultPin}
-        // onDefaultPin={onDefaultPin}
-        // onSetIsMain={onSetIsMain}
-        // hyper={hyper}
-        // onChangePin={onChangePin}
-        // onReSetCart={onReSetCart}
-        // onChangeArchived={onChangeArchived}
-        // onRemoveCart={onRemoveCart}
-        // carts={carts}
-        // cartHyper={cartHyper}
-        // focused={focused}
-        // filtered={filtered}
-        // toggleSider={toggleSider}
-        // changeGrid={changeGrid}
-        // isSidebarOpen={isSidebarOpen}
+        component={HomePage}
+        setHyperText={(e) => setHyperText(e)}
+        setHyperLink={(e) => setHyperLink(e)}
+        hyperText={hyperText}
+        hyperLink={hyperLink}
+        onSetHyperLink={onSetHyperLink}
+        onCloseModal={onCloseModal}
+        setFocused={(e) => setFocused(e)}
+        hyperLinkEditMode={hyperLinkEditMode}
+        onHyperLinkEditMode={onHyperLinkEditMode}
+        onSetArchive={onSetArchive}
+        onSetCart={onSetCart}
+        titleRef={titleRef}
+        textRef={textRef}
+        gridType={gridType}
+        defaultPin={defaultPin}
+        onDefaultPin={onDefaultPin}
+        onSetIsMain={onSetIsMain}
+        hyper={hyper}
+        onChangePin={onChangePin}
+        onReSetCart={onReSetCart}
+        onChangeArchived={onChangeArchived}
+        onRemoveCart={onRemoveCart}
+        carts={carts}
+        cartHyper={cartHyper}
+        focused={focused}
       />
-      {/* <ProtectedRoute
-                exact
-                path="/"
-                component={HomePage}
-                setHyperText={(e) => setHyperText(e)}
-                setHyperLink={(e) => setHyperLink(e)}
-                hyperText={hyperText}
-                hyperLink={hyperLink}
-                onSetHyperLink={onSetHyperLink}
-                onCloseModal={onCloseModal}
-                setFocused={(e) => setFocused(e)}
-                hyperLinkEditMode={hyperLinkEditMode}
-                onHyperLinkEditMode={onHyperLinkEditMode}
-                onSetArchive={onSetArchive}
-                onSetCart={onSetCart}
-                titleRef={titleRef}
-                textRef={textRef}
-                gridType={gridType}
-                defaultPin={defaultPin}
-                onDefaultPin={onDefaultPin}
-                onSetIsMain={onSetIsMain}
-                hyper={hyper}
-                onChangePin={onChangePin}
-                onReSetCart={onReSetCart}
-                onChangeArchived={onChangeArchived}
-                onRemoveCart={onRemoveCart}
-                carts={carts}
-                cartHyper={cartHyper}
-                focused={focused}
-              /> */}
       {/* {filtered.map((filter) => (
-                <ProtectedRoute
-                  path={`/gaps/${filter}`}
-                  component={GapsFilter}
-                  setHyperText={(e) => setHyperText(e)}
-                  setHyperLink={(e) => setHyperLink(e)}
-                  hyperText={hyperText}
-                  hyperLink={hyperLink}
-                  onSetHyperLink={onSetHyperLink}
-                  onCloseModal={onCloseModal}
-                  setFocused={(e) => setFocused(e)}
-                  hyperLinkEditMode={hyperLinkEditMode}
-                  onHyperLinkEditMode={onHyperLinkEditMode}
-                  onSetArchive={onSetArchive}
-                  onSetCart={onSetCart}
-                  titleRef={titleRef}
-                  textRef={textRef}
-                  gridType={gridType}
-                  defaultPin={defaultPin}
-                  onDefaultPin={onDefaultPin}
-                  onSetIsMain={onSetIsMain}
-                  hyper={hyper}
-                  onChangePin={onChangePin}
-                  onReSetCart={onReSetCart}
-                  onChangeArchived={onChangeArchived}
-                  onRemoveCart={onRemoveCart}
-                  carts={carts}
-                  cartHyper={cartHyper}
-                  focused={focused}
-                  filter={filter}
-                />
-              ))}
-              <ProtectedRoute
-                path="/archives"
-                component={ArchievePage}
-                setHyperText={(e) => setHyperText(e)}
-                setHyperLink={(e) => setHyperLink(e)}
-                hyperText={hyperText}
-                hyperLink={hyperLink}
-                onSetHyperLink={onSetHyperLink}
-                onCloseModal={onCloseModal}
-                setFocused={(e) => setFocused(e)}
-                hyperLinkEditMode={hyperLinkEditMode}
-                onSetArchive={onSetArchive}
-                gridType={gridType}
-                onSetIsMain={onSetIsMain}
-                onChangePin={onChangePin}
-                onReSetCart={onReSetCart}
-                onChangeArchived={onChangeArchived}
-                onRemoveCart={onRemoveCart}
-                carts={carts}
-                focused={focused}
-              /> */}
+        <ProtectedRoute
+          path={`/gaps/${filter}`}
+          component={GapsFilter}
+          setHyperText={(e) => setHyperText(e)}
+          setHyperLink={(e) => setHyperLink(e)}
+          hyperText={hyperText}
+          hyperLink={hyperLink}
+          onSetHyperLink={onSetHyperLink}
+          onCloseModal={onCloseModal}
+          setFocused={(e) => setFocused(e)}
+          hyperLinkEditMode={hyperLinkEditMode}
+          onHyperLinkEditMode={onHyperLinkEditMode}
+          onSetArchive={onSetArchive}
+          onSetCart={onSetCart}
+          titleRef={titleRef}
+          textRef={textRef}
+          gridType={gridType}
+          defaultPin={defaultPin}
+          onDefaultPin={onDefaultPin}
+          onSetIsMain={onSetIsMain}
+          hyper={hyper}
+          onChangePin={onChangePin}
+          onReSetCart={onReSetCart}
+          onChangeArchived={onChangeArchived}
+          onRemoveCart={onRemoveCart}
+          carts={carts}
+          cartHyper={cartHyper}
+          focused={focused}
+          filter={filter}
+        />
+      ))} */}
+      <ProtectedRoute
+        path="/archives"
+        component={ArchievePage}
+        setHyperText={(e) => setHyperText(e)}
+        setHyperLink={(e) => setHyperLink(e)}
+        hyperText={hyperText}
+        hyperLink={hyperLink}
+        onSetHyperLink={onSetHyperLink}
+        onCloseModal={onCloseModal}
+        setFocused={(e) => setFocused(e)}
+        hyperLinkEditMode={hyperLinkEditMode}
+        onSetArchive={onSetArchive}
+        gridType={gridType}
+        onSetIsMain={onSetIsMain}
+        onChangePin={onChangePin}
+        onReSetCart={onReSetCart}
+        onChangeArchived={onChangeArchived}
+        onRemoveCart={onRemoveCart}
+        carts={carts}
+        focused={focused}
+      />
       <Route path="*">
         <div>UNDEFINED PAGE</div>
       </Route>
       <Route path="/signup" component={SignUpPage} />
-      <Route path="/confirmCode" component={ConfirmPage} />
       <Route path="/signin" component={SignInPage} />
+      <Route path="/confirmCode" component={ConfirmPage} />
     </BrowserRouter>
   );
 };

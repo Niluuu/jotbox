@@ -1,9 +1,10 @@
 import { FC, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import styles from './SignInPage.module.scss';
 
 const SignInPage: FC = () => {
+  const history = useHistory();
   const [userState, setUserState] = useState({
     userName: '',
     password: '',
@@ -11,7 +12,7 @@ const SignInPage: FC = () => {
   const [typePassword, settypePassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const signUp = async (e) => {
+  const sginIn = async (e) => {
     e.preventDefault();
     if (userState.userName.length > 1 && userState.password.length > 1) {
       try {
@@ -19,10 +20,15 @@ const SignInPage: FC = () => {
           username: userState.userName,
           password: userState.password,
         });
+
+   
       } catch (error) {
         console.log('error signing up:', error);
       }
     }
+    
+    localStorage.setItem("isAuthenticated", "true")
+    history.push("/")
   };
 
   const handleChange = (e) => {
@@ -41,7 +47,7 @@ const SignInPage: FC = () => {
   
   return (
     <div className={styles.sign}>
-      <form className={styles.sign__form} onSubmit={signUp}>
+      <form className={styles.sign__form} onSubmit={sginIn}>
         <h1 className={styles.sign__title}> Sign in </h1>
         <h1 className={styles.sign__subTitle}> Use your Google Account </h1>
         <input
@@ -71,7 +77,7 @@ const SignInPage: FC = () => {
         </div>
 
         <div className={styles.sign__buttonDiv}>
-          <Link to="/signUp">Create account</Link>
+          <Link to="/sginIn">Create account</Link>
           <a href="#"> </a>
           <button type="submit"> Next </button>
         </div>

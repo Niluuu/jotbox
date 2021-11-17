@@ -155,8 +155,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
                   <Icon name="picture" />
                 </span>
               </div>
-              <h1>Saidumarova Nilufar</h1>
-              <p>saidumarovanilufar@gamil.com</p>
+              <h1>{localStorage.getItem("userEmail")}</h1>
+              <p>{localStorage.getItem("userEmail")}</p>
               <a href="https://myaccount.google.com/?utm_source=OGB&utm_medium=act">
                 Управление аккаунтом Google
               </a>

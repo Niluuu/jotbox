@@ -1,6 +1,5 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import { API, graphqlOperation } from 'aws-amplify';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { DataStore } from '@aws-amplify/datastore';
 import { Node } from '../../models';
 
@@ -8,7 +7,6 @@ import HomePage from '../HomePage/HomePage';
 import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
-import TrashPage from '../TrashPage/TrashPage';
 import ArchievePage from '../ArchievePage/ArchievePage';
 import ConfirmPage from '../SignUpPage/Confirm';
 
@@ -47,7 +45,7 @@ const App: FC = () => {
   async function fetchTodos() {
     try {
       const todos = await DataStore.query(Node);
-      console.log("models",todos); // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      console.log('models', todos); // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       setCart(todos);
     } catch (err) {
@@ -192,40 +190,11 @@ const App: FC = () => {
 
   return (
     <BrowserRouter>
-      <ProtectedRoute
-        exact
-        path="/"
-        component={HomePage}
-        setHyperText={(e) => setHyperText(e)}
-        setHyperLink={(e) => setHyperLink(e)}
-        hyperText={hyperText}
-        hyperLink={hyperLink}
-        onSetHyperLink={onSetHyperLink}
-        onCloseModal={onCloseModal}
-        setFocused={(e) => setFocused(e)}
-        hyperLinkEditMode={hyperLinkEditMode}
-        onHyperLinkEditMode={onHyperLinkEditMode}
-        onSetArchive={onSetArchive}
-        onSetCart={onSetCart}
-        titleRef={titleRef}
-        textRef={textRef}
-        gridType={gridType}
-        defaultPin={defaultPin}
-        onDefaultPin={onDefaultPin}
-        onSetIsMain={onSetIsMain}
-        hyper={hyper}
-        onChangePin={onChangePin}
-        onReSetCart={onReSetCart}
-        onChangeArchived={onChangeArchived}
-        onRemoveCart={onRemoveCart}
-        carts={carts}
-        cartHyper={cartHyper}
-        focused={focused}
-      />
-      {/* {filtered.map((filter) => (
+      <Switch>
         <ProtectedRoute
-          path={`/gaps/${filter}`}
-          component={GapsFilter}
+          exact
+          path="/"
+          component={HomePage}
           setHyperText={(e) => setHyperText(e)}
           setHyperLink={(e) => setHyperLink(e)}
           hyperText={hyperText}
@@ -251,42 +220,34 @@ const App: FC = () => {
           carts={carts}
           cartHyper={cartHyper}
           focused={focused}
-          filter={filter}
         />
-      ))} */}
-      <ProtectedRoute
-        path="/archives"
-        component={ArchievePage}
-        setHyperText={(e) => setHyperText(e)}
-        setHyperLink={(e) => setHyperLink(e)}
-        hyperText={hyperText}
-        hyperLink={hyperLink}
-        onSetHyperLink={onSetHyperLink}
-        onCloseModal={onCloseModal}
-        setFocused={(e) => setFocused(e)}
-        hyperLinkEditMode={hyperLinkEditMode}
-        onSetArchive={onSetArchive}
-        gridType={gridType}
-        onSetIsMain={onSetIsMain}
-        onChangePin={onChangePin}
-        onReSetCart={onReSetCart}
-        onChangeArchived={onChangeArchived}
-        onRemoveCart={onRemoveCart}
-        carts={carts}
-        focused={focused}
-      />
-      <Route path="*">
-        <div>UNDEFINED PAGE</div>
-      </Route>
-      <Route path="/signup" component={SignUpPage} />
-      <Route path="/signin" component={SignInPage} />
-      <Route path="/confirmCode" component={ConfirmPage} />
+        <ProtectedRoute
+          path="/archives"
+          component={ArchievePage}
+          setHyperText={(e) => setHyperText(e)}
+          setHyperLink={(e) => setHyperLink(e)}
+          hyperText={hyperText}
+          hyperLink={hyperLink}
+          onSetHyperLink={onSetHyperLink}
+          onCloseModal={onCloseModal}
+          setFocused={(e) => setFocused(e)}
+          hyperLinkEditMode={hyperLinkEditMode}
+          onSetArchive={onSetArchive}
+          gridType={gridType}
+          onSetIsMain={onSetIsMain}
+          onChangePin={onChangePin}
+          onReSetCart={onReSetCart}
+          onChangeArchived={onChangeArchived}
+          onRemoveCart={onRemoveCart}
+          carts={carts}
+          focused={focused}
+        />
+        <Route path="/signUp" component={SignUpPage} />
+        <Route path="/signIn" component={SignInPage} />
+        <Route path="/confirmCode" component={ConfirmPage} />
+      </Switch>
     </BrowserRouter>
   );
 };
-
-function Page() {
-  return <div>page</div>;
-}
 
 export default App;

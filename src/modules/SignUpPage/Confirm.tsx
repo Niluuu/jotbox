@@ -9,14 +9,14 @@ const ConfirmPage: FC = () => {
   const [confirmCode, setConfirmCode] = useState('');
 
   const confirmSignUp = async (e) => {
-    const userName = localStorage.getItem('userName');
+    const userEmail = localStorage.getItem('userEmail');
     e.preventDefault();
 
     if (confirmCode.length > 1) {
       try {
-        const { code } = await Auth.confirmSignUp(userName, confirmCode);
+        const data = await Auth.confirmSignUp(userEmail, confirmCode);
         
-        localStorage.setItem("isAuthenticated", "asdasdasdasdasdasd")
+        localStorage.setItem("assessToken", data.signInUserSession.accessToken.jwtToken)
         history.push("/");
       } catch (error) {
         console.log('error sign Up:', error);

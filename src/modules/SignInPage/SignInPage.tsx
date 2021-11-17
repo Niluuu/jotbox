@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
+import classNames from 'classnames';
 import styles from './SignInPage.module.scss';
 
 const SignInPage: FC = () => {
@@ -16,19 +17,20 @@ const SignInPage: FC = () => {
     e.preventDefault();
     if (userState.userName.length > 1 && userState.password.length > 1) {
       try {
-        const { user } = await Auth.signIn({
+        const data = await Auth.signIn({
           username: userState.userName,
           password: userState.password,
         });
 
-   
+        localStorage.setItem("assessToken", data.signInUserSession.accessToken.jwtToken)
+        localStorage.setItem("userEmail",data.attributes.email)
+        history.push("/")
+        console.log("data", data)
       } catch (error) {
         console.log('error signing up:', error);
       }
     }
-    
-    localStorage.setItem("isAuthenticated", "true")
-    history.push("/")
+
   };
 
   const handleChange = (e) => {
@@ -65,7 +67,7 @@ const SignInPage: FC = () => {
           value={userState.password}
           onChange={handleChange}
         />
-        <div className={styles.sign__link}>
+        <div className={classNames(styles.sign__link, styles.password_input)}>
           <input
             type="checkbox"
             id="showPassword"
@@ -77,9 +79,9 @@ const SignInPage: FC = () => {
         </div>
 
         <div className={styles.sign__buttonDiv}>
-          <Link to="/sginIn">Create account</Link>
+          <Link to="/signUp">Create account</Link>
           <a href="#"> </a>
-          <button type="submit"> Next </button>
+          <button type="submit" onClick={sginIn}> Next </button>
         </div>
       </form>
     </div>

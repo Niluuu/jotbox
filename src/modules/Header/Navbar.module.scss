@@ -151,7 +151,6 @@
 
     &__profile {
       width: 350px;
-      height: 240px;
       overflow-y: scroll;
 
       .profile__info {
@@ -231,10 +230,32 @@
           align-items: center;
           justify-content: center;
           padding: 10px;
-
+          
+          
           svg {
             margin-right: 10px;
             width: 22px;
+          }
+
+        }
+
+        &.signOut {
+          border-top: none;
+
+          a {
+            margin: 20px 70px;
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            font-weight: 600;
+          }
+        }
+
+        &.privacy {
+          border-top: none;
+          
+          a {
+            font-size: 12px;
+            font-weight: 600;
           }
         }
       }

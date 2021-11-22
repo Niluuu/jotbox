@@ -33,6 +33,7 @@ export interface ArchievePageProps {
   setHyperLink: (e: any) => void;
   hyperText: any;
   hyperLink: any;
+  filtered?: any[];
 }
 
 const ArchievePage: FC<ArchievePageProps> = ({
@@ -48,6 +49,7 @@ const ArchievePage: FC<ArchievePageProps> = ({
   onChangePin,
   onRemoveCart,
   hyperLinkEditMode,
+  filtered
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);

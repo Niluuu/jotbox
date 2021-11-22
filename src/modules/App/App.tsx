@@ -1,8 +1,9 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { API, graphqlOperation } from 'aws-amplify';
+import classNames from 'classnames'
 import { DataStore } from '@aws-amplify/datastore';
 import { Node } from '../../models';
+import { Icon } from '../../component/Icon/Icon'
 
 import HomePage from '../HomePage/HomePage';
 import SignInPage from '../SignInPage/SignInPage';
@@ -23,7 +24,7 @@ interface CartProps {
 
 const App: FC = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  const toggleSider = useCallback(() => setisSidebarOpen(!isSidebarOpen), [isSidebarOpen]);
+  const toggleSider = useCallback(() => setisSidebarOpen(pre => !pre), [isSidebarOpen]);
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
   const [carts, setCart] = useState<CartProps[]>([]);
@@ -35,10 +36,10 @@ const App: FC = () => {
   const [cartHyper, setCartHyper] = useState([]);
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
-  const [defaultPin, setDefaultPin] = useState(false);
 
+  const [defaultPin, setDefaultPin] = useState(false);
   const onDefaultPin = useCallback(() => {
-    setDefaultPin((pre) => !pre);
+    setDefaultPin(pre => !pre);
   }, [defaultPin]);
 
   const titleRef = useRef<HTMLDivElement>();
@@ -47,7 +48,8 @@ const App: FC = () => {
   async function fetchTodos() {
     try {
       const todos = await DataStore.query(Node);
-      console.log("models",todos); // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      console.log("models", todos); 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       setCart(todos);
     } catch (err) {
@@ -84,7 +86,8 @@ const App: FC = () => {
     async (id) => {
       try {
         setCart(carts.filter((cart) => cart.id !== id));
-        // await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
+        const modelToDelete = await DataStore.query(Node, id);
+        DataStore.delete(modelToDelete)
       } catch (err) {
         console.log(err);
       }
@@ -96,15 +99,15 @@ const App: FC = () => {
     async (id, title, description) => {
       try {
         setCart(
-          carts.map((cart) =>
-            cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart,
-          ),
+          carts.map((cart) => cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart),
         );
-        // await API.graphql(
-        //   graphqlOperation(updateTodo, {
-        //     input: { id, title, description, pined: !carts.find((cart) => cart.id === id).pined },
-        //   }),
-        // );
+        const original = await DataStore.query(Node, id);
+        await DataStore.save(Node.copyOf(original, item => {
+          const cart = item;
+          cart.pined = !item.pined;
+          cart.description = description;
+          cart.title = title;
+        }))
       } catch (err) {
         console.log(err);
       }
@@ -120,13 +123,34 @@ const App: FC = () => {
             cart.id === id ? { ...cart, title, description, archived: true, pined: false } : cart,
           ),
         );
-        // await API.graphql(
-        //   graphqlOperation(updateTodo, {
-        //     input: { id, title, description, archived: true, pined: false },
-        //   }),
-        // );
+        const original = await DataStore.query(Node, id);
+        await DataStore.save(Node.copyOf(original, item => {
+          const cart = item;
+          cart.archived = true;
+          cart.pined = false;
+          cart.description = description;
+          cart.title = title;
+        }))
       } catch (err) {
         console.log(err);
+      }
+    },
+    [carts],
+  );
+
+  const onReSetCart = useCallback(
+    async (id, title, description) => {
+      try {
+        setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
+        setCartHyper([]);
+        const original = await DataStore.query(Node, id);
+        await DataStore.save(Node.copyOf(original, item => {
+          const cart = item;
+          cart.description = description;
+          cart.title = title;
+        }))
+      } catch (err) {
+        console.log('error updating todo:', err);
       }
     },
     [carts],
@@ -141,33 +165,27 @@ const App: FC = () => {
           description: textRef.current.innerHTML,
           pined: defaultPin,
           archived: false,
-          gaps: null,
+          gaps: []
         };
         setCart([...carts, cart]);
-
         setDefaultPin(false);
+        
+        await DataStore.save(
+          new Node({
+            "title": titleRef.current.innerText,
+            "description": textRef.current.innerHTML,
+            "gaps": [],
+            "pined": defaultPin,
+            "archived": false
+          })
+        );
         titleRef.current.innerHTML = '';
         textRef.current.innerHTML = '';
-
-        // await API.graphql(graphqlOperation(createTodo, { input: cart }));
       } catch (err) {
         console.log(err);
       }
   }, [carts, defaultPin]);
-
-  const onReSetCart = useCallback(
-    async (id, title, description) => {
-      try {
-        setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
-        setCartHyper([]);
-        // await API.graphql(graphqlOperation(updateTodo, { input: { id, title, description } }));
-      } catch (err) {
-        console.log('error updating todo:', err);
-      }
-    },
-    [carts],
-  );
-
+  
   const onSetArchive = useCallback(async () => {
     try {
       const cart = {
@@ -179,107 +197,176 @@ const App: FC = () => {
         gaps: null,
       };
       setCart([...carts, cart]);
-
       setDefaultPin(false);
+      
+      await DataStore.save(
+        new Node({
+          "title": titleRef.current.innerText,
+          "description": textRef.current.innerHTML,
+          "gaps": [],
+          "pined": defaultPin,
+          "archived": true
+        })
+      );
       titleRef.current.innerHTML = '';
       textRef.current.innerHTML = '';
-
-      // await API.graphql(graphqlOperation(createTodo, { input: cart }));
     } catch (err) {
       console.log(err);
     }
   }, [carts]);
+  
+
+  const [filterLetter, setFilterLetter] = useState('')
+
+  const filterByLetter = async (e) => {
+    setFilterLetter(e)
+    try {
+      const todos = await DataStore.query(Node);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      setCart(todos.filter((todo) => 
+        todo.description.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) >= 0 ||
+        todo.title.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) >= 0 
+      ))
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const gapCategories = Array.from(carts.flatMap(({ gaps }) => gaps))
+
+  const filteredGaps = Object.keys(Object.fromEntries(
+    gapCategories.map((category) => [
+      category, carts.filter((card) => card.gaps && card.gaps.includes(category))
+    ])
+  ));
+
+  const [hasError, setHasError] = useState(false)
+  const [error, setError] = useState({
+    message: 'You signed in succesfully',
+    icon: 'success'
+  })
+
+  const onErrorMessage = (message: string, icon: 'success' | 'error') => {
+    setError({ message, icon })
+    setHasError(true)
+    setTimeout(() => setHasError(false), 6000);
+  }
 
   return (
     <BrowserRouter>
+      <div className={classNames('errorMessage', hasError && 'active')}>   
+        <div> <Icon name={error.icon} /> </div>
+        { error.message } 
+      </div> 
       <ProtectedRoute
         exact
         path="/"
-        component={HomePage}
-        setHyperText={(e) => setHyperText(e)}
-        setHyperLink={(e) => setHyperLink(e)}
-        hyperText={hyperText}
-        hyperLink={hyperLink}
-        onSetHyperLink={onSetHyperLink}
-        onCloseModal={onCloseModal}
-        setFocused={(e) => setFocused(e)}
-        hyperLinkEditMode={hyperLinkEditMode}
-        onHyperLinkEditMode={onHyperLinkEditMode}
-        onSetArchive={onSetArchive}
-        onSetCart={onSetCart}
-        titleRef={titleRef}
-        textRef={textRef}
-        gridType={gridType}
-        defaultPin={defaultPin}
-        onDefaultPin={onDefaultPin}
-        onSetIsMain={onSetIsMain}
-        hyper={hyper}
-        onChangePin={onChangePin}
-        onReSetCart={onReSetCart}
-        onChangeArchived={onChangeArchived}
-        onRemoveCart={onRemoveCart}
-        carts={carts}
-        cartHyper={cartHyper}
-        focused={focused}
+        component={() => 
+          <HomePage
+            setHyperText={(e) => setHyperText(e)}
+            setHyperLink={(e) => setHyperLink(e)}
+            hyperText={hyperText}
+            hyperLink={hyperLink}
+            onSetHyperLink={onSetHyperLink}
+            onCloseModal={onCloseModal}
+            setFocused={(e: any) => {setFocused(e)}}
+            hyperLinkEditMode={hyperLinkEditMode}
+            onHyperLinkEditMode={onHyperLinkEditMode}
+            onSetArchive={onSetArchive}
+            onSetCart={onSetCart}
+            titleRef={titleRef}
+            textRef={textRef}
+            gridType={gridType}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            onSetIsMain={onSetIsMain}
+            hyper={hyper}
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts}
+            cartHyper={cartHyper}
+            focused={focused}
+            filterLetter={filterLetter}
+            filterByLetter={filterByLetter}
+            filteredGaps={filteredGaps}
+            toggleSider={toggleSider}
+            isSidebarOpen={isSidebarOpen}
+          />
+        }
       />
-      {/* {filtered.map((filter) => (
-        <ProtectedRoute
-          path={`/gaps/${filter}`}
-          component={GapsFilter}
-          setHyperText={(e) => setHyperText(e)}
-          setHyperLink={(e) => setHyperLink(e)}
-          hyperText={hyperText}
-          hyperLink={hyperLink}
-          onSetHyperLink={onSetHyperLink}
-          onCloseModal={onCloseModal}
-          setFocused={(e) => setFocused(e)}
-          hyperLinkEditMode={hyperLinkEditMode}
-          onHyperLinkEditMode={onHyperLinkEditMode}
-          onSetArchive={onSetArchive}
-          onSetCart={onSetCart}
-          titleRef={titleRef}
-          textRef={textRef}
-          gridType={gridType}
-          defaultPin={defaultPin}
-          onDefaultPin={onDefaultPin}
-          onSetIsMain={onSetIsMain}
-          hyper={hyper}
-          onChangePin={onChangePin}
-          onReSetCart={onReSetCart}
-          onChangeArchived={onChangeArchived}
-          onRemoveCart={onRemoveCart}
-          carts={carts}
-          cartHyper={cartHyper}
-          focused={focused}
-          filter={filter}
-        />
-      ))} */}
       <ProtectedRoute
-        path="/archives"
-        component={ArchievePage}
-        setHyperText={(e) => setHyperText(e)}
-        setHyperLink={(e) => setHyperLink(e)}
-        hyperText={hyperText}
-        hyperLink={hyperLink}
-        onSetHyperLink={onSetHyperLink}
-        onCloseModal={onCloseModal}
-        setFocused={(e) => setFocused(e)}
-        hyperLinkEditMode={hyperLinkEditMode}
-        onSetArchive={onSetArchive}
-        gridType={gridType}
-        onSetIsMain={onSetIsMain}
-        onChangePin={onChangePin}
-        onReSetCart={onReSetCart}
-        onChangeArchived={onChangeArchived}
-        onRemoveCart={onRemoveCart}
-        carts={carts}
-        focused={focused}
+        exact
+        path="/"
+        component={() => 
+          <ArchievePage
+            setHyperText={(e) => setHyperText(e)}
+            setHyperLink={(e) => setHyperLink(e)}
+            hyperText={hyperText}
+            hyperLink={hyperLink}
+            onSetHyperLink={onSetHyperLink}
+            onCloseModal={onCloseModal}
+            setFocused={(e: any) => {setFocused(e)}}
+            hyperLinkEditMode={hyperLinkEditMode}
+            onSetArchive={onSetArchive}
+            gridType={gridType}
+            onSetIsMain={onSetIsMain}
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts}
+            focused={focused}
+          />
+        }
       />
+      { filteredGaps.map((filter) => 
+        <ProtectedRoute
+          exact
+          path="/"
+          component={() => 
+          <HomePage
+            setHyperText={(e) => setHyperText(e)}
+            setHyperLink={(e) => setHyperLink(e)}
+            hyperText={hyperText}
+            hyperLink={hyperLink}
+            onSetHyperLink={onSetHyperLink}
+            onCloseModal={onCloseModal}
+            setFocused={(e: any) => {setFocused(e)}}
+            hyperLinkEditMode={hyperLinkEditMode}
+            onHyperLinkEditMode={onHyperLinkEditMode}
+            onSetArchive={onSetArchive}
+            onSetCart={onSetCart}
+            titleRef={titleRef}
+            textRef={textRef}
+            gridType={gridType}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            onSetIsMain={onSetIsMain}
+            hyper={hyper}
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts.filter(cart => cart.description === filter)}
+            cartHyper={cartHyper}
+            focused={focused}
+            filterLetter={filterLetter}
+            filterByLetter={filterByLetter}
+            filteredGaps={filteredGaps}
+            toggleSider={toggleSider}
+            isSidebarOpen={isSidebarOpen}
+          />
+        }
+      /> )}
       <Route path="*">
         <div>UNDEFINED PAGE</div>
       </Route>
       <Route path="/signup" component={SignUpPage} />
-      <Route path="/signin" component={SignInPage} />
+      <Route path="/signin" component={() => 
+        <SignInPage onErrorMessage={onErrorMessage} /> } />
       <Route path="/confirmCode" component={ConfirmPage} />
     </BrowserRouter>
   );

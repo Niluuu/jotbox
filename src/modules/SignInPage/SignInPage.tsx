@@ -3,16 +3,18 @@ import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import styles from './SignInPage.module.scss';
 
-const SignInPage: FC = () => {
+type signInProps = {
+  onErrorMessage: (message: string, icon: 'success' | 'error') => void;
+}
+
+const SignInPage: FC<signInProps> = ({onErrorMessage}) => {
   const history = useHistory();
   const [userState, setUserState] = useState({
-    userName: '',
-    password: '',
+    userName: '', password: '',
   });
   const [typePassword, settypePassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const sginIn = async (e) => {
+  const signIn = async (e) => {
     e.preventDefault();
     if (userState.userName.length > 1 && userState.password.length > 1) {
       try {
@@ -20,10 +22,9 @@ const SignInPage: FC = () => {
           username: userState.userName,
           password: userState.password,
         });
-
-   
-      } catch (error) {
-        console.log('error signing up:', error);
+        onErrorMessage('You signed in succesfully', 'success')
+      } catch (err) {
+        onErrorMessage(err.message, 'error')
       }
     }
     
@@ -36,8 +37,7 @@ const SignInPage: FC = () => {
 
     const { value, name } = e.target;
     setUserState({
-      ...userState,
-      [name]: value,
+      ...userState, [name]: value,
     });
   };
 
@@ -47,8 +47,8 @@ const SignInPage: FC = () => {
   
   return (
     <div className={styles.sign}>
-      <form className={styles.sign__form} onSubmit={sginIn}>
-        <h1 className={styles.sign__title}> Sign in </h1>
+      <form className={styles.sign__form} onSubmit={signIn}>
+        <h1 className={styles.sign__title}> Sign In </h1>
         <h1 className={styles.sign__subTitle}> Use your Google Account </h1>
         <input
           type="text"
@@ -59,25 +59,24 @@ const SignInPage: FC = () => {
         />
         <a href="#"> Forgot user name? </a>
         <input
-          type={typePassword ? 'password' : 'text'}
+          type={typePassword ? 'text' : 'password'}
           name="password"
           placeholder="Password"
           value={userState.password}
           onChange={handleChange}
         />
         <div className={styles.sign__link}>
+          <label htmlFor="showPassword"> Show Password </label>
           <input
             type="checkbox"
             id="showPassword"
             checked={typePassword}
-            onClick={toggle}
-            defaultChecked={false}
+            onChange={toggle}
           />
-          <label htmlFor="showPassword"> Show Password </label>
         </div>
 
         <div className={styles.sign__buttonDiv}>
-          <Link to="/sginIn">Create account</Link>
+          <Link to="/signUp">Create account</Link>
           <a href="#"> </a>
           <button type="submit"> Next </button>
         </div>

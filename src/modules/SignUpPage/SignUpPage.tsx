@@ -61,7 +61,7 @@ const SignUpPage: FC = () => {
 
           <div className={styles.sign__inputDiv}>
             <input
-              type={typePassword ? 'password' : 'text'}
+              type={typePassword ? 'text' : 'password'}
               placeholder="Password"
               name="password"
               onChange={(e) => handleChange(e)}
@@ -85,9 +85,6 @@ const SignUpPage: FC = () => {
             <button type="submit"  onClick={(e) => signUp(e)}> submit </button>
           </div>
         </form>
-        <div className={styles.sign__image}>
-          One account. All of Google <br /> Working for you.
-        </div>
       </div>
     </div>
   );

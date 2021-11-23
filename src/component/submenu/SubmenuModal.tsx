@@ -7,7 +7,7 @@ export interface SubmenuModalProps {
   isOpenLabel: boolean;
   toggleModal: () => void;
   labels: any;
-  gaps: any;
+  gaps?: any;
 }
 
 export const SubmenuModal: FC<SubmenuModalProps> = ({ gaps, isOpenLabel, labels, toggleModal }) => {

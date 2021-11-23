@@ -30,7 +30,7 @@ export interface HomePageProps {
   defaultPin: boolean;
   hyperLinkEditMode: boolean;
   hyper: any;
-  setFocused: (e: boolean) => void;
+  setFocused: (e: any) => void;
   carts: CartProps[];
   cartTitleRef?: any;
   cartTextRef?: any;
@@ -44,9 +44,12 @@ export interface HomePageProps {
   setHyperLink: (e: any) => void;
   hyperText: any;
   hyperLink: any;
-  toggleSider: () => void;
-  changeGrid: () => void;
-  isSidebarOpen: boolean;
+  toggleSider?: () => void;
+  changeGrid?: () => void;
+  isSidebarOpen?: boolean;
+  filterByLetter: (value: string) => void;
+  filterLetter: any;
+  filteredGaps: any[];
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -57,6 +60,7 @@ const HomePage: FC<HomePageProps> = ({
   hyperLink,
   onCloseModal,
   onSetHyperLink,
+  filteredGaps,
   setFocused,
   carts,
   cartHyper,
@@ -78,6 +82,8 @@ const HomePage: FC<HomePageProps> = ({
   toggleSider,
   changeGrid,
   isSidebarOpen,
+  filterByLetter,
+  filterLetter
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
@@ -88,6 +94,9 @@ const HomePage: FC<HomePageProps> = ({
       toggleSider={toggleSider}
       isSidebarOpen={isSidebarOpen}
       changeGrid={changeGrid}
+      filterByLetter={filterByLetter}
+      filterLetter={filterLetter}
+      filteredGaps={filteredGaps}
     >
       <div className={classNames(styles.home_page, gridType && styles.column)}>
         <div className={styles.home_page__main_input}>

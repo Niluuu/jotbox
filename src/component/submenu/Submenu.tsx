@@ -35,7 +35,7 @@ export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, labels }) => {
   const { pathname } = location;
 
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
-
+  
   return (
     <ul className={styles.sider_menu}>
       {arraySubmenu !== undefined && arraySubmenu.map((item) =>
@@ -51,7 +51,7 @@ export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, labels }) => {
             labels={labels}
             gaps={arraySubmenu}
           />
-        ),
+        )
       )}
     </ul>
   );

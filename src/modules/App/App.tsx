@@ -1,6 +1,6 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
 import classNames from 'classnames'
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { DataStore } from '@aws-amplify/datastore';
 import { Node } from '../../models';
 import { Icon } from '../../component/Icon/Icon'
@@ -9,7 +9,6 @@ import HomePage from '../HomePage/HomePage';
 import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
-import TrashPage from '../TrashPage/TrashPage';
 import ArchievePage from '../ArchievePage/ArchievePage';
 import ConfirmPage from '../SignUpPage/Confirm';
 
@@ -371,9 +370,5 @@ const App: FC = () => {
     </BrowserRouter>
   );
 };
-
-function Page() {
-  return <div>page</div>;
-}
 
 export default App;

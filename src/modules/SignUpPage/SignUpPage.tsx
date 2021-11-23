@@ -16,16 +16,15 @@ const SignUpPage: FC = () => {
   const signUp = async (e) => {
     e.preventDefault();
 
-    console.log('user', userState);
     if (userState.userName.length > 1 && userState.password.length > 1) {
       try {
-        const { user } = await Auth.signUp({
+        await Auth.signUp({
           username: userState.userName,
           password: userState.password,
         });
-        
         history.push("/confirmCode");
-        localStorage.setItem("userName", userState.userName)
+        localStorage.setItem("userEmail", userState.userName)
+
       } catch (error) {
         console.log('error sign Up:', error);
       }
@@ -82,8 +81,8 @@ const SignUpPage: FC = () => {
             </div>
           </div>
           <div className={styles.sign__buttonDiv}>
-            <Link to="/signin">Sign in instead</Link>
-            <button type="submit"> submit </button>
+            <Link to="/signIn">Sign in instead</Link>
+            <button type="submit"  onClick={(e) => signUp(e)}> submit </button>
           </div>
         </form>
       </div>

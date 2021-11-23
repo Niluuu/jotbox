@@ -15,6 +15,8 @@ export interface HeaderProps {
    * onclick for toggle sidebar
    */
   onClick: () => void;
+  filterByLetter: (value: string) => void;
+  filterLetter: any;
   changeGrid: () => void;
 }
 
@@ -22,7 +24,7 @@ export interface HeaderProps {
  * Main Header component for user interaction
  */
 
-export const Header: FC<HeaderProps> = ({ isLoggedIn, onClick, changeGrid, gridType }) => {
+export const Header: FC<HeaderProps> = ({ isLoggedIn, filterByLetter, filterLetter, onClick, changeGrid, gridType }) => {
   return (
     <header className={styles.header}>
       <div className={styles.header_row}>
@@ -30,9 +32,12 @@ export const Header: FC<HeaderProps> = ({ isLoggedIn, onClick, changeGrid, gridT
         <Logo />
       </div>
 
-      <SearchInput />
+      <SearchInput filterByLetter={filterByLetter} filterLetter={filterLetter} />
 
-      <Navbar isLoggedIn={isLoggedIn} changeGrid={changeGrid} gridType={gridType} />
+      <Navbar 
+        isLoggedIn={isLoggedIn} 
+        changeGrid={changeGrid} 
+        gridType={gridType} />
     </header>
   );
 };

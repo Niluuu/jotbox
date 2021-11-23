@@ -23,23 +23,22 @@ export interface SubmenuProps {
    * sidebar labels
    */
   labels?: any;
-  filtered: any
 }
 
 /**
  * Main Submenu component for user interaction
  */
 
-export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, filtered, labels }) => {
+export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, labels }) => {
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const location = useLocation();
   const { pathname } = location;
 
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
-
+  
   return (
     <ul className={styles.sider_menu}>
-      {arraySubmenu.map((item) =>
+      {arraySubmenu !== undefined && arraySubmenu.map((item) =>
         item.name === 'gaps' ? (
           item.gaps.map((gap) => <SubmenuItem item={gap} location={pathname} />)
         ) : (
@@ -52,19 +51,7 @@ export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, filtered, labels }) =>
             labels={labels}
             gaps={arraySubmenu}
           />
-        ),
-      )}
-      { filtered.map((item) =>
-        <NavLink to={`/gaps/${item}`} activeClassName="active" key={item}>
-        <div
-          className={classNames(
-            styles.sider_submenu__menu_item,
-            location === item ? styles.active : null,
-          )}>
-          <Icon name="gaps" color="premium" size="xs" />
-          <span className={styles.menu_item__title}> {item}</span>
-        </div>
-      </NavLink>
+        )
       )}
     </ul>
   );

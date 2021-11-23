@@ -36,6 +36,7 @@ export type iconNames =
   | 'labels'
   | 'filled-label'
   | 'exit'
+  | 'error'
   | 'delete'
   | 'delete-forever'
   | 'done'
@@ -49,6 +50,7 @@ export type iconNames =
   | 'notification-add'
   | 'other'
   | 'user-add'
+  | 'success'
   | 'link'
   | 'pin-black'
   | string;

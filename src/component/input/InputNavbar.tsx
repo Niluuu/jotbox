@@ -31,7 +31,6 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   onRemoveCart,
   onSetIsMain
 }) => {
-  
   const [isOpen, setIsOpen] = useState(false)
   const onEdit = () => {
     if (isMainInput) onSetIsMain(true)

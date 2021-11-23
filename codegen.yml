@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'http://api.shop-stage.traxnyc.com/graphql'
+schema: 'https://hcu6bfp2xbfmvgo22qe7t3aj6i.appsync-api.us-east-1.amazonaws.com/graphql'
 documents: 'src/**/*.graphql'
 generates:
   src/generated/graphql.tsx:

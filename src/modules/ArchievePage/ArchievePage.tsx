@@ -1,11 +1,8 @@
 import { FC, useCallback, useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { API, graphqlOperation } from 'aws-amplify';
 import styles from '../HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import { deleteTodo, updateTodo } from '../../graphql/mutations';
-import { listTodos } from '../../graphql/queries';
 import ArchiveCartLayout from './ArchiveCartLayout';
 
 
@@ -36,6 +33,7 @@ export interface ArchievePageProps {
   setHyperLink: (e: any) => void;
   hyperText: any;
   hyperLink: any;
+  filtered?: any[];
 }
 
 const ArchievePage: FC<ArchievePageProps> = ({
@@ -51,6 +49,7 @@ const ArchievePage: FC<ArchievePageProps> = ({
   onChangePin,
   onRemoveCart,
   hyperLinkEditMode,
+  filtered
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);

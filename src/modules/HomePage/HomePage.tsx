@@ -1,13 +1,11 @@
-import { FC, useCallback, useRef, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
-import { API, graphqlOperation } from 'aws-amplify';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
-import { listTodos } from '../../graphql/queries';
+import Layout from '../../atoms/layout/Layout';
 
 interface CartProps {
   id: any;
@@ -15,7 +13,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: any[];
 }
 
 export interface HomePageProps {
@@ -32,7 +30,7 @@ export interface HomePageProps {
   defaultPin: boolean;
   hyperLinkEditMode: boolean;
   hyper: any;
-  setFocused: (i: boolean) => void;
+  setFocused: (e: any) => void;
   carts: CartProps[];
   cartTitleRef?: any;
   cartTextRef?: any;
@@ -46,6 +44,12 @@ export interface HomePageProps {
   setHyperLink: (e: any) => void;
   hyperText: any;
   hyperLink: any;
+  toggleSider?: () => void;
+  changeGrid?: () => void;
+  isSidebarOpen?: boolean;
+  filterByLetter: (value: string) => void;
+  filterLetter: any;
+  filteredGaps: any[];
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -56,11 +60,10 @@ const HomePage: FC<HomePageProps> = ({
   hyperLink,
   onCloseModal,
   onSetHyperLink,
+  filteredGaps,
   setFocused,
   carts,
   cartHyper,
-  cartTextRef,
-  cartTitleRef,
   onChangeArchived,
   onChangePin,
   onReSetCart,
@@ -76,17 +79,30 @@ const HomePage: FC<HomePageProps> = ({
   onSetCart,
   onDefaultPin,
   onSetIsMain,
+  toggleSider,
+  changeGrid,
+  isSidebarOpen,
+  filterByLetter,
+  filterLetter
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
 
   return (
-    <>
+    <Layout
+      gridType={gridType}
+      toggleSider={toggleSider}
+      isSidebarOpen={isSidebarOpen}
+      changeGrid={changeGrid}
+      filterByLetter={filterByLetter}
+      filterLetter={filterLetter}
+      filteredGaps={filteredGaps}
+    >
       <div className={classNames(styles.home_page, gridType && styles.column)}>
         <div className={styles.home_page__main_input}>
           <MainInput
             focused={focused}
-            setFocused={(e) => setFocused(e)}
+            setFocused={setFocused}
             onHyperLinkEditMode={onHyperLinkEditMode}
             onSetArchive={onSetArchive}
             onSetCart={onSetCart}
@@ -110,50 +126,43 @@ const HomePage: FC<HomePageProps> = ({
           onSetIsMain={onSetIsMain}
           gridType={gridType}
         />
+        <Modal
+          title="Добавить линк"
+          isTop={!!true}
+          isOpen={hyperLinkEditMode}
+          toggleModal={onCloseModal}
+        >
+          <div className={styles.gaps}>
+            <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
+            <input
+              type="text"
+              value={hyperText}
+              onChange={(e) => setHyperText(e.currentTarget.value)}
+              placeholder="Введите текст..."
+              onFocus={() => setTextFocus(true)}
+              onBlur={() => setTextFocus(false)}
+            />
+            {textFocus && <Icon name="done" color="premium" size="xs" />}
+          </div>
+          <div className={styles.gaps}>
+            <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
+            <input
+              type="text"
+              value={hyperLink}
+              onChange={(e) => setHyperLink(e.currentTarget.value)}
+              placeholder="Введите линк..."
+              onFocus={() => setLinkFocus(true)}
+              onBlur={() => setLinkFocus(false)}
+            />
+            {linkFocus && <Icon name="done" color="premium" size="xs" />}
+          </div>
+          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
+            <button type="button">Done</button>
+          </div>
+        </Modal>
       </div>
-      <Modal
-        title="Добавить линк"
-        isTop={!!true}
-        isOpen={hyperLinkEditMode}
-        toggleModal={onCloseModal}
-      >
-        <div className={styles.gaps}>
-          <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-          <input
-            type="text"
-            value={hyperText}
-            onChange={(e) => setHyperText(e.currentTarget.value)}
-            placeholder="Введите текст..."
-            onFocus={() => setTextFocus(true)}
-            onBlur={() => setTextFocus(false)}
-          />
-          {textFocus && <Icon name="done" color="premium" size="xs" />}
-        </div>
-        <div className={styles.gaps}>
-          <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-          <input
-            type="text"
-            value={hyperLink}
-            onChange={(e) => setHyperLink(e.currentTarget.value)}
-            placeholder="Введите линк..."
-            onFocus={() => setLinkFocus(true)}
-            onBlur={() => setLinkFocus(false)}
-          />
-          {linkFocus && <Icon name="done" color="premium" size="xs" />}
-        </div>
-        <div className={styles.bottom_btn} onClick={onSetHyperLink}>
-          <button type="button">Done</button>
-        </div>
-      </Modal>
-    </>
+    </Layout>
   );
 };
 
 export default HomePage;
-
-export const urlify = (str: string) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return str.replace(urlRegex, (url) => {
-    return `<a style="color: blue;" href="${url}" > ${url} </a> `;
-  });
-};

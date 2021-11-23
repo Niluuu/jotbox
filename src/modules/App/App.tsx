@@ -1,16 +1,17 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
-import { Switch, Route, useParams } from 'react-router-dom';
-import { API, graphqlOperation } from 'aws-amplify';
-import { listTodos } from '../../graphql/queries';
-import { Header } from '../Header/Header';
-import { Sider } from '../Sider/Sider';
+import { BrowserRouter, Route } from 'react-router-dom';
+import classNames from 'classnames'
+import { DataStore } from '@aws-amplify/datastore';
+import { Node } from '../../models';
+import { Icon } from '../../component/Icon/Icon'
+
 import HomePage from '../HomePage/HomePage';
-import ArchievePage from '../ArchievePage/ArchievePage';
-import TrashPage from '../TrashPage/TrashPage';
 import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
-import GapsFilter from '../GapsFilterPage/GapsFilter';
-import { createTodo, deleteTodo, updateTodo } from '../../graphql/mutations';
+import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
+import TrashPage from '../TrashPage/TrashPage';
+import ArchievePage from '../ArchievePage/ArchievePage';
+import ConfirmPage from '../SignUpPage/Confirm';
 
 interface CartProps {
   id: any;
@@ -18,41 +19,27 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: any[];
 }
 
 const App: FC = () => {
-  const [isLoggedIn, setisLoggedIn] = useState(false);
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
-
-  const toggleSider = useCallback(() => setisSidebarOpen(!isSidebarOpen), [isSidebarOpen]);
-
+  const toggleSider = useCallback(() => setisSidebarOpen(pre => !pre), [isSidebarOpen]);
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
-
-  const [carts, setCart] = useState<CartProps[]>([
-    { title: "1", id: "1", description: "gap", pined: false, archived: false, gaps: ["science", "english"] },
-    { title: "2", id: "2", description: "gap", pined: false, archived: false, gaps: ["english"] },
-    { title: "3", id: "3", description: "gap", pined: false, archived: false, gaps: ["science", "education"] },
-    { title: "4", id: "4", description: "gap", pined: false, archived: false, gaps: ["education", "english"] },
-  ]);
-
+  const [carts, setCart] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
-
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
-  
   const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
   const [hyper, setHyper] = useState([]);
   const [cartHyper, setCartHyper] = useState([]);
-
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
 
   const [defaultPin, setDefaultPin] = useState(false);
-  
   const onDefaultPin = useCallback(() => {
-    setDefaultPin((pre) => !pre);
+    setDefaultPin(pre => !pre);
   }, [defaultPin]);
 
   const titleRef = useRef<HTMLDivElement>();
@@ -60,12 +47,11 @@ const App: FC = () => {
 
   async function fetchTodos() {
     try {
-      const todoData = await API.graphql(graphqlOperation(listTodos));
+      const todos = await DataStore.query(Node);
+      console.log("models", todos); 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      const todos = todoData.data.listTodos.items;
-      console.log('dasda', todoData);
-      // setCart(todos);
+      setCart(todos);
     } catch (err) {
       console.log(`err`, err);
     }
@@ -73,7 +59,7 @@ const App: FC = () => {
 
   useEffect(() => {
     fetchTodos();
-  }, [carts]);
+  }, []);
 
   const onHyperLinkEditMode = useCallback(() => {
     setHyperLinkEditMode(true);
@@ -100,7 +86,8 @@ const App: FC = () => {
     async (id) => {
       try {
         setCart(carts.filter((cart) => cart.id !== id));
-        await API.graphql(graphqlOperation(deleteTodo, { input: { id } }));
+        const modelToDelete = await DataStore.query(Node, id);
+        DataStore.delete(modelToDelete)
       } catch (err) {
         console.log(err);
       }
@@ -112,15 +99,15 @@ const App: FC = () => {
     async (id, title, description) => {
       try {
         setCart(
-          carts.map((cart) =>
-            cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart,
-          ),
+          carts.map((cart) => cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart),
         );
-        await API.graphql(
-          graphqlOperation(updateTodo, {
-            input: { id, title, description, pined: !carts.find((cart) => cart.id === id).pined },
-          }),
-        );
+        const original = await DataStore.query(Node, id);
+        await DataStore.save(Node.copyOf(original, item => {
+          const cart = item;
+          cart.pined = !item.pined;
+          cart.description = description;
+          cart.title = title;
+        }))
       } catch (err) {
         console.log(err);
       }
@@ -136,13 +123,34 @@ const App: FC = () => {
             cart.id === id ? { ...cart, title, description, archived: true, pined: false } : cart,
           ),
         );
-        await API.graphql(
-          graphqlOperation(updateTodo, {
-            input: { id, title, description, archived: true, pined: false },
-          }),
-        );
+        const original = await DataStore.query(Node, id);
+        await DataStore.save(Node.copyOf(original, item => {
+          const cart = item;
+          cart.archived = true;
+          cart.pined = false;
+          cart.description = description;
+          cart.title = title;
+        }))
       } catch (err) {
         console.log(err);
+      }
+    },
+    [carts],
+  );
+
+  const onReSetCart = useCallback(
+    async (id, title, description) => {
+      try {
+        setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
+        setCartHyper([]);
+        const original = await DataStore.query(Node, id);
+        await DataStore.save(Node.copyOf(original, item => {
+          const cart = item;
+          cart.description = description;
+          cart.title = title;
+        }))
+      } catch (err) {
+        console.log('error updating todo:', err);
       }
     },
     [carts],
@@ -157,33 +165,27 @@ const App: FC = () => {
           description: textRef.current.innerHTML,
           pined: defaultPin,
           archived: false,
-          gaps: null,
+          gaps: []
         };
         setCart([...carts, cart]);
-
         setDefaultPin(false);
+        
+        await DataStore.save(
+          new Node({
+            "title": titleRef.current.innerText,
+            "description": textRef.current.innerHTML,
+            "gaps": [],
+            "pined": defaultPin,
+            "archived": false
+          })
+        );
         titleRef.current.innerHTML = '';
         textRef.current.innerHTML = '';
-
-      await API.graphql(graphqlOperation(createTodo, { input: cart }));
-    } catch (err) {
-      console.log(err);
-    }
-  }, [carts, defaultPin]);
-
-  const onReSetCart = useCallback(
-    async (id, title, description) => {
-      try {
-        setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
-        setCartHyper([]);
-        await API.graphql(graphqlOperation(updateTodo, { input: { id, title, description } }));
       } catch (err) {
-        console.log('error updating todo:', err);
+        console.log(err);
       }
-    },
-    [carts],
-  );
-
+  }, [carts, defaultPin]);
+  
   const onSetArchive = useCallback(async () => {
     try {
       const cart = {
@@ -195,210 +197,183 @@ const App: FC = () => {
         gaps: null,
       };
       setCart([...carts, cart]);
-
       setDefaultPin(false);
+      
+      await DataStore.save(
+        new Node({
+          "title": titleRef.current.innerText,
+          "description": textRef.current.innerHTML,
+          "gaps": [],
+          "pined": defaultPin,
+          "archived": true
+        })
+      );
       titleRef.current.innerHTML = '';
       textRef.current.innerHTML = '';
-
-      await API.graphql(graphqlOperation(createTodo, { input: cart }));
     } catch (err) {
       console.log(err);
     }
   }, [carts]);
   
-  const gap = Array.from(carts.flatMap(({ gaps }) => gaps))
-  const filtered = Object.keys(Object.fromEntries(gap.map((group) => [group])))
+
+  const [filterLetter, setFilterLetter] = useState('')
+
+  const filterByLetter = async (e) => {
+    setFilterLetter(e)
+    try {
+      const todos = await DataStore.query(Node);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      setCart(todos.filter((todo) => 
+        todo.description.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) >= 0 ||
+        todo.title.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) >= 0 
+      ))
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const gapCategories = Array.from(carts.flatMap(({ gaps }) => gaps))
+
+  const filteredGaps = Object.keys(Object.fromEntries(
+    gapCategories.map((category) => [
+      category, carts.filter((card) => card.gaps && card.gaps.includes(category))
+    ])
+  ));
+
+  const [hasError, setHasError] = useState(false)
+  const [error, setError] = useState({
+    message: 'You signed in succesfully',
+    icon: 'success'
+  })
+
+  const onErrorMessage = (message: string, icon: 'success' | 'error') => {
+    setError({ message, icon })
+    setHasError(true)
+    setTimeout(() => setHasError(false), 6000);
+  }
 
   return (
-    <>
-        <div>
-          <Header
-            isLoggedIn={isLoggedIn}
+    <BrowserRouter>
+      <div className={classNames('errorMessage', hasError && 'active')}>   
+        <div> <Icon name={error.icon} /> </div>
+        { error.message } 
+      </div> 
+      <ProtectedRoute
+        exact
+        path="/"
+        component={() => 
+          <HomePage
+            setHyperText={(e) => setHyperText(e)}
+            setHyperLink={(e) => setHyperLink(e)}
+            hyperText={hyperText}
+            hyperLink={hyperLink}
+            onSetHyperLink={onSetHyperLink}
+            onCloseModal={onCloseModal}
+            setFocused={(e: any) => {setFocused(e)}}
+            hyperLinkEditMode={hyperLinkEditMode}
+            onHyperLinkEditMode={onHyperLinkEditMode}
+            onSetArchive={onSetArchive}
+            onSetCart={onSetCart}
+            titleRef={titleRef}
+            textRef={textRef}
             gridType={gridType}
-            onClick={toggleSider}
-            changeGrid={changeGrid}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            onSetIsMain={onSetIsMain}
+            hyper={hyper}
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts}
+            cartHyper={cartHyper}
+            focused={focused}
+            filterLetter={filterLetter}
+            filterByLetter={filterByLetter}
+            filteredGaps={filteredGaps}
+            toggleSider={toggleSider}
+            isSidebarOpen={isSidebarOpen}
           />
-          <section className="layout">
-            <Sider filtered={filtered} isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
-            <Switch>
-              <Route exact path="/">
-                <HomePage 
-                  setHyperText={(e) => setHyperText(e)}
-                  setHyperLink={(e) => setHyperLink(e)}
-                  hyperText={hyperText}
-                  hyperLink={hyperLink}
-                  onSetHyperLink={onSetHyperLink}
-                  onCloseModal={onCloseModal}
-                  setFocused={(e) => setFocused(e)}
-                  hyperLinkEditMode={hyperLinkEditMode}
-                  onHyperLinkEditMode={onHyperLinkEditMode}
-                  onSetArchive={onSetArchive}
-                  onSetCart={onSetCart}
-                  titleRef={titleRef}
-                  textRef={textRef}
-                  gridType={gridType}
-                  defaultPin={defaultPin}
-                  onDefaultPin={onDefaultPin}
-                  onSetIsMain={onSetIsMain}
-                  hyper={hyper}
-                  onChangePin={onChangePin}
-                  onReSetCart={onReSetCart}
-                  onChangeArchived={onChangeArchived}
-                  onRemoveCart={onRemoveCart}
-                  carts={carts}
-                  cartHyper={cartHyper}
-                  focused={focused} />
-              </Route>
-              <Route path="/reminders">
-                <div>remninders</div>
-              </Route>
-
-              { filtered.map((filter) => 
-                <Route path={`/gaps/${filter}`}> 
-                  <GapsFilter 
-                    setHyperText={(e) => setHyperText(e)}
-                    setHyperLink={(e) => setHyperLink(e)}
-                    hyperText={hyperText}
-                    hyperLink={hyperLink}
-                    onSetHyperLink={onSetHyperLink}
-                    onCloseModal={onCloseModal}
-                    setFocused={(e) => setFocused(e)}
-                    hyperLinkEditMode={hyperLinkEditMode}
-                    onHyperLinkEditMode={onHyperLinkEditMode}
-                    onSetArchive={onSetArchive}
-                    onSetCart={onSetCart}
-                    titleRef={titleRef}
-                    textRef={textRef}
-                    gridType={gridType}
-                    defaultPin={defaultPin}
-                    onDefaultPin={onDefaultPin}
-                    onSetIsMain={onSetIsMain}
-                    hyper={hyper}
-                    onChangePin={onChangePin}
-                    onReSetCart={onReSetCart}
-                    onChangeArchived={onChangeArchived}
-                    onRemoveCart={onRemoveCart}
-                    carts={carts}
-                    cartHyper={cartHyper}
-                    focused={focused} 
-                    filter={filter}
-                  /> 
-                </Route>) }
-
-              <Route path="/archives">
-                <ArchievePage
-                  setHyperText={(e) => setHyperText(e)}
-                  setHyperLink={(e) => setHyperLink(e)}
-                  hyperText={hyperText}
-                  hyperLink={hyperLink}
-                  onSetHyperLink={onSetHyperLink}
-                  onCloseModal={onCloseModal}
-                  setFocused={(e) => setFocused(e)}
-                  hyperLinkEditMode={hyperLinkEditMode}
-                  onSetArchive={onSetArchive}
-                  gridType={gridType}
-                  onSetIsMain={onSetIsMain}
-                  onChangePin={onChangePin}
-                  onReSetCart={onReSetCart}
-                  onChangeArchived={onChangeArchived}
-                  onRemoveCart={onRemoveCart}
-                  carts={carts}
-                  focused={focused}
-                 />
-              </Route>
-              <Route path="/trash">
-                <TrashPage gridType={gridType} />
-              </Route>
-              
-
-              <Route path="/gap/:id">
-                <Gap />
-              </Route>
-
-              <Route path="*">
-                <div>UNDEFINED PAGE</div>
-              </Route>
-            </Switch>
-          </section>
-        </div>
-      ) : (
-        <div>
-          <Switch>
-            <Route exact path="/signUp">
-              <SignUpPage />
-            </Route>
-            <Route exact path="/signIn">
-              <SignInPage />
-            </Route>
-
-            <Route path="*">
-              <div>UNDEFINED PAGE</div>
-            </Route>
-          </Switch>
-        </div>
-      {/* {isLoggedIn ? (
-        <div>
-          <Header
-            isLoggedIn={isLoggedIn}
+        }
+      />
+      <ProtectedRoute
+        exact
+        path="/"
+        component={() => 
+          <ArchievePage
+            setHyperText={(e) => setHyperText(e)}
+            setHyperLink={(e) => setHyperLink(e)}
+            hyperText={hyperText}
+            hyperLink={hyperLink}
+            onSetHyperLink={onSetHyperLink}
+            onCloseModal={onCloseModal}
+            setFocused={(e: any) => {setFocused(e)}}
+            hyperLinkEditMode={hyperLinkEditMode}
+            onSetArchive={onSetArchive}
             gridType={gridType}
-            onClick={toggleSider}
-            changeGrid={changeGrid}
+            onSetIsMain={onSetIsMain}
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts}
+            focused={focused}
           />
-          <section className="layout">
-            <Sider isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
-            <Switch>
-              <Route exact path="/">
-                <HomePage gridType={gridType} />
-              </Route>
-              <Route path="/reminders">
-                <div>remninders</div>
-              </Route>
-              <Route path="/archives">
-                <ArchievePage gridType={gridType} />
-              </Route>
-              <Route path="/trash">
-                <TrashPage gridType={gridType} />
-              </Route>
-
-              <Route path="/gap/:id">
-                <Gap />
-              </Route>
-
-              <Route path="*">
-                <div>UNDEFINED PAGE</div>
-              </Route>
-            </Switch>
-          </section>
-        </div>
-      ) : (
-        <div>
-          <Switch>
-            <Route exact path="/signUp">
-              <SignUpPage />
-            </Route>
-            <Route exact path="/signIn">
-              <SignInPage />
-            </Route>
-
-            <Route path="*">
-              <div>UNDEFINED PAGE</div>
-            </Route>
-          </Switch>
-        </div>
-      )} */}
-    </>
+        }
+      />
+      { filteredGaps.map((filter) => 
+        <ProtectedRoute
+          exact
+          path="/"
+          component={() => 
+          <HomePage
+            setHyperText={(e) => setHyperText(e)}
+            setHyperLink={(e) => setHyperLink(e)}
+            hyperText={hyperText}
+            hyperLink={hyperLink}
+            onSetHyperLink={onSetHyperLink}
+            onCloseModal={onCloseModal}
+            setFocused={(e: any) => {setFocused(e)}}
+            hyperLinkEditMode={hyperLinkEditMode}
+            onHyperLinkEditMode={onHyperLinkEditMode}
+            onSetArchive={onSetArchive}
+            onSetCart={onSetCart}
+            titleRef={titleRef}
+            textRef={textRef}
+            gridType={gridType}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            onSetIsMain={onSetIsMain}
+            hyper={hyper}
+            onChangePin={onChangePin}
+            onReSetCart={onReSetCart}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            carts={carts.filter(cart => cart.description === filter)}
+            cartHyper={cartHyper}
+            focused={focused}
+            filterLetter={filterLetter}
+            filterByLetter={filterByLetter}
+            filteredGaps={filteredGaps}
+            toggleSider={toggleSider}
+            isSidebarOpen={isSidebarOpen}
+          />
+        }
+      /> )}
+      <Route path="*">
+        <div>UNDEFINED PAGE</div>
+      </Route>
+      <Route path="/signup" component={SignUpPage} />
+      <Route path="/signin" component={() => 
+        <SignInPage onErrorMessage={onErrorMessage} /> } />
+      <Route path="/confirmCode" component={ConfirmPage} />
+    </BrowserRouter>
   );
 };
 
-function Gap() {
-  const { id } = useParams();
-
-  return (
-    <div>
-      GAPAS
-      <h3>ID: {id}</h3>
-    </div>
-  );
+function Page() {
+  return <div>page</div>;
 }
 
 export default App;

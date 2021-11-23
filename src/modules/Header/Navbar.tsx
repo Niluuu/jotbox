@@ -1,4 +1,5 @@
 import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
 import styles from './Navbar.module.scss';
 import Popover from '../../component/popover/Popover';
@@ -20,6 +21,15 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   
+
+  async function signOut() {
+    try {
+      await Auth.signOut();
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
+  }
+
   const loadChanges = useCallback(() => {
     const completeUpdate = (val) =>
       setTimeout(() => {
@@ -161,17 +171,25 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
                 Управление аккаунтом Google
               </a>
             </div>
-
             <div className={styles.navbar_popover__profile_row}>
-              <a href="asdas">
+              <a href="#">
                 <Icon name="add-accaunt" />
                 <span>Добавить аккаунт</span>
               </a>
             </div>
+            <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
+              <a onClick={signOut} href="#">
+                Sign out of all Accounts
+              </a>
+            </div>
+            <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>
+              <a href="#">
+                <span>Privacy Policy • Term of Service</span>
+              </a>
+            </div>
           </div>
         }
-        placement="bottom-start"
-      >
+        placement="bottom-start">
         <Avatar hover />
       </Popover>
     </nav>

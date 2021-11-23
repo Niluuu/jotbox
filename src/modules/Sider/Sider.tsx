@@ -1,7 +1,6 @@
-import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { FC,useState } from 'react';
 import classNames from 'classnames';
 import styles from './Sider.module.scss';
-import { Icon } from '../../component/Icon/Icon';
 import { Submenu } from '../../component/submenu/Submenu';
 
 export interface SiderProps {
@@ -21,36 +20,34 @@ export interface SiderProps {
    * sidebar is open or not
    */
   isSidebarOpen: boolean;
-  filtered: any;
+  filteredGaps?: any[];
 }
 
 /**
  * Main Sider component for user interaction
  */
 
-export const Sider: FC<SiderProps> = ({ className, filtered, isSidebarOpen }) => {
-  const [labels, setlabels] = useState([
-    { name: 'gap1', icon: 'gaps', active: false, url: '/gap/1', modal: false },
-  ]);
+export const Sider: FC<SiderProps> = ({ className, isSidebarOpen, filteredGaps }) => {
+  const labels = filteredGaps.map(gap => ({
+    name: gap, url: `/gap/${gap}`, icon: 'notes'
+  }))
 
-  const arraySubMenu = [
-    { name: 'Заметки', icon: 'notes', active: true, url: '/', modal: false },
-    { name: 'Напоминания', icon: 'notification', active: false, url: '/reminders', modal: false },
+  const initial = [
+    { name: 'Заметки', gaps: null, icon: 'notes', active: true, url: '/', modal: false },
+    { name: 'Напоминания', gaps: null, icon: 'notification', active: false, url: '/reminders', modal: false },
     {
-      name: 'gaps',
-      gaps: labels,
+      name: 'gaps', icon: null, active: null, url: null, modal: null,
+      gaps: labels
     },
-    { name: 'Изменение ярлыков', icon: 'labels', url: '/*', modal: true },
-    { name: 'Архив', icon: 'archive', active: false, url: '/archives', modal: false },
-    { name: 'Корзина', icon: 'basket', active: false, url: '/trash', modal: false },
+    { name: 'Изменение ярлыков', gaps: null, icon: 'labels', url: '/*', modal: true },
+    { name: 'Архив', gaps: null, icon: 'archive', active: false, url: '/archives', modal: false },
+    { name: 'Корзина', gaps: null, icon: 'basket', active: false, url: '/trash', modal: false },
   ];
 
-  const [sidebarLinks, setsidebarLinks] = useState(arraySubMenu);
-
   return (
-    <aside className={classNames(styles.sider, isSidebarOpen ? styles.open : null)}>
-      <div className={styles.sider_childern}>
-        <Submenu filtered={filtered} arraySubmenu={arraySubMenu} labels={labels} />
+    <aside className={classNames(styles.sider, isSidebarOpen ? styles.open: null)}>
+      <div className={styles.sider_children}>
+      <Submenu arraySubmenu={initial} labels={labels} />
       </div>
     </aside>
   );

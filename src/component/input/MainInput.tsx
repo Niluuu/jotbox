@@ -7,7 +7,6 @@ import { InputNavbar } from './InputNavbar';
 import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 
 interface MainInputProps {
-  isLogin?: boolean;
   gridType: boolean;
   onHyperLinkEditMode?: () => void;
   hyper: any;
@@ -19,13 +18,12 @@ interface MainInputProps {
   onDefaultPin: () => void;
   onSetCart: () => void;
   onSetArchive: () => void;
-  setFocused: (i: boolean) => void;
+  setFocused: (e: any) => void;
   outsideRef?: any;
-  onSetIsMain?: (bool: boolean) => void;
+  onSetIsMain?: (e: boolean) => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
-  isLogin,
   onSetArchive,
   defaultPin,
   onDefaultPin,
@@ -41,26 +39,24 @@ const MainInput: FC<MainInputProps> = ({
   onSetIsMain,
 }) => {
   const outsideRef = useRef(null);
+  const [edit, setEdit] = useState(true);
 
-  const handleClickOutside = () => setTimeout(() => setFocused(false), 250);
-  const handleClickInside = () => setTimeout(() => setFocused(true), 250);
+  const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
+  const handleClickInside = () => setTimeout(() => setFocused(true), 200);
 
   useOnClickOutside(outsideRef, handleClickOutside);
 
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
       console.log('focus out', e.currentTarget.contains(document.activeElement));
-      // You can invoke a callback or add custom logic here
-      // setFocus(false);
     }
   }, []);
 
-  const [edit, setEdit] = useState(true);
   return (
     <div
       className={classNames(styles.main_input, gridType && styles.column)}
       tabIndex={-1}
-      onFocus={() => setFocused(true)}
+      onFocus={handleClickInside}
       onBlur={(e) => onFocusOut(e)}
       onClick={handleClickInside}
       ref={outsideRef}
@@ -78,11 +74,9 @@ const MainInput: FC<MainInputProps> = ({
         />
         <div className={styles.main_tools}>
           <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
-            {!defaultPin ? (
-              <Icon name="pin" color="premium" size="xs" />
-            ) : (
-              <Icon name="pin-black" color="premium" size="xs" />
-            )}
+            { !defaultPin 
+              ? <Icon name="pin" color="premium" size="xs" />
+              : <Icon name="pin-black" color="premium" size="xs" /> }
           </button>
         </div>
       </div>
@@ -94,15 +88,11 @@ const MainInput: FC<MainInputProps> = ({
           role={styles.textbox}
           contentEditable={edit}
           suppressContentEditableWarning
-          onInput={(e) => console.log('e', e)}
         >
-          {hyper.map((hyp) => (
-            <>
-              {' '}
+          {hyper?.map((hyp) => (
               <a onClick={() => setEdit(false)} href={hyp.link} style={{ color: 'blue' }}>
                 {hyp.text}
-              </a>{' '}
-            </>
+              </a>
           ))}
         </div>
       </div>
@@ -119,7 +109,7 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
-      {focused ? (
+      { focused ? (
         <InputNavbar
           focused={focused}
           onHyperLinkEditMode={onHyperLinkEditMode}

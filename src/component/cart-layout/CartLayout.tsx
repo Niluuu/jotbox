@@ -39,17 +39,16 @@ const CartLayout: FC<CartLayoutProps> = ({
   carts,
   onSetIsMain
 }) => {
-  const notifications = carts.filter((cart) => !cart.archived);
-
+  const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      { notifications.some((cart) => cart.pined) && (
+      {carts !== undefined && notifications.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications &&
+        { notifications && carts !== undefined && 
           notifications
             .filter((cart) => cart.pined)
             .map((cart) => (
@@ -71,13 +70,13 @@ const CartLayout: FC<CartLayoutProps> = ({
               />
             ))}
       </div>
-      { notifications.some((cart) => !cart.pined) && (
+      {carts !== undefined && notifications.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications &&
+        { notifications && carts !== undefined && 
           notifications
             .filter((cart) => !cart.pined)
             .map((cart) => (

@@ -21,13 +21,14 @@ export interface SiderProps {
    */
   isSidebarOpen: boolean;
   filteredGaps?: any[];
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
 /**
  * Main Sider component for user interaction
  */
 
-export const Sider: FC<SiderProps> = ({ className, isSidebarOpen, filteredGaps }) => {
+export const Sider: FC<SiderProps> = ({ className, onReSetLabel, isSidebarOpen, filteredGaps }) => {
   const labels = filteredGaps.map(gap => ({
     name: gap, url: `/gap/${gap}`, icon: 'notes'
   }))
@@ -47,7 +48,7 @@ export const Sider: FC<SiderProps> = ({ className, isSidebarOpen, filteredGaps }
   return (
     <aside className={classNames(styles.sider, isSidebarOpen ? styles.open: null)}>
       <div className={styles.sider_children}>
-      <Submenu arraySubmenu={initial} labels={labels} />
+      <Submenu arraySubmenu={initial} labels={labels} onReSetLabel={onReSetLabel} />
       </div>
     </aside>
   );

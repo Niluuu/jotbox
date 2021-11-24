@@ -49,7 +49,11 @@ export interface HomePageProps {
   isSidebarOpen?: boolean;
   filterByLetter: (value: string) => void;
   filterLetter: any;
-  filteredGaps: any[];
+  filteredGaps?: any[];
+  onCartLabel?: (value: string) => void;
+  cartLabel?: string;
+  onSetLabel?: (id, oldGaps: string[]) => void;
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -83,7 +87,11 @@ const HomePage: FC<HomePageProps> = ({
   changeGrid,
   isSidebarOpen,
   filterByLetter,
-  filterLetter
+  filterLetter,
+  onCartLabel,
+  cartLabel,
+  onSetLabel,
+  onReSetLabel
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
@@ -97,6 +105,7 @@ const HomePage: FC<HomePageProps> = ({
       filterByLetter={filterByLetter}
       filterLetter={filterLetter}
       filteredGaps={filteredGaps}
+      onReSetLabel={onReSetLabel}
     >
       <div className={classNames(styles.home_page, gridType && styles.column)}>
         <div className={styles.home_page__main_input}>
@@ -125,6 +134,10 @@ const HomePage: FC<HomePageProps> = ({
           onHyperLinkEditMode={onHyperLinkEditMode}
           onSetIsMain={onSetIsMain}
           gridType={gridType}
+          onCartLabel={onCartLabel}
+          cartLabel={cartLabel}
+          onSetLabel={onSetLabel}
+          filteredGaps={filteredGaps}
         />
         <Modal
           title="Добавить линк"

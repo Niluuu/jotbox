@@ -8,9 +8,10 @@ export interface SubmenuModalProps {
   toggleModal: () => void;
   labels: any;
   gaps?: any;
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
-export const SubmenuModal: FC<SubmenuModalProps> = ({ gaps, isOpenLabel, labels, toggleModal }) => {
+export const SubmenuModal: FC<SubmenuModalProps> = ({ gaps, isOpenLabel, onReSetLabel, labels, toggleModal }) => {
   const [focus, setFocus] = useState(false);
   const [val, setVal] = useState('');
 
@@ -32,7 +33,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({ gaps, isOpenLabel, labels,
         {focus ? <Icon name="done" color="premium" size="xs" /> : null}
       </li>
       {gaps[2].gaps.map((gap) => {
-        return <Gaps name={gap.name} />;
+        return <Gaps name={gap.name} onReSetLabel={onReSetLabel} />;
       })}
 
       <div className={styles.bottom_btn}>
@@ -44,9 +45,10 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({ gaps, isOpenLabel, labels,
 
 interface GapsProps {
   name: string;
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
-const Gaps: FC<GapsProps> = ({ name }) => {
+const Gaps: FC<GapsProps> = ({ name, onReSetLabel}) => {
   const [val, setVal] = useState(name);
   const [focus, setFocus] = useState(false);
 
@@ -73,7 +75,7 @@ const Gaps: FC<GapsProps> = ({ name }) => {
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
       />
-      <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" className={styles.gaps_icon} />
+      <Icon onClick={() => onReSetLabel(name, val)} name={focus ? 'done' : 'edit'} color="premium" size="xs" className={styles.gaps_icon} />
     </li>
   );
 };

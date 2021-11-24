@@ -16,6 +16,10 @@ interface InputNavbarProps {
   onRemoveCart?: () => void;
   onChangeArchived?: () => void;
   onSetIsMain?: (bool: boolean) => void;
+  onCartLabel?: (value: string) => void;
+  cartLabel?: string;
+  onSetLabel?: (oldGaps: string[]) => void;
+  filteredGaps?: any[];
 }
 
 export const InputNavbar: FC<InputNavbarProps> = ({
@@ -29,21 +33,40 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   ontoggle,
   focused = true,
   onRemoveCart,
-  onSetIsMain
+  onSetIsMain,
+  onSetLabel,
+  filteredGaps,
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const onEdit = () => {
-    if (isMainInput) onSetIsMain(true)
-    else onSetIsMain(false)
+    if (isMainInput) onSetIsMain(true);
+    else onSetIsMain(false);
 
-    if (onHyperLinkEditMode) onHyperLinkEditMode()
-    setIsOpen(pre => !pre)
-  }
+    if (onHyperLinkEditMode) onHyperLinkEditMode();
+  };
 
   const toArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
   };
+
+  const [gaps, setGaps] = useState(
+    filteredGaps 
+      ? filteredGaps.map((gap) => ({ name: gap, isChecked: false }))
+      : []
+  );
+  const onChangeGaps = (value) => {
+    setGaps(gaps.map((gap) => (
+      { ...gap, isChecked: value === gap.name ? !gap.isChecked : gap.isChecked }
+    )))
+  }
+  
+  const [label, setLabel] = useState('');
+  const [labelEdit, setLabelEdit] = useState(false);
+  const onLabelEdit = () => {
+    setLabelEdit((pre) => !pre);
+  };
+
   return (
     <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
       <div className={styles.main_tools}>
@@ -59,7 +82,7 @@ export const InputNavbar: FC<InputNavbarProps> = ({
         <button onClick={toArchive} type="button" className={styles.icon_btn}>
           <Icon name="dowland" color="premium" size="xs" />
         </button>
-        <Popover isOpen={isOpen}
+        <Popover
           content={
             <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
               <ul className={styles.popover_content}>
@@ -73,12 +96,50 @@ export const InputNavbar: FC<InputNavbarProps> = ({
                     <a href="#">Удалить карточку</a>{' '}
                   </li>
                 )}
+                <li key="4">
+                  <a
+                    onClick={() => {
+                      onLabelEdit();
+                    }}
+                    href="#"
+                  >
+                    Добавить ярлык
+                  </a>{' '}
+                </li>
               </ul>
             </div>
-          } placement="bottom-start">
-          <button onClick={() => setIsOpen(true)} type="button" className={styles.icon_btn}>
+          }
+          placement="bottom-start">
+          <button type="button" className={styles.icon_btn}>
             <Icon name="other" color="premium" size="xs" />
           </button>
+        </Popover>
+        <Popover
+          isOpen={labelEdit}
+          content={
+            <div className={classNames(styles.navbar_popover, styles.labels, styles.navbar_popover_settings)}>
+              <div>
+                <input placeholder="Enter name..." onChange={(e) => setLabel(e.target.value)} value={label} type="text" />
+              </div>
+              { gaps.map((gap) => 
+                <div className={styles.labels__input}>
+                  <input type="checkbox" 
+                    onChange={() => onChangeGaps(gap.name)} checked={gap.isChecked} /> 
+                    { gap.name }
+                </div>
+              )}
+              <div>
+                <button type="button" onClick={() => {
+                  onSetLabel([label, ...gaps.map((gap) => gap.isChecked && gap.name)])
+                  }}>
+                  Add label
+                </button>
+              </div>
+            </div>
+          }
+          placement="bottom-start"
+        >
+          <span style={{ color: '#fff', display: 'none' }}>i</span>
         </Popover>
         {withHistory ? (
           <>

@@ -24,6 +24,10 @@ interface CartLayoutProps {
   onChangePin?: (id: any, title: string, description: any) => void;
   onHyperLinkEditMode?: () => void;
   onSetIsMain?: (bool: boolean) => void;
+  onCartLabel?: (value: string) => void;
+  cartLabel?: string;
+  onSetLabel?: (id, oldGaps: string[]) => void;
+  filteredGaps?: any[];
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -37,7 +41,11 @@ const CartLayout: FC<CartLayoutProps> = ({
   cartTitleRef,
   cartTextRef,
   carts,
-  onSetIsMain
+  onSetIsMain,
+  onCartLabel,
+  cartLabel,
+  onSetLabel,
+  filteredGaps
 }) => {
   const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
@@ -67,6 +75,10 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
+                onCartLabel={onCartLabel}
+                cartLabel={cartLabel}
+                onSetLabel={onSetLabel}
+                filteredGaps={filteredGaps}
               />
             ))}
       </div>
@@ -95,6 +107,10 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
+                onCartLabel={onCartLabel}
+                cartLabel={cartLabel}
+                onSetLabel={onSetLabel}
+                filteredGaps={filteredGaps}
               />
             ))}
       </div>

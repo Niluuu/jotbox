@@ -173,3 +173,40 @@
     padding: 3px 10px;
   }
 }
+
+
+.labels {
+  padding: 9px;
+  border: 1px solid rgb(244, 244, 244);
+  box-shadow: 0 0 15px rgb(222, 222, 222);
+  border-radius: 4px;
+  width: 300px;
+
+  input[type='text'] {
+    border: none;
+  }
+  
+  button {
+    padding: 0 10px;
+    background: #3e4bc2;
+    border-radius: 0;
+    color: #fff;
+    background: #3e4bc2;
+    height: 30px;
+    margin-top: 3px;
+    
+    &:hover {
+      background: #707efb !important;
+    }
+  }
+
+  &__input {
+    display: flex;
+    align-items: center;
+    margin: 3px 0;
+
+    input {
+      margin-right: 5px;
+    }
+  }
+}

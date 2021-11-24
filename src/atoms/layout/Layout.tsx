@@ -10,16 +10,17 @@ export interface LayoutProps {
   filterByLetter: (value: string) => void;
   filterLetter: any;
   filteredGaps: any[];
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
 const Layout: FC<LayoutProps> = (props) => {
-  const { gridType, toggleSider, filterByLetter, filteredGaps, filterLetter, changeGrid, isSidebarOpen, children } = props;
+  const { gridType, toggleSider, filterByLetter, onReSetLabel, filteredGaps, filterLetter, changeGrid, isSidebarOpen, children } = props;
 
   return (
     <>
       <Header filterByLetter={filterByLetter} filterLetter={filterLetter} gridType={gridType} onClick={toggleSider} changeGrid={changeGrid} />
       <section className="layout">
-        <Sider filteredGaps={filteredGaps} isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
+        <Sider filteredGaps={filteredGaps} onReSetLabel={onReSetLabel} isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
         {children}
       </section>
     </>

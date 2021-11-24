@@ -23,13 +23,14 @@ export interface SubmenuProps {
    * sidebar labels
    */
   labels?: any;
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
 /**
  * Main Submenu component for user interaction
  */
 
-export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, labels }) => {
+export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, onReSetLabel, labels }) => {
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const location = useLocation();
   const { pathname } = location;
@@ -40,7 +41,7 @@ export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, labels }) => {
     <ul className={styles.sider_menu}>
       {arraySubmenu !== undefined && arraySubmenu.map((item) =>
         item.name === 'gaps' ? (
-          item.gaps.map((gap) => <SubmenuItem item={gap} location={pathname} />)
+          item.gaps.map((gap) => <SubmenuItem item={gap} onReSetLabel={onReSetLabel} location={pathname} />)
         ) : (
           <SubmenuItem
             location={pathname}
@@ -50,6 +51,7 @@ export const Submenu: FC<SubmenuProps> = ({ arraySubmenu, labels }) => {
             isOpenLabel={isOpenLabel}
             labels={labels}
             gaps={arraySubmenu}
+            onReSetLabel={onReSetLabel}
           />
         )
       )}
@@ -65,6 +67,7 @@ interface SubmenuItemProps {
   labels?: any;
   isOpenLabel?: boolean;
   gaps?: any;
+  onReSetLabel: (oldValue, newValue) => void;
 }
 
 const SubmenuItem: FC<SubmenuItemProps> = ({
@@ -75,6 +78,7 @@ const SubmenuItem: FC<SubmenuItemProps> = ({
   isOpenLabel,
   labels,
   gaps,
+  onReSetLabel
 }) => {
   return (
     <li className={styles.sider_submenu}>
@@ -89,6 +93,7 @@ const SubmenuItem: FC<SubmenuItemProps> = ({
             labels={labels}
             toggleModal={toggleModal}
             gaps={gaps}
+            onReSetLabel={onReSetLabel}
           />
         </>
       ) : (

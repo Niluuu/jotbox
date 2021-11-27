@@ -18,9 +18,18 @@ const Layout: FC<LayoutProps> = (props) => {
 
   return (
     <>
-      <Header filterByLetter={filterByLetter} filterLetter={filterLetter} gridType={gridType} onClick={toggleSider} changeGrid={changeGrid} />
+      <Header 
+        filterByLetter={filterByLetter} 
+        filterLetter={filterLetter} 
+        gridType={gridType} 
+        onClick={toggleSider} 
+        changeGrid={changeGrid} />
       <section className="layout">
-        <Sider filteredGaps={filteredGaps} onReSetLabel={onReSetLabel} isSidebarOpen={isSidebarOpen} onClick={toggleSider} />
+        <Sider 
+          filteredGaps={filteredGaps} 
+          onReSetLabel={onReSetLabel} 
+          isSidebarOpen={isSidebarOpen} 
+          onClick={toggleSider} />
         {children}
       </section>
     </>

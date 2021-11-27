@@ -77,11 +77,11 @@ const Cart: FC<CartProps> = ({
             )}
           </div>
           <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
+        </div>
+        <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
           <div className={styles.main_chips}>
             { gaps && gaps.map((gap) => <div> {gap} </div>) } 
           </div>
-        </div>
-        <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.input_navbar}>
           {isTrashPage ? (
             <TrashInputNavbar

@@ -3,8 +3,10 @@
 
 .main {
   padding: auto;
-
+  z-index: 1 !important;
+  
   &_input {
+    z-index: 1 !important;
     box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
     position: relative;
     display: flex;
@@ -174,7 +176,6 @@
   }
 }
 
-
 .labels {
   padding: 9px;
   border: 1px solid rgb(244, 244, 244);
@@ -207,6 +208,54 @@
 
     input {
       margin-right: 5px;
+    }
+  }
+}
+
+@media screen and (max-width: 1001px) {  
+  .main {
+    &_input {
+      width: 450px;
+      max-width: 450px
+    }
+  }
+  .main_tools {
+    .icon_btn {
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    &_input {
+      width: 350px;
+      max-width: 350px
+    }
+  }
+  .main_tools {
+    .icon_btn {
+      width: 38px;
+      height: 38px;
+      margin: 5px;
+    }
+  }
+}
+
+@media screen and (max-width: 567px) {
+  .main {
+    &_input {
+      width: 275px;
+      max-width: 275px
+    }
+  }
+  .main_tools {
+    .icon_btn {
+      width: 35px;
+      height: 35px;
+      margin: 5px;
     }
   }
 }

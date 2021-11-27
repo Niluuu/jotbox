@@ -143,7 +143,7 @@ export const InputNavbar: FC<InputNavbarProps> = ({
         </Popover>
         {withHistory ? (
           <>
-            <button type="button" className={styles.icon_btn}>
+            <button style={{position: 'relative', right: '3px'}} type="button" className={styles.icon_btn}>
               <Icon name="back" color="premium" size="xs" />
             </button>
             <button type="button" className={classNames(styles.icon_btn, styles.icon_rotate)}>

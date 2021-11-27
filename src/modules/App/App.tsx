@@ -23,8 +23,8 @@ interface CartProps {
 }
 
 const App: FC = () => {
-  const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  const toggleSider = useCallback(() => setisSidebarOpen((pre) => !pre), [isSidebarOpen]);
+  const [isSidebarOpen, setisSidebarOpen] = useState(false);
+  const toggleSider = () => setisSidebarOpen((pre) => !pre); 
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
   const [carts, setCart] = useState<CartProps[]>([]);
@@ -359,6 +359,8 @@ const App: FC = () => {
             filteredGaps={filteredGaps}
             onSetLabel={onSetLabel}
             onReSetLabel={onReSetLabel}
+            toggleSider={toggleSider}
+            isSidebarOpen={isSidebarOpen}
           />
         )}
       />

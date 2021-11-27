@@ -14,7 +14,7 @@
     display: flex;
     align-items: center;
     height: 44px;
-    padding: 2px 0;
+    padding: 2px 0 0;
 
     input {
       width: 100%;
@@ -64,5 +64,60 @@
   .search_btn {
     position: absolute;
     float: left;
+  }
+}
+
+@media screen and (max-width: 1368px) {
+  .search__row {
+    width: 550px;
+    border-radius: 7px;
+  
+    .search__input {
+      height: 40px;
+  
+      input {
+        height: 40px;
+        margin-left: 45px;
+        font-size: 15px;
+      }
+    }
+
+    button {
+      padding: 0 4px;
+  
+      svg {
+        padding: 9px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1201px) {
+  .search__row {
+    width: 450px;
+  
+    .search__input {  
+      input {
+        margin-left: 40px;
+        font-size: 14px;
+      }
+    }
+
+    button {
+      svg {
+        padding: 8px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1001px) {
+  .search__row {
+    width: 95%;
+    margin-left: 15px;
   }
 }

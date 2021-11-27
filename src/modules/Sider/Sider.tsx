@@ -29,9 +29,9 @@ export interface SiderProps {
  */
 
 export const Sider: FC<SiderProps> = ({ className, onReSetLabel, isSidebarOpen, filteredGaps }) => {
-  const labels = filteredGaps.map(gap => ({
+  const labels = filteredGaps ? filteredGaps.map(gap => ({
     name: gap, url: `/gap/${gap}`, icon: 'notes'
-  }))
+  })) : []
 
   const initial = [
     { name: 'Заметки', gaps: null, icon: 'notes', active: true, url: '/', modal: false },

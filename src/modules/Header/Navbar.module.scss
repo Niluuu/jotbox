@@ -279,3 +279,27 @@
     }
   }
 }
+
+@media screen and (max-width: 1201px) {
+  .navbar {
+    position: absolute;
+    right: 0;
+  
+    button {
+      cursor: pointer;
+  
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }  
+}
+
+@media screen and (max-width: 567px) {
+  .navbar {
+    .options {
+      margin-left: 5px;
+    }
+  }
+}

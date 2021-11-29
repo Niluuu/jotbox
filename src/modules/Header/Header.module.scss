@@ -3,6 +3,7 @@
 
 .header {
   display: flex;
+  align-items: center;
   border-width: 0 0 0 4px;
   position: relative;
   padding: 10px;
@@ -12,5 +13,22 @@
     display: flex;
     justify-content: center;
     padding-right: 70px;
+  }
+}
+
+@media screen and (max-width: 1201px) {
+  .header {
+    padding: 8px;
+
+    &_row {
+      padding-right: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 1001px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

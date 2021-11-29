@@ -24,6 +24,12 @@ interface CartProps {
   onRestoreTrash?: (id: any) => void;
   onRemoveTrash?: (id: any) => void;
   onSetIsMain?: (bool: boolean) => void;
+  onLabelEdit?: () => void;
+  labelEdit?: boolean;
+  onCartLabel?: (value: string) => void;
+  cartLabel?: string;
+  onSetLabel?: (id, oldGaps: string[]) => void;
+  filteredGaps?: any[];
 }
 
 const Cart: FC<CartProps> = ({
@@ -43,6 +49,10 @@ const Cart: FC<CartProps> = ({
   onRemoveCart,
   onReSetCart,
   onHyperLinkEditMode,
+  onCartLabel,
+  cartLabel,
+  onSetLabel,
+  filteredGaps
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => setIsOpen((pre) => !pre);
@@ -67,11 +77,11 @@ const Cart: FC<CartProps> = ({
             )}
           </div>
           <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
+        </div>
+        <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
           <div className={styles.main_chips}>
             { gaps && gaps.map((gap) => <div> {gap} </div>) } 
           </div>
-        </div>
-        <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.input_navbar}>
           {isTrashPage ? (
             <TrashInputNavbar
@@ -92,6 +102,10 @@ const Cart: FC<CartProps> = ({
               }}
               onChangeArchived={() => onChangeArchived(id,  title, description)}
               ontoggle={() => setIsOpen(false)}
+              onCartLabel={onCartLabel}
+              cartLabel={cartLabel}
+              onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
+              filteredGaps={filteredGaps}
             />
           )}
         </div>
@@ -152,6 +166,10 @@ const Cart: FC<CartProps> = ({
                   onReSetCart(id, cartTitleRef.current.innerText, cartTextRef.current.innerHTML);
                   setIsOpen(false);
                 }}
+                onCartLabel={onCartLabel}
+                cartLabel={cartLabel}             
+                onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
+                filteredGaps={filteredGaps}
               />
             )}
           </div>

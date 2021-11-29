@@ -6,12 +6,13 @@ import styles from './SignInPage.module.scss';
 
 type signInProps = {
   onErrorMessage: (message: string, icon: 'success' | 'error') => void;
-}
+};
 
-const SignInPage: FC<signInProps> = ({onErrorMessage}) => {
+const SignInPage: FC<signInProps> = ({ onErrorMessage }) => {
   const history = useHistory();
   const [userState, setUserState] = useState({
-    userName: '', password: '',
+    userName: '',
+    password: '',
   });
   const [typePassword, settypePassword] = useState(false);
 
@@ -23,18 +24,11 @@ const SignInPage: FC<signInProps> = ({onErrorMessage}) => {
           username: userState.userName,
           password: userState.password,
         });
-        onErrorMessage('You signed in succesfully', 'success')
+        onErrorMessage('You signed in succesfully', 'success');
       } catch (err) {
-        onErrorMessage(err.message, 'error')
-        localStorage.setItem("assessToken", data.signInUserSession.accessToken.jwtToken)
-        localStorage.setItem("userEmail",data.attributes.email)
-        history.push("/")
-        console.log("data", data)
-      } catch (error) {
-        console.log('error signing up:', error);
+        onErrorMessage(err.message, 'error');
       }
     }
-
   };
 
   const handleChange = (e) => {
@@ -42,14 +36,15 @@ const SignInPage: FC<signInProps> = ({onErrorMessage}) => {
 
     const { value, name } = e.target;
     setUserState({
-      ...userState, [name]: value,
+      ...userState,
+      [name]: value,
     });
   };
 
   const toggle = () => {
     settypePassword(!typePassword);
   };
-  
+
   return (
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={signIn}>
@@ -71,18 +66,16 @@ const SignInPage: FC<signInProps> = ({onErrorMessage}) => {
           onChange={handleChange}
         />
         <div className={classNames(styles.sign__link, styles.password_input)}>
-          <input
-            type="checkbox"
-            id="showPassword"
-            checked={typePassword}
-            onChange={toggle}
-          />
+          <input type="checkbox" id="showPassword" checked={typePassword} onChange={toggle} />
         </div>
 
         <div className={styles.sign__buttonDiv}>
           <Link to="/signUp">Create account</Link>
           <a href="#"> </a>
-          <button type="submit" onClick={sginIn}> Next </button>
+          <button type="submit" onClick={signIn}>
+            {' '}
+            Next{' '}
+          </button>
         </div>
       </form>
     </div>

@@ -9,7 +9,6 @@ import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import ArchievePage from '../ArchievePage/ArchievePage';
 import ConfirmPage from '../SignUpPage/Confirm';
-import { filterByLetter } from '../../utils/hooks/filterByLetter';
 
 interface CartProps {
   id: any;

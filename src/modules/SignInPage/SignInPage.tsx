@@ -3,12 +3,9 @@ import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
 import styles from './SignInPage.module.scss';
+import onErrorMessage from '../../component/message/message';
 
-type signInProps = {
-  onErrorMessage: (message: string, icon: 'success' | 'error') => void;
-};
-
-const SignInPage: FC<signInProps> = ({ onErrorMessage }) => {
+const SignInPage: FC = () => {
   const history = useHistory();
   const [userState, setUserState] = useState({
     userName: '',
@@ -24,6 +21,11 @@ const SignInPage: FC<signInProps> = ({ onErrorMessage }) => {
           username: userState.userName,
           password: userState.password,
         });
+
+        localStorage.setItem("assessToken", data.signInUserSession.accessToken.jwtToken)
+        localStorage.setItem("userEmail",data.attributes.email)
+        history.push("/")
+
         onErrorMessage('You signed in succesfully', 'success');
       } catch (err) {
         onErrorMessage(err.message, 'error');

@@ -47,8 +47,6 @@ export interface HomePageProps {
   toggleSider?: () => void;
   changeGrid?: () => void;
   isSidebarOpen?: boolean;
-  filterByLetter: (value: string) => void;
-  filterLetter: any;
   filteredGaps?: any[];
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
@@ -86,8 +84,6 @@ const HomePage: FC<HomePageProps> = ({
   toggleSider,
   changeGrid,
   isSidebarOpen,
-  filterByLetter,
-  filterLetter,
   onCartLabel,
   cartLabel,
   onSetLabel,
@@ -102,8 +98,6 @@ const HomePage: FC<HomePageProps> = ({
       toggleSider={toggleSider}
       isSidebarOpen={isSidebarOpen}
       changeGrid={changeGrid}
-      filterByLetter={filterByLetter}
-      filterLetter={filterLetter}
       filteredGaps={filteredGaps}
       onReSetLabel={onReSetLabel}
     >

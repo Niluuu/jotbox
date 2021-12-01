@@ -7,20 +7,16 @@ export interface LayoutProps {
   toggleSider: () => void;
   changeGrid: () => void;
   isSidebarOpen: boolean;
-  filterByLetter: (value: string) => void;
-  filterLetter: any;
   filteredGaps: any[];
   onReSetLabel: (oldValue, newValue) => void;
 }
 
 const Layout: FC<LayoutProps> = (props) => {
-  const { gridType, toggleSider, filterByLetter, onReSetLabel, filteredGaps, filterLetter, changeGrid, isSidebarOpen, children } = props;
+  const { gridType, toggleSider, onReSetLabel, filteredGaps, changeGrid, isSidebarOpen, children } = props;
 
   return (
     <>
       <Header 
-        filterByLetter={filterByLetter} 
-        filterLetter={filterLetter} 
         gridType={gridType} 
         onClick={toggleSider} 
         changeGrid={changeGrid} />

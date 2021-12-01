@@ -179,7 +179,7 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
               <a onClick={signOut} href="#">
-                Sign out of all Accounts
+                Sign out
               </a>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>

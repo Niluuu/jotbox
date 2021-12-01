@@ -1,9 +1,7 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
-import classNames from 'classnames'
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { DataStore } from '@aws-amplify/datastore';
 import { Node } from '../../models';
-import { Icon } from '../../component/Icon/Icon';
 
 import HomePage from '../HomePage/HomePage';
 import SignInPage from '../SignInPage/SignInPage';
@@ -11,6 +9,7 @@ import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import ArchievePage from '../ArchievePage/ArchievePage';
 import ConfirmPage from '../SignUpPage/Confirm';
+import { filterByLetter } from '../../utils/hooks/filterByLetter';
 
 interface CartProps {
   id: any;
@@ -23,7 +22,7 @@ interface CartProps {
 
 const App: FC = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(false);
-  const toggleSider = () => setisSidebarOpen((pre) => !pre); 
+  const toggleSider = () => setisSidebarOpen((pre) => !pre);
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
   const [carts, setCart] = useState<CartProps[]>([]);
@@ -35,23 +34,21 @@ const App: FC = () => {
   const [cartHyper, setCartHyper] = useState([]);
   const [hyperText, setHyperText] = useState('');
   const [hyperLink, setHyperLink] = useState('');
-
   const [defaultPin, setDefaultPin] = useState(false);
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
   }, [defaultPin]);
-
   const titleRef = useRef<HTMLDivElement>();
   const textRef = useRef<HTMLDivElement>();
 
   async function fetchTodos() {
     try {
       const todos = await DataStore.query(Node);
-      console.log('models', todos);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       setCart(todos);
     } catch (err) {
+      //  TODO: Add your meseage for all console error
       console.log(`err`, err);
     }
   }
@@ -104,6 +101,8 @@ const App: FC = () => {
             cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart,
           ),
         );
+
+        //  TODO: fix mutation
         const original = await DataStore.query(Node, id);
         await DataStore.save(
           Node.copyOf(original, (item) => {
@@ -129,6 +128,8 @@ const App: FC = () => {
           ),
         );
         const original = await DataStore.query(Node, id);
+        //  TODO: fix mutation, change naming original is not describe anything
+
         await DataStore.save(
           Node.copyOf(original, (item) => {
             const cart = item;
@@ -159,6 +160,7 @@ const App: FC = () => {
           }),
         );
       } catch (err) {
+        //  TODO: Add your meseage for all console error
         console.log('error updating todo:', err);
       }
     },
@@ -169,11 +171,17 @@ const App: FC = () => {
     async (id, oldGaps: string[]) => {
       try {
         if (oldGaps.length) {
-          setCart(carts.map((cart) => (cart.id === id 
-            ? { ...cart, gaps: cart.gaps
-                .concat(oldGaps.filter((old) => old && old))
-                .filter((val, pos, arr) => arr.indexOf(val) === pos) } 
-            : cart))
+          setCart(
+            carts.map((cart) =>
+              cart.id === id
+                ? {
+                    ...cart,
+                    gaps: cart.gaps
+                      .concat(oldGaps.filter((old) => old && old))
+                      .filter((val, pos, arr) => arr.indexOf(val) === pos),
+                  }
+                : cart,
+            ),
           );
           const original = await DataStore.query(Node, id);
           await DataStore.save(
@@ -195,22 +203,18 @@ const App: FC = () => {
   const onReSetLabel = useCallback(
     async (oldValue, newValue) => {
       try {
-        setCart(carts.map((cart) => ({ 
-          ...cart, gaps: cart.gaps.map((sub) => sub === oldValue ? newValue : sub)}
-          ))
+        setCart(
+          carts.map((cart) => ({
+            ...cart,
+            gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub)),
+          })),
         );
         const original = await DataStore.query(Node);
-        // await DataStore.save(
-        //   Node.copyOf(original, (item) => {
-        //     const local = item;
-        //     local.gaps = item.gaps.map((sub) => sub === oldValue ? newValue : sub)
-        //   })
-        // );
       } catch (err) {
         console.log('error updating todo:', err);
       }
     },
-    [carts]
+    [carts],
   );
 
   const onSetCart = useCallback(async () => {
@@ -272,24 +276,7 @@ const App: FC = () => {
     }
   }, [carts]);
 
-  const [filterLetter, setFilterLetter] = useState('');
-
-  const filterByLetter = async (e) => {
-    setFilterLetter(e);
-    try {
-      const todos = await DataStore.query(Node);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      setCart(todos.filter((todo) =>
-        todo.description.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) >= 0 ||
-        todo.title.toLocaleLowerCase().indexOf(e.toLocaleLowerCase()) >= 0,
-        )
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  // Todo: I added to new folder export form make it work! and delete this lines of code
   const gapCategories = Array.from(carts.flatMap(({ gaps }) => gaps));
   const filteredGaps = Object.keys(
     Object.fromEntries(
@@ -300,27 +287,8 @@ const App: FC = () => {
     ),
   );
 
-  const [hasError, setHasError] = useState(false);
-  const [error, setError] = useState({
-    message: 'You signed in succesfully',
-    icon: 'success',
-  });
-
-  const onErrorMessage = (message: string, icon: 'success' | 'error') => {
-    setError({ message, icon });
-    setHasError(true);
-    setTimeout(() => setHasError(false), 6000);
-  };
-
   return (
     <BrowserRouter>
-      <div className={classNames('errorMessage', hasError && 'active')}>
-        <div>
-          {' '}
-          <Icon name={error.icon} />{' '}
-        </div>
-        {error.message}
-      </div>
       <ProtectedRoute
         exact
         path="/"
@@ -353,8 +321,6 @@ const App: FC = () => {
             carts={carts}
             cartHyper={cartHyper}
             focused={focused}
-            filterLetter={filterLetter}
-            filterByLetter={filterByLetter}
             filteredGaps={filteredGaps}
             onSetLabel={onSetLabel}
             onReSetLabel={onReSetLabel}
@@ -363,9 +329,9 @@ const App: FC = () => {
           />
         )}
       />
-      {/* <ProtectedRoute
+      <ProtectedRoute
         exact
-        path="/"
+        path="/archived"
         component={() => (
           <ArchievePage
             setHyperText={(e) => setHyperText(e)}
@@ -389,8 +355,8 @@ const App: FC = () => {
             focused={focused}
           />
         )}
-      /> */}
-      { filteredGaps.map((filter) => (
+      />
+      {filteredGaps.map((filter) => (
         <ProtectedRoute
           exact
           path={`/gap/${filter}`}
@@ -420,11 +386,9 @@ const App: FC = () => {
               onReSetCart={onReSetCart}
               onChangeArchived={onChangeArchived}
               onRemoveCart={onRemoveCart}
-              carts={carts.filter((cart) => cart.gaps.some(sub => sub === filter) )}
+              carts={carts.filter((cart) => cart.gaps.some((sub) => sub === filter))}
               cartHyper={cartHyper}
               focused={focused}
-              filterLetter={filterLetter}
-              filterByLetter={filterByLetter}
               filteredGaps={filteredGaps}
               toggleSider={toggleSider}
               isSidebarOpen={isSidebarOpen}
@@ -438,7 +402,7 @@ const App: FC = () => {
         <div>UNDEFINED PAGE</div>
       </Route>
       <Route path="/signup" component={SignUpPage} />
-      <Route path="/signin" component={() => <SignInPage onErrorMessage={onErrorMessage} />} />
+      <Route path="/signin" component={() => <SignInPage />} />
       <Route path="/confirmCode" component={ConfirmPage} />
     </BrowserRouter>
   );

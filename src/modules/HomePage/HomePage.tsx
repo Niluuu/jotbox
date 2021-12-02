@@ -6,6 +6,7 @@ import CartLayout from '../../component/cart-layout/CartLayout';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import Layout from '../../atoms/layout/Layout';
+import MainEditor from '../Editor/MainEditor'
 
 interface CartProps {
   id: any;

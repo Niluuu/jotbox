@@ -84,7 +84,8 @@
     "jsx-a11y/no-noninteractive-element-to-interactive-role": 0,
     "jsx-a11y/no-noninteractive-tabindex": 0,
     "jsx-a11y/anchor-is-valid": 0,
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "react/jsx-props-no-spreading": "off"
   },
   "overrides": [
     {

@@ -20,7 +20,7 @@ interface CartProps {
 }
 
 const App: FC = () => {
-  const [isSidebarOpen, setisSidebarOpen] = useState(false);
+  const [isSidebarOpen, setisSidebarOpen] = useState(true);
   const toggleSider = () => setisSidebarOpen((pre) => !pre);
   const [gridType, setGridType] = useState(false);
   const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);

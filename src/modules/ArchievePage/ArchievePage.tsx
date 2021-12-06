@@ -14,25 +14,20 @@ interface CartProps {
   archived: boolean;
   gaps: any[]
 }
-
 export interface ArchievePageProps {
-  gridType: boolean;
-  focused: boolean;
-  onCloseModal: () => void;
-  onSetHyperLink: () => void;
-  onSetArchive: () => void;
-  hyperLinkEditMode: boolean;
-  setFocused: (i: boolean) => void;
-  carts: CartProps[];
+  gridType?: boolean;
+  onCloseModal?: () => void;
+  onSetArchive?: () => void;
+  hyperLinkEditMode?: boolean;
+  carts?: CartProps[];
   onRemoveCart?: (id: any) => void;
   onReSetCart?: (id: any, title: string, description: any) => void;
   onChangeArchived?: (id: any, title: string, description: any) => void;
   onChangePin?: (id: any, title: string, description: any) => void;
-  onSetIsMain?: (bool: boolean) => void;
-  setHyperText: (e: any) => void;
-  setHyperLink: (e: any) => void;
-  hyperText: any;
-  hyperLink: any;
+  setHyperText?: (e: any) => void;
+  setHyperLink?: (e: any) => void;
+  hyperText?: any;
+  hyperLink?: any;
   filtered?: any[];
 }
 
@@ -43,13 +38,11 @@ const ArchievePage: FC<ArchievePageProps> = ({
   hyperText,
   hyperLink,
   onCloseModal,
-  onSetHyperLink,
   carts,
   onChangeArchived,
   onChangePin,
   onRemoveCart,
   hyperLinkEditMode,
-  filtered
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
@@ -82,7 +75,7 @@ const ArchievePage: FC<ArchievePageProps> = ({
             />
             {linkFocus && <Icon name="done" color="premium" size="xs" />}
           </div>
-          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
+          <div className={styles.bottom_btn}>
             <button type="button">Done</button>
           </div>
         </Modal>

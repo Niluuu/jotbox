@@ -24,12 +24,13 @@
       }
     }
   },
-  "rules": {
+  "rules": {  
+    "no-param-reassign": 0,
     "consistent-return": "off",
     "prettier/prettier": "warn",
     "import/no-unresolved": 0,
     "import/prefer-default-export": 0,
-    "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
     "import/extensions": [
       "error",
       "ignorePackages",

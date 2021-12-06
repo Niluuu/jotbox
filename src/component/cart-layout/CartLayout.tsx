@@ -15,8 +15,6 @@ interface CartProps {
 interface CartLayoutProps {
   gridType: boolean;
   carts: CartProps[];
-  cartTitleRef?: any;
-  cartTextRef?: any;
   cartHyper?: any;
   onRemoveCart?: (id: any) => void;
   onReSetCart?: (id: any, title: string, description: any) => void;
@@ -38,8 +36,6 @@ const CartLayout: FC<CartLayoutProps> = ({
   onReSetCart,
   onRemoveCart,
   onHyperLinkEditMode,
-  cartTitleRef,
-  cartTextRef,
   carts,
   onSetIsMain,
   onCartLabel,

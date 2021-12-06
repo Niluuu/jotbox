@@ -1,7 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import layoutGrid from '../features/layout/layoutGridType'
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    layoutGridTypeReducer: layoutGrid
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;

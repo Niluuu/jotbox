@@ -1,6 +1,7 @@
 import { FC, useState, useCallback, useEffect, useRef } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import {  Route,Switch } from 'react-router-dom';
 import { DataStore } from '@aws-amplify/datastore';
+import { useSelector, useDispatch } from 'react-redux'
 import { Node } from '../../models';
 
 import HomePage from '../HomePage/HomePage';
@@ -19,20 +20,11 @@ interface CartProps {
   gaps: any[];
 }
 
-const App: FC = () => {
-  const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  const toggleSider = () => setisSidebarOpen((pre) => !pre);
-  const [gridType, setGridType] = useState(false);
-  const changeGrid = useCallback(() => setGridType(!gridType), [gridType]);
+const App: FC = () => { 
   const [carts, setCart] = useState<CartProps[]>([]);
-  const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
-  const [hyperLinkEditMode, setHyperLinkEditMode] = useState(false);
-  const [hyper, setHyper] = useState([]);
   const [cartHyper, setCartHyper] = useState([]);
-  const [hyperText, setHyperText] = useState('');
-  const [hyperLink, setHyperLink] = useState('');
   const [defaultPin, setDefaultPin] = useState(false);
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -56,28 +48,6 @@ const App: FC = () => {
     fetchTodos();
   }, []);
 
-  const onHyperLinkEditMode = () => {
-    setHyperLinkEditMode((pre) => !pre);
-  };
-
-  const onSetHyperLink = () => {
-    if (isMain) setHyper([...hyper, { text: hyperText, link: hyperLink }]);
-    else {
-      setCartHyper([...cartHyper, { text: hyperText, link: hyperLink }]);
-    }
-    setHyperText('');
-    setHyperLink('');
-    setTimeout(() => setFocused(true), 50);
-    setHyperLinkEditMode((pre) => !pre);
-  };
-
-  const onCloseModal = () => {
-    setHyperLinkEditMode(false);
-    setTimeout(() => {
-      setHyperText('');
-      setHyperLink('');
-    }, 200);
-  };
 
   const onRemoveCart = useCallback(
     async (id) => {
@@ -287,110 +257,48 @@ const App: FC = () => {
   );
 
   return (
-    <BrowserRouter>
+    <Switch>
       <ProtectedRoute
         exact
         path="/"
         component={() => (
           <HomePage
-            setHyperText={(e) => setHyperText(e)}
-            setHyperLink={(e) => setHyperLink(e)}
-            hyperText={hyperText}
-            hyperLink={hyperLink}
-            onSetHyperLink={onSetHyperLink}
-            onCloseModal={onCloseModal}
-            setFocused={(e: any) => {
-              setFocused(e);
-            }}
-            hyperLinkEditMode={hyperLinkEditMode}
-            onHyperLinkEditMode={onHyperLinkEditMode}
             onSetArchive={onSetArchive}
             onSetCart={onSetCart}
-            titleRef={titleRef}
-            textRef={textRef}
-            gridType={gridType}
             defaultPin={defaultPin}
             onDefaultPin={onDefaultPin}
             onSetIsMain={onSetIsMain}
-            hyper={hyper}
             onChangePin={onChangePin}
             onReSetCart={onReSetCart}
             onChangeArchived={onChangeArchived}
             onRemoveCart={onRemoveCart}
             carts={carts}
             cartHyper={cartHyper}
-            focused={focused}
             filteredGaps={filteredGaps}
             onSetLabel={onSetLabel}
             onReSetLabel={onReSetLabel}
-            toggleSider={toggleSider}
-            isSidebarOpen={isSidebarOpen}
           />
         )}
       />
-      <ProtectedRoute
-        exact
-        path="/archived"
-        component={() => (
-          <ArchievePage
-            setHyperText={(e) => setHyperText(e)}
-            setHyperLink={(e) => setHyperLink(e)}
-            hyperText={hyperText}
-            hyperLink={hyperLink}
-            onSetHyperLink={onSetHyperLink}
-            onCloseModal={onCloseModal}
-            setFocused={(e: any) => {
-              setFocused(e);
-            }}
-            hyperLinkEditMode={hyperLinkEditMode}
-            onSetArchive={onSetArchive}
-            gridType={gridType}
-            onSetIsMain={onSetIsMain}
-            onChangePin={onChangePin}
-            onReSetCart={onReSetCart}
-            onChangeArchived={onChangeArchived}
-            onRemoveCart={onRemoveCart}
-            carts={carts}
-            focused={focused}
-          />
-        )}
-      />
+
       {filteredGaps.map((filter) => (
         <ProtectedRoute
           exact
           path={`/gap/${filter}`}
           component={() => (
             <HomePage
-              setHyperText={(e) => setHyperText(e)}
-              setHyperLink={(e) => setHyperLink(e)}
-              hyperText={hyperText}
-              hyperLink={hyperLink}
-              onSetHyperLink={onSetHyperLink}
-              onCloseModal={onCloseModal}
-              setFocused={(e: any) => {
-                setFocused(e);
-              }}
-              hyperLinkEditMode={hyperLinkEditMode}
-              onHyperLinkEditMode={onHyperLinkEditMode}
               onSetArchive={onSetArchive}
               onSetCart={onSetCart}
-              titleRef={titleRef}
-              textRef={textRef}
-              gridType={gridType}
               defaultPin={defaultPin}
               onDefaultPin={onDefaultPin}
               onSetIsMain={onSetIsMain}
-              hyper={hyper}
               onChangePin={onChangePin}
               onReSetCart={onReSetCart}
               onChangeArchived={onChangeArchived}
               onRemoveCart={onRemoveCart}
               carts={carts.filter((cart) => cart.gaps.some((sub) => sub === filter))}
               cartHyper={cartHyper}
-              focused={focused}
               filteredGaps={filteredGaps}
-              toggleSider={toggleSider}
-              isSidebarOpen={isSidebarOpen}
               onSetLabel={onSetLabel}
               onReSetLabel={onReSetLabel}
             />
@@ -403,7 +311,7 @@ const App: FC = () => {
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={() => <SignInPage />} />
       <Route path="/confirmCode" component={ConfirmPage} />
-    </BrowserRouter>
+    </Switch>
   );
 };
 

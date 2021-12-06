@@ -119,10 +119,6 @@ const Cart: FC<CartProps> = ({
         <div id={id} className={classNames(styles.cart, styles.popup)}>
           <div className={styles.cart_content} onClick={() => setIsOpen(true)}>
             <div className={styles.cart_title}>
-              <p ref={cartTitleRef} contentEditable>
-                {' '}
-                {title}{' '}
-              </p>
               {!isTrashPage && (
                 <button type="button" onClick={() => onChangePin(id,  title, description)} className={styles.icon_btn}>
                   {!pined ? (
@@ -133,17 +129,6 @@ const Cart: FC<CartProps> = ({
                 </button>
               )}
             </div>
-            <span className={styles.cart_text} contentEditable ref={cartTextRef}>
-              <span dangerouslySetInnerHTML={{ __html: description }} />
-              { cartHyper && cartHyper.map((hyp) => (
-                <>
-                  {' '}
-                  <a href={hyp.link} style={{ color: 'blue' }}>
-                    {hyp.text}
-                  </a>{' '}
-                </>
-              ))}
-            </span>
             <div className={styles.main_chips} />
           </div>
           <Icon name="done" color="premium" className={styles.done_icon} size="xs" />

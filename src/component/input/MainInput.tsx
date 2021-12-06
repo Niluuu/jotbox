@@ -1,6 +1,7 @@
-import { FC, useState, useRef, useEffect, useCallback, createRef } from 'react';
-// import { Link as UrlLink } from 'react-router-dom';
+import { FC, useRef, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
+import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
@@ -8,12 +9,6 @@ import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import MainEditor from '../../modules/Editor/MainEditor';
 
 interface MainInputProps {
-  gridType: boolean;
-  onHyperLinkEditMode?: () => void;
-  hyper: any;
-  hyperLinkEditMode?: boolean;
-  textRef?: any;
-  titleRef?: any;
   focused: boolean;
   defaultPin: boolean;
   onDefaultPin: () => void;
@@ -22,6 +17,7 @@ interface MainInputProps {
   setFocused: (e: any) => void;
   outsideRef?: any;
   onSetIsMain?: (e: boolean) => void;
+  onHyperLinkEditMode: any
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -30,21 +26,17 @@ const MainInput: FC<MainInputProps> = ({
   onDefaultPin,
   setFocused,
   focused,
-  titleRef,
-  onHyperLinkEditMode,
-  gridType,
   onSetCart,
-  hyperLinkEditMode,
-  hyper,
-  textRef,
   onSetIsMain,
+  onHyperLinkEditMode
 }) => {
   const outsideRef = useRef(null);
-  const [edit, setEdit] = useState(true);
-
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
-
+  const mapStateToProps = useSelector((state: RootState) =>  {
+    return state.layoutGridTypeReducer
+  });
+  
   useOnClickOutside(outsideRef, handleClickOutside);
 
   const onFocusOut = useCallback((e) => {
@@ -53,9 +45,10 @@ const MainInput: FC<MainInputProps> = ({
     }
   }, []);
 
+  const { grid } = mapStateToProps
   return (
     <div
-      className={classNames(styles.main_input, gridType && styles.column)}
+      className={classNames(styles.main_input, grid && styles.column)}
       tabIndex={-1}
       onFocus={handleClickInside}
       onBlur={(e) => onFocusOut(e)}

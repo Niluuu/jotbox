@@ -5,10 +5,8 @@ import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 
 interface InputNavbarProps {
-  isLogin?: boolean;
   withHistory?: boolean;
   isMainInput?: boolean;
-  onOptionEditMode?: () => void;
   onHyperLinkEditMode?: () => void;
   ontoggle?: () => void;
   onSetArchive?: () => void;
@@ -23,12 +21,10 @@ interface InputNavbarProps {
 }
 
 export const InputNavbar: FC<InputNavbarProps> = ({
-  isLogin,
   isMainInput,
   onChangeArchived,
   onSetArchive,
   onHyperLinkEditMode,
-  onOptionEditMode,
   withHistory,
   ontoggle,
   focused = true,
@@ -37,7 +33,6 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   onSetLabel,
   filteredGaps,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const onEdit = () => {
     if (isMainInput) onSetIsMain(true);
     else onSetIsMain(false);

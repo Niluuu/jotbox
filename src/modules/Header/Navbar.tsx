@@ -1,26 +1,26 @@
-import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../app/store';
 import styles from './Navbar.module.scss';
 import Popover from '../../component/popover/Popover';
 import { Icon } from '../../component/Icon/Icon';
 import { Avatar } from '../../component/avatar/Avatar';
 import { googleLinks1, googleLinks2 } from '../../utils/google-links';
-
-export interface NavbarProps {
-  isLoggedIn: boolean;
-  gridType: boolean;
-  changeGrid: () => void;
-}
+import { toggleGrid } from '../../features/layout/layoutGridType';
 
 /**
  * Main Header component for user interaction
  */
 
-export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) => {
+export const Navbar: FC = () => {
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
-  
+  const mapStateToProps = useSelector((state: RootState) => {
+    return state.layoutGridTypeReducer;
+  });
+  const dispatch = useDispatch();
 
   async function signOut() {
     try {
@@ -36,7 +36,7 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
         setUpdated(val);
       }, 2000);
 
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       resolve(true);
       setLoading(true);
       completeUpdate(true);
@@ -50,6 +50,7 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
     });
   }, [loading]);
 
+  const { grid } = mapStateToProps;
   return (
     <nav className={styles.navbar}>
       <button type="button" onClick={loadChanges}>
@@ -58,8 +59,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
           className={loading && !updated ? styles.loading : undefined}
         />
       </button>
-      <button type="button" onClick={changeGrid}>
-        <Icon name={gridType ? 'grid' : 'grid4'} />
+      <button type="button" onClick={() => dispatch(toggleGrid())}>
+        <Icon name={grid ? 'grid' : 'grid4'} />
       </button>
 
       <Popover
@@ -165,8 +166,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
                   <Icon name="picture" />
                 </span>
               </div>
-              <h1>{localStorage.getItem("userEmail")}</h1>
-              <p>{localStorage.getItem("userEmail")}</p>
+              <h1>{localStorage.getItem('userEmail')}</h1>
+              <p>{localStorage.getItem('userEmail')}</p>
               <a href="https://myaccount.google.com/?utm_source=OGB&utm_medium=act">
                 Управление аккаунтом Google
               </a>
@@ -189,7 +190,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
             </div>
           </div>
         }
-        placement="bottom-start">
+        placement="bottom-start"
+      >
         <Avatar hover />
       </Popover>
     </nav>

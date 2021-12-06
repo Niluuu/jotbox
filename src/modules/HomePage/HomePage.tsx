@@ -1,12 +1,12 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
-import Modal from '../../component/modal/Modal';
-import { Icon } from '../../component/Icon/Icon';
 import Layout from '../../atoms/layout/Layout';
-import MainEditor from '../Editor/MainEditor'
+import { RootState } from '../../app/store';
+import AddLinkModal from '../../atoms/modals/AddLinkModal';
 
 interface CartProps {
   id: any;
@@ -18,36 +18,18 @@ interface CartProps {
 }
 
 export interface HomePageProps {
-  gridType: boolean;
-  focused: boolean;
-  onHyperLinkEditMode: () => void;
-  onDefaultPin: () => void;
-  onSetCart: () => void;
-  onCloseModal: () => void;
-  onSetHyperLink: () => void;
-  onSetArchive: () => void;
-  textRef?: any;
-  titleRef?: any;
+  onSetArchive?: () => void;
+  onSetCart?: () => void;
+  onHyperLinkEditMode?: () => void;
   defaultPin: boolean;
-  hyperLinkEditMode: boolean;
-  hyper: any;
-  setFocused: (e: any) => void;
-  carts: CartProps[];
-  cartTitleRef?: any;
-  cartTextRef?: any;
-  cartHyper?: any;
-  onRemoveCart?: (id: any) => void;
-  onChangePin?: (id: any, title: string, description: any) => void;
-  onReSetCart?: (id: any, title: string, description: any) => void;
-  onChangeArchived?: (id: any, title: string, description: any) => void;
+  onDefaultPin: () => void;
   onSetIsMain?: (bool: boolean) => void;
-  setHyperText: (e: any) => void;
-  setHyperLink: (e: any) => void;
-  hyperText: any;
-  hyperLink: any;
-  toggleSider?: () => void;
-  changeGrid?: () => void;
-  isSidebarOpen?: boolean;
+  onChangePin?: (id: any, title: string, description: any) => void;
+  onChangeArchived?: (id: any, title: string, description: any) => void;
+  onRemoveCart?: (id: any) => void;
+  carts: CartProps[];
+  cartHyper?: any;
+  onReSetCart?: (id: any, title: string, description: any) => void;
   filteredGaps?: any[];
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
@@ -56,53 +38,37 @@ export interface HomePageProps {
 }
 
 const HomePage: FC<HomePageProps> = ({
-  gridType,
-  setHyperLink,
-  setHyperText,
-  hyperText,
-  hyperLink,
-  onCloseModal,
-  onSetHyperLink,
   filteredGaps,
-  setFocused,
   carts,
   cartHyper,
   onChangeArchived,
   onChangePin,
   onReSetCart,
   onRemoveCart,
-  textRef,
-  hyperLinkEditMode,
-  titleRef,
   defaultPin,
-  hyper,
-  focused,
   onHyperLinkEditMode,
   onSetArchive,
   onSetCart,
   onDefaultPin,
   onSetIsMain,
-  toggleSider,
-  changeGrid,
-  isSidebarOpen,
   onCartLabel,
   cartLabel,
   onSetLabel,
-  onReSetLabel
+  onReSetLabel,
 }) => {
-  const [textFocus, setTextFocus] = useState(false);
-  const [linkFocus, setLinkFocus] = useState(false);
 
+  const [focused, setFocused] = useState(false);
+  const mapStateToProps = useSelector((state: RootState) =>  {
+    return state.layoutGridTypeReducer
+  });
+  
+  const { grid } = mapStateToProps
   return (
     <Layout
-      gridType={gridType}
-      toggleSider={toggleSider}
-      isSidebarOpen={isSidebarOpen}
-      changeGrid={changeGrid}
       filteredGaps={filteredGaps}
       onReSetLabel={onReSetLabel}
     >
-      <div className={classNames(styles.home_page, gridType && styles.column)}>
+      <div className={classNames(styles.home_page, grid && styles.column)}>
         <div className={styles.home_page__main_input}>
           <MainInput
             focused={focused}
@@ -110,13 +76,9 @@ const HomePage: FC<HomePageProps> = ({
             onHyperLinkEditMode={onHyperLinkEditMode}
             onSetArchive={onSetArchive}
             onSetCart={onSetCart}
-            titleRef={titleRef}
-            textRef={textRef}
-            gridType={gridType}
             defaultPin={defaultPin}
             onDefaultPin={onDefaultPin}
             onSetIsMain={onSetIsMain}
-            hyper={hyper}
           />
         </div>
         <CartLayout
@@ -124,53 +86,21 @@ const HomePage: FC<HomePageProps> = ({
           onReSetCart={onReSetCart}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
+          gridType={grid}
           carts={carts}
           cartHyper={cartHyper}
           onHyperLinkEditMode={onHyperLinkEditMode}
           onSetIsMain={onSetIsMain}
-          gridType={gridType}
           onCartLabel={onCartLabel}
           cartLabel={cartLabel}
           onSetLabel={onSetLabel}
           filteredGaps={filteredGaps}
         />
-        <Modal
-          title="Добавить линк"
-          isTop={!!true}
-          isOpen={hyperLinkEditMode}
-          toggleModal={onCloseModal}
-        >
-          <div className={styles.gaps}>
-            <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-            <input
-              type="text"
-              value={hyperText}
-              onChange={(e) => setHyperText(e.currentTarget.value)}
-              placeholder="Введите текст..."
-              onFocus={() => setTextFocus(true)}
-              onBlur={() => setTextFocus(false)}
-            />
-            {textFocus && <Icon name="done" color="premium" size="xs" />}
-          </div>
-          <div className={styles.gaps}>
-            <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-            <input
-              type="text"
-              value={hyperLink}
-              onChange={(e) => setHyperLink(e.currentTarget.value)}
-              placeholder="Введите линк..."
-              onFocus={() => setLinkFocus(true)}
-              onBlur={() => setLinkFocus(false)}
-            />
-            {linkFocus && <Icon name="done" color="premium" size="xs" />}
-          </div>
-          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
-            <button type="button">Done</button>
-          </div>
-        </Modal>
+       <AddLinkModal/>
       </div>
     </Layout>
   );
 };
+
 
 export default HomePage;

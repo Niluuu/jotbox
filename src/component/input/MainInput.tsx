@@ -17,7 +17,6 @@ interface MainInputProps {
   setFocused: (e: any) => void;
   outsideRef?: any;
   onSetIsMain?: (e: boolean) => void;
-  onHyperLinkEditMode: any
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -28,7 +27,6 @@ const MainInput: FC<MainInputProps> = ({
   focused,
   onSetCart,
   onSetIsMain,
-  onHyperLinkEditMode
 }) => {
   const outsideRef = useRef(null);
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
@@ -90,7 +88,6 @@ const MainInput: FC<MainInputProps> = ({
       {focused ? (
         <InputNavbar
           focused={focused}
-          onHyperLinkEditMode={onHyperLinkEditMode}
           isMainInput={!!true}
           onSetArchive={onSetArchive}
           ontoggle={() => onSetCart()}

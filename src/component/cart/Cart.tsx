@@ -15,7 +15,6 @@ interface CartProps {
   pined: boolean;
   isTrashPage?: boolean;
   gaps?: any[];
-  cartHyper?: any;
   onHyperLinkEditMode?: () => void;
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any, title: string, description: any) => void;
@@ -40,7 +39,6 @@ const Cart: FC<CartProps> = ({
   gridType,
   gaps,
   isTrashPage,
-  cartHyper,
   onChangePin,
   onChangeArchived,
   onRestoreTrash,

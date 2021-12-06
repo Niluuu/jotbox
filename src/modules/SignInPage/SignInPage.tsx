@@ -26,9 +26,9 @@ const SignInPage: FC = () => {
         localStorage.setItem("userEmail",data.attributes.email)
         history.push("/")
 
-        onErrorMessage('You signed in succesfully', 'success');
+        // onErrorMessage('You signed in succesfully', 'success');
       } catch (err) {
-        onErrorMessage(err.message, 'error');
+        // onErrorMessage(err.message, 'error');
       }
     }
   };
@@ -51,7 +51,7 @@ const SignInPage: FC = () => {
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={signIn}>
         <h1 className={styles.sign__title}> Sign In </h1>
-        <h1 className={styles.sign__subTitle}> Use your Google Account </h1>
+        {/* <h1 className={styles.sign__subTitle}> Use your Google Account </h1> */}
         <input
           type="text"
           name="userName"
@@ -59,7 +59,6 @@ const SignInPage: FC = () => {
           value={userState.userName}
           onChange={handleChange}
         />
-        <a href="#"> Forgot user name? </a>
         <input
           type={typePassword ? 'text' : 'password'}
           name="password"
@@ -69,15 +68,12 @@ const SignInPage: FC = () => {
         />
         <div className={classNames(styles.sign__link, styles.password_input)}>
           <input type="checkbox" id="showPassword" checked={typePassword} onChange={toggle} />
+          <p>Show password</p>
         </div>
 
         <div className={styles.sign__buttonDiv}>
           <Link to="/signUp">Create account</Link>
-          <a href="#"> </a>
-          <button type="submit" onClick={signIn}>
-            {' '}
-            Next{' '}
-          </button>
+          <button type="submit" onClick={signIn}>Next</button>
         </div>
       </form>
     </div>

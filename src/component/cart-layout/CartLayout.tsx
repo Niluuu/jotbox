@@ -15,7 +15,6 @@ interface CartProps {
 interface CartLayoutProps {
   gridType: boolean;
   carts: CartProps[];
-  cartHyper?: any;
   onRemoveCart?: (id: any) => void;
   onReSetCart?: (id: any, title: string, description: any) => void;
   onChangeArchived?: (id: any, title: string, description: any) => void;
@@ -29,7 +28,6 @@ interface CartLayoutProps {
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
-  cartHyper,
   gridType,
   onChangeArchived,
   onChangePin,
@@ -64,7 +62,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gridType={gridType}
                 description={cart.description}
                 pined={cart.pined}
-                cartHyper={cartHyper}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onReSetCart={onReSetCart}
@@ -96,7 +93,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gridType={gridType}
                 description={cart.description}
                 pined={cart.pined}
-                cartHyper={cartHyper}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onReSetCart={onReSetCart}
@@ -104,7 +100,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
-                cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
               />

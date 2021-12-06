@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,12 +10,14 @@ import { Icon } from '../../component/Icon/Icon';
 import { Avatar } from '../../component/avatar/Avatar';
 import { googleLinks1, googleLinks2 } from '../../utils/google-links';
 import { toggleGrid } from '../../features/layout/layoutGridType';
+import onErrorMessage from '../../component/message/message';
 
 /**
  * Main Header component for user interaction
  */
 
 export const Navbar: FC = () => {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   const mapStateToProps = useSelector((state: RootState) => {
@@ -25,8 +28,14 @@ export const Navbar: FC = () => {
   async function signOut() {
     try {
       await Auth.signOut();
+
+      localStorage.removeItem('assessToken');
+      localStorage.removeItem('userEmail');
+      history.push('/sginin');
+
+      // onErrorMessage('You sgin out succesfully', 'success');
     } catch (error) {
-      console.log('error signing out: ', error);
+      // onErrorMessage('Error sgin out', 'error');
     }
   }
 

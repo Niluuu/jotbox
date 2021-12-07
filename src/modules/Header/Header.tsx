@@ -23,9 +23,7 @@ export const Header: FC<HeaderProps> = ({ onClick }) => {
         <Hamburger onClick={onClick} />
         <Logo />
       </div>
-
       <SearchInput />
-
       <Navbar />
     </header>
   );

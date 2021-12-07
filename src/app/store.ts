@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import layoutGrid from '../features/layout/layoutGridType'
+import layoutGrid from '../reducers/layout';
 
 export const store = configureStore({
   reducer: {
-    layoutGridTypeReducer: layoutGrid
+    layoutGridTypeReducer: layoutGrid,
   },
 });
 

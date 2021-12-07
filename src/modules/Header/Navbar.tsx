@@ -9,7 +9,7 @@ import Popover from '../../component/popover/Popover';
 import { Icon } from '../../component/Icon/Icon';
 import { Avatar } from '../../component/avatar/Avatar';
 import { googleLinks1, googleLinks2 } from '../../utils/google-links';
-import { toggleGrid } from '../../features/layout/layoutGridType';
+import { toggleGrid } from '../../reducers/layout';
 import onErrorMessage from '../../component/message/message';
 
 /**

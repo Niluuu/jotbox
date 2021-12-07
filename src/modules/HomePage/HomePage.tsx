@@ -1,6 +1,6 @@
-import { FC, useState,useCallback, useRef,useEffect } from 'react';
+import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import { useSelector,  } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
 import { Node } from '../../models';
 import styles from './HomePage.module.scss';
@@ -46,7 +46,6 @@ const HomePage: FC = () => {
   useEffect(() => {
     fetchTodos();
   }, []);
-
 
   const onRemoveCart = useCallback(
     async (id) => {
@@ -254,12 +253,16 @@ const HomePage: FC = () => {
     ),
   );
 
-
   const mapStateToProps = useSelector((state: RootState) => {
-    return state.layoutGridTypeReducer;
+    return {
+      layoutReducer: state.layoutGridTypeReducer,
+    };
   });
 
-  const { grid } = mapStateToProps;
+  const dispatch = useDispatch();
+
+  const { grid } = mapStateToProps.layoutReducer;
+
   return (
     <Layout filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
       <div className={classNames(styles.home_page, grid && styles.column)}>

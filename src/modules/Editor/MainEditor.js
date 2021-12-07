@@ -15,11 +15,12 @@ import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar
 
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
-import editorStyles from './Editor.module.scss';
+import styles from './Editor.module.scss';
+import { linkifyPlugin } from '../../utils/editor/addLink';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
-const plugins = [staticToolbarPlugin];
+const plugins = [staticToolbarPlugin,linkifyPlugin];
 
 export default class MainEditor extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ export default class MainEditor extends Component {
 
     return (
       <div>
-        <div className={editorStyles.editor} onClick={this.focus}>
+        <div className={styles.editor} onClick={this.focus}>
           <Editor
             editorState={editorState}
             onChange={this.onChange}

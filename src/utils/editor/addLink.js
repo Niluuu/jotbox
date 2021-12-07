@@ -7,7 +7,7 @@ export const linkifyPlugin = createLinkifyPlugin({
     // eslint-disable-next-line no-alert, jsx-a11y/anchor-has-content
     // eslint-disable jsx-props-no-spreading
     /* eslint-disable react/jsx-props-no-spreading */
-    return <a {...props} onClick={() => window.open('Clicked on Link!')} />;
+    return <a {...props} onClick={() => window.open(props.href)} style={{color: "blue", textDecoration: "underline"}} />;
   },
 
   customExtractLinks: (text) => linkifyIt().tlds(tlds).set({ fuzzyEmail: false }).match(text),

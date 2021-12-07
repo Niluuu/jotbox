@@ -1,4 +1,4 @@
-import { getNodes } from '../../api/getNode';
+import { getNodes } from '../../api/nodes';
 
 export const filterByLetter = async (value, setFilterLetter) => {
   setFilterLetter(value);
@@ -11,5 +11,5 @@ export const filterByLetter = async (value, setFilterLetter) => {
       todo.title.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) >= 0,
   );
 
-  // return filteredNodesByLetter;
+  return filteredNodesByLetter;
 };

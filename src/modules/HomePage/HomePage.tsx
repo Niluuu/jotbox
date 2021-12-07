@@ -9,6 +9,7 @@ import CartLayout from '../../component/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
+import { getNodes } from '../../api/nodes';
 
 interface CartProps {
   id: any;
@@ -33,7 +34,7 @@ const HomePage: FC = () => {
 
   async function fetchTodos() {
     try {
-      const todos = await DataStore.query(Node);
+      const todos = await getNodes();
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       setCart(todos);

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { EditorState } from 'draft-js';
-import Editor from '@draft-js-plugins/editor';
-import createInlineToolbarPlugin, { Separator } from '@draft-js-plugins/inline-toolbar';
+import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
 import {
   ItalicButton,
   BoldButton,
@@ -12,19 +10,30 @@ import {
   BlockquoteButton,
   CodeBlockButton,
 } from '@draft-js-plugins/buttons';
-import editorStyles from './Editor.module.scss';
-import { linkifyPlugin } from '../../utils/editor/addLink';
-import HeadlinesButton from './HeadlinesButton';
+import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar';
 
-const inlineToolbarPlugin = createInlineToolbarPlugin();
-const text = 'In this editor a toolbar shows up once you select part of the text …';
-const { InlineToolbar } = inlineToolbarPlugin;
-const plugins = [linkifyPlugin, inlineToolbarPlugin];
+import '@draft-js-plugins/static-toolbar/lib/plugin.css';
+import 'draft-js/dist/Draft.css';
+import editorStyles from './Editor.module.scss';
+
+const staticToolbarPlugin = createToolbarPlugin();
+const { Toolbar } = staticToolbarPlugin;
+const plugins = [staticToolbarPlugin];
+const text =
+  'The toolbar above the editor can be used for formatting text, as in conventional static editors  …';
 
 export default class MainEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = { editorState: EditorState.createEmpty() };
+    this.state = { editorState: createEditorStateWithText(text) };
+  }
+
+  componentDidMount() {
+    // fixing issue with SSR https://github.com/facebook/draft-js/issues/2332#issuecomment-761573306
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      editorState: createEditorStateWithText(text),
+    });
   }
 
   onChange = (editorState) => {
@@ -41,35 +50,35 @@ export default class MainEditor extends Component {
     const { editorState } = this.state;
 
     return (
-      <div className={editorStyles.editor} onClick={this.focus}>
-        <Editor
-          editorKey="CustomInlineToolbarEditor"
-          editorState={editorState}
-          onChange={this.onChange}
-          plugins={plugins}
-          ref={(element) => {
-            this.editor = element;
-          }}
-        />
-        <InlineToolbar>
-          {
-            // may be use React.Fragment instead of div to improve perfomance after React 16
-            (externalProps) => (
-              <div>
-                <BoldButton {...externalProps} />
-                <ItalicButton {...externalProps} />
-                <UnderlineButton {...externalProps} />
-                <CodeButton {...externalProps} />
-                <Separator {...externalProps} />
-                <HeadlinesButton {...externalProps} />
-                <UnorderedListButton {...externalProps} />
-                <OrderedListButton {...externalProps} />
-                <BlockquoteButton {...externalProps} />
-                <CodeBlockButton {...externalProps} />
-              </div>
-            )
-          }
-        </InlineToolbar>
+      <div>
+        <div className={editorStyles.editor} onClick={this.focus}>
+          <Editor
+            editorState={editorState}
+            onChange={this.onChange}
+            plugins={plugins}
+            ref={(element) => {
+              this.editor = element;
+            }}
+          />
+          <Toolbar>
+            {
+              // may be use React.Fragment instead of div to improve perfomance after React 16
+              (externalProps) => (
+                <div>
+                  <BoldButton {...externalProps} />
+                  <ItalicButton {...externalProps} />
+                  <UnderlineButton {...externalProps} />
+                  <CodeButton {...externalProps} />
+                  <Separator {...externalProps} />
+                  <UnorderedListButton {...externalProps} />
+                  <OrderedListButton {...externalProps} />
+                  <BlockquoteButton {...externalProps} />
+                  <CodeBlockButton {...externalProps} />
+                </div>
+              )
+            }
+          </Toolbar>
+        </div>
       </div>
     );
   }

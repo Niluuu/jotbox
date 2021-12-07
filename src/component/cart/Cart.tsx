@@ -78,7 +78,8 @@ const Cart: FC<CartProps> = ({
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
           <div className={styles.main_chips}>
-            { gaps && gaps.map((gap) => <div> {gap} </div>) } 
+            { gaps && gaps.map((gap) => 
+              <Chip onDelate={() => console.log('delate')}> {gap} </Chip>) } 
           </div>
         <div className={styles.input_navbar}>
           {isTrashPage ? (

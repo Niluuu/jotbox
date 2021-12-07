@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
+import {EditorState} from 'draft-js';
+import Editor, { createEditorStateWithText, createEmpty } from '@draft-js-plugins/editor';
 import {
   ItalicButton,
   BoldButton,
@@ -19,21 +20,11 @@ import editorStyles from './Editor.module.scss';
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
 const plugins = [staticToolbarPlugin];
-const text =
-  'The toolbar above the editor can be used for formatting text, as in conventional static editors  …';
 
 export default class MainEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = { editorState: createEditorStateWithText(text) };
-  }
-
-  componentDidMount() {
-    // fixing issue with SSR https://github.com/facebook/draft-js/issues/2332#issuecomment-761573306
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      editorState: createEditorStateWithText(text),
-    });
+    this.state = { editorState:  EditorState.createEmpty()};
   }
 
   onChange = (editorState) => {

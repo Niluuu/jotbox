@@ -10,6 +10,11 @@
       "StackName": "amplify-jotbox-staging-201333",
       "StackId": "arn:aws:cloudformation:eu-central-1:729271425433:stack/amplify-jotbox-staging-201333/acf75e90-4719-11ec-bc3b-06a462293f9e",
       "AmplifyAppId": "d17oh96r8b4gc1"
+    },
+    "categories": {
+      "auth": {
+        "jotbox": {}
+      }
     }
   }
 }

@@ -7,6 +7,7 @@ import Popover from '../popover/Popover';
 interface InputNavbarProps {
   withHistory?: boolean;
   isMainInput?: boolean;
+  isEditor?: boolean;
   onHyperLinkEditMode?: () => void;
   ontoggle?: () => void;
   onSetArchive?: () => void;
@@ -22,6 +23,7 @@ interface InputNavbarProps {
 
 export const InputNavbar: FC<InputNavbarProps> = ({
   isMainInput,
+  isEditor,
   onChangeArchived,
   onSetArchive,
   onHyperLinkEditMode,
@@ -65,19 +67,19 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   return (
     <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
       <div className={styles.main_tools}>
-        <button type="button" className={styles.icon_btn}>
+        {!isMainInput && <button type="button" className={styles.icon_btn}>
           <Icon name="notification-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
+        </button>}
+        {!isMainInput && <button type="button" className={styles.icon_btn}>
           <Icon name="user-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
+        </button>}
+        {!isMainInput && <button type="button" className={styles.icon_btn}>
           <Icon name="img" color="premium" size="xs" />
-        </button>
-        <button onClick={toArchive} type="button" className={styles.icon_btn}>
+        </button>}
+        {!isMainInput && <button onClick={toArchive} type="button" className={styles.icon_btn}>
           <Icon name="dowland" color="premium" size="xs" />
-        </button>
-        <Popover
+        </button>} 
+        {!isEditor && <Popover
           content={
             <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
               <ul className={styles.popover_content}>
@@ -108,8 +110,8 @@ export const InputNavbar: FC<InputNavbarProps> = ({
           <button type="button" className={styles.icon_btn}>
             <Icon name="other" color="premium" size="xs" />
           </button>
-        </Popover>
-        <Popover
+        </Popover>}
+        {!isEditor && <Popover
           isOpen={labelEdit}
           content={
             <div className={classNames(styles.navbar_popover, styles.labels, styles.navbar_popover_settings)}>
@@ -135,8 +137,8 @@ export const InputNavbar: FC<InputNavbarProps> = ({
           placement="bottom-start"
         >
           <span style={{ color: '#fff', display: 'none' }}>i</span>
-        </Popover>
-        {withHistory ? (
+        </Popover>}
+        {withHistory && !isEditor ? (
           <>
             <button style={{position: 'relative', right: '3px'}} type="button" className={styles.icon_btn}>
               <Icon name="back" color="premium" size="xs" />

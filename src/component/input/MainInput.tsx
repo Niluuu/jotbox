@@ -1,4 +1,4 @@
-import { FC, useRef, useCallback } from 'react';
+import { FC, useRef, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { RootState } from '../../app/store';
@@ -44,6 +44,17 @@ const MainInput: FC<MainInputProps> = ({
   }, []);
 
   const { grid } = mapStateToProps
+  
+  const titleRef = useRef<HTMLDivElement>()
+  const [focusEdit, setFocusEdit] = useState(false)
+
+  const onKeyFocus = (key) => {
+    if (key === "Enter") {
+      titleRef.current.blur()
+      setFocusEdit((prev) => !prev)
+      setTimeout(() => setFocusEdit((prev) => !prev), 100);
+    }
+  }
   return (
     <div
       className={classNames(styles.main_input, grid && styles.column)}
@@ -54,11 +65,6 @@ const MainInput: FC<MainInputProps> = ({
       ref={outsideRef}
     >
       <div className={classNames(styles.main_header, focused && styles.show)}>
-       
-      <div className={styles.main_row}>
-        <MainEditor />
-      </div>
-
         <div className={styles.main_tools}>
           <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
             {!defaultPin ? (
@@ -70,7 +76,17 @@ const MainInput: FC<MainInputProps> = ({
         </div>
       </div>
       <div className={styles.main_row}>
-        <MainEditor />
+      <div 
+        ref={titleRef} 
+        id="title" 
+        className={styles.textarea} contentEditable
+        onKeyUp={(e) => {
+          onKeyFocus(e.key)
+        }}
+        suppressContentEditableWarning 
+        aria-multiline 
+        role="textbox" 
+        spellCheck />
       </div>
       {!focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
@@ -85,16 +101,21 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
-      {focused ? (
-        <InputNavbar
-          focused={focused}
-          isMainInput={!!true}
-          onSetArchive={onSetArchive}
-          ontoggle={() => onSetCart()}
-          onSetIsMain={onSetIsMain}
-          withHistory
-        />
-      ) : null}
+      { focused ? 
+        <div className={styles.main_toolbar}>
+          <MainEditor focusEdit={focusEdit} onSetArchive={onSetArchive} />
+          <div className={styles.additional}>
+            <InputNavbar
+              focused={focused}
+              isMainInput={!!true}
+              isEditor={!true}
+              onSetArchive={onSetArchive}
+              ontoggle={() => onSetCart()}
+              onSetIsMain={onSetIsMain}
+              withHistory
+            />
+          </div>
+        </div> : null}
     </div>
   );
 };

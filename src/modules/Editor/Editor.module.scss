@@ -1,13 +1,38 @@
 .editor {
   box-sizing: border-box;
-  border: 1px solid #ddd;
   cursor: text;
-  padding: 16px;
+  padding: 5px 15px;
   border-radius: 2px;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
   background: #fefefe;
   height: auto;
   min-height: 1px;
+
+  & > div {
+    border: none !important;
+    box-shadow: none !important;
+    padding-top: 10px !important;
+
+    div { 
+      div {
+        button {
+          background: #fff !important;
+        }
+      }
+    }
+  }
+
+  .custom {
+    border-bottom: 2px solid rgba(210, 210, 210, 0.4) !important;
+  }
+
+  .icon_btn {
+    margin-right: 10px !important;
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+  }
 }
 
 .editor :global(.public-DraftEditor-content) {

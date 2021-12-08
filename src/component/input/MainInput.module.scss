@@ -15,7 +15,7 @@
     align-items: center;
     border-radius: 8px;
     overflow: hidden;
-    padding: 0 8px;
+    padding: 0; 
     margin: 7px;
     width: 550px;
     max-width: 550px;
@@ -63,7 +63,7 @@
 .textarea {
   width: 95%;
   font-size: inherit;
-  padding: 1px 6px;
+  padding: 1px 15px;
   outline: none;
   margin: 10px 0;
   display: block;
@@ -80,6 +80,25 @@
 .textarea[contenteditable]:empty::before {
   color: $gray-color4;
   font-weight: $font-weight-normal;
+}
+
+.main_toolbar {
+  display: flex;
+  min-width: 100%;
+  position: relative;
+
+  & > div {
+    min-width: 100%;
+  }
+
+  .additional {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    min-width: 225px !important;
+    width: 225px !important;
+    transform: translateY(-24%);
+  }
 }
 
 .main_tools {

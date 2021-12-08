@@ -11,4 +11,4 @@ type Node @model @auth(rules: [{allow: public}]) {
   pined: Boolean!
   archived: Boolean!
 }
- 
+  

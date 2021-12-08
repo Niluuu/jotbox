@@ -22,6 +22,6 @@
       }
     },
     "apiName": "jotbox",
-    "gqlSchemaPath": "/tmp/amplify-3da0637f-1146-4e8e-98d0-3a22277e4043/amplify/backend/api/jotbox/schema.graphql"
+    "gqlSchemaPath": "/tmp/amplify-534d73bd-af55-45c2-bb63-731d70740c6d/amplify/backend/api/jotbox/schema.graphql"
   }
 }

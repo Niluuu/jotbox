@@ -54,12 +54,5 @@
         ]
       }
     }
-  },
-  "function": {
-    "jotbox568fc184": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
   }
 }

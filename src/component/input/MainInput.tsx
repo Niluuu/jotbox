@@ -65,6 +65,7 @@ const MainInput: FC<MainInputProps> = ({
       ref={outsideRef}
     >
       <div className={classNames(styles.main_header, focused && styles.show)}>
+       
         <div className={styles.main_tools}>
           <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
             {!defaultPin ? (

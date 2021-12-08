@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
+import {EditorState} from 'draft-js';
+import Editor, { createEditorStateWithText, createEmpty } from '@draft-js-plugins/editor';
 import {
   ItalicButton,
   BoldButton,
@@ -14,26 +15,17 @@ import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar
 
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
-import editorStyles from './Editor.module.scss';
-import { Icon } from '../../component/Icon/Icon';
+import styles from './Editor.module.scss';
+import { linkifyPlugin } from '../../utils/editor/addLink';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
-const plugins = [staticToolbarPlugin];
-const text = 'The toolbar above the editor can be used for formatting text, as in conventional static editors  …';
+const plugins = [staticToolbarPlugin,linkifyPlugin];
 
 export default class MainEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = { editorState: createEditorStateWithText(text) };
-  }
-
-  componentDidMount() {
-    // fixing issue with SSR https://github.com/facebook/draft-js/issues/2332#issuecomment-761573306
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      editorState: createEditorStateWithText(text),
-    });
+    this.state = { editorState:  EditorState.createEmpty()};
   }
 
   onChange = (editorState) => {
@@ -54,7 +46,7 @@ export default class MainEditor extends Component {
     }
     return (
       <div>
-        <div className={editorStyles.editor} onClick={this.focus}>
+        <div className={styles.editor} onClick={this.focus}>
           <Editor
             editorState={editorState}
             onChange={this.onChange}

@@ -1,7 +1,7 @@
 export const schema = {
     "models": {
-        "Node": {
-            "name": "Node",
+        "Gaps": {
+            "name": "Gaps",
             "fields": {
                 "id": {
                     "name": "id",
@@ -17,17 +17,76 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Gaps",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Node": {
+            "name": "Node",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "title": {
+                    "name": "title",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "description": {
                     "name": "description",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "gaps": {
                     "name": "gaps",
                     "isArray": true,
-                    "type": "String",
+                    "type": "ID",
                     "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true
@@ -91,5 +150,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "29fccaa635de1febfedeb3cbacf97a37"
+    "version": "abffa132b593514afdf5f82bfa1915dc"
 };

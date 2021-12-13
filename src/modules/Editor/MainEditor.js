@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {EditorState} from 'draft-js';
-import Editor, { createEditorStateWithText, createEmpty } from '@draft-js-plugins/editor';
+import {Editor,EditorState, CompositeDecorator, RichUtils, convertToRaw} from 'draft-js';
 import {
   ItalicButton,
   BoldButton,
@@ -12,37 +11,169 @@ import {
   CodeBlockButton,
 } from '@draft-js-plugins/buttons';
 import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar';
+import jsonBeautify from 'json-beautify'
+import styles from './Editor.module.scss';
 
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
-import styles from './Editor.module.scss';
 import { linkifyPlugin } from '../../utils/editor/addLink';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
 const plugins = [staticToolbarPlugin,linkifyPlugin];
 
+
+function findLinkEntities(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges((character) => {
+    const entityKey = character.getEntity();
+    return (
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() === "LINK"
+    );
+  }, callback);
+}
+
+
+const Link = (props) => {
+  const {contentState, entityKey, children} = props
+  const {url} = contentState.getEntity(entityKey).getData();
+
+  return ( 
+    <a href={url} className={styles.link} onClick={() => window.open(url)}>
+      {children}
+    </a>
+  );
+};
+
 export default class MainEditor extends Component {
   constructor(props) {
-    super(props);
-    this.state = { editorState:  EditorState.createEmpty()};
+    super(props);   
+
+    const decorator = new CompositeDecorator([
+      {
+        strategy: findLinkEntities,
+        component: Link
+      }
+    ]);
+
+    this.state = { 
+      editorState:  EditorState.createEmpty(decorator), 
+      urlValue: ''
+  };
   }
 
-  onChange = (editorState) => {
-    this.setState({
-      editorState,
-    });
+  onChange = (editorState) => this.setState({editorState});
+
+  focus = () => this.editor.focus();
+
+  logState = () => {
+    const  { editorState } = this.state
+    const content = editorState.getCurrentContent();
+    console.log("log state",convertToRaw(content));
   };
 
-  focus = () => {
-    this.editor.focus();
+  onURLChange = (e) => this.setState({urlValue: e.target.value});
+
+  promptForLink = (e) => {
+    e.preventDefault();
+    const { editorState } = this.state;
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      const contentState = editorState.getCurrentContent();
+      const startKey = editorState.getSelection().getStartKey();
+      const startOffset = editorState.getSelection().getStartOffset();
+      const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+      const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
+      let url = "";
+      if (linkKey) {
+        const linkInstance = contentState.getEntity(linkKey);
+        url = linkInstance.getData().url;
+      }
+      this.setState(
+        {
+          urlValue: url
+        }
+      );
+    }
   };
+
+
+  confirmLink = (e) => {
+    e.preventDefault();
+    console.log("confirmLink")
+
+    const {editorState, urlValue} = this.state;
+    const contentState = editorState.getCurrentContent();
+
+    const contentStateWithEntity = contentState.createEntity(
+      'LINK',
+      'MUTABLE',
+      {url: urlValue}
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    
+    // Apply entity
+    let nextEditorState = EditorState.set(editorState, 
+      { currentContent: contentStateWithEntity }
+    );
+
+    // Apply selection
+    nextEditorState = RichUtils.toggleLink( nextEditorState, 
+      nextEditorState.getSelection(), entityKey 
+    );
+
+    this.setState({
+      editorState: nextEditorState,
+      urlValue: '',
+    });
+  }
+
+  onLinkInputKeyDown = (e) => { if (e.which === 13) { this.confirmLink(e); } }
+
+  removeLink = (e) => {
+    e.preventDefault();
+    const {editorState} = this.state;
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      this.setState({
+        editorState: RichUtils.toggleLink(editorState, selection, null),
+      });
+    }
+  }
 
   render() {
-    const { editorState } = this.state;
+    const { editorState,urlValue } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const raw = convertToRaw(contentState);
+    const rawStr = jsonBeautify(raw, null, 2, 50);
 
     return (
       <div>
+         <div>
+          <input
+            onChange={this.onURLChange}
+            type="text"
+            value={urlValue}
+            onKeyDown={this.onLinkInputKeyDown}
+          />
+          <button type="button" onMouseDown={this.confirmLink}> Confirm </button> 
+        </div>
+
+        <div style={styles.buttons}>
+          <button
+            type="button"
+            onMouseDown={this.promptForLink}
+            style={{marginRight: 10}}>
+            Add Link
+          </button>
+          <button type="button" onMouseDown={this.removeLink}>
+            Remove Link
+          </button>
+        </div>
+        <pre><code>{rawStr}</code></pre>
+
+
+
         <div className={styles.editor} onClick={this.focus}>
           <Editor
             editorState={editorState}

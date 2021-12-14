@@ -17,35 +17,12 @@ import styles from './Editor.module.scss';
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import { linkifyPlugin } from '../../utils/editor/addLink';
-import Popover from '../../component/popover/Popover';
+import {findLinkEntities, Link} from '../../utils/editor/link';
 import Modal from '../../component/modal/Modal';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
 const plugins = [staticToolbarPlugin,linkifyPlugin];
-
-
-function findLinkEntities(contentBlock, callback, contentState) {
-  contentBlock.findEntityRanges((character) => {
-    const entityKey = character.getEntity();
-    return (
-      entityKey !== null &&
-      contentState.getEntity(entityKey).getType() === "LINK"
-    );
-  }, callback);
-}
-
-
-const Link = (props) => {
-  const {contentState, entityKey, children} = props
-  const {url} = contentState.getEntity(entityKey).getData();
-
-  return ( 
-    <a href={url} className={styles.link} onClick={() => window.open(url)}>
-      {children}
-    </a>
-  );
-};
 
 export default class MainEditor extends Component {
   constructor(props) {

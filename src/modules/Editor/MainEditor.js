@@ -17,6 +17,8 @@ import styles from './Editor.module.scss';
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import { linkifyPlugin } from '../../utils/editor/addLink';
+import Popover from '../../component/popover/Popover';
+import Modal from '../../component/modal/Modal';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
@@ -143,37 +145,14 @@ export default class MainEditor extends Component {
 
   render() {
     const { editorState,urlValue } = this.state;
+    const { linkMode, onLinkMode } = this.props;
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const rawStr = jsonBeautify(raw, null, 2, 50);
 
     return (
       <div>
-         <div>
-          <input
-            onChange={this.onURLChange}
-            type="text"
-            value={urlValue}
-            onKeyDown={this.onLinkInputKeyDown}
-          />
-          <button type="button" onMouseDown={this.confirmLink}> Confirm </button> 
-        </div>
-
-        <div style={styles.buttons}>
-          <button
-            type="button"
-            onMouseDown={this.promptForLink}
-            style={{marginRight: 10}}>
-            Add Link
-          </button>
-          <button type="button" onMouseDown={this.removeLink}>
-            Remove Link
-          </button>
-        </div>
         <pre><code>{rawStr}</code></pre>
-
-
-
         <div className={styles.editor} onClick={this.focus}>
           <Editor
             editorState={editorState}
@@ -200,8 +179,31 @@ export default class MainEditor extends Component {
                 </div>
               )
             }
-          </Toolbar>
-        </div>
+          </Toolbar> 
+        </div>  
+        <Modal isOpen={linkMode}>
+          <div className={styles.linkWrapper}>
+            <div className={styles.inputs}>
+              <input
+                onChange={this.onURLChange}
+                type="text"
+                value={urlValue}
+                onKeyDown={this.onLinkInputKeyDown}
+              />
+              <button type="button" onClick={onLinkMode} onMouseDown={this.confirmLink}> Confirm </button> 
+            </div>
+            <div className={styles.buttons}>
+              <button
+                type="button"
+                onMouseDown={this.promptForLink}>
+                Add Link
+              </button>
+              <button type="button" onMouseDown={this.removeLink}>
+                Remove Link
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
     );
   }

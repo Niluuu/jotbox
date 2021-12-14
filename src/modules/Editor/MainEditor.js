@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import {Editor,EditorState, CompositeDecorator, RichUtils, convertToRaw} from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  CompositeDecorator,
+  RichUtils,
+  convertToRaw,
+  OrderedSet,
+  Modifier,
+} from 'draft-js';
 import {
   ItalicButton,
   BoldButton,
@@ -11,47 +19,75 @@ import {
   CodeBlockButton,
 } from '@draft-js-plugins/buttons';
 import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar';
-import jsonBeautify from 'json-beautify'
+import jsonBeautify from 'json-beautify';
 import styles from './Editor.module.scss';
 
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import { linkifyPlugin } from '../../utils/editor/addLink';
-import {findLinkEntities, Link} from '../../utils/editor/link';
+import { findLinkEntities, Link } from '../../utils/editor/link';
 import Modal from '../../component/modal/Modal';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
-const plugins = [staticToolbarPlugin,linkifyPlugin];
+const plugins = [staticToolbarPlugin, linkifyPlugin];
 
 export default class MainEditor extends Component {
   constructor(props) {
-    super(props);   
+    super(props);
 
     const decorator = new CompositeDecorator([
       {
         strategy: findLinkEntities,
-        component: Link
-      }
+        component: Link,
+      },
     ]);
 
-    this.state = { 
-      editorState:  EditorState.createEmpty(decorator), 
-      urlValue: ''
-  };
+    this.state = {
+      editorState: EditorState.createEmpty(decorator),
+      urlValue: '',
+      cartUrl: 'node1',
+    };
   }
 
-  onChange = (editorState) => this.setState({editorState});
+  foo = () => {
+    console.log('foo');
+    const { editorState, cartUrl } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const text = editorState.getCurrentContent().getBlocksAsArray();
+    const finalText = text.map((item) => item.getText());
+
+    const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url: cartUrl });
+    console.log('contentStateWithEntity', contentStateWithEntity);
+  };
+
+  logState = () => {
+    const { editorState, cartLink } = this.state;
+    const content = editorState.getCurrentContent();
+    const convertedToRaw = convertToRaw(content);
+    const text = editorState.getCurrentContent().getBlocksAsArray();
+    const finalText = text.map((item) => item.getText());
+
+    console.log('finalTextt', finalText[0].slice(-2) === '[[');
+
+    if (finalText[0].slice(-2) === '[[' || finalText[0].slice(-2) === ']]') {
+      console.log('[[object]]');
+      const start = finalText[0].indexOf('[[');
+      const end = finalText[0].indexOf(']]');
+
+      console.log('start', start);
+      console.log('end', end);
+    }
+  };
+
+  onChange = (editorState) => {
+    this.setState({ editorState });
+    this.logState();
+  };
 
   focus = () => this.editor.focus();
 
-  logState = () => {
-    const  { editorState } = this.state
-    const content = editorState.getCurrentContent();
-    console.log("log state",convertToRaw(content));
-  };
-
-  onURLChange = (e) => this.setState({urlValue: e.target.value});
+  onURLChange = (e) => this.setState({ urlValue: e.target.value });
 
   promptForLink = (e) => {
     e.preventDefault();
@@ -63,62 +99,60 @@ export default class MainEditor extends Component {
       const startOffset = editorState.getSelection().getStartOffset();
       const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
       const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
-      let url = "";
+      let url = '';
       if (linkKey) {
         const linkInstance = contentState.getEntity(linkKey);
         url = linkInstance.getData().url;
       }
-      this.setState(
-        {
-          urlValue: url
-        }
-      );
+      this.setState({
+        urlValue: url,
+      });
     }
   };
 
-
   confirmLink = (e) => {
     e.preventDefault();
-    console.log("confirmLink")
+    console.log('confirmLink');
 
-    const {editorState, urlValue} = this.state;
+    const { editorState, urlValue } = this.state;
     const contentState = editorState.getCurrentContent();
 
-    const contentStateWithEntity = contentState.createEntity(
-      'LINK',
-      'MUTABLE',
-      {url: urlValue}
-    );
+    const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url: urlValue });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    
+
     // Apply entity
-    let nextEditorState = EditorState.set(editorState, 
-      { currentContent: contentStateWithEntity }
-    );
+    let nextEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
 
     // Apply selection
-    nextEditorState = RichUtils.toggleLink( nextEditorState, 
-      nextEditorState.getSelection(), entityKey 
+    nextEditorState = RichUtils.toggleLink(
+      nextEditorState,
+      nextEditorState.getSelection(),
+      entityKey,
     );
 
     this.setState({
       editorState: nextEditorState,
       urlValue: '',
     });
-  }
+  };
 
-  onLinkInputKeyDown = (e) => { if (e.which === 13) { this.confirmLink(e); } }
+  onLinkInputKeyDown = (e) => {
+    if (e.which === 13) {
+      this.confirmLink(e);
+    }
+  };
 
   removeLink = (e) => {
     e.preventDefault();
-    const {editorState} = this.state;
+    const { editorState } = this.state;
     const selection = editorState.getSelection();
+    console.log('selection', selection);
     if (!selection.isCollapsed()) {
       this.setState({
         editorState: RichUtils.toggleLink(editorState, selection, null),
       });
     }
-  }
+  };
 
   render() {
     const { editorState,urlValue } = this.state;
@@ -139,6 +173,7 @@ export default class MainEditor extends Component {
               this.editor = element;
             }}
           />
+
           <Toolbar>
             {
               // may be use React.Fragment instead of div to improve perfomance after React 16

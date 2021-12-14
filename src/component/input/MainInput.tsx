@@ -1,4 +1,4 @@
-import { FC, useRef, useCallback } from 'react';
+import { FC, useRef, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { RootState } from '../../app/store';
@@ -31,44 +31,45 @@ const MainInput: FC<MainInputProps> = ({
   const outsideRef = useRef(null);
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
+  useOnClickOutside(outsideRef, handleClickOutside);
+
   const mapStateToProps = useSelector((state: RootState) =>  {
     return state.layoutGridTypeReducer
   });
+  const { grid } = mapStateToProps
   
-  useOnClickOutside(outsideRef, handleClickOutside);
-
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
       console.log('focus out', e.currentTarget.contains(document.activeElement));
     }
   }, []);
 
-  const { grid } = mapStateToProps
+  const [linkMode, setlinkMode] = useState(false)
+  const onLinkMode = ()=> {
+    setlinkMode((prev) => !prev)
+  }
+
   return (
-    <div
+    <div 
       className={classNames(styles.main_input, grid && styles.column)}
       tabIndex={-1}
       onFocus={handleClickInside}
       onBlur={(e) => onFocusOut(e)}
-      onClick={handleClickInside}
-      ref={outsideRef}
-    >
+      onClick={handleClickInside} 
+      ref={outsideRef}>
       <div className={classNames(styles.main_header, focused && styles.show)}>
-       
         <div className={styles.main_tools}>
           <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
-            {!defaultPin ? (
-              <Icon name="pin" color="premium" size="xs" />
-            ) : (
-              <Icon name="pin-black" color="premium" size="xs" />
-            )}
+            { !defaultPin 
+              ? <Icon name="pin" color="premium" size="xs" />
+              : <Icon name="pin-black" color="premium" size="xs" />}
           </button>
         </div>
       </div>
       <div className={styles.main_row}>
-        <MainEditor />
+        <MainEditor linkMode={linkMode} onLinkMode={onLinkMode} />
       </div>
-      {!focused ? (
+      { !focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
           <button type="button" className={styles.icon_btn}>
             <Icon name="edit-bordered" color="premium" size="xs" />
@@ -81,15 +82,15 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
-      {focused ? (
+      { focused ? (
         <InputNavbar
           focused={focused}
           isMainInput={!!true}
           onSetArchive={onSetArchive}
           ontoggle={() => onSetCart()}
           onSetIsMain={onSetIsMain}
-          withHistory
-        />
+          onLinkMode={onLinkMode}
+          withHistory />
       ) : null}
     </div>
   );

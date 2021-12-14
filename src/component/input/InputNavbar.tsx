@@ -12,6 +12,7 @@ interface InputNavbarProps {
   onSetArchive?: () => void;
   focused?: boolean;
   onRemoveCart?: () => void;
+  onLinkMode?: () => void;
   onChangeArchived?: () => void;
   onSetIsMain?: (bool: boolean) => void;
   onCartLabel?: (value: string) => void;
@@ -32,14 +33,8 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   onSetIsMain,
   onSetLabel,
   filteredGaps,
+  onLinkMode
 }) => {
-  const onEdit = () => {
-    if (isMainInput) onSetIsMain(true);
-    else onSetIsMain(false);
-
-    if (onHyperLinkEditMode) onHyperLinkEditMode();
-  };
-
   const toArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
@@ -81,7 +76,7 @@ export const InputNavbar: FC<InputNavbarProps> = ({
           content={
             <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
               <ul className={styles.popover_content}>
-                <li key="1" onClick={onEdit}>
+                <li key="1" onClick={onLinkMode}>
                   {' '}
                   <a href="#">Добавить линк</a>{' '}
                 </li>

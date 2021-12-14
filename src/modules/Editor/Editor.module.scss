@@ -7,6 +7,7 @@
   background: #fefefe;
   height: auto;
   min-height: 1px;
+  position: relative;
 }
 
 .editor :global(.public-DraftEditor-content) {
@@ -37,4 +38,36 @@
   color: #3b5998;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.linkWrapper {
+  padding: 15px;
+  min-width: 400px;
+  
+  button {
+    background: #3b5998;
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 0;
+    font-size: 14px;
+  }
+
+  .inputs {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+
+    input {
+      width: 250px;
+      border: 2px solid rgba(150, 150, 150, 0.25);
+      padding: 5px;
+    }
+  }
+
+  .buttons {
+    button {
+      margin-right: 10px;
+    }
+  }
 }

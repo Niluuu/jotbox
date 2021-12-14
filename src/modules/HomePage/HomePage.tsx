@@ -2,7 +2,7 @@ import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
-import { Node } from '../../models';
+import { Node, Gaps } from '../../models';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
@@ -10,6 +10,7 @@ import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
 import { getNodes } from '../../api/nodes';
+import gapFilter from '../../utils/hooks/gapFilter';
 
 interface CartProps {
   id: any;
@@ -20,7 +21,11 @@ interface CartProps {
   gaps: any[];
 }
 
-const HomePage: FC = () => {
+interface HomePageProps {
+  gapsFilterKey?: any
+}
+
+const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
@@ -185,12 +190,11 @@ const HomePage: FC = () => {
   );
 
   const onSetCart = useCallback(async () => {
-    if (titleRef.current.innerText && textRef.current.innerHTML)
       try {
         const cart = {
           id: Date.now(),
-          title: titleRef.current.innerText,
-          description: textRef.current.innerHTML,
+          title: 'titleRef.current.innerText',
+          description: 'textRef.current.innerHTML',
           pined: defaultPin,
           archived: false,
           gaps: [],
@@ -200,15 +204,15 @@ const HomePage: FC = () => {
 
         await DataStore.save(
           new Node({
-            title: titleRef.current.innerText,
-            description: textRef.current.innerHTML,
+            title: 'titleRef.current.innerText',
+            description: 'textRef.current.innerHTML',
             gaps: [],
             pined: defaultPin,
             archived: false,
           }),
         );
-        titleRef.current.innerHTML = '';
-        textRef.current.innerHTML = '';
+        // titleRef.current.innerHTML = '';
+        // textRef.current.innerHTML = '';
       } catch (err) {
         console.log(err);
       }
@@ -243,17 +247,11 @@ const HomePage: FC = () => {
     }
   }, [carts]);
 
-  // Todo: I added to new folder export form make it work! and delete this lines of code
-  const gapCategories = Array.from(carts.flatMap(({ gaps }) => gaps));
-  const filteredGaps = Object.keys(
-    Object.fromEntries(
-      gapCategories.map((category) => [
-        category,
-        carts.filter((card) => card.gaps && card.gaps.includes(category)),
-      ]),
-    ),
-  );
-
+  const filteredGaps = gapFilter(carts)
+  
+  const cartsToProps = gapsFilterKey 
+    ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey)) : carts
+    
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       layoutReducer: state.layoutGridTypeReducer,
@@ -284,7 +282,7 @@ const HomePage: FC = () => {
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
           gridType={grid}
-          carts={carts}
+          carts={cartsToProps}
           onSetLabel={onSetLabel}
           filteredGaps={filteredGaps}
         />

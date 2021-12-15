@@ -15,17 +15,26 @@ import {
   BlockquoteButton,
   CodeBlockButton,
 } from '@draft-js-plugins/buttons';
-import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar';
+import createHashtagPlugin from '@draft-js-plugins/hashtag';
+import createLinkPlugin from '@draft-js-plugins/anchor';
+import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
 import jsonBeautify from 'json-beautify';
-import styles from './Editor.module.scss';
-import '@draft-js-plugins/static-toolbar/lib/plugin.css';
-import 'draft-js/dist/Draft.css';
 import { linkifyPlugin } from '../../utils/editor/addLink';
 import { findLinkEntities, Link } from '../../utils/editor/link';
 import Modal from '../../component/modal/Modal';
 
-const staticToolbarPlugin = createToolbarPlugin();
-const { Toolbar } = staticToolbarPlugin;
+import styles from './Editor.module.scss';
+import '@draft-js-plugins/hashtag/lib/plugin.css';
+import 'draft-js/dist/Draft.css';
+import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
+
+
+const linkPlugin = createLinkPlugin();
+const hashtagPlugin = createHashtagPlugin();
+const inlineToolbarPlugin = createInlineToolbarPlugin();
+
+const { InlineToolbar } = inlineToolbarPlugin;
+
 
 const customPlugin = {
   decorators: [
@@ -36,7 +45,8 @@ const customPlugin = {
   ],
 }
 
-const plugins = [staticToolbarPlugin, linkifyPlugin, customPlugin];
+const plugins = [ linkifyPlugin, hashtagPlugin, customPlugin, inlineToolbarPlugin, linkPlugin];
+
 
 export default class MainEditor extends Component {
   constructor(props) {
@@ -46,7 +56,6 @@ export default class MainEditor extends Component {
       urlValue: '',
     };
   }
-
 
   logState = () => {
     const { editorState, cartLink } = this.state;
@@ -142,7 +151,7 @@ export default class MainEditor extends Component {
 
     return (
       <div>
-        <pre><code>{rawStr}</code></pre>
+        {/* <pre><code>{rawStr}</code></pre> */}
         <div className={styles.editor} onClick={this.focus}>
           <Editor
             editorState={editorState}
@@ -152,7 +161,7 @@ export default class MainEditor extends Component {
               this.editor = element;
             }}
           />
-          <Toolbar>
+          <InlineToolbar >
             {
               (externalProps) => (
                 <>
@@ -160,15 +169,15 @@ export default class MainEditor extends Component {
                   <ItalicButton {...externalProps} />
                   <UnderlineButton {...externalProps} />
                   <CodeButton {...externalProps} />
-                  <Separator {...externalProps} />
                   <UnorderedListButton {...externalProps} />
                   <OrderedListButton {...externalProps} />
                   <BlockquoteButton {...externalProps} />
                   <CodeBlockButton {...externalProps} />
+                  <linkPlugin.LinkButton {...externalProps} />
                 </>
               )
             }
-          </Toolbar> 
+          </InlineToolbar> 
         </div>  
         <Modal isOpen={linkMode}>
           <div className={styles.linkWrapper}>

@@ -12,6 +12,7 @@ import {
 } from '@draft-js-plugins/buttons';
 import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar';
 import jsonBeautify from 'json-beautify'
+import {Icon} from "../../component/Icon/Icon"
 import styles from './Editor.module.scss';
 
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
@@ -37,8 +38,9 @@ export default class MainEditor extends Component {
 
     this.state = { 
       editorState:  EditorState.createEmpty(decorator), 
-      urlValue: ''
-  };
+      urlValue: '',
+      focus: false
+    };
   }
 
   onChange = (editorState) => this.setState({editorState});
@@ -107,7 +109,9 @@ export default class MainEditor extends Component {
     });
   }
 
-  onLinkInputKeyDown = (e) => { if (e.which === 13) { this.confirmLink(e); } }
+  onLinkInputKeyDown = (e) => { 
+    if (e.which === 13) { this.confirmLink(e); } 
+  }
 
   removeLink = (e) => {
     e.preventDefault();
@@ -121,7 +125,7 @@ export default class MainEditor extends Component {
   }
 
   render() {
-    const { editorState,urlValue } = this.state;
+    const { editorState, urlValue, focus } = this.state;
     const { linkMode, onLinkMode } = this.props;
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
@@ -161,22 +165,33 @@ export default class MainEditor extends Component {
         <Modal isOpen={linkMode}>
           <div className={styles.linkWrapper}>
             <div className={styles.inputs}>
-              <input
-                onChange={this.onURLChange}
-                type="text"
-                value={urlValue}
-                onKeyDown={this.onLinkInputKeyDown}
-              />
-              <button type="button" onClick={onLinkMode} onMouseDown={this.confirmLink}> Confirm </button> 
+              <input type="text" readOnly value="Readonly" /> 
+              <div className={styles.inputs_item}>
+                <button type="button" onMouseDown={this.removeLink} onClick={() => {
+                  if (focus) this.setState({ urlValue: '' })}}>
+                  <Icon name={focus ? 'delete' : 'filled-label'} color="premium" size="xs" />
+                </button>
+                <input
+                  onChange={this.onURLChange}
+                  type="text"
+                  value={urlValue}
+                  onKeyDown={this.onLinkInputKeyDown}
+                  onFocus={() => this.setState({ focus: true })}
+                  onBlur={() => this.setState({ focus: false })}
+                />
+                <button type="button"> 
+                  <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" /> 
+                </button> 
+              </div>
             </div>
             <div className={styles.buttons}>
               <button
                 type="button"
-                onMouseDown={this.promptForLink}>
+                onClick={onLinkMode} 
+                onMouseDown={this.confirmLink}
+                // onMouseDown={this.promptForLink} 
+                >
                 Add Link
-              </button>
-              <button type="button" onMouseDown={this.removeLink}>
-                Remove Link
               </button>
             </div>
           </div>

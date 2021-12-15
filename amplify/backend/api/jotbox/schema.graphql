@@ -1,6 +1,7 @@
 type Gaps @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
+  order: Int
 }
 
 type Node @model @auth(rules: [{allow: public}]) {
@@ -10,5 +11,12 @@ type Node @model @auth(rules: [{allow: public}]) {
   gaps: [ID]
   pined: Boolean!
   archived: Boolean!
+  trashed: Boolean!
+  collaborators: [AWSEmail!]
+  reminderTime: AWSDateTime
+  reminderInterval: AWSTime
+  order: Int
+  images: [String]
+  color: String
 }
-  
+ 

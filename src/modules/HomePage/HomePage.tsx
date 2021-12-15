@@ -209,6 +209,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             gaps: [],
             pined: defaultPin,
             archived: false,
+            trashed: false
           }),
         );
         // titleRef.current.innerHTML = '';
@@ -238,6 +239,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           gaps: [],
           pined: defaultPin,
           archived: true,
+          trashed: false
         }),
       );
       titleRef.current.innerHTML = '';

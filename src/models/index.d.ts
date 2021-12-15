@@ -15,6 +15,7 @@ type NodeMetaData = {
 export declare class Gaps {
   readonly id: string;
   readonly title: string;
+  readonly order?: number;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Gaps, GapsMetaData>);
@@ -28,6 +29,13 @@ export declare class Node {
   readonly gaps?: (string | null)[];
   readonly pined: boolean;
   readonly archived: boolean;
+  readonly trashed: boolean;
+  readonly collaborators?: string[];
+  readonly reminderTime?: string;
+  readonly reminderInterval?: string;
+  readonly order?: number;
+  readonly images?: (string | null)[];
+  readonly color?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Node, NodeMetaData>);

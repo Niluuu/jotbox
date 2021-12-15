@@ -54,5 +54,12 @@
         ]
       }
     }
+  },
+  "storage": {
+    "s3jotboxstoraged17oh96r8b4gc1": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
   }
 }

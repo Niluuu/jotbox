@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Editor,
   EditorState,
   CompositeDecorator,
   RichUtils,
@@ -8,6 +7,7 @@ import {
   OrderedSet,
   Modifier,
 } from 'draft-js';
+import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
 import {
   ItalicButton,
   BoldButton,
@@ -30,21 +30,26 @@ import Modal from '../../component/modal/Modal';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
-const plugins = [staticToolbarPlugin, linkifyPlugin];
+
+const customPlugin = {
+  decorators: [
+    {
+      strategy: findLinkEntities,
+      component: Link,
+    },
+  ],
+}
+
+const plugins = [staticToolbarPlugin, linkifyPlugin, customPlugin];
 
 export default class MainEditor extends Component {
   constructor(props) {
     super(props);
 
-    const decorator = new CompositeDecorator([
-      {
-        strategy: findLinkEntities,
-        component: Link,
-      },
-    ]);
+ 
 
     this.state = {
-      editorState: EditorState.createEmpty(decorator),
+      editorState: EditorState.createEmpty(),
       urlValue: '',
       cartUrl: 'node1',
     };

@@ -7,7 +7,6 @@ import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import ConfirmPage from '../SignUpPage/Confirm';
-import { Gaps } from '../../models';
 import {getNodes} from '../../api/nodes';
 import gapFilter from '../../utils/hooks/gapFilter';
 

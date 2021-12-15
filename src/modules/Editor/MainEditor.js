@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import {
   EditorState,
-  CompositeDecorator,
   RichUtils,
   convertToRaw,
-  OrderedSet,
-  Modifier,
 } from 'draft-js';
-import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
+import Editor from '@draft-js-plugins/editor';
 import {
   ItalicButton,
   BoldButton,
@@ -21,7 +18,6 @@ import {
 import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar';
 import jsonBeautify from 'json-beautify';
 import styles from './Editor.module.scss';
-
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import { linkifyPlugin } from '../../utils/editor/addLink';
@@ -45,43 +41,23 @@ const plugins = [staticToolbarPlugin, linkifyPlugin, customPlugin];
 export default class MainEditor extends Component {
   constructor(props) {
     super(props);
-
- 
-
     this.state = {
       editorState: EditorState.createEmpty(),
       urlValue: '',
-      cartUrl: 'node1',
     };
   }
 
-  foo = () => {
-    console.log('foo');
-    const { editorState, cartUrl } = this.state;
-    const contentState = editorState.getCurrentContent();
-    const text = editorState.getCurrentContent().getBlocksAsArray();
-    const finalText = text.map((item) => item.getText());
-
-    const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url: cartUrl });
-    console.log('contentStateWithEntity', contentStateWithEntity);
-  };
 
   logState = () => {
     const { editorState, cartLink } = this.state;
-    const content = editorState.getCurrentContent();
-    const convertedToRaw = convertToRaw(content);
     const text = editorState.getCurrentContent().getBlocksAsArray();
     const finalText = text.map((item) => item.getText());
 
     console.log('finalTextt', finalText[0].slice(-2) === '[[');
 
     if (finalText[0].slice(-2) === '[[' || finalText[0].slice(-2) === ']]') {
-      console.log('[[object]]');
       const start = finalText[0].indexOf('[[');
       const end = finalText[0].indexOf(']]');
-
-      console.log('start', start);
-      console.log('end', end);
     }
   };
 
@@ -117,7 +93,6 @@ export default class MainEditor extends Component {
 
   confirmLink = (e) => {
     e.preventDefault();
-    console.log('confirmLink');
 
     const { editorState, urlValue } = this.state;
     const contentState = editorState.getCurrentContent();
@@ -151,7 +126,6 @@ export default class MainEditor extends Component {
     e.preventDefault();
     const { editorState } = this.state;
     const selection = editorState.getSelection();
-    console.log('selection', selection);
     if (!selection.isCollapsed()) {
       this.setState({
         editorState: RichUtils.toggleLink(editorState, selection, null),
@@ -178,12 +152,10 @@ export default class MainEditor extends Component {
               this.editor = element;
             }}
           />
-
           <Toolbar>
             {
-              // may be use React.Fragment instead of div to improve perfomance after React 16
               (externalProps) => (
-                <div>
+                <>
                   <BoldButton {...externalProps} />
                   <ItalicButton {...externalProps} />
                   <UnderlineButton {...externalProps} />
@@ -193,7 +165,7 @@ export default class MainEditor extends Component {
                   <OrderedListButton {...externalProps} />
                   <BlockquoteButton {...externalProps} />
                   <CodeBlockButton {...externalProps} />
-                </div>
+                </>
               )
             }
           </Toolbar> 

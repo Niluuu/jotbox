@@ -1,4 +1,4 @@
-import { Component, useState, ReactElement, useRef } from 'react';
+import { ReactElement, useState, useCallback, useMemo, useRef } from 'react';
 import { EditorState, RichUtils, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import {
@@ -14,54 +14,58 @@ import {
 import createHashtagPlugin from '@draft-js-plugins/hashtag';
 import createLinkPlugin from '@draft-js-plugins/anchor';
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
+import createMentionPlugin, { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import jsonBeautify from 'json-beautify';
 import { linkifyPlugin } from '../../utils/editor/addLink';
-import { findLinkEntities, Link } from '../../utils/editor/link';
+import { customPlugin } from '../../utils/editor/link';
 import Modal from '../../component/modal/Modal';
+import mentions from './Mentions';
 
 import styles from './Editor.module.scss';
 import '@draft-js-plugins/hashtag/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
+import '@draft-js-plugins/mention/lib/plugin.css';
 
 const linkPlugin = createLinkPlugin();
 const hashtagPlugin = createHashtagPlugin();
 const inlineToolbarPlugin = createInlineToolbarPlugin();
-
 const { InlineToolbar } = inlineToolbarPlugin;
-
-const customPlugin = {
-  decorators: [
-    {
-      strategy: findLinkEntities,
-      component: Link,
-    },
-  ],
-};
-
-const plugins = [linkifyPlugin, hashtagPlugin, customPlugin, inlineToolbarPlugin, linkPlugin];
 
 function MainEditor(props): ReactElement {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [urlValue, seturlValue] = useState('initialState');
   const ref = useRef<Editor>(null);
-
-  const logState = () => {
-    const text = editorState.getCurrentContent().getBlocksAsArray();
-    const finalText = text.map((item) => item.getText());
-
-    console.log('finalTextt', finalText[0].slice(-2) === '[[');
-
-    if (finalText[0].slice(-2) === '[[' || finalText[0].slice(-2) === ']]') {
-      const start = finalText[0].indexOf('[[');
-      const end = finalText[0].indexOf(']]');
-    }
-  };
+  const [open, setOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState(mentions);
 
   const onChange = (newEditorState) => {
     setEditorState(newEditorState);
-    logState();
   };
+
+  const { MentionSuggestions, plugins } = useMemo(() => {
+    const mentionPlugin = createMentionPlugin();
+    // eslint-disable-next-line no-shadow
+    const { MentionSuggestions } = mentionPlugin;
+    // eslint-disable-next-line no-shadow
+    const plugins = [
+      mentionPlugin,
+      linkifyPlugin,
+      hashtagPlugin,
+      customPlugin,
+      inlineToolbarPlugin,
+      linkPlugin,
+    ];
+    
+    return { plugins, MentionSuggestions };
+  }, []);
+
+  const onOpenChange = useCallback((_open: boolean) => {
+    setOpen(_open);
+  }, []);
+  const onSearchChange = useCallback(({ value }: { value: string }) => {
+    setSuggestions(defaultSuggestionsFilter(value, mentions));
+  }, []);
 
   const onURLChange = (e) => seturlValue(e.target.value);
 
@@ -104,8 +108,8 @@ function MainEditor(props): ReactElement {
       entityKey,
     );
 
-    setEditorState(nextEditorState)
-    seturlValue('')
+    setEditorState(nextEditorState);
+    seturlValue('');
   };
 
   const onLinkInputKeyDown = (e) => {
@@ -118,7 +122,8 @@ function MainEditor(props): ReactElement {
     e.preventDefault();
 
     const selection = editorState.getSelection();
-    if (!selection.isCollapsed()) setEditorState(RichUtils.toggleLink(editorState, selection, null))
+    if (!selection.isCollapsed())
+      setEditorState(RichUtils.toggleLink(editorState, selection, null));
   };
 
   const { linkMode, onLinkMode } = props;
@@ -135,12 +140,7 @@ function MainEditor(props): ReactElement {
           ref.current!.focus();
         }}
       >
-        <Editor
-          editorState={editorState}
-          onChange={onChange}
-          plugins={plugins}
-          ref={ref}
-        />
+        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={ref} />
         <InlineToolbar>
           {(externalProps) => (
             <>
@@ -156,6 +156,16 @@ function MainEditor(props): ReactElement {
             </>
           )}
         </InlineToolbar>
+
+        <MentionSuggestions
+          open={open}
+          onOpenChange={onOpenChange}
+          suggestions={suggestions}
+          onSearchChange={onSearchChange}
+          onAddMention={() => {
+            // get the mention object selected
+          }}
+        />
       </div>
       <Modal isOpen={linkMode}>
         <div className={styles.linkWrapper}>

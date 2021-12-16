@@ -4,6 +4,10 @@ import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplif
 
 
 
+type UsersMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type GapsMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -12,10 +16,20 @@ type NodeMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+export declare class Users {
+  readonly id: string;
+  readonly email?: string;
+  readonly name?: string;
+  readonly password?: string;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  constructor(init: ModelInit<Users, UsersMetaData>);
+  static copyOf(source: Users, mutator: (draft: MutableModel<Users, UsersMetaData>) => MutableModel<Users, UsersMetaData> | void): Users;
+}
+
 export declare class Gaps {
   readonly id: string;
   readonly title: string;
-  readonly order?: number;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Gaps, GapsMetaData>);
@@ -33,7 +47,6 @@ export declare class Node {
   readonly collaborators?: string;
   readonly reminderTime?: string;
   readonly reminderInterval?: string;
-  readonly order?: number;
   readonly images?: (string | null)[];
   readonly color?: string;
   readonly createdAt?: string;

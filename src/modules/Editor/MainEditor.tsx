@@ -1,5 +1,5 @@
 import { FC, useState, useCallback, useRef } from 'react';
-import { EditorState, RichUtils } from 'draft-js';
+import { EditorState, RichUtils, convertFromRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import {
   ItalicButton,
@@ -20,13 +20,28 @@ import { InlineToolbar, MentionSuggestions, plugins, linkPlugin } from '../../ut
 import styles from './Editor.module.scss';
 
 interface MainEditorProps {
-  linkMode?: any,
-  onLinkMode: any,
-  initialState?: any
+  linkMode?: any;
+  onLinkMode?: any;
+  initialState?: any;
 }
 
-const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode }) => {
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState }) => {
+  const state = EditorState.createWithContent(convertFromRaw({
+    blocks: [
+      {
+        key: "cbbnn",
+        text: "sdasdasda",
+        type: "unstyled",
+        depth: 0,
+        inlineStyleRanges: [],
+        entityRanges: [],
+        data: {}
+      }
+    ],
+    entityMap: {}
+  }))
+
+  const [editorState, setEditorState] = useState(state);
   const [urlValue, seturlValue] = useState('');
   const ref = useRef<Editor>(null);
   const [open, setOpen] = useState(false);
@@ -137,6 +152,6 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode }) => {
       </Modal>
     </div>
   );
-}
+};
 
 export default MainEditor;

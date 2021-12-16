@@ -6,11 +6,12 @@ import styles from './Cart.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import Modal from '../modal/Modal';
+import MainEditor from '../../modules/Editor/MainEditor';
 
 interface CartProps {
   id: any;
   title: string;
-  description: string;
+  description: any;
   gridType: boolean;
   pined: boolean;
   isTrashPage?: boolean;
@@ -74,7 +75,9 @@ const Cart: FC<CartProps> = ({
               </button>
             )}
           </div>
-          <span className={styles.cart_text} dangerouslySetInnerHTML={{ __html: description }} />
+          {
+            description && <MainEditor initialState={description} />
+          }
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
           <div className={styles.main_chips}>

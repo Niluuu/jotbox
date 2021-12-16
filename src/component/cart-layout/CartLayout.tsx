@@ -6,7 +6,7 @@ import Cart from '../cart/Cart';
 interface CartProps {
   id: string;
   title: string;
-  description: string;
+  description: any;
   pined: boolean;
   archived: boolean;
   gaps: any[]

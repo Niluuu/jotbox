@@ -26,53 +26,20 @@ interface HomePageProps {
 }
 
 
-const initialState = {
-  entityMap: {
-    0: {
-      type: 'IMAGE',
-      mutability: 'IMMUTABLE',
-      data: {
-        src: '/images/canada-landscape-small.jpg',
-      },
-    },
-  },
+const initialState = JSON.stringify({
   blocks: [
     {
-      key: '9gm3s',
-      text:
-        'You can have images in your text field. This is a very rudimentary example, but you can enhance the image plugin with resizing, focus or alignment plugins.',
-      type: 'unstyled',
+      key: "cbbnn",
+      text: "sdasdasda",
+      type: "unstyled",
       depth: 0,
       inlineStyleRanges: [],
       entityRanges: [],
-      data: {},
-    },
-    {
-      key: 'ov7r',
-      text: ' ',
-      type: 'atomic',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [
-        {
-          offset: 0,
-          length: 1,
-          key: 0,
-        },
-      ],
-      data: {},
-    },
-    {
-      key: 'e23a8',
-      text: 'See advanced examples further down …',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
+      data: {}
+    }
   ],
-};
+  entityMap: {}
+})
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [carts, setCart] = useState<CartProps[]>([]);
@@ -239,33 +206,32 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   );
 
   const onSetCart = useCallback(async () => {
-      try {
-        const cart = {
-          id: Date.now(),
-          title: 'titleRef.current.innerText',
-          description: 'name',
-          pined: defaultPin,
-          archived: false,
-          gaps: [],
-        };
-        setCart([...carts, cart]);
-        setDefaultPin(false);
+      // try {
+      //   const cart = {
+      //     id: Date.now(),
+      //     title: 'titleRef.current.innerText',
+      //     description: JSON.stringify(initialState),
+      //     pined: defaultPin,
+      //     archived: false,
+      //     gaps: [],
+      //   };
 
-        await DataStore.save(
-          new Node({
-            title: 'titleRef.current.innerText',
-            description: 'name',
-            gaps: [],
-            pined: defaultPin,
-            archived: false,
-            trashed: false
-          }),
-        );
-        // titleRef.current.innerHTML = '';
-        // textRef.current.innerHTML = '';
-      } catch (err) {
-        console.log(err);
-      }
+      //   setCart([...carts, cart]);
+      //   setDefaultPin(false);
+
+      //   await DataStore.save(
+      //     new Node({
+      //       title: 'titleRef.current.innerText',
+      //       description: JSON.stringify(initialState),
+      //       gaps: [],
+      //       pined: defaultPin,
+      //       archived: false,
+      //       trashed: false
+      //     }),
+      //   );
+      // } catch (err) {
+      //   console.log(err);
+      // }
   }, [carts, defaultPin]);
 
   const onSetArchive = useCallback(async () => {
@@ -293,7 +259,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       );
       
       titleRef.current.innerHTML = '';
-      textRef.current.innerHTML = '';
     } catch (err) {
       console.log(err);
     }
@@ -316,7 +281,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       setCart(todos.filter((cart) => 
-        cart.description.toLowerCase().indexOf(value.toLowerCase()) >= 0
+        cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0
       ))
     } catch(err) {
       console.log(err);

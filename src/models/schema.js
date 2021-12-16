@@ -116,16 +116,15 @@ export const schema = {
                     "name": "trashed",
                     "isArray": false,
                     "type": "Boolean",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "collaborators": {
                     "name": "collaborators",
-                    "isArray": true,
-                    "type": "AWSEmail",
-                    "isRequired": true,
-                    "attributes": [],
-                    "isArrayNullable": true
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "reminderTime": {
                     "name": "reminderTime",
@@ -208,5 +207,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "572eb10ccf521cd63ff66be04ab4039d"
+    "version": "59f7fc6dde00d44386e9240aade6a946"
 };

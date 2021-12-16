@@ -1,4 +1,4 @@
-import { ReactElement, useState, useCallback, useRef } from 'react';
+import { FC, useState, useCallback, useRef } from 'react';
 import { EditorState, RichUtils } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import {
@@ -19,9 +19,15 @@ import { InlineToolbar, MentionSuggestions, plugins, linkPlugin } from '../../ut
 
 import styles from './Editor.module.scss';
 
-function MainEditor(props): ReactElement {
+interface MainEditorProps {
+  linkMode?: any,
+  onLinkMode: any,
+  initialState?: any
+}
+
+const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode }) => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-  const [urlValue, seturlValue] = useState('initialState');
+  const [urlValue, seturlValue] = useState('');
   const ref = useRef<Editor>(null);
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
@@ -69,8 +75,6 @@ function MainEditor(props): ReactElement {
     if (!selection.isCollapsed())
       setEditorState(RichUtils.toggleLink(editorState, selection, null));
   };
-
-  const { linkMode, onLinkMode } = props;
 
   return (
     <div>

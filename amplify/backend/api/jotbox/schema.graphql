@@ -5,14 +5,14 @@ type Gaps @model @auth(rules: [{allow: public}]) {
 }
 
 type Node @model @auth(rules: [{allow: public}]) {
-  id: ID!
+  id: ID
   title: String
   description: String
   gaps: [ID]
   pined: Boolean!
   archived: Boolean!
-  trashed: Boolean!
-  collaborators: [AWSEmail!]
+  trashed: Boolean
+  collaborators: String
   reminderTime: AWSDateTime
   reminderInterval: AWSTime
   order: Int

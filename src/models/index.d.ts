@@ -29,8 +29,8 @@ export declare class Node {
   readonly gaps?: (string | null)[];
   readonly pined: boolean;
   readonly archived: boolean;
-  readonly trashed: boolean;
-  readonly collaborators?: string[];
+  readonly trashed?: boolean;
+  readonly collaborators?: string;
   readonly reminderTime?: string;
   readonly reminderInterval?: string;
   readonly order?: number;

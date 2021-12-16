@@ -3,7 +3,6 @@
   cursor: text;
   padding: 16px;
   border-radius: 2px;
-  margin-bottom: 2em;
   background: #fefefe;
   height: auto;
   min-height: 1px;
@@ -11,7 +10,7 @@
 }
 
 .editor :global(.public-DraftEditor-content) {
-  min-height: 140px;
+  min-height: 0;
 }
 
 .headlineButtonWrapper {
@@ -45,9 +44,7 @@
   min-width: 400px;
   
   button {
-    background: #3b5998;
-    padding: 5px 10px;
-    color: #fff;
+    padding: 5px 0;
     border-radius: 0;
     font-size: 14px;
   }
@@ -55,19 +52,25 @@
   .inputs {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     padding-bottom: 10px;
+    
+    &_item {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin: 15px 0 10px;
+
+      input {
+        width: fit-content;
+        margin: 0 15px;
+      }
+    }
 
     input {
-      width: 250px;
+      width: 100%;
       border: 2px solid rgba(150, 150, 150, 0.25);
       padding: 5px;
-    }
-  }
-
-  .buttons {
-    button {
-      margin-right: 10px;
     }
   }
 }

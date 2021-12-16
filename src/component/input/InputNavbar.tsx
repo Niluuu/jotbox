@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
+import Modal from '../modal/Modal';
 
 interface InputNavbarProps {
   withHistory?: boolean;
@@ -51,6 +52,11 @@ export const InputNavbar: FC<InputNavbarProps> = ({
     )))
   }
   
+  const [pop, setPop] = useState(false);
+  const onPop = () => {
+    setPop((pre) => !pre);
+  };
+
   const [label, setLabel] = useState('');
   const [labelEdit, setLabelEdit] = useState(false);
   const onLabelEdit = () => {
@@ -73,10 +79,14 @@ export const InputNavbar: FC<InputNavbarProps> = ({
           <Icon name="dowland" color="premium" size="xs" />
         </button>
         <Popover
+          isOpen={pop}
           content={
             <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
               <ul className={styles.popover_content}>
-                <li key="1" onClick={onLinkMode}>
+                <li key="1" onClick={() => {
+                  onLinkMode();
+                  onPop() 
+                  }}>
                   {' '}
                   <a href="#">Добавить линк</a>{' '}
                 </li>
@@ -90,47 +100,44 @@ export const InputNavbar: FC<InputNavbarProps> = ({
                   <a
                     onClick={() => {
                       onLabelEdit();
+                      onPop() 
                     }}
                     href="#"
                   >
                     Добавить ярлык
                   </a>{' '}
-                </li>
+                </li> 
               </ul>
             </div>
           }
           placement="bottom-start">
-          <button type="button" className={styles.icon_btn}>
+          <button onClick={onPop} type="button" className={styles.icon_btn}>
             <Icon name="other" color="premium" size="xs" />
           </button>
         </Popover>
-        <Popover
-          isOpen={labelEdit}
-          content={
-            <div className={classNames(styles.navbar_popover, styles.labels, styles.navbar_popover_settings)}>
-              <div>
-                <input placeholder="Enter name..." onChange={(e) => setLabel(e.target.value)} value={label} type="text" />
-              </div>
-              { gaps.map((gap) => 
-                <div className={styles.labels__input}>
-                  <input type="checkbox" 
-                    onChange={() => onChangeGaps(gap.name)} checked={gap.isChecked} /> 
-                    { gap.name }
-                </div>
-              )}
-              <div>
-                <button type="button" onClick={() => {
-                  onSetLabel([label, ...gaps.map((gap) => gap.isChecked && gap.name)])
-                  }}>
-                  Add label
-                </button>
-              </div>
+        <Modal title='Add Label' toggleModal={onLabelEdit} isOpen={labelEdit}>
+          <div className={classNames(styles.navbar_popover, styles.labels, styles.navbar_popover_settings)}>
+            <div style={{width: '100%'}}>
+              <input placeholder="Enter new name..." onChange={(e) => setLabel(e.target.value)} value={label} type="text" />
             </div>
-          }
-          placement="bottom-start"
-        >
-          <span style={{ color: '#fff', display: 'none' }}>i</span>
-        </Popover>
+            { gaps.map((gap) => 
+              <div className={styles.labels__input}>
+              <button onClick={() => onChangeGaps(gap.name)} type="button"> 
+                <Icon name={gap.isChecked ? 'exit' : 'done'} color="premium" size="xs" /> 
+              </button> 
+                { gap.name }
+              </div>
+            )}
+            <div>
+              <button type="button" className={styles.confirm} onClick={() => {
+                onLabelEdit()
+                onSetLabel([label, ...gaps.map((gap) => gap.isChecked && gap.name)])
+                }}>
+                Confirm 
+              </button>
+            </div>
+          </div>
+        </Modal>
         {withHistory ? (
           <>
             <button style={{position: 'relative', right: '3px'}} type="button" className={styles.icon_btn}>

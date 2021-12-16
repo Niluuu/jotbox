@@ -26,6 +26,7 @@ import '@draft-js-plugins/hashtag/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
 import '@draft-js-plugins/mention/lib/plugin.css';
+import { Icon } from '../../component/Icon/Icon';
 
 const linkPlugin = createLinkPlugin();
 const hashtagPlugin = createHashtagPlugin();
@@ -37,6 +38,7 @@ function MainEditor(props): ReactElement {
   const [urlValue, seturlValue] = useState('initialState');
   const ref = useRef<Editor>(null);
   const [open, setOpen] = useState(false);
+  const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
 
   const onChange = (newEditorState) => {
@@ -167,27 +169,28 @@ function MainEditor(props): ReactElement {
           }}
         />
       </div>
-      <Modal isOpen={linkMode}>
-        <div className={styles.linkWrapper}>
-          <div className={styles.inputs}>
+      <Modal title='Add Link' toggleModal={onLinkMode} isOpen={linkMode}>
+      <div className={styles.linkWrapper}>
+        <div className={styles.inputs}>
+          <div className={styles.inputs_item}>
+            <button type="button" onMouseDown={removeLink} onClick={() => {
+              if (focus) seturlValue('')
+            }}>
+              <Icon name={focus ? 'delete' : 'filled-label'} color="premium" size="xs" />
+            </button>
             <input
               onChange={onURLChange}
               type="text"
+              placeholder='Put your Link...'
               value={urlValue}
-              onKeyDown={onLinkInputKeyDown}
+              onFocus={() => setfocus(true)}
+              onBlur={() => setfocus(false)}
             />
-            <button type="button" onClick={onLinkMode} onMouseDown={confirmLink}>
-              Confirm
-            </button>
+            <button onMouseDown={confirmLink} onClick={onLinkMode} type="button"> 
+              <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" /> 
+            </button> 
           </div>
-          <div className={styles.buttons}>
-            <button type="button" onMouseDown={promptForLink}>
-              Add Link
-            </button>
-            <button type="button" onMouseDown={removeLink}>
-              Remove Link
-            </button>
-          </div>
+        </div>
         </div>
       </Modal>
     </div>

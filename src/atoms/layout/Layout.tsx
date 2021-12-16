@@ -5,16 +5,17 @@ import { Sider } from '../../modules/Sider/Sider';
 export interface LayoutProps {
   filteredGaps: any[];
   onReSetLabel: (oldValue, newValue) => void;
+  onFilterSearch: (value: string) => void;
 }
 
 const Layout: FC<LayoutProps> = (props) => {
-  const { onReSetLabel, filteredGaps, children } = props;
+  const { onReSetLabel, filteredGaps, children, onFilterSearch } = props;
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
   const toggleSider = () => setisSidebarOpen((pre) => !pre);
 
   return (
     <>
-      <Header onClick={toggleSider}  />
+      <Header onFilterSearch={onFilterSearch} onClick={toggleSider}  />
       <section className="layout">
         <Sider 
           filteredGaps={filteredGaps} 

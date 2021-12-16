@@ -26,10 +26,10 @@ interface HomePageProps {
 }
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
+  const [carts, setCart] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
-  const [carts, setCart] = useState<CartProps[]>([]);
   const [defaultPin, setDefaultPin] = useState(false);
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -194,7 +194,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         const cart = {
           id: Date.now(),
           title: 'titleRef.current.innerText',
-          description: 'textRef.current.innerHTML',
+          description: 'name',
           pined: defaultPin,
           archived: false,
           gaps: [],
@@ -205,7 +205,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         await DataStore.save(
           new Node({
             title: 'titleRef.current.innerText',
-            description: 'textRef.current.innerHTML',
+            description: 'name',
             gaps: [],
             pined: defaultPin,
             archived: false,
@@ -248,24 +248,37 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       console.log(err);
     }
   }, [carts]);
-
+  
   const filteredGaps = gapFilter(carts)
   
   const cartsToProps = gapsFilterKey 
     ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey)) : carts
-    
+  
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       layoutReducer: state.layoutGridTypeReducer,
     };
   });
+  
+  const onFilterSearch = useCallback(async (value) => {
+    try {
+      const todos = await getNodes();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      setCart(todos.filter((cart) => 
+        cart.description.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      ))
+    } catch(err) {
+      console.log(err);
+    }   
+  }, [carts])
 
   const dispatch = useDispatch();
 
   const { grid } = mapStateToProps.layoutReducer;
 
   return (
-    <Layout filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
+    <Layout onFilterSearch={onFilterSearch} filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
       <div className={classNames(styles.home_page, grid && styles.column)}>
         <div className={styles.home_page__main_input}>
           <MainInput

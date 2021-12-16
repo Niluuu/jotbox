@@ -5,12 +5,16 @@ import { Icon } from '../Icon/Icon';
 /**
  * Main Logo component for user interaction
  */
+interface SearchProps {
+  onFilterSearch: (value: string) => void;
+}
 
-const SearchInput: FC = () => {
+const SearchInput: FC<SearchProps> = ({ onFilterSearch }) => {
   const [value, setValue] = useState('');
 
   const handleChange = useCallback((e) => {
     setValue(e.target.value);
+    onFilterSearch(e.target.value)
   }, []);
 
   const clearValue = useCallback(() => {

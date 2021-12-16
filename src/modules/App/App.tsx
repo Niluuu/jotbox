@@ -15,6 +15,8 @@ const App: FC = () => {
 
   async function fetchGaps() {
     try {
+      // const gapsResponse = await DataStore.query(Gaps)
+      // setGaps(gapsResponse)
       const gapsResponse = await getNodes();
       setGaps(gapFilter(gapsResponse));
     } catch (err) {

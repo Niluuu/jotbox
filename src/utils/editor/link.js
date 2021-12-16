@@ -1,7 +1,7 @@
 import styles from '../../modules/Editor/Editor.module.scss';
 
 
-export function findLinkEntities(contentBlock, callback, contentState) {
+function findLinkEntities(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     return (
@@ -12,7 +12,7 @@ export function findLinkEntities(contentBlock, callback, contentState) {
 }
 
 
-export const Link = (props) => {
+const Link = (props) => {
   const {contentState, entityKey, children} = props
   const {url} = contentState.getEntity(entityKey).getData();
 
@@ -21,4 +21,14 @@ export const Link = (props) => {
       {children}
     </a>
   );
+};
+
+
+export const customPlugin = {
+  decorators: [
+    {
+      strategy: findLinkEntities,
+      component: Link,
+    },
+  ],
 };

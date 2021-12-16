@@ -35,7 +35,9 @@
 
     &.show {
       display: flex;
+      justify-content: flex-end;
       visibility: visible;
+      padding: 10px 0 0;
     }
 
     .textarea {
@@ -69,7 +71,7 @@
   display: block;
   overflow: hidden;
   resize: none;
-  min-height: 25px;
+  min-height: 20px;
   line-height: 20px;
 
   &:focus {
@@ -84,9 +86,11 @@
 
 .main_tools {
   display: flex;
+  align-items: center;
   position: absolute;
   right: 0;
   top: 0;
+  height: 100%;
 
   .icon_btn {
     width: 39px;
@@ -177,27 +181,28 @@
 }
 
 .labels {
-  padding: 9px;
-  border: 1px solid rgb(244, 244, 244);
-  box-shadow: 0 0 15px rgb(222, 222, 222);
-  border-radius: 4px;
-  width: 300px;
+  width: 350px;
 
   input[type='text'] {
+    width: 100%;
     border: none;
+    border-bottom: 1px solid #d0d2d3;
   }
   
   button {
-    padding: 0 10px;
-    background: #3e4bc2;
-    border-radius: 0;
-    color: #fff;
-    background: #3e4bc2;
-    height: 30px;
-    margin-top: 3px;
-    
-    &:hover {
-      background: #707efb !important;
+    padding: 0 15px 0 0;
+    &.confirm {
+      background: #3e4bc2;
+      border-radius: 0;
+      color: #fff;
+      background: #3e4bc2;
+      height: 30px;
+      margin-top: 3px;
+      width: 100%;
+      
+      &:hover {
+        background: #707efb !important;
+      }
     }
   }
 

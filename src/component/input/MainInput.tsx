@@ -58,13 +58,11 @@ const MainInput: FC<MainInputProps> = ({
       onClick={handleClickInside} 
       ref={outsideRef}>
       <div className={classNames(styles.main_header, focused && styles.show)}>
-        <div className={styles.main_tools}>
-          <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
-            { !defaultPin 
-              ? <Icon name="pin" color="premium" size="xs" />
-              : <Icon name="pin-black" color="premium" size="xs" />}
-          </button>
-        </div>
+        <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
+          { !defaultPin 
+            ? <Icon name="pin" color="premium" size="xs" />
+            : <Icon name="pin-black" color="premium" size="xs" />}
+        </button>
       </div>
       <div className={styles.main_row}>
         <MainEditor linkMode={linkMode} onLinkMode={onLinkMode} />

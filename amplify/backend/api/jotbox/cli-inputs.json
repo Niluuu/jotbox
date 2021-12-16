@@ -4,8 +4,9 @@
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "keyDescription": "api key description",
-      "expirationTime": 30
+      "expirationTime": 30,
+      "apiKeyExpirationDate": "2022-01-14T11:31:20.371Z",
+      "keyDescription": "api key description"
     },
     "additionalAuthTypes": [
       {
@@ -22,6 +23,6 @@
       }
     },
     "apiName": "jotbox",
-    "gqlSchemaPath": "/tmp/amplify-534d73bd-af55-45c2-bb63-731d70740c6d/amplify/backend/api/jotbox/schema.graphql"
+    "gqlSchemaPath": "/tmp/amplify-7b2129ae-747c-4903-b62d-95666da69918/amplify/backend/api/jotbox/schema.graphql"
   }
 }

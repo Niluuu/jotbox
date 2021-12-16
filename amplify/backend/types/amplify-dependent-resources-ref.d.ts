@@ -15,5 +15,11 @@ export type AmplifyDependentResourcesAttributes = {
             "AppClientIDWeb": "string",
             "AppClientID": "string"
         }
+    },
+    "storage": {
+        "s3jotboxstoraged17oh96r8b4gc1": {
+            "BucketName": "string",
+            "Region": "string"
+        }
     }
 }

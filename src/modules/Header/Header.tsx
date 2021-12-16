@@ -10,20 +10,21 @@ export interface HeaderProps {
    * onclick for toggle sidebar
    */
   onClick: () => void;
+  onFilterSearch: (value: string) => void;
 }
 
 /**
  * Main Header component for user interaction
  */
 
-export const Header: FC<HeaderProps> = ({ onClick }) => {
+export const Header: FC<HeaderProps> = ({ onClick, onFilterSearch }) => {
   return (
     <header className={styles.header}>
       <div className={styles.header_row}>
         <Hamburger onClick={onClick} />
         <Logo />
       </div>
-      <SearchInput />
+      <SearchInput onFilterSearch={onFilterSearch} />
       <Navbar />
     </header>
   );

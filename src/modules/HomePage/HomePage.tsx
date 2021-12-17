@@ -214,16 +214,16 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       setCart([...carts, cart]);
       setDefaultPin(false);
 
-      await DataStore.save(
-        new Node({
-          title: titleRef.current.innerText,
-          description: JSON.stringify(initialState),
-          gaps: [],
-          pined: defaultPin,
-          archived: false,
-          trashed: false,
-        }),
-      );
+      // await DataStore.save(
+      //   new Node({
+      //     title: titleRef.current.innerText,
+      //     description: JSON.stringify(initialState),
+      //     gaps: [],
+      //     pined: defaultPin,
+      //     archived: false,
+      //     trashed: false,
+      //   }),
+      // );
 
       titleRef.current.innerHTML = '';
     } catch (err) {

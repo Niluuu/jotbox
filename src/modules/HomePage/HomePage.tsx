@@ -22,24 +22,23 @@ interface CartProps {
 }
 
 interface HomePageProps {
-  gapsFilterKey?: any
+  gapsFilterKey?: any;
 }
-
 
 const initialState = JSON.stringify({
   blocks: [
     {
-      key: "cbbnn",
-      text: "sdasdasda",
-      type: "unstyled",
+      key: 'cbbnn',
+      text: 'sdasdasda',
+      type: 'unstyled',
       depth: 0,
       inlineStyleRanges: [],
       entityRanges: [],
-      data: {}
-    }
+      data: {},
+    },
   ],
-  entityMap: {}
-})
+  entityMap: {},
+});
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [carts, setCart] = useState<CartProps[]>([]);
@@ -203,33 +202,33 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   );
 
   const onSetCart = useCallback(async () => {
-      try {
-        const cart = {
-          id: Date.now(),
-          title:  titleRef.current.innerText,
-          description: initialState,
+    try {
+      const cart = {
+        id: Date.now(),
+        title: titleRef.current.innerText,
+        description: JSON.stringify(initialState),
+        pined: defaultPin,
+        archived: false,
+        gaps: [],
+      };
+      setCart([...carts, cart]);
+      setDefaultPin(false);
+
+      await DataStore.save(
+        new Node({
+          title: titleRef.current.innerText,
+          description: JSON.stringify(initialState),
+          gaps: [],
           pined: defaultPin,
           archived: false,
-          gaps: [],
-        };
-        setCart([...carts, cart]);
-        setDefaultPin(false);
+          trashed: false,
+        }),
+      );
 
-        await DataStore.save(
-          new Node({
-            title: titleRef.current.innerText ,
-            description: initialState,
-            gaps: [],
-            pined: defaultPin,
-            archived: false,
-            trashed: false
-          }),
-        );
-
-        titleRef.current.innerHTML = '';
-      } catch (err) {
-        console.log(err);
-      }
+      titleRef.current.innerHTML = '';
+    } catch (err) {
+      console.log(err);
+    }
   }, [carts, defaultPin]);
 
   const onSetArchive = useCallback(async () => {
@@ -252,40 +251,41 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           gaps: [],
           pined: defaultPin,
           archived: true,
-          trashed: false
+          trashed: false,
         }),
       );
-      
+
       titleRef.current.innerHTML = '';
     } catch (err) {
       console.log(err);
     }
   }, [carts]);
-  
-  const filteredGaps = gapFilter(carts)
-  
-  const cartsToProps = gapsFilterKey 
-    ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey)) : carts
-  
+
+  const filteredGaps = gapFilter(carts);
+
+  const cartsToProps = gapsFilterKey
+    ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey))
+    : carts;
+
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       layoutReducer: state.layoutGridTypeReducer,
     };
   });
-  
-  const onFilterSearch = useCallback(async (value) => {
-    try {
-      const todos = await getNodes();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      setCart(todos.filter((cart) => 
-        cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0
-      ))
-    } catch(err) {
-      console.log(err);
-    }   
-  }, [carts])
 
+  const onFilterSearch = useCallback(
+    async (value) => {
+      try {
+        const todos = await getNodes();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        setCart(todos.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0));
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [carts],
+  );
 
   const { grid } = mapStateToProps.layoutReducer;
 

@@ -27,20 +27,7 @@ interface MainEditorProps {
 }
 
 const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, editorRef }) => {
-  const state = initialState ? EditorState.createWithContent(convertFromRaw({
-    blocks: [
-      {
-        key: "cbbnn",
-        text: "sdasdasda",
-        type: "unstyled",
-        depth: 0,
-        inlineStyleRanges: [],
-        entityRanges: [],
-        data: {}
-      }
-    ],
-    entityMap: {}
-  })) : EditorState.createEmpty()
+  const state = initialState ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))) : EditorState.createEmpty()
 
   const [editorState, setEditorState] = useState(state);
   const [urlValue, seturlValue] = useState('');

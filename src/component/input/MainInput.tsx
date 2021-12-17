@@ -1,6 +1,7 @@
-import { FC, useRef, useCallback, useState } from 'react';
+import { FC, useCallback, useState,useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
+import Editor from '@draft-js-plugins/editor';
 import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
@@ -17,6 +18,7 @@ interface MainInputProps {
   setFocused: (e: any) => void;
   outsideRef?: any;
   onSetIsMain?: (e: boolean) => void;
+  titleRef: any
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -27,11 +29,13 @@ const MainInput: FC<MainInputProps> = ({
   focused,
   onSetCart,
   onSetIsMain,
+  titleRef
 }) => {
   const outsideRef = useRef(null);
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
   useOnClickOutside(outsideRef, handleClickOutside);
+  const editorRef = useRef<Editor>(null);
 
   const mapStateToProps = useSelector((state: RootState) =>  {
     return state.layoutGridTypeReducer
@@ -49,6 +53,12 @@ const MainInput: FC<MainInputProps> = ({
     setlinkMode((prev) => !prev)
   }
 
+  const onKeyPressed  = (e) => {
+    if (e.keyCode === 13) {
+      editorRef.current!.focus();
+    }
+  }
+
   return (
     <div 
       className={classNames(styles.main_input, grid && styles.column)}
@@ -58,14 +68,27 @@ const MainInput: FC<MainInputProps> = ({
       onClick={handleClickInside} 
       ref={outsideRef}>
       <div className={classNames(styles.main_header, focused && styles.show)}>
+      <div
+          ref={titleRef}
+          id="title"
+          className={styles.textarea}
+          contentEditable
+          suppressContentEditableWarning
+          aria-multiline
+          role="textbox"
+          spellCheck
+          onKeyDown={(e) => onKeyPressed(e)}
+        />
+
         <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
           { !defaultPin 
             ? <Icon name="pin" color="premium" size="xs" />
             : <Icon name="pin-black" color="premium" size="xs" />}
         </button>
       </div>
+     
       <div className={styles.main_row}>
-        <MainEditor linkMode={linkMode} onLinkMode={onLinkMode} />
+        <MainEditor linkMode={linkMode} onLinkMode={onLinkMode} editorRef={editorRef}/>
       </div>
       { !focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>

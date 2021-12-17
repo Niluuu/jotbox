@@ -23,9 +23,10 @@ interface MainEditorProps {
   linkMode?: any;
   onLinkMode?: any;
   initialState?: any;
+  editorRef?: any;
 }
 
-const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState }) => {
+const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, editorRef }) => {
   const state = EditorState.createWithContent(convertFromRaw({
     blocks: [
       {
@@ -43,7 +44,6 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState })
 
   const [editorState, setEditorState] = useState(state);
   const [urlValue, seturlValue] = useState('');
-  const ref = useRef<Editor>(null);
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
@@ -96,10 +96,10 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState })
       <div
         className={styles.editor}
         onClick={() => {
-          ref.current!.focus();
+          editorRef.current!.focus();
         }}
       >
-        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={ref} />
+        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={editorRef} />
         <InlineToolbar>
           {(externalProps) => (
             <>

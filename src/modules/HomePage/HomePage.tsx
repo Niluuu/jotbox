@@ -15,7 +15,7 @@ import gapFilter from '../../utils/hooks/gapFilter';
 interface CartProps {
   id: any;
   title: string;
-  description: string;
+  description: any;
   pined: boolean;
   archived: boolean;
   gaps: any[];
@@ -96,8 +96,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           Node.copyOf(original, (item) => {
             const cart = item;
             cart.pined = !item.pined;
-            cart.description = description;
-            cart.title = title;
           }),
         );
       } catch (err) {
@@ -209,7 +207,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         const cart = {
           id: Date.now(),
           title:  titleRef.current.innerText,
-          description: JSON.stringify(initialState),
+          description: initialState,
           pined: defaultPin,
           archived: false,
           gaps: [],
@@ -220,7 +218,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         await DataStore.save(
           new Node({
             title: titleRef.current.innerText ,
-            description: JSON.stringify(initialState),
+            description: initialState,
             gaps: [],
             pined: defaultPin,
             archived: false,

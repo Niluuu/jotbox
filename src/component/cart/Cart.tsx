@@ -51,14 +51,14 @@ const Cart: FC<CartProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
-  filteredGaps
+  filteredGaps,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => setIsOpen((pre) => !pre);
-  
+
   const cartTitleRef = useRef<HTMLParagraphElement>();
   const cartTextRef = useRef<HTMLParagraphElement>();
-
+  console.log("description",description)
   return (
     <>
       <div id={id} className={classNames(styles.cart, gridType && styles.column)}>
@@ -66,7 +66,11 @@ const Cart: FC<CartProps> = ({
           <div className={styles.cart_title}>
             <p> {title} </p>
             {!isTrashPage && (
-              <button type="button" onClick={() => onChangePin(id, title, description)} className={styles.icon_btn}>
+              <button
+                type="button"
+                onClick={() => onChangePin(id, title, description)}
+                className={styles.icon_btn}
+              >
                 {!pined ? (
                   <Icon name="pin" color="premium" size="xs" />
                 ) : (
@@ -75,15 +79,12 @@ const Cart: FC<CartProps> = ({
               </button>
             )}
           </div>
-          {
-            description && <MainEditor initialState={description} />
-          }
+          {description && <MainEditor initialState={JSON.parse(description)} />}
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
-          <div className={styles.main_chips}>
-            { gaps && gaps.map((gap) => 
-              <Chip onDelate={() => console.log('delate')}> {gap} </Chip>) } 
-          </div>
+        <div className={styles.main_chips}>
+          {gaps && gaps.map((gap) => <Chip onDelate={() => console.log('delate')}> {gap} </Chip>)}
+        </div>
         <div className={styles.input_navbar}>
           {isTrashPage ? (
             <TrashInputNavbar
@@ -99,10 +100,10 @@ const Cart: FC<CartProps> = ({
               isMainInput={!true}
               onSetIsMain={onSetIsMain}
               onHyperLinkEditMode={() => {
-                setIsOpen(true)
-                onHyperLinkEditMode()
+                setIsOpen(true);
+                onHyperLinkEditMode();
               }}
-              onChangeArchived={() => onChangeArchived(id,  title, description)}
+              onChangeArchived={() => onChangeArchived(id, title, description)}
               ontoggle={() => setIsOpen(false)}
               onCartLabel={onCartLabel}
               cartLabel={cartLabel}
@@ -122,7 +123,11 @@ const Cart: FC<CartProps> = ({
           <div className={styles.cart_content} onClick={() => setIsOpen(true)}>
             <div className={styles.cart_title}>
               {!isTrashPage && (
-                <button type="button" onClick={() => onChangePin(id,  title, description)} className={styles.icon_btn}>
+                <button
+                  type="button"
+                  onClick={() => onChangePin(id, title, description)}
+                  className={styles.icon_btn}
+                >
                   {!pined ? (
                     <Icon name="pin" color="premium" size="xs" />
                   ) : (
@@ -147,14 +152,14 @@ const Cart: FC<CartProps> = ({
                 onRemoveCart={() => onRemoveCart(id)}
                 withHistory={!!true}
                 onHyperLinkEditMode={onHyperLinkEditMode}
-                onChangeArchived={() => onChangeArchived(id,  title, description)}
+                onChangeArchived={() => onChangeArchived(id, title, description)}
                 onSetIsMain={onSetIsMain}
                 ontoggle={() => {
                   onReSetCart(id, cartTitleRef.current.innerText, cartTextRef.current.innerHTML);
                   setIsOpen(false);
                 }}
                 onCartLabel={onCartLabel}
-                cartLabel={cartLabel}             
+                cartLabel={cartLabel}
                 onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
                 filteredGaps={filteredGaps}
               />

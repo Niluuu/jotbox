@@ -27,7 +27,7 @@ interface MainEditorProps {
 }
 
 const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, editorRef }) => {
-  const state = EditorState.createWithContent(convertFromRaw({
+  const state = initialState ? EditorState.createWithContent(convertFromRaw({
     blocks: [
       {
         key: "cbbnn",
@@ -40,7 +40,7 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
       }
     ],
     entityMap: {}
-  }))
+  })) : EditorState.createEmpty()
 
   const [editorState, setEditorState] = useState(state);
   const [urlValue, seturlValue] = useState('');

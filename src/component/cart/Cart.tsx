@@ -7,6 +7,7 @@ import { InputNavbar } from '../input/InputNavbar';
 import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import Modal from '../modal/Modal';
 import MainEditor from '../../modules/Editor/MainEditor';
+import './Color.scss'
 
 interface CartProps {
   id: any;
@@ -16,6 +17,8 @@ interface CartProps {
   pined: boolean;
   isTrashPage?: boolean;
   gaps?: any[];
+  trashed: boolean;
+  color: string;
   onHyperLinkEditMode?: () => void;
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any, title: string, description: any) => void;
@@ -30,6 +33,7 @@ interface CartProps {
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: any[];
+  onColorChange?: (id: any, color: string) => void;
 }
 
 const Cart: FC<CartProps> = ({
@@ -39,6 +43,8 @@ const Cart: FC<CartProps> = ({
   description,
   gridType,
   gaps,
+  trashed,
+  color,
   isTrashPage,
   onChangePin,
   onChangeArchived,
@@ -51,6 +57,7 @@ const Cart: FC<CartProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
+  onColorChange,
   filteredGaps,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -61,7 +68,7 @@ const Cart: FC<CartProps> = ({
   console.log("description",description)
   return (
     <>
-      <div id={id} className={classNames(styles.cart, gridType && styles.column)}>
+      <div id={id} className={classNames(styles.cart, gridType && styles.column, color)}>
         <div className={styles.cart_content} onClick={() => setIsOpen(true)}>
           <div className={styles.cart_title}>
             <p> {title} </p>
@@ -79,7 +86,7 @@ const Cart: FC<CartProps> = ({
               </button>
             )}
           </div>
-          {description && <MainEditor initialState={JSON.parse(description)} />}
+          {description && <MainEditor color={color} initialState={JSON.parse(description)} />}
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.main_chips}>
@@ -109,6 +116,8 @@ const Cart: FC<CartProps> = ({
               cartLabel={cartLabel}
               onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
               filteredGaps={filteredGaps}
+              onColorChange={(currentColor) => onColorChange(id, currentColor)}
+              currentColor={color}
             />
           )}
         </div>
@@ -162,6 +171,8 @@ const Cart: FC<CartProps> = ({
                 cartLabel={cartLabel}
                 onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
                 filteredGaps={filteredGaps}
+                onColorChange={(currentColor) => onColorChange(id, currentColor)}
+                currentColor={color}
               />
             )}
           </div>

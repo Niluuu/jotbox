@@ -4,12 +4,14 @@ import styles from './CartLayout.module.scss';
 import Cart from '../cart/Cart';
 
 interface CartProps {
-  id: string;
+  id: any;
   title: string;
   description: any;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: any[];
+  trashed: boolean;
+  color: string;
 }
 
 interface CartLayoutProps {
@@ -25,6 +27,7 @@ interface CartLayoutProps {
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: any[];
+  onColorChange?: (id: any, color: string) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -39,7 +42,8 @@ const CartLayout: FC<CartLayoutProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
-  filteredGaps
+  filteredGaps,
+  onColorChange
 }) => {
   const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
@@ -62,6 +66,8 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gridType={gridType}
                 description={cart.description}
                 pined={cart.pined}
+                color={cart.color}
+                trashed={cart.trashed}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onReSetCart={onReSetCart}
@@ -72,6 +78,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
+                onColorChange={onColorChange}
               />
             ))}
       </div>
@@ -93,6 +100,8 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gridType={gridType}
                 description={cart.description}
                 pined={cart.pined}
+                color={cart.color}
+                trashed={cart.trashed}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onReSetCart={onReSetCart}
@@ -102,6 +111,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onCartLabel={onCartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
+                onColorChange={onColorChange}
               />
             ))}
       </div>

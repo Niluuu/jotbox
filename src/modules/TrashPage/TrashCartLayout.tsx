@@ -33,25 +33,7 @@ const TrashCartLayout: FC<TrashCartLayoutProps> = ({
 }) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {carts &&
-          carts.map((cart) => (
-            <Cart
-              key={cart.id}
-              id={cart.id}
-              title={cart.title}
-              gridType={gridType}
-              description={cart.description}
-              pined={cart.pined}
-              onChangeArchived={onChangeArchived}
-              onChangePin={onChangePin}
-              onRemoveCart={onRemoveCart}
-              onRemoveTrash={onRemoveTrash}
-              onRestoreTrash={onRestoreTrash}
-              isTrashPage={!!true}
-            />
-          ))}
-      </div>
+      Trash Layout
     </div>
   );
 };

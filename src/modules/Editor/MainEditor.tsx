@@ -12,21 +12,26 @@ import {
   CodeBlockButton,
 } from '@draft-js-plugins/buttons';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
+import classNames from 'classnames';
 import Modal from '../../component/modal/Modal';
 import mentions from './Mentions';
 import { Icon } from '../../component/Icon/Icon';
 import { InlineToolbar, MentionSuggestions, plugins, linkPlugin } from '../../utils/editor/plugin';
 
 import styles from './Editor.module.scss';
+import '../../component/cart/Color.scss'
 
 interface MainEditorProps {
   linkMode?: any;
   onLinkMode?: any;
   initialState?: any;
   editorRef?: any;
+  color?: string;
+  defaultColor?: string;
+  isMainInput?: boolean;
 }
 
-const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, editorRef }) => {
+const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, color, isMainInput, defaultColor, editorRef }) => {
   const state = initialState ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))) : EditorState.createEmpty()
 
   const [editorState, setEditorState] = useState(state);
@@ -81,7 +86,7 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
   return (
     <div>
       <div
-        className={styles.editor}
+        className={classNames(styles.editor, isMainInput ? defaultColor : color)}
         onClick={() => {
           editorRef.current!.focus();
         }}

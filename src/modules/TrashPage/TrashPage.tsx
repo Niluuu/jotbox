@@ -47,12 +47,7 @@ const TrashPage: FC<TrashPageProps> = ({ gridType }) => {
   return (
     <div className={classNames(styles.home_page, gridType && styles.column)}>
       <p> Notes in Trash will expire after 7 days </p>
-      <TrashCartLayout
-        onRemoveTrash={onRemoveTrash}
-        onRestoreTrash={onRestoreTrash}
-        carts={carts}
-        gridType={gridType}
-      />
+      Trash Page
     </div>
   );
 };

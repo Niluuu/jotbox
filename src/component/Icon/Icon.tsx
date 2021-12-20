@@ -53,6 +53,7 @@ export type iconNames =
   | 'success'
   | 'link'
   | 'pin-black'
+  | 'default-color'
   | string;
 
 export interface IconProps {

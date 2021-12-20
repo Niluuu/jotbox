@@ -10,6 +10,8 @@ interface CartProps {
   pined: boolean;
   archived: boolean;
   gaps: any[];
+  trashed: boolean;
+  color: string;
 }
 
 interface ArchiveCartLayout {
@@ -37,11 +39,13 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
             .filter((cart) => cart.archived)
             .filter((cart) => !cart.pined)
             .map((cart) => (
-              <Cart
+              <Cart 
                 key={cart.id}
                 id={cart.id}
                 title={cart.title}
                 gridType={gridType}
+                color={cart.color}
+                trashed={cart.trashed} 
                 gaps={cart.gaps}
                 description={cart.description}
                 pined={cart.pined}
@@ -50,7 +54,7 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
                 onRemoveCart={onRemoveCart}
               />
             ))}
-      </div>
+      </div> 
     </div>
   );
 };

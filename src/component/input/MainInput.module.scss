@@ -104,7 +104,7 @@
     position: relative;
 
     &:hover {
-      background: rgb(235, 235, 235);
+      background: rgba(235, 235, 235, 0.5);
 
       svg {
         fill: $primary-black;
@@ -117,7 +117,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 5px 0;
+  padding: 5px 5px;
 
   &.hide {
     display: none;
@@ -261,6 +261,30 @@
       width: 35px;
       height: 35px;
       margin: 5px;
+    }
+  }
+}
+
+.colorWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+  box-shadow: 0 0 10px #d0d2d3;
+
+  button {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    margin: 2px;
+    border: 1px solid rgb(175, 175, 175);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    &.active {
+      border: 2px solid rgb(80, 50, 115);
+      box-shadow: 0 0 5px rgb(80, 50, 115); 
     }
   }
 }

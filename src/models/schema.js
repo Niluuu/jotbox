@@ -54,17 +54,17 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
-                "description": {
-                    "name": "description",
-                    "isArray": false,
-                    "type": "AWSJSON",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "archived": {
                     "name": "archived",
                     "isArray": false,
                     "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "description": {
+                    "name": "description",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -245,5 +245,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "45466ff74ca5cfcda8c5a61c4a825f54"
+    "version": "244699ebe1de43576ce980b6cbcd5874"
 };

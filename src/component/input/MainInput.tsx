@@ -1,4 +1,4 @@
-import { FC, useCallback, useState,useRef } from 'react';
+import { FC, useCallback, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
@@ -18,7 +18,8 @@ interface MainInputProps {
   setFocused: (e: any) => void;
   outsideRef?: any;
   onSetIsMain?: (e: boolean) => void;
-  titleRef: any
+  titleRef: any;
+  setCartDescription: () => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -29,7 +30,8 @@ const MainInput: FC<MainInputProps> = ({
   focused,
   onSetCart,
   onSetIsMain,
-  titleRef
+  titleRef,
+  setCartDescription,
 }) => {
   const outsideRef = useRef(null);
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
@@ -37,38 +39,39 @@ const MainInput: FC<MainInputProps> = ({
   useOnClickOutside(outsideRef, handleClickOutside);
   const editorRef = useRef<Editor>(null);
 
-  const mapStateToProps = useSelector((state: RootState) =>  {
-    return state.layoutGridTypeReducer
+  const mapStateToProps = useSelector((state: RootState) => {
+    return state.layoutGridTypeReducer;
   });
-  const { grid } = mapStateToProps
-  
+  const { grid } = mapStateToProps;
+
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
       console.log('focus out', e.currentTarget.contains(document.activeElement));
     }
   }, []);
 
-  const [linkMode, setlinkMode] = useState(false)
-  const onLinkMode = ()=> {
-    setlinkMode((prev) => !prev)
-  }
+  const [linkMode, setlinkMode] = useState(false);
+  const onLinkMode = () => {
+    setlinkMode((prev) => !prev);
+  };
 
-  const onKeyPressed  = (e) => {
+  const onKeyPressed = (e) => {
     if (e.keyCode === 13) {
       editorRef.current!.focus();
     }
-  }
+  };
 
   return (
-    <div 
+    <div
       className={classNames(styles.main_input, grid && styles.column)}
       tabIndex={-1}
       onFocus={handleClickInside}
       onBlur={(e) => onFocusOut(e)}
-      onClick={handleClickInside} 
-      ref={outsideRef}>
+      onClick={handleClickInside}
+      ref={outsideRef}
+    >
       <div className={classNames(styles.main_header, focused && styles.show)}>
-      <div
+        <div
           ref={titleRef}
           id="title"
           className={styles.textarea}
@@ -81,16 +84,23 @@ const MainInput: FC<MainInputProps> = ({
         />
 
         <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
-          { !defaultPin 
-            ? <Icon name="pin" color="premium" size="xs" />
-            : <Icon name="pin-black" color="premium" size="xs" />}
+          {!defaultPin ? (
+            <Icon name="pin" color="premium" size="xs" />
+          ) : (
+            <Icon name="pin-black" color="premium" size="xs" />
+          )}
         </button>
       </div>
-     
+
       <div className={styles.main_row}>
-        <MainEditor linkMode={linkMode} onLinkMode={onLinkMode} editorRef={editorRef}/>
+        <MainEditor
+          linkMode={linkMode}
+          onLinkMode={onLinkMode}
+          editorRef={editorRef}
+          setCartDescription={setCartDescription}
+        />
       </div>
-      { !focused ? (
+      {!focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
           <button type="button" className={styles.icon_btn}>
             <Icon name="edit-bordered" color="premium" size="xs" />
@@ -103,7 +113,7 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
-      { focused ? (
+      {focused ? (
         <InputNavbar
           focused={focused}
           isMainInput={!!true}
@@ -111,7 +121,8 @@ const MainInput: FC<MainInputProps> = ({
           ontoggle={() => onSetCart()}
           onSetIsMain={onSetIsMain}
           onLinkMode={onLinkMode}
-          withHistory />
+          withHistory
+        />
       ) : null}
     </div>
   );

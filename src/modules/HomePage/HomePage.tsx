@@ -29,7 +29,7 @@ const initialState = JSON.stringify({
   blocks: [
     {
       key: 'cbbnn',
-      text: 'sdasdasda',
+      text: 'sad thing',
       type: 'unstyled',
       depth: 0,
       inlineStyleRanges: [],
@@ -42,6 +42,7 @@ const initialState = JSON.stringify({
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [carts, setCart] = useState<CartProps[]>([]);
+  const [cartDescription, setCartDescription] = useState('');
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
@@ -59,12 +60,13 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       setCart(todos);
     } catch (err) {
       //  TODO: Add your meseage for all console error
-      console.log(`err`, err);
+      // console.log(`err`, err);
     }
   }
 
   useEffect(() => {
     fetchTodos();
+    console.log('initialState', typeof initialState);
   }, []);
 
   const onRemoveCart = useCallback(
@@ -206,7 +208,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       const cart = {
         id: Date.now(),
         title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
+        description: initialState,
         pined: defaultPin,
         archived: false,
         gaps: [],
@@ -214,20 +216,20 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       setCart([...carts, cart]);
       setDefaultPin(false);
 
-      // await DataStore.save(
-      //   new Node({
-      //     title: titleRef.current.innerText,
-      //     description: JSON.stringify(initialState),
-      //     gaps: [],
-      //     pined: defaultPin,
-      //     archived: false,
-      //     trashed: false,
-      //   }),
-      // );
+      await DataStore.save(
+        new Node({
+          title: titleRef.current.innerText,
+          description: initialState,
+          gaps: [],
+          pined: defaultPin,
+          archived: false,
+          trashed: false,
+        }),
+      );
 
       titleRef.current.innerHTML = '';
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }, [carts, defaultPin]);
 
@@ -236,7 +238,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       const cart = {
         id: Date.now(),
         title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
+        description: cartDescription,
         pined: false,
         archived: true,
         gaps: null,
@@ -247,7 +249,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       await DataStore.save(
         new Node({
           title: titleRef.current.innerText,
-          description: JSON.stringify(initialState),
+          description: cartDescription,
           gaps: [],
           pined: defaultPin,
           archived: true,
@@ -302,6 +304,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             onDefaultPin={onDefaultPin}
             onSetIsMain={onSetIsMain}
             titleRef={titleRef}
+            setCartDescription={() => setCartDescription}
           />
         </div>
         <CartLayout

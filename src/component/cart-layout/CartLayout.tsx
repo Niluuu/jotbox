@@ -9,7 +9,7 @@ interface CartProps {
   description: any;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: any[];
 }
 
 interface CartLayoutProps {
@@ -39,7 +39,7 @@ const CartLayout: FC<CartLayoutProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
-  filteredGaps
+  filteredGaps,
 }) => {
   const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
@@ -50,7 +50,8 @@ const CartLayout: FC<CartLayoutProps> = ({
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications && carts !== undefined && 
+        {notifications &&
+          carts !== undefined &&
           notifications
             .filter((cart) => cart.pined)
             .map((cart) => (
@@ -81,7 +82,8 @@ const CartLayout: FC<CartLayoutProps> = ({
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications && carts !== undefined && 
+        {notifications &&
+          carts !== undefined &&
           notifications
             .filter((cart) => !cart.pined)
             .map((cart) => (

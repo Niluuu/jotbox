@@ -24,8 +24,8 @@ export declare class Node {
   readonly collaborators?: (string | null)[];
   readonly color?: string;
   readonly gaps?: (string | null)[];
-  readonly description?: string;
   readonly archived?: boolean;
+  readonly description?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Node, NodeMetaData>);

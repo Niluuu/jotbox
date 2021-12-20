@@ -33,7 +33,7 @@ const initialState = JSON.stringify({
   blocks: [
     {
       key: 'cbbnn',
-      text: 'sdasdasda',
+      text: 'sad thing',
       type: 'unstyled',
       depth: 0,
       inlineStyleRanges: [],
@@ -46,6 +46,7 @@ const initialState = JSON.stringify({
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [carts, setCart] = useState<CartProps[]>([]);
+  const [cartDescription, setCartDescription] = useState('');
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
@@ -198,6 +199,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   useEffect(() => {
     fetchTodos();
+    console.log('initialState', typeof initialState);
   }, []);
 
   const onRemoveCart = useCallback(
@@ -330,7 +332,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       const cart = {
         id: Date.now(),
         title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
+        description: cartDescription,
         pined: false,
         trashed: false,
         archived: true,
@@ -400,6 +402,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             titleRef={titleRef}
             defaultColor={defaultColor}
             onDefaultColor={onDefaultColor}
+            setCartDescription={() => setCartDescription}
           />
         </div>
         <CartLayout

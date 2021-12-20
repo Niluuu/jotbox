@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useRef } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import { EditorState, RichUtils, convertFromRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import {
@@ -29,9 +29,10 @@ interface MainEditorProps {
   color?: string;
   defaultColor?: string;
   isMainInput?: boolean;
+  setCartDescription?: (elem: any) => void
 }
 
-const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, color, isMainInput, defaultColor, editorRef }) => {
+const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode,  color, isMainInput, defaultColor, initialState, editorRef, setCartDescription }) => {
   const state = initialState ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))) : EditorState.createEmpty()
 
   const [editorState, setEditorState] = useState(state);
@@ -39,6 +40,11 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, c
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
+
+  useEffect(() => {
+    // setCartDescription(editorState)
+    console.log("EditorState", initialState) 
+  }, [editorState])
 
   const onChange = (newEditorState) => {
     setEditorState(newEditorState);

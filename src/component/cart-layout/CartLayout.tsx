@@ -54,7 +54,8 @@ const CartLayout: FC<CartLayoutProps> = ({
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications && carts !== undefined && 
+        {notifications &&
+          carts !== undefined &&
           notifications
             .filter((cart) => cart.pined)
             .map((cart) => (
@@ -88,7 +89,8 @@ const CartLayout: FC<CartLayoutProps> = ({
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications && carts !== undefined && 
+        {notifications &&
+          carts !== undefined &&
           notifications
             .filter((cart) => !cart.pined)
             .map((cart) => (

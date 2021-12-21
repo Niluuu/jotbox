@@ -58,7 +58,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     }
   }
 
-  // THE PROBLEM IS IN USEeFFECT UNMOUT CANNOT SOLVE
   // useEffect(() => {
   //     fetchTodos();
   // }, []);
@@ -199,18 +198,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   const onSetCart = useCallback(async () => {
     try {
-      const cart = {
-        id: Date.now(),
-        title: titleRef.current.innerText,
-        description: text,
-        pined: defaultPin,
-        archived: false,
-        gaps: [],
-      };
-
-      setCart([...carts, cart]);
       setDefaultPin(false);
-
       await DataStore.save(
         new Node({
           title: titleRef.current.innerText,
@@ -223,6 +211,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       );
 
       titleRef.current.innerHTML = '';
+      // fetchTodos()
     } catch (err) {
       console.log(err);
     }

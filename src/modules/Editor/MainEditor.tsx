@@ -1,12 +1,6 @@
 import { FC, useState, useCallback } from 'react';
 import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
-import {
-  BoldButton,
-  UnorderedListButton,
-  OrderedListButton,
-  BlockquoteButton,
-} from '@draft-js-plugins/buttons';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
@@ -14,7 +8,7 @@ import { setText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import mentions from './Mentions';
 import { Icon } from '../../component/Icon/Icon';
-import { InlineToolbar, MentionSuggestions, plugins, linkPlugin } from '../../utils/editor/plugin';
+import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
 
 import styles from './Editor.module.scss';
 
@@ -34,6 +28,7 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
+  const [plaseHolder, setPlaseHolder] = useState(true);
   const dispatch = useDispatch();
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -47,6 +42,7 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
 
   const onChange = useCallback(
     (newEditorState) => {
+      setPlaseHolder(false)
       setEditorState(newEditorState);
       const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
       
@@ -101,18 +97,7 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
           editorRef.current!.focus();
         }}
       >
-        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={editorRef} />
-        <InlineToolbar>
-          {(externalProps) => (
-            <>
-              <BoldButton {...externalProps} />
-              <UnorderedListButton {...externalProps} />
-              <OrderedListButton {...externalProps} />
-              <BlockquoteButton {...externalProps} />
-              <linkPlugin.LinkButton {...externalProps} />
-            </>
-          )}
-        </InlineToolbar>
+        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={editorRef} placeholder={plaseHolder ? "Заметка...": null} />
         <MentionSuggestions
           open={open}
           onOpenChange={onOpenChange}

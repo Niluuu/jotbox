@@ -4,6 +4,7 @@ import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 import Modal from '../modal/Modal';
+import '../cart/Color.scss'
 
 interface InputNavbarProps {
   withHistory?: boolean;
@@ -20,6 +21,10 @@ interface InputNavbarProps {
   cartLabel?: string;
   onSetLabel?: (oldGaps: string[]) => void;
   filteredGaps?: any[];
+  onColorChange?: (color: string) => void;
+  currentColor?: string;
+  defaultColor?: string;
+  onDefaultColor?: (optionalColor: string) => void;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = ({
@@ -34,8 +39,27 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   onSetIsMain,
   onSetLabel,
   filteredGaps,
-  onLinkMode
+  onLinkMode,
+  onColorChange,
+  currentColor,
+  defaultColor,
+  onDefaultColor
 }) => {
+  const colors = [
+    { colorClass: 'default' }, 
+    { colorClass: 'red' }, 
+    { colorClass: 'orange' }, 
+    { colorClass: 'yellow' }, 
+    { colorClass: 'green' }, 
+    { colorClass: 'light-blue' }, 
+    { colorClass: 'blue' }, 
+    { colorClass: 'bold-blue' }, 
+    { colorClass: 'purple' }, 
+    { colorClass: 'pink' }, 
+    { colorClass: 'brown' }, 
+    { colorClass: 'grey' }
+  ]
+
   const toArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
@@ -72,9 +96,28 @@ export const InputNavbar: FC<InputNavbarProps> = ({
         <button type="button" className={styles.icon_btn}>
           <Icon name="user-add" color="premium" size="xs" />
         </button>
-        <button type="button" className={styles.icon_btn}>
-          <Icon name="img" color="premium" size="xs" />
-        </button>
+        <Popover placement="bottom-start"
+          content={
+            <div className={styles.colorWrapper}> 
+              { colors.map((color) => 
+                <button 
+                  type='button' 
+                  onClick={() => {
+                    if (isMainInput) onDefaultColor(color.colorClass) 
+                    else onColorChange(color.colorClass) 
+                  }} 
+                  className={classNames(color.colorClass, isMainInput 
+                    ? color.colorClass === defaultColor && styles.active 
+                    : color.colorClass === currentColor && styles.active
+                  )}> { color.colorClass === 'default' && 
+                <Icon name="default-color" color="premium" size="xs" />
+              } </button> 
+            )}
+            </div>} >
+          <button type="button" className={styles.icon_btn}>
+            <Icon name="color-picer" color="premium" size="xs" />
+          </button>
+        </Popover>
         <button onClick={toArchive} type="button" className={styles.icon_btn}>
           <Icon name="dowland" color="premium" size="xs" />
         </button>

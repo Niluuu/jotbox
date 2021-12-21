@@ -9,7 +9,9 @@ interface CartProps {
   description: any;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: any[];
+  trashed: boolean;
+  color: string;
 }
 
 interface CartLayoutProps {
@@ -25,6 +27,7 @@ interface CartLayoutProps {
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: any[];
+  onColorChange?: (id: any, color: string) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -39,7 +42,8 @@ const CartLayout: FC<CartLayoutProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
-  filteredGaps
+  filteredGaps,
+  onColorChange
 }) => {
   const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
@@ -72,6 +76,9 @@ const CartLayout: FC<CartLayoutProps> = ({
                 cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
+                trashed={cart.trashed}
+                color={cart.color}
+                onColorChange={onColorChange}
               />
             ))}
       </div>
@@ -100,10 +107,14 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
+                cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
-              />
-            ))}
+                color={cart.color}
+                trashed={cart.trashed}
+                onColorChange={onColorChange}
+            />
+          ))}
       </div>
     </div>
   );

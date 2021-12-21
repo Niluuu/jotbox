@@ -3,23 +3,27 @@ import classNames from 'classnames';
 import styles from '../../component/cart-layout/CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
-interface TrashCartProps {
+interface CartProps {
   id: string;
   title: string;
-  description: string;
+  description: any;
   pined: boolean;
   archived: boolean;
+  gaps: any[];
+  trashed: boolean;
+  color: string;
 }
 
 interface TrashCartLayoutProps {
   gridType: boolean;
-  carts: TrashCartProps[];
+  carts: CartProps[];
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any) => void;
   onChangeArchived?: (id: any) => void;
   onHyperLinkEditMode?: () => void;
   onRemoveTrash?: (id: any) => void;
   onRestoreTrash?: (id: any) => void;
+  onColorChange?: (id: any, color: string) => void;
 }
 
 const TrashCartLayout: FC<TrashCartLayoutProps> = ({
@@ -30,6 +34,7 @@ const TrashCartLayout: FC<TrashCartLayoutProps> = ({
   onRemoveTrash,
   onRestoreTrash,
   carts,
+  onColorChange
 }) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
@@ -41,14 +46,15 @@ const TrashCartLayout: FC<TrashCartLayoutProps> = ({
               id={cart.id}
               title={cart.title}
               gridType={gridType}
+              gaps={cart.gaps}
               description={cart.description}
               pined={cart.pined}
               onChangeArchived={onChangeArchived}
               onChangePin={onChangePin}
               onRemoveCart={onRemoveCart}
-              onRemoveTrash={onRemoveTrash}
-              onRestoreTrash={onRestoreTrash}
-              isTrashPage={!!true}
+              color={cart.color}
+              trashed={cart.trashed}
+              onColorChange={onColorChange}
             />
           ))}
       </div>

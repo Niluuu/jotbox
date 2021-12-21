@@ -10,5 +10,3 @@ export async function getNodes() {
     console.log(`err`, err);
   }
 }
-
-export default getNodes;

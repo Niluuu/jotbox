@@ -6,7 +6,7 @@ type Node @model @auth(rules: [{allow: public}]) {
   collaborators: [AWSEmail]
   color: String
   gaps: [String]
-  description: AWSJSON
+  description: String
   archived: Boolean
 }
 

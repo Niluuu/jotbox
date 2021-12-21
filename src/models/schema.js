@@ -57,7 +57,7 @@ export const schema = {
                 "description": {
                     "name": "description",
                     "isArray": false,
-                    "type": "AWSJSON",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -245,5 +245,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "45466ff74ca5cfcda8c5a61c4a825f54"
+    "version": "244699ebe1de43576ce980b6cbcd5874"
 };

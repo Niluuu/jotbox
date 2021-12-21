@@ -37,10 +37,14 @@ const MainInput: FC<MainInputProps> = ({
   useOnClickOutside(outsideRef, handleClickOutside);
   const editorRef = useRef<Editor>(null);
 
-  const mapStateToProps = useSelector((state: RootState) =>  {
-    return state.layoutGridTypeReducer
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      layoutReducer: state.layoutGrid,
+      text: state.editorReducer.text
+    };
   });
-  const { grid } = mapStateToProps
+
+  const { grid } = mapStateToProps.layoutReducer;
   
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {

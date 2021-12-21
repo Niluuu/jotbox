@@ -58,7 +58,7 @@ const Cart: FC<CartProps> = ({
 
   const cartTitleRef = useRef<HTMLParagraphElement>();
   const cartTextRef = useRef<HTMLParagraphElement>();
-  console.log("description",description)
+  
   return (
     <>
       <div id={id} className={classNames(styles.cart, gridType && styles.column)}>
@@ -79,7 +79,8 @@ const Cart: FC<CartProps> = ({
               </button>
             )}
           </div>
-          {description && <MainEditor initialState={JSON.parse(description)} />}
+          {/* {description} */}
+          {description && <MainEditor initialState={description} />}
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
         <div className={styles.main_chips}>

@@ -1,8 +1,8 @@
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
-import { Node, Gaps } from '../../models';
+import { Node } from '../../models';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
@@ -25,32 +25,27 @@ interface HomePageProps {
   gapsFilterKey?: any;
 }
 
-const initialState = JSON.stringify({
-  blocks: [
-    {
-      key: 'cbbnn',
-      text: 'sdasdasda',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-  ],
-  entityMap: {},
-});
-
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [carts, setCart] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
   const [defaultPin, setDefaultPin] = useState(false);
+  const titleRef = useRef<HTMLDivElement>();
+ 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
   }, [defaultPin]);
-  const titleRef = useRef<HTMLDivElement>();
 
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      grid: state.layoutGrid.grid,
+      text: state.editorReducer.text
+    };
+  });
+
+  const { grid, text } = mapStateToProps
+  
   async function fetchTodos() {
     try {
       const todos = await getNodes();
@@ -203,59 +198,36 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   const onSetCart = useCallback(async () => {
     try {
-      const cart = {
-        id: Date.now(),
-        title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
-        pined: defaultPin,
-        archived: false,
-        gaps: [],
-      };
-      setCart([...carts, cart]);
       setDefaultPin(false);
-
-      // await DataStore.save(
-      //   new Node({
-      //     title: titleRef.current.innerText,
-      //     description: JSON.stringify(initialState),
-      //     gaps: [],
-      //     pined: defaultPin,
-      //     archived: false,
-      //     trashed: false,
-      //   }),
-      // );
-
+      await DataStore.save(
+        new Node({
+          title: titleRef.current.innerText,
+          description: text,
+          gaps: [],
+          pined: defaultPin,
+          archived: false,
+          trashed: false,
+        }),
+      );
       titleRef.current.innerHTML = '';
+      
+      fetchTodos()
     } catch (err) {
       console.log(err);
     }
-  }, [carts, defaultPin]);
+  }, [carts, defaultPin, text]);
 
   const onSetArchive = useCallback(async () => {
     try {
-      const cart = {
-        id: Date.now(),
-        title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
-        pined: false,
-        archived: true,
-        gaps: null,
-      };
-      setCart([...carts, cart]);
       setDefaultPin(false);
 
       await DataStore.save(
         new Node({
-          title: titleRef.current.innerText,
-          description: JSON.stringify(initialState),
-          gaps: [],
           pined: defaultPin,
           archived: true,
-          trashed: false,
         }),
       );
 
-      titleRef.current.innerHTML = '';
     } catch (err) {
       console.log(err);
     }
@@ -267,11 +239,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey))
     : carts;
 
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      layoutReducer: state.layoutGridTypeReducer,
-    };
-  });
 
   const onFilterSearch = useCallback(
     async (value) => {
@@ -286,8 +253,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     },
     [carts],
   );
-
-  const { grid } = mapStateToProps.layoutReducer;
 
   return (
     <Layout onFilterSearch={onFilterSearch} filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>

@@ -1,17 +1,16 @@
-import { FC, useState, useCallback, useRef } from 'react';
-import { EditorState, RichUtils, convertFromRaw } from 'draft-js';
+import { FC, useState, useCallback } from 'react';
+import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import {
-  ItalicButton,
   BoldButton,
-  UnderlineButton,
-  CodeButton,
   UnorderedListButton,
   OrderedListButton,
   BlockquoteButton,
-  CodeBlockButton,
 } from '@draft-js-plugins/buttons';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../app/store';
+import { setText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import mentions from './Mentions';
 import { Icon } from '../../component/Icon/Icon';
@@ -27,18 +26,34 @@ interface MainEditorProps {
 }
 
 const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, editorRef }) => {
-  const state = initialState ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))) : EditorState.createEmpty()
-
-  const [editorState, setEditorState] = useState(state);
+  const initalEditorState = initialState
+    ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
+    : EditorState.createEmpty();
+  const [editorState, setEditorState] = useState(initalEditorState);
   const [urlValue, seturlValue] = useState('');
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
+  const dispatch = useDispatch();
 
-  const onChange = (newEditorState) => {
-    setEditorState(newEditorState);
-  };
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      layoutReducer: state.layoutGrid,
+      editorReducer: state.editorReducer,
+    };
+  });
 
+  const { text } = mapStateToProps.editorReducer;
+
+  const onChange = useCallback(
+    (newEditorState) => {
+      setEditorState(newEditorState);
+      const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
+      
+      dispatch(setText(convert));
+    },
+    [editorState],
+  );
   const onOpenChange = useCallback((_open: boolean) => {
     setOpen(_open);
   }, []);
@@ -91,13 +106,9 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
           {(externalProps) => (
             <>
               <BoldButton {...externalProps} />
-              <ItalicButton {...externalProps} />
-              <UnderlineButton {...externalProps} />
-              <CodeButton {...externalProps} />
               <UnorderedListButton {...externalProps} />
               <OrderedListButton {...externalProps} />
               <BlockquoteButton {...externalProps} />
-              <CodeBlockButton {...externalProps} />
               <linkPlugin.LinkButton {...externalProps} />
             </>
           )}

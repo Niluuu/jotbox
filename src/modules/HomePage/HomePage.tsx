@@ -32,7 +32,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
   const [defaultPin, setDefaultPin] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
- 
+
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
   }, [defaultPin]);
@@ -40,12 +40,12 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
-      text: state.editorReducer.text
+      text: state.editorReducer.text,
     };
   });
 
-  const { grid, text } = mapStateToProps
-  
+  const { grid, text } = mapStateToProps;
+
   async function fetchTodos() {
     try {
       const todos = await getNodes();
@@ -58,9 +58,10 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     }
   }
 
-  useEffect(() => {
-    fetchTodos();
-  }, []);
+  // THE PROBLEM IS IN USEeFFECT UNMOUT CANNOT SOLVE
+  // useEffect(() => {
+  //     fetchTodos();
+  // }, []);
 
   const onRemoveCart = useCallback(
     async (id) => {
@@ -198,7 +199,18 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   const onSetCart = useCallback(async () => {
     try {
+      const cart = {
+        id: Date.now(),
+        title: titleRef.current.innerText,
+        description: text,
+        pined: defaultPin,
+        archived: false,
+        gaps: [],
+      };
+
+      setCart([...carts, cart]);
       setDefaultPin(false);
+
       await DataStore.save(
         new Node({
           title: titleRef.current.innerText,
@@ -209,13 +221,12 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           trashed: false,
         }),
       );
+
       titleRef.current.innerHTML = '';
-      
-      fetchTodos()
     } catch (err) {
       console.log(err);
     }
-  }, [carts, defaultPin, text]);
+  }, [ defaultPin]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -227,7 +238,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           archived: true,
         }),
       );
-
     } catch (err) {
       console.log(err);
     }
@@ -238,7 +248,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const cartsToProps = gapsFilterKey
     ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey))
     : carts;
-
 
   const onFilterSearch = useCallback(
     async (value) => {

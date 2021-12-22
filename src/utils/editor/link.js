@@ -1,5 +1,4 @@
-import styles from '../../modules/Editor/Editor.module.scss';
-
+import styles from '../../component/tooltip/Tooltip.module.scss';
 
 function findLinkEntities(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges((character) => {
@@ -17,9 +16,17 @@ const Link = (props) => {
   const {url} = contentState.getEntity(entityKey).getData();
 
   return ( 
-    <a href={url} className={styles.link} onClick={() => window.open(url)}>
+    <div className={styles.linkfy}>
+    <div className={styles.tooltip}>
+      <span onClick={() => window.open(url)}>
+        <span>open</span>
+      </span>
+    </div>
+    <a className={styles.link}>
       {children}
     </a>
+  </div>
+   
   );
 };
 

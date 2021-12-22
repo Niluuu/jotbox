@@ -8,6 +8,7 @@
     padding: 10px;
     position: absolute;
     top: 22px;
+    left: 12px;
     border-radius: 8px;
     display: none;
     visibility: hidden;
@@ -19,8 +20,9 @@
   }
 
   &:hover .tooltip {
-    display: block;
+    display: initial;
     visibility: visible;
+    z-index: 500;
   }
 
   .link {

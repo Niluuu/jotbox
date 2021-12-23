@@ -3,7 +3,7 @@ type Node @model @auth(rules: [{allow: public}]) {
   title: String
   pined: Boolean
   trashed: Boolean
-  collaborators: [AWSEmail]
+  collaborators: AWSEmail!
   color: String
   gaps: [String]
   description: String
@@ -20,5 +20,6 @@ type Users @model @auth(rules: [{allow: public}]) {
 type Gaps @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
+  collabarator: AWSEmail
 }
  

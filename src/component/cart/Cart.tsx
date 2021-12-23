@@ -19,7 +19,7 @@ interface CartProps {
   onHyperLinkEditMode?: () => void;
   onRemoveCart?: (id: any) => void;
   onChangePin?: (id: any, title: string, description: any) => void;
-  onReSetCart?: (id: any, title: string, description: any) => void;
+  onResetNodes?: (id: any, title: string, description: any) => void;
   onChangeArchived?: (id: any, title: string, description: any) => void;
   onRestoreTrash?: (id: any) => void;
   onRemoveTrash?: (id: any) => void;
@@ -46,7 +46,7 @@ const Cart: FC<CartProps> = ({
   onRemoveTrash,
   onSetIsMain,
   onRemoveCart,
-  onReSetCart,
+  onResetNodes,
   onHyperLinkEditMode,
   onCartLabel,
   cartLabel,
@@ -156,7 +156,7 @@ const Cart: FC<CartProps> = ({
                 onChangeArchived={() => onChangeArchived(id, title, description)}
                 onSetIsMain={onSetIsMain}
                 ontoggle={() => {
-                  onReSetCart(id, cartTitleRef.current.innerText, cartTextRef.current.innerHTML);
+                  onResetNodes(id, cartTitleRef.current.innerText, cartTextRef.current.innerHTML);
                   setIsOpen(false);
                 }}
                 onCartLabel={onCartLabel}

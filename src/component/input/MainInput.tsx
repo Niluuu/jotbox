@@ -13,7 +13,7 @@ interface MainInputProps {
   focused: boolean;
   defaultPin: boolean;
   onDefaultPin: () => void;
-  onSetCart: () => void;
+  onSetNodes: () => void;
   onSetArchive: () => void;
   setFocused: (e: any) => void;
   outsideRef?: any;
@@ -27,7 +27,7 @@ const MainInput: FC<MainInputProps> = ({
   onDefaultPin,
   setFocused,
   focused,
-  onSetCart,
+  onSetNodes,
   onSetIsMain,
   titleRef
 }) => {
@@ -112,7 +112,7 @@ const MainInput: FC<MainInputProps> = ({
           focused={focused}
           isMainInput={!!true}
           onSetArchive={onSetArchive}
-          ontoggle={() => onSetCart()}
+          ontoggle={() => onSetNodes()}
           onSetIsMain={onSetIsMain}
           onLinkMode={onLinkMode}
           withHistory />

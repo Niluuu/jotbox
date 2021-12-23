@@ -28,7 +28,6 @@ const App: FC = () => {
     getGaps();
   }, []);
 
-  console.log('gaps', gapsRoute);
   return (
     <Switch>
       <ProtectedRoute exact path="/" component={HomePage} />

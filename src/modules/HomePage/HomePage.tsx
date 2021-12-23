@@ -2,7 +2,9 @@ import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
+import { API, graphqlOperation } from 'aws-amplify';
 import { Node } from '../../models';
+import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../component/cart-layout/CartLayout';
@@ -26,12 +28,16 @@ interface HomePageProps {
 }
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
-  const [carts, setCart] = useState<CartProps[]>([]);
+  const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
   const [defaultPin, setDefaultPin] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
+  const collabarotor = localStorage.getItem('userEmail');
+  const [filter, setFilter] = useState({
+    collaborators: { eq: collabarotor},
+  })
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -46,40 +52,40 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   const { grid, text } = mapStateToProps;
 
-  async function fetchTodos() {
+  async function getAllNodes() {
     try {
-      const todos = await getNodes();
+      const data = await API.graphql({ query: listNodes, variables: { filter } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      setCart(todos);
+      setNodes(data.data.listNodes.items);
+      console.log("data", data)
     } catch (err) {
-      //  TODO: Add your meseage for all console error
-      console.log(`err`, err);
+      console.log("err", err)
     }
   }
 
-  // useEffect(() => {
-  //     fetchTodos();
-  // }, []);
+  useEffect(() => {
+    getAllNodes();
+  }, []);
 
   const onRemoveCart = useCallback(
     async (id) => {
       try {
-        setCart(carts.filter((cart) => cart.id !== id));
+        setNodes(nodes.filter((cart) => cart.id !== id));
         const modelToDelete = await DataStore.query(Node, id);
         DataStore.delete(modelToDelete);
       } catch (err) {
         console.log(err);
       }
     },
-    [carts],
+    [nodes],
   );
 
   const onChangePin = useCallback(
     async (id, title, description) => {
       try {
-        setCart(
-          carts.map((cart) =>
+        setNodes(
+          nodes.map((cart) =>
             cart.id === id ? { ...cart, title, description, pined: !cart.pined } : cart,
           ),
         );
@@ -96,14 +102,14 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         console.log(err);
       }
     },
-    [carts],
+    [nodes],
   );
 
   const onChangeArchived = useCallback(
     async (id, title, description) => {
       try {
-        setCart(
-          carts.map((cart) =>
+        setNodes(
+          nodes.map((cart) =>
             cart.id === id ? { ...cart, title, description, archived: true, pined: false } : cart,
           ),
         );
@@ -123,13 +129,13 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         console.log(err);
       }
     },
-    [carts],
+    [nodes],
   );
 
-  const onReSetCart = useCallback(
+  const onResetNodes = useCallback(
     async (id, title, description) => {
       try {
-        setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
+        setNodes(nodes.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
         const original = await DataStore.query(Node, id);
         await DataStore.save(
           Node.copyOf(original, (item) => {
@@ -143,15 +149,15 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         console.log('error updating todo:', err);
       }
     },
-    [carts],
+    [nodes],
   );
 
   const onSetLabel = useCallback(
     async (id, oldGaps: string[]) => {
       try {
         if (oldGaps.length) {
-          setCart(
-            carts.map((cart) =>
+          setNodes(
+            nodes.map((cart) =>
               cart.id === id
                 ? {
                     ...cart,
@@ -176,14 +182,14 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         console.log('error updating todo:', err);
       }
     },
-    [carts],
+    [nodes],
   );
 
   const onReSetLabel = useCallback(
     async (oldValue, newValue) => {
       try {
-        setCart(
-          carts.map((cart) => ({
+        setNodes(
+          nodes.map((cart) => ({
             ...cart,
             gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub)),
           })),
@@ -193,10 +199,10 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         console.log('error updating todo:', err);
       }
     },
-    [carts],
+    [nodes],
   );
 
-  const onSetCart = useCallback(async () => {
+  const onSetNodes = useCallback(async () => {
     try {
       setDefaultPin(false);
       await DataStore.save(
@@ -207,15 +213,15 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           pined: defaultPin,
           archived: false,
           trashed: false,
+          collaborators: collabarotor
         }),
       );
 
       titleRef.current.innerHTML = '';
-      // fetchTodos()
     } catch (err) {
       console.log(err);
     }
-  }, [ defaultPin]);
+  }, [defaultPin]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -225,18 +231,19 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         new Node({
           pined: defaultPin,
           archived: true,
+          collaborators: collabarotor
         }),
       );
     } catch (err) {
       console.log(err);
     }
-  }, [carts]);
+  }, [nodes]);
 
-  const filteredGaps = gapFilter(carts);
+  const filteredGaps = gapFilter(nodes);
 
-  const cartsToProps = gapsFilterKey
-    ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey))
-    : carts;
+  const nodesToProps = gapsFilterKey
+    ? nodes.filter((cart) => cart.gaps.includes(gapsFilterKey))
+    : nodes;
 
   const onFilterSearch = useCallback(
     async (value) => {
@@ -244,12 +251,12 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         const todos = await getNodes();
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
-        setCart(todos.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0));
+        setNodes(todos.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0));
       } catch (err) {
         console.log(err);
       }
     },
-    [carts],
+    [nodes],
   );
 
   return (
@@ -260,7 +267,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             focused={focused}
             setFocused={setFocused}
             onSetArchive={onSetArchive}
-            onSetCart={onSetCart}
+            onSetNodes={onSetNodes}
             defaultPin={defaultPin}
             onDefaultPin={onDefaultPin}
             onSetIsMain={onSetIsMain}
@@ -269,11 +276,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         </div>
         <CartLayout
           onChangePin={onChangePin}
-          onReSetCart={onReSetCart}
+          onResetNodes={onResetNodes}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
           gridType={grid}
-          carts={cartsToProps}
+          carts={nodesToProps}
           onSetLabel={onSetLabel}
           filteredGaps={filteredGaps}
         />

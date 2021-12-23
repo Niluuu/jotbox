@@ -17,25 +17,11 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "pined": {
-                    "name": "pined",
+                "description": {
+                    "name": "description",
                     "isArray": false,
-                    "type": "Boolean",
+                    "type": "String",
                     "isRequired": false,
-                    "attributes": []
-                },
-                "trashed": {
-                    "name": "trashed",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "collaborators": {
-                    "name": "collaborators",
-                    "isArray": false,
-                    "type": "AWSEmail",
-                    "isRequired": true,
                     "attributes": []
                 },
                 "color": {
@@ -53,15 +39,22 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
-                "description": {
-                    "name": "description",
+                "archived": {
+                    "name": "archived",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Boolean",
                     "isRequired": false,
                     "attributes": []
                 },
-                "archived": {
-                    "name": "archived",
+                "trashed": {
+                    "name": "trashed",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "pined": {
+                    "name": "pined",
                     "isArray": false,
                     "type": "Boolean",
                     "isRequired": false,
@@ -251,5 +244,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "27b75faa97cede7d339302826245d6cf"
+    "version": "28c2ca7a7efab3a69d9a072be4d2a011"
 };

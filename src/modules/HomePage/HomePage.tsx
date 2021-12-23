@@ -34,10 +34,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
   const [defaultPin, setDefaultPin] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
-  const collabarotor = localStorage.getItem('userEmail');
-  const [filter, setFilter] = useState({
-    collaborators: { eq: collabarotor},
-  })
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -54,11 +50,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   async function getAllNodes() {
     try {
-      const data = await API.graphql({ query: listNodes, variables: { filter } });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      setNodes(data.data.listNodes.items);
-      console.log("data", data)
+      // const arr = await API.graphql({ query: listNodes});
+      // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // //  @ts-ignore
+      // setNodes(arr.data.listNodes.items);
+      // console.log("object", arr)
     } catch (err) {
       console.log("err", err)
     }
@@ -204,18 +200,20 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   const onSetNodes = useCallback(async () => {
     try {
+      const node = {
+        id: Date.now(),
+        title: titleRef.current.innerText,
+        description: text,
+        gaps: [],
+        pined: defaultPin,
+        archived: false,
+        trashed: false,
+      }
+      
+      setNodes([node, ...nodes])
       setDefaultPin(false);
-      await DataStore.save(
-        new Node({
-          title: titleRef.current.innerText,
-          description: text,
-          gaps: [],
-          pined: defaultPin,
-          archived: false,
-          trashed: false,
-          collaborators: collabarotor
-        }),
-      );
+      await DataStore.save(new Node(node),
+);
 
       titleRef.current.innerHTML = '';
     } catch (err) {
@@ -231,7 +229,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         new Node({
           pined: defaultPin,
           archived: true,
-          collaborators: collabarotor
         }),
       );
     } catch (err) {

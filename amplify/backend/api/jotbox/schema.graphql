@@ -1,13 +1,12 @@
 type Node @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String
-  pined: Boolean
-  trashed: Boolean
-  collaborators: AWSEmail!
+  description: String
   color: String
   gaps: [String]
-  description: String
   archived: Boolean
+  trashed: Boolean
+  pined: Boolean
 }
 
 type Users @model @auth(rules: [{allow: public}]) {

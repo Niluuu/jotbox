@@ -9,7 +9,6 @@ export const getNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description
@@ -34,7 +33,6 @@ export const listNodes = /* GraphQL */ `
         title
         pined
         trashed
-        collaborators
         color
         gaps
         description
@@ -68,7 +66,6 @@ export const syncNodes = /* GraphQL */ `
         title
         pined
         trashed
-        collaborators
         color
         gaps
         description

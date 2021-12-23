@@ -9,7 +9,6 @@ export const onCreateNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description
@@ -29,7 +28,6 @@ export const onUpdateNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description
@@ -49,7 +47,6 @@ export const onDeleteNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description

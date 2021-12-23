@@ -19,13 +19,12 @@ type GapsMetaData = {
 export declare class Node {
   readonly id: string;
   readonly title?: string;
-  readonly pined?: boolean;
-  readonly trashed?: boolean;
-  readonly collaborators: string;
+  readonly description?: string;
   readonly color?: string;
   readonly gaps?: (string | null)[];
-  readonly description?: string;
   readonly archived?: boolean;
+  readonly trashed?: boolean;
+  readonly pined?: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Node, NodeMetaData>);

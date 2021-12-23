@@ -399,7 +399,6 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "collaborators",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -705,7 +704,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "collaborators",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2064,7 +2062,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "collaborators",
           "description" : null,
           "type" : {
             "kind" : "LIST",
@@ -2162,7 +2159,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "collaborators",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2291,7 +2287,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "collaborators",
           "description" : null,
           "type" : {
             "kind" : "LIST",

@@ -12,7 +12,6 @@ export const createNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description
@@ -35,7 +34,6 @@ export const updateNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description
@@ -58,7 +56,6 @@ export const deleteNode = /* GraphQL */ `
       title
       pined
       trashed
-      collaborators
       color
       gaps
       description

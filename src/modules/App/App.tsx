@@ -18,7 +18,7 @@ const App: FC = () => {
       const gaps = await API.graphql(graphqlOperation(listGapss));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      setGapsRoute(gaps.data.listGapss.items);
+      // setGapsRoute(gaps.data.listGapss.items);
     } catch (err) {
       console.log(`err`, err);
     }
@@ -26,7 +26,7 @@ const App: FC = () => {
 
   useEffect(() => {
     getGaps();
-  }, [gapsRoute]);
+  }, []);
 
   console.log('gaps', gapsRoute);
   return (

@@ -9,7 +9,7 @@ function ProtectedRoute({ component: Component, ...restOfProps }) {
       render={(props) =>
         isAuthenticated ? 
         <Component {...props} /> 
-        : <Redirect to="/signIn" />
+        : <Redirect to="/signin" />
       }
     />
   );

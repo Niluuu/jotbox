@@ -34,6 +34,8 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
   const [defaultPin, setDefaultPin] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
+  const colabarator = localStorage.getItem("userEmail");
+  const [filter, setFilter] = useState({ })
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -50,11 +52,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   async function getAllNodes() {
     try {
-      // const arr = await API.graphql({ query: listNodes});
-      // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // //  @ts-ignore
-      // setNodes(arr.data.listNodes.items);
-      // console.log("object", arr)
+      const arr = await API.graphql({ query: listNodes});
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      setNodes(arr.data.listNodes.items);
+      console.log("object", arr)
     } catch (err) {
       console.log("err", err)
     }
@@ -209,7 +211,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         archived: false,
         trashed: false,
       }
-      
+
       setNodes([node, ...nodes])
       setDefaultPin(false);
       await DataStore.save(new Node(node),

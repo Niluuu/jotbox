@@ -10,12 +10,13 @@ export const createNode = /* GraphQL */ `
     createNode(input: $input, condition: $condition) {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -32,12 +33,13 @@ export const updateNode = /* GraphQL */ `
     updateNode(input: $input, condition: $condition) {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -54,12 +56,13 @@ export const deleteNode = /* GraphQL */ `
     deleteNode(input: $input, condition: $condition) {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt

@@ -7,12 +7,13 @@ export const onCreateNode = /* GraphQL */ `
     onCreateNode {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -26,12 +27,13 @@ export const onUpdateNode = /* GraphQL */ `
     onUpdateNode {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -45,12 +47,13 @@ export const onDeleteNode = /* GraphQL */ `
     onDeleteNode {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt

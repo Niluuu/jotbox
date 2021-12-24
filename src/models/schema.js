@@ -60,6 +60,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "collabarator": {
+                    "name": "collabarator",
+                    "isArray": false,
+                    "type": "AWSEmail",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -192,13 +199,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "collabarator": {
-                    "name": "collabarator",
-                    "isArray": false,
-                    "type": "AWSEmail",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -244,5 +244,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "28c2ca7a7efab3a69d9a072be4d2a011"
+    "version": "3c92c9966f3c86233d4e1c986149c469"
 };

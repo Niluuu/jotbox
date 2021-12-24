@@ -7,12 +7,13 @@ export const getNode = /* GraphQL */ `
     getNode(id: $id) {
       id
       title
-      pined
-      trashed
+      description
       color
       gaps
-      description
       archived
+      trashed
+      pined
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -31,12 +32,13 @@ export const listNodes = /* GraphQL */ `
       items {
         id
         title
-        pined
-        trashed
+        description
         color
         gaps
-        description
         archived
+        trashed
+        pined
+        collabarator
         _version
         _deleted
         _lastChangedAt
@@ -64,12 +66,13 @@ export const syncNodes = /* GraphQL */ `
       items {
         id
         title
-        pined
-        trashed
+        description
         color
         gaps
-        description
         archived
+        trashed
+        pined
+        collabarator
         _version
         _deleted
         _lastChangedAt

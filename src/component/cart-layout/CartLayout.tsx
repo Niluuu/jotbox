@@ -16,7 +16,6 @@ interface CartLayoutProps {
   gridType: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: any) => void;
-  onResetNodes?: (id: any, title: string, description: any) => void;
   onChangeArchived?: (id: any, title: string, description: any) => void;
   onChangePin?: (id: any, title: string, description: any) => void;
   onHyperLinkEditMode?: () => void;
@@ -31,7 +30,6 @@ const CartLayout: FC<CartLayoutProps> = ({
   gridType,
   onChangeArchived,
   onChangePin,
-  onResetNodes,
   onRemoveCart,
   onHyperLinkEditMode,
   carts,
@@ -64,7 +62,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 pined={cart.pined}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
-                onResetNodes={onResetNodes}
                 onRemoveCart={onRemoveCart}
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
@@ -95,7 +92,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 pined={cart.pined}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
-                onResetNodes={onResetNodes}
                 onRemoveCart={onRemoveCart}
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}

@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import layoutGrid from '../reducers/layout';
 import editorReducer from '../reducers/editor';
+import nodesReducer from '../reducers/nodes';
 
 export const store = configureStore({
   reducer: {
     layoutGrid,
-    editorReducer
+    editorReducer,
+    nodesReducer
   },
 });
 

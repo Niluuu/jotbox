@@ -2,18 +2,18 @@ import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API } from 'aws-amplify';
 import { Node } from '../../models';
 import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
-import CartLayout from '../../component/cart-layout/CartLayout';
+import CartLayout from '../../atoms/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
 import gapFilter from '../../utils/hooks/gapFilter';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
-import CartModal from './CartModal';
+import CartModal from '../../atoms/modals/CartModal';
 
 interface CartProps {
   id: any;

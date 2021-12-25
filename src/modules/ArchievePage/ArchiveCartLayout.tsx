@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import styles from '../../component/cart-layout/CartLayout.module.scss';
+import styles from '../../atoms/cart-layout/CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
 interface CartProps {

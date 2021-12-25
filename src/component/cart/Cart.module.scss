@@ -276,3 +276,14 @@
     }
   }
 }
+
+.popupCart {
+  width: 100%;
+  box-shadow: none;
+  max-width: 100%;
+  border: transparent;
+
+  &:hover {
+    box-shadow: none;
+  }
+}

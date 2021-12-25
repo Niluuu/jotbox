@@ -38,7 +38,7 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
     };
   });
 
-  const { text } = mapStateToProps.editorReducer;
+  const { updatedText } = mapStateToProps.editorReducer;
 
   const onChange = useCallback(
     (newEditorState) => {

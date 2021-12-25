@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './CartLayout.module.scss';
-import Cart from '../cart/Cart';
+import Cart from '../../component/cart/Cart';
 
 interface CartProps {
   id: string;
@@ -57,7 +57,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 id={cart.id}
                 gaps={cart.gaps}
                 title={cart.title}
-                gridType={gridType}
                 description={cart.description}
                 pined={cart.pined}
                 onChangeArchived={onChangeArchived}
@@ -69,6 +68,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
+                gridType={gridType}
               />
             ))}
       </div>
@@ -87,7 +87,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 id={cart.id}
                 title={cart.title}
                 gaps={cart.gaps}
-                gridType={gridType}
                 description={cart.description}
                 pined={cart.pined}
                 onChangeArchived={onChangeArchived}
@@ -98,6 +97,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onCartLabel={onCartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
+                gridType={gridType}
               />
             ))}
       </div>

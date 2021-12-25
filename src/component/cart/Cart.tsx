@@ -1,17 +1,19 @@
-import { FC, useState } from 'react';
+import { FC, useCallback } from 'react';
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../app/store';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
+import { getIdNode } from '../../reducers/nodes';
 
 interface CartProps {
   id: any;
   title: string;
   description: any;
-  gridType: boolean;
   pined: boolean;
   isTrashPage?: boolean;
   gaps?: any[];
@@ -29,6 +31,8 @@ interface CartProps {
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: any[];
+  gridType?: boolean;
+  popupCart?: boolean
 }
 
 const Cart: FC<CartProps> = ({
@@ -36,7 +40,6 @@ const Cart: FC<CartProps> = ({
   title,
   pined,
   description,
-  gridType,
   gaps,
   isTrashPage,
   onChangePin,
@@ -51,11 +54,26 @@ const Cart: FC<CartProps> = ({
   cartLabel,
   onSetLabel,
   filteredGaps,
+  gridType,
+  popupCart
 }) => {
+  const dispatch = useDispatch();
+  
+  const onOpenModal = useCallback(
+    (nodeId) => {
+       dispatch(getIdNode(nodeId));
+    },
+    [],
+  )
+  
   return (
-    <>
-      <div id={id} className={classNames(styles.cart, gridType && styles.column)}>
-      <div className={styles.cart_content} onClick={(e) => e}>
+      <div 
+      id={id}
+      key={id}
+      className={classNames(styles.cart, gridType && styles.column, popupCart && styles.popupCart)} 
+      onClick={() => !popupCart && onOpenModal(id)}
+      >
+      <div className={styles.cart_content}>
           <div className={styles.cart_title}>
             <p> {title} </p>
             {!isTrashPage && (
@@ -106,7 +124,6 @@ const Cart: FC<CartProps> = ({
           )}
         </div> */}
       </div>
-    </>
   );
 };
 

@@ -252,7 +252,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           filteredGaps={filteredGaps}
         />
         <AddLinkModal />
-        <CartModal/>
+        <CartModal  />
       </div>
     </Layout>
   );

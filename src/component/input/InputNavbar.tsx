@@ -8,14 +8,12 @@ import Modal from '../modal/Modal';
 interface InputNavbarProps {
   withHistory?: boolean;
   isMainInput?: boolean;
-  onHyperLinkEditMode?: () => void;
   ontoggle?: () => void;
   onSetArchive?: () => void;
   focused?: boolean;
   onRemoveCart?: () => void;
   onLinkMode?: () => void;
   onChangeArchived?: () => void;
-  onSetIsMain?: (bool: boolean) => void;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
   onSetLabel?: (oldGaps: string[]) => void;
@@ -26,12 +24,10 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   isMainInput,
   onChangeArchived,
   onSetArchive,
-  onHyperLinkEditMode,
   withHistory,
   ontoggle,
   focused = true,
   onRemoveCart,
-  onSetIsMain,
   onSetLabel,
   filteredGaps,
   onLinkMode

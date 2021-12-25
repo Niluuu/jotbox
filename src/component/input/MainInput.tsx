@@ -113,7 +113,6 @@ const MainInput: FC<MainInputProps> = ({
           isMainInput={!!true}
           onSetArchive={onSetArchive}
           ontoggle={() => onSetNodes()}
-          onSetIsMain={onSetIsMain}
           onLinkMode={onLinkMode}
           withHistory />
       ) : null}

@@ -4,7 +4,7 @@ export const editor = createSlice({
   name: 'editor',
   initialState: {
     text: '{"blocks":[{"key":"cbbnn","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
-    updatedText: ''
+    updatedText: '{"blocks":[{"key":"cbbnn","text":"update","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}'
   },
   reducers: {
     setText: (state, action) => {

@@ -4,7 +4,7 @@ import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
-import { setText } from '../../reducers/editor';
+import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import mentions from './Mentions';
 import { Icon } from '../../component/Icon/Icon';
@@ -31,25 +31,20 @@ const MainEditor: FC<MainEditorProps> = ({ linkMode, onLinkMode, initialState, e
   const [plaseHolder, setPlaseHolder] = useState(true);
   const dispatch = useDispatch();
 
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      layoutReducer: state.layoutGrid,
-      editorReducer: state.editorReducer,
-    };
-  });
-
-  const { updatedText } = mapStateToProps.editorReducer;
-
   const onChange = useCallback(
     (newEditorState) => {
       setPlaseHolder(false)
       setEditorState(newEditorState);
+
       const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
       
+      if (initialState) dispatch(setUpdatedText(convert));
       dispatch(setText(convert));
+
     },
     [editorState],
   );
+
   const onOpenChange = useCallback((_open: boolean) => {
     setOpen(_open);
   }, []);

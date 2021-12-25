@@ -16,6 +16,6 @@ export const editor = createSlice({
   },
 })
 
-export const { setText } = editor.actions
+export const { setText, setUpdatedText } = editor.actions
 
 export default editor.reducer

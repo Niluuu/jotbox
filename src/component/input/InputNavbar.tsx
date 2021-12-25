@@ -63,13 +63,7 @@ export const InputNavbar: FC<InputNavbarProps> = ({
     <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
       <div className={styles.main_tools}>
         <button type="button" className={styles.icon_btn}>
-          <Icon name="notification-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
           <Icon name="user-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
-          <Icon name="img" color="premium" size="xs" />
         </button>
         <button onClick={toArchive} type="button" className={styles.icon_btn}>
           <Icon name="dowland" color="premium" size="xs" />

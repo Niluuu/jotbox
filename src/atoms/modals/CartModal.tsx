@@ -18,8 +18,8 @@ const CartModal: FC = () => {
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
   const [updatedPined, setUpdatedPined] = useState(undefined);
-  const [updatedArchive, setUpdatedArchive] = useState(undefined)
-  const [updatedColor, setUpdatedColor] = useState(undefined)
+  const [updatedArchive, setUpdatedArchive] = useState(undefined);
+  const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
 
   const onLinkMode = () => setlinkMode((prev) => !prev);
@@ -48,7 +48,6 @@ const CartModal: FC = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
         setNode([data.data.getNode]);
-        console.log('node', data);
       } catch (err) {
         console.log(err);
       }
@@ -58,10 +57,12 @@ const CartModal: FC = () => {
 
   useEffect(() => {
     if (node[0] !== undefined) {
-      setUpdatedPined(node[0].pined);
-      setUpdatedArchive(node[0].archived);
-      setUpdatedColor(node[0].color)
-    } 
+      const { pined, archived, color } = node[0];
+
+      setUpdatedPined(pined);
+      setUpdatedArchive(archived);
+      setUpdatedColor(color);
+    }
   }, [node]);
 
   useEffect(() => {
@@ -78,17 +79,14 @@ const CartModal: FC = () => {
         description: updatedText,
         pined: updatedPined,
         archived: updatedArchive,
-        color: updatedColor
+        color: updatedColor,
       };
 
-      console.log("nodeDetails", nodeDetails)
-
+      // TODO: Update function not working there is no error should see
       const data = await API.graphql({
         query: updateNode,
         variables: { input: nodeDetails },
       });
-
-      console.log('update', data);
     } catch (err) {
       console.log(err);
     }
@@ -136,13 +134,13 @@ const CartModal: FC = () => {
                 initialState={node[0].description}
               />
             </div>
-              <InputNavbar
-                isMainInput={!!true}
-                onSetArchive={toggleArchived}
-                ontoggle={toggleModal}
-                onLinkMode={onLinkMode}
-                withHistory
-              />
+            <InputNavbar
+              isMainInput={!!true}
+              onSetArchive={toggleArchived}
+              ontoggle={toggleModal}
+              onLinkMode={onLinkMode}
+              withHistory
+            />
           </div>
         )}
       </>

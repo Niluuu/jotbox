@@ -1,6 +1,6 @@
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { DataStore } from '@aws-amplify/datastore';
 import { API } from 'aws-amplify';
 import { Node } from '../../models';
@@ -14,42 +14,49 @@ import AddLinkModal from '../../atoms/modals/AddLinkModal';
 import gapFilter from '../../utils/hooks/gapFilter';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
+import { setText } from '../../reducers/editor';
+import { initialStateStr } from '../../utils/editor/initialState';
+import { onUpdateNode } from '../../graphql/subscriptions';
 
 interface CartProps {
-  id: any;
+  id: string;
   title: string;
-  description: any;
+  description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[];
+  gaps: string[];
+  _version: number;
 }
 
 interface HomePageProps {
-  gapsFilterKey?: any;
+  gapsFilterKey?: string;
 }
 
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [isMain, setIsMain] = useState(false);
-  const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
   const [defaultPin, setDefaultPin] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
   const userEmail = localStorage.getItem('userEmail');
-  const [filter, setFilter] = useState({
+  const [filter] = useState({
     collabarator: {
       eq: userEmail,
     },
   });
 
+  const dispatch = useDispatch();
+  const onSetIsMain = useCallback((bool) => setIsMain(bool), []);
+
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
+    dispatch(setText(initialStateStr));
   }, []);
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
-  }, [defaultPin]);
+  }, []);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -66,10 +73,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = data.data.listNodes;
-      console.log("nodes", items)
+      // eslint-disable-next-line no-console
+      console.log('getAllNodes', items);
       setNodes(items);
     } catch (err) {
-      console.log('err', err);
+      throw new Error('Get Nodes Error');
     }
   }
 
@@ -77,81 +85,68 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     getAllNodes();
   }, []);
 
-  const onRemoveCart = useCallback(
-    async (id) => {
-      try {
-        await API.graphql({ query: deleteNode, variables: { input: { id } } });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [nodes],
-  );
+  const onRemoveCart = useCallback(async (id, _version) => {
+    try {
+      await API.graphql({ query: deleteNode, variables: { input: { id, _version } } });
+    } catch (err) {
+      throw new Error('Remove node error');
+    }
+  }, []);
 
-  const onChangePin = useCallback(
-    async (id, pined) => {
-      try {
-        const updatedNode = {
-          id,
-          pined,
-        };
+  const onChangePin = useCallback(async (id, pined, _version) => {
+    try {
+      const updatedNode = {
+        id,
+        pined,
+        _version,
+      };
 
-        //  TODO: check update function
-        const updatedTodo = await API.graphql({
-          query: updateNode,
-          variables: { input: updatedNode },
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [nodes],
-  );
+      await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, []);
 
-  const onChangeArchived = useCallback(
-    async (id, title, description) => {
-      try {
-        //  TODO: Add update function
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [nodes],
-  );
+  const onChangeArchived = useCallback(async (id, title, description) => {
+    try {
+      //  TODO: Add update function
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
-
-  const onSetLabel = useCallback(
-    async (id, oldGaps: string[]) => {
-      try {
-        // if (oldGaps.length) {
-        //   setNodes(
-        //     nodes.map((cart) =>
-        //       cart.id === id
-        //         ? {
-        //             ...cart,
-        //             gaps: cart.gaps
-        //               .concat(oldGaps.filter((old) => old && old))
-        //               .filter((val, pos, arr) => arr.indexOf(val) === pos),
-        //           }
-        //         : cart,
-        //     ),
-        //   );
-        //   const original = await DataStore.query(Node, id);
-        //   await DataStore.save(
-        //     Node.copyOf(original, (item) => {
-        //       const cart = item;
-        //       cart.gaps = item.gaps
-        //         .concat(oldGaps.filter((old) => old && old))
-        //         .filter((val, pos, arr) => arr.indexOf(val) === pos);
-        //     }),
-        //   );
-        // }
-      } catch (err) {
-        console.log('error updating todo:', err);
-      }
-    },
-    [nodes],
-  );
+  const onSetLabel = useCallback(async (id, oldGaps: string[]) => {
+    try {
+      // if (oldGaps.length) {
+      //   setNodes(
+      //     nodes.map((cart) =>
+      //       cart.id === id
+      //         ? {
+      //             ...cart,
+      //             gaps: cart.gaps
+      //               .concat(oldGaps.filter((old) => old && old))
+      //               .filter((val, pos, arr) => arr.indexOf(val) === pos),
+      //           }
+      //         : cart,
+      //     ),
+      //   );
+      //   const original = await DataStore.query(Node, id);
+      //   await DataStore.save(
+      //     Node.copyOf(original, (item) => {
+      //       const cart = item;
+      //       cart.gaps = item.gaps
+      //         .concat(oldGaps.filter((old) => old && old))
+      //         .filter((val, pos, arr) => arr.indexOf(val) === pos);
+      //     }),
+      //   );
+      // }
+    } catch (err) {
+      console.log('error updating todo:', err);
+    }
+  }, []);
 
   const onReSetLabel = useCallback(
     async (oldValue, newValue) => {
@@ -183,13 +178,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       };
 
       await API.graphql({ query: createNode, variables: { input: node } });
-
-      getAllNodes()
       cleanUp();
     } catch (err) {
-      console.log(err);
+      throw new Error('Create node error');
     }
-  }, [defaultPin, text]);
+  }, [cleanUp, defaultPin, text, userEmail]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -218,7 +211,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
         // setNodes(
-        //   todos.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0),
+        //   carts.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0),
         // );
       } catch (err) {
         console.log(err);
@@ -226,6 +219,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     },
     [nodes],
   );
+
+  useEffect(() => {
+    getAllNodes();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRemoveCart, onChangePin]);
 
   return (
     <Layout onFilterSearch={onFilterSearch} filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
@@ -247,12 +245,12 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
           gridType={grid}
-          carts={nodesToProps}
+          carts={nodes}
           onSetLabel={onSetLabel}
           filteredGaps={filteredGaps}
         />
         <AddLinkModal />
-        <CartModal  />
+        <CartModal />
       </div>
     </Layout>
   );

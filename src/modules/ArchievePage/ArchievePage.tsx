@@ -1,4 +1,4 @@
-import { FC, useCallback, useState, useEffect, useRef } from 'react';
+import { FC, useState} from 'react';
 import classNames from 'classnames';
 import styles from '../HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
@@ -7,28 +7,26 @@ import ArchiveCartLayout from './ArchiveCartLayout';
 
 
 interface CartProps {
-  id: any;
+  id: string;
   title: string;
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: string[];
+  _version: number;
 }
 export interface ArchievePageProps {
   gridType?: boolean;
+  setHyperLink?: (e: string) => void;
+  setHyperText?: (e: string) => void;
   onCloseModal?: () => void;
-  onSetArchive?: () => void;
   hyperLinkEditMode?: boolean;
   carts?: CartProps[];
-  onRemoveCart?: (id: any) => void;
-  onReSetCart?: (id: any, title: string, description: any) => void;
-  onChangeArchived?: (id: any, title: string, description: any) => void;
-  onChangePin?: (id: any, title: string, description: any) => void;
-  setHyperText?: (e: any) => void;
-  setHyperLink?: (e: any) => void;
-  hyperText?: any;
-  hyperLink?: any;
-  filtered?: any[];
+  onRemoveCart?: (id: string) => void;
+  onChangeArchived?: (id: string, title: string, description: string) => void;
+  onChangePin?: (id: string, pined: boolean) => void;
+  hyperText?: string;
+  hyperLink?: string;
 }
 
 const ArchievePage: FC<ArchievePageProps> = ({

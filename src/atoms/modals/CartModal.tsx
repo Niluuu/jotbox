@@ -77,18 +77,16 @@ const CartModal: FC = () => {
         id: nodeID,
         title: titleRef.current.innerText,
         description: updatedText,
-        pined: updatedPined,
-        archived: updatedArchive,
-        color: updatedColor,
+        /* eslint no-underscore-dangle: 0 */
+        _version: node[0]._version,
       };
 
-      // TODO: Update function not working there is no error should see
-      const data = await API.graphql({
+      await API.graphql({
         query: updateNode,
         variables: { input: nodeDetails },
       });
     } catch (err) {
-      console.log(err);
+      throw new Error('Update cart: Something went wrong');
     }
   }, [nodeID, titleRef, updatedPined, updatedText]);
 

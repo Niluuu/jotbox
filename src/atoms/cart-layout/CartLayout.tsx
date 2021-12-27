@@ -4,26 +4,27 @@ import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
 interface CartProps {
+  _version: number;
   id: string;
   title: string;
-  description: any;
+  description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[]
+  gaps: string[];
 }
 
 interface CartLayoutProps {
   gridType: boolean;
   carts: CartProps[];
-  onRemoveCart?: (id: any) => void;
-  onChangeArchived?: (id: any, title: string, description: any) => void;
-  onChangePin?: (id: any, title: string, description: any) => void;
+  onRemoveCart?: (id: string, _version: number) => void;
+  onChangeArchived?: (id: string, title: string, description: any) => void;
+  onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onHyperLinkEditMode?: () => void;
   onSetIsMain?: (bool: boolean) => void;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
-  filteredGaps?: any[];
+  filteredGaps?: string[];
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -48,7 +49,8 @@ const CartLayout: FC<CartLayoutProps> = ({
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications && carts !== undefined && 
+        {notifications &&
+          carts !== undefined &&
           notifications
             .filter((cart) => cart.pined)
             .map((cart) => (
@@ -59,6 +61,8 @@ const CartLayout: FC<CartLayoutProps> = ({
                 title={cart.title}
                 description={cart.description}
                 pined={cart.pined}
+                /* eslint no-underscore-dangle: 0 */
+                _version={cart._version}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
@@ -78,7 +82,8 @@ const CartLayout: FC<CartLayoutProps> = ({
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        { notifications && carts !== undefined && 
+        {notifications &&
+          carts !== undefined &&
           notifications
             .filter((cart) => !cart.pined)
             .map((cart) => (
@@ -89,6 +94,8 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gaps={cart.gaps}
                 description={cart.description}
                 pined={cart.pined}
+                /* eslint no-underscore-dangle: 0 */
+                _version={cart._version}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}

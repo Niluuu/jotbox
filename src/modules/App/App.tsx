@@ -7,7 +7,6 @@ import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import ConfirmPage from '../SignUpPage/Confirm';
 import ArchievePage from '../ArchievePage/ArchievePage';
-import TrashPage from '../TrashPage/TrashPage';
 import { listGapss } from '../../graphql/queries';
 
 const App: FC = () => {
@@ -18,9 +17,9 @@ const App: FC = () => {
       const gaps = await API.graphql(graphqlOperation(listGapss));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      // setGapsRoute(gaps.data.listGapss.items);
+      setGapsRoute(gaps.data.listGapss.items);
     } catch (err) {
-      console.log(`err`, err);
+      throw new Error('Get gaps route');
     }
   }
 
@@ -32,10 +31,9 @@ const App: FC = () => {
     <Switch>
       <ProtectedRoute exact path="/" component={HomePage} />
       {gapsRoute.map((gap) => (
-          <ProtectedRoute path={`/gap/:${gap}`} component={HomePage} />
-        ))}
+        <ProtectedRoute path={`/gap/:${gap}`} component={HomePage} />
+      ))}
       <ProtectedRoute exact path="/archive" component={ArchievePage} />
-      <ProtectedRoute exact path="/trash" component={TrashPage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/confirmCode" component={ConfirmPage} />

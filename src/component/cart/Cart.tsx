@@ -1,7 +1,6 @@
 import { FC, useCallback } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../app/store';
+import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
@@ -11,26 +10,27 @@ import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/nodes';
 
 interface CartProps {
-  id: any;
+  id: string;
   title: string;
-  description: any;
+  description: string;
   pined: boolean;
   isTrashPage?: boolean;
-  gaps?: any[];
+  gaps?: string[];
+  _version?: number;
   onHyperLinkEditMode?: () => void;
-  onRemoveCart?: (id: any) => void;
-  onChangePin?: (id: any, title: string, description: any) => void;
-  onResetNodes?: (id: any, title: string, description: any) => void;
-  onChangeArchived?: (id: any, title: string, description: any) => void;
-  onRestoreTrash?: (id: any) => void;
-  onRemoveTrash?: (id: any) => void;
+  onRemoveCart?: (id: string, _version: number) => void;
+  onChangePin?: (id: string, pined: boolean, _version: number) => void;
+  onResetNodes?: (id: string, title: string, description: string) => void;
+  onChangeArchived?: (id: string, title: string, description: string) => void;
+  onRestoreTrash?: (id: string) => void;
+  onRemoveTrash?: (id: string) => void;
   onSetIsMain?: (bool: boolean) => void;
   onLabelEdit?: () => void;
   labelEdit?: boolean;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
-  filteredGaps?: any[];
+  filteredGaps?: string[];
   gridType?: boolean;
   popupCart?: boolean;
 }
@@ -41,6 +41,7 @@ const Cart: FC<CartProps> = ({
   pined,
   description,
   gaps,
+  _version,
   isTrashPage,
   onChangePin,
   onChangeArchived,
@@ -69,28 +70,28 @@ const Cart: FC<CartProps> = ({
       key={id}
       className={classNames(styles.cart, gridType && styles.column, popupCart && styles.popupCart)}
     >
+      {!isTrashPage && (
+        <button
+          type="button"
+          onClick={() => onChangePin(id, !pined, _version)}
+          className={styles.icon_btn}
+        >
+          {!pined ? (
+            <Icon name="pin" color="premium" size="xs" />
+          ) : (
+            <Icon name="pin-black" color="premium" size="xs" />
+          )}
+        </button>
+      )}
       <div className={styles.cart_content} onClick={() => !popupCart && onOpenModal(id)}>
         <div className={styles.cart_title}>
           <p> {title} </p>
-          {!isTrashPage && (
-            <button
-              type="button"
-              onClick={() => onChangePin(id, title, description)}
-              className={styles.icon_btn}
-            >
-              {!pined ? (
-                <Icon name="pin" color="premium" size="xs" />
-              ) : (
-                <Icon name="pin-black" color="premium" size="xs" />
-              )}
-            </button>
-          )}
         </div>
         {description && <MainEditor initialState={description} />}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
       <div className={styles.main_chips}>
-        {gaps && gaps.map((gap) => <Chip onDelate={() => console.log('delate')}> {gap} </Chip>)}
+        {gaps && gaps.map((gap) => <Chip onDelate={(e) => e}> {gap} </Chip>)}
       </div>
       <div className={styles.input_navbar}>
         {isTrashPage ? (
@@ -100,11 +101,10 @@ const Cart: FC<CartProps> = ({
           />
         ) : (
           <InputNavbar
-            onRemoveCart={() => onRemoveCart(id)}
+            onRemoveCart={() => onRemoveCart(id, _version)}
             withHistory={!!true}
             isMainInput={!true}
             onChangeArchived={() => onChangeArchived(id, title, description)}
-            // ontoggle={() => {}}
             onCartLabel={onCartLabel}
             cartLabel={cartLabel}
             onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}

@@ -1,8 +1,8 @@
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { API, graphqlOperation } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
+import { API } from 'aws-amplify';
 import { Node } from '../../models';
 import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
@@ -42,13 +42,9 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const userEmail = localStorage.getItem('userEmail');
   const [filter] = useState({
     collabarator: {
-      eq: 'saidumarovanilufar@mail.ru',
+      eq: userEmail,
     },
   });
-
-  const onDefaultColor = useCallback((optionalColor) => {
-    setDefaultColor(optionalColor);
-  }, [defaultColor])
 
   const dispatch = useDispatch();
 
@@ -61,6 +57,10 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
   }, []);
+
+  const onDefaultColor = useCallback((optionalColor) => {
+    setDefaultColor(optionalColor);
+  }, [defaultColor])
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {

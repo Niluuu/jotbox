@@ -1,22 +1,15 @@
-import { FC, useState, useCallback, useRef } from 'react';
-import { EditorState, RichUtils, convertFromRaw } from 'draft-js';
+import { FC, useState, useCallback } from 'react';
+import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
-import {
-  ItalicButton,
-  BoldButton,
-  UnderlineButton,
-  CodeButton,
-  UnorderedListButton,
-  OrderedListButton,
-  BlockquoteButton,
-  CodeBlockButton,
-} from '@draft-js-plugins/buttons';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
+import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
+import { RootState } from '../../app/store';
+import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import mentions from './Mentions';
 import { Icon } from '../../component/Icon/Icon';
-import { InlineToolbar, MentionSuggestions, plugins, linkPlugin } from '../../utils/editor/plugin';
+import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
 
 import styles from './Editor.module.scss';
 
@@ -30,20 +23,32 @@ interface MainEditorProps {
   isMainInput?: boolean;
 }
 
-const MainEditor: FC<MainEditorProps> = ({ 
-  linkMode, onLinkMode, initialState, editorRef, color, defaultColor, isMainInput,
-}) => {
-  const state = initialState ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))) : EditorState.createEmpty()
-
-  const [editorState, setEditorState] = useState(state);
+const MainEditor: FC<MainEditorProps> = 
+  ({ linkMode, onLinkMode, initialState, editorRef, color, defaultColor, isMainInput }) => {
+  const initalEditorState = initialState
+    ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
+    : EditorState.createEmpty();
+  const [editorState, setEditorState] = useState(initalEditorState);
   const [urlValue, seturlValue] = useState('');
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
+  const [plaseHolder, setPlaseHolder] = useState(true);
+  const dispatch = useDispatch();
 
-  const onChange = (newEditorState) => {
-    setEditorState(newEditorState);
-  };
+  const onChange = useCallback(
+    (newEditorState) => {
+      setPlaseHolder(false)
+      setEditorState(newEditorState);
+
+      const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
+      
+      if (initialState) dispatch(setUpdatedText(convert));
+      dispatch(setText(convert));
+
+    },
+    [editorState],
+  );
 
   const onOpenChange = useCallback((_open: boolean) => {
     setOpen(_open);
@@ -86,28 +91,15 @@ const MainEditor: FC<MainEditorProps> = ({
 
   return (
     <div>
-      <div
-        className={classNames(styles.editor, isMainInput ? defaultColor : color)}
+      <div className={classNames(
+        styles.editor, isMainInput ? defaultColor : color, 
+          !isMainInput ? styles.cart: null
+        )}
         onClick={() => {
           editorRef.current!.focus();
         }}
       >
-        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={editorRef} />
-        <InlineToolbar>
-          {(externalProps) => (
-            <>
-              <BoldButton {...externalProps} />
-              <ItalicButton {...externalProps} />
-              <UnderlineButton {...externalProps} />
-              <CodeButton {...externalProps} />
-              <UnorderedListButton {...externalProps} />
-              <OrderedListButton {...externalProps} />
-              <BlockquoteButton {...externalProps} />
-              <CodeBlockButton {...externalProps} />
-              <linkPlugin.LinkButton {...externalProps} />
-            </>
-          )}
-        </InlineToolbar>
+        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={editorRef} placeholder={plaseHolder ? "Заметка...": null} />
         <MentionSuggestions
           open={open}
           onOpenChange={onOpenChange}

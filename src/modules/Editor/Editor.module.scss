@@ -1,12 +1,19 @@
 .editor {
   box-sizing: border-box;
   cursor: text;
-  padding: 16px;
+  padding: 16px 7px;
   border-radius: 2px;
   background: #fefefe;
   height: auto;
   min-height: 1px;
   position: relative;
+}
+
+.editor.cart {
+  max-height: 150px;
+  height: 150px;
+  overflow: hidden;
+  padding: 16px 1px;
 }
 
 .editor :global(.public-DraftEditor-content) {

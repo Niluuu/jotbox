@@ -17,27 +17,12 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "pined": {
-                    "name": "pined",
+                "description": {
+                    "name": "description",
                     "isArray": false,
-                    "type": "Boolean",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "trashed": {
-                    "name": "trashed",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "collaborators": {
-                    "name": "collaborators",
-                    "isArray": true,
-                    "type": "AWSEmail",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
                 },
                 "color": {
                     "name": "color",
@@ -54,17 +39,31 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
-                "description": {
-                    "name": "description",
-                    "isArray": false,
-                    "type": "AWSJSON",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "archived": {
                     "name": "archived",
                     "isArray": false,
                     "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "trashed": {
+                    "name": "trashed",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "pined": {
+                    "name": "pined",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "collabarator": {
+                    "name": "collabarator",
+                    "isArray": false,
+                    "type": "AWSEmail",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -245,5 +244,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "45466ff74ca5cfcda8c5a61c4a825f54"
+    "version": "3c92c9966f3c86233d4e1c986149c469"
 };

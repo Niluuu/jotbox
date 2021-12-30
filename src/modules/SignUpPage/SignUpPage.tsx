@@ -2,11 +2,15 @@ import { FC, useState } from 'react';
 import { Link , useHistory} from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import styles from './SignUpPage.module.scss';
+import OnErrorMessage from '../../component/message/message';
 
 const SignUpPage: FC = () => {
   const history = useHistory();
   const [typePassword, settypePassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("")
+  const [hasError, setHasError] = useState({ 
+    active: false, success: false, message: 'You Signed Up Successfully'
+  });
+
   const [userState, setUserState] = useState({
     userName: '',
     password: '',
@@ -22,11 +26,21 @@ const SignUpPage: FC = () => {
           username: userState.userName,
           password: userState.password,
         });
-        history.push("/confirmCode");
         localStorage.setItem("userEmail", userState.userName)
 
-      } catch (error) {
-        console.log('error sign Up:', error);
+        setHasError({ active: true, success: true, message: 'You Signed Up Successfully' })
+
+        setTimeout(() => {
+          setHasError((prev) => ({ ...prev, active: false }))
+          history.push("/confirmCode");
+        }, 5000);
+
+      } catch (err) {
+        setHasError({ active: true, success: false, message: err.message })
+
+        setTimeout(() => setHasError((prev) => ({ ...prev, active: false })), 5000);
+
+        console.log('error sign Up:', err);
       }
     }
   };
@@ -85,6 +99,9 @@ const SignUpPage: FC = () => {
             <button type="submit"  onClick={(e) => signUp(e)}> submit </button>
           </div>
         </form>
+        <OnErrorMessage 
+          active={hasError.active} success={hasError.success} message={hasError.message}
+        />
       </div>
     </div>
   );

@@ -1,0 +1,32 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.linkfy {
+  .tooltip {
+    background: #202124;
+    box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+    padding: 10px;
+    position: absolute;
+    top: 22px;
+    left: 12px;
+    border-radius: 8px;
+    display: none;
+    visibility: hidden;
+    cursor: pointer;
+
+    > span {
+      color: #e8eaed;
+    }
+  }
+
+  &:hover .tooltip {
+    display: initial;
+    visibility: visible;
+    z-index: 500;
+  }
+
+  .link {
+    color: $color-blue;
+    text-decoration: underline;
+  }
+}

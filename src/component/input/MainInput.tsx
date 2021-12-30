@@ -13,7 +13,7 @@ interface MainInputProps {
   focused: boolean;
   defaultPin: boolean;
   onDefaultPin: () => void;
-  onSetCart: () => void;
+  onSetNodes: () => void;
   onSetArchive: () => void;
   setFocused: (e: any) => void;
   outsideRef?: any;
@@ -29,7 +29,7 @@ const MainInput: FC<MainInputProps> = ({
   onDefaultPin,
   setFocused,
   focused,
-  onSetCart,
+  onSetNodes,
   onSetIsMain,
   titleRef,
   defaultColor,
@@ -41,10 +41,14 @@ const MainInput: FC<MainInputProps> = ({
   useOnClickOutside(outsideRef, handleClickOutside);
   const editorRef = useRef<Editor>(null);
 
-  const mapStateToProps = useSelector((state: RootState) =>  {
-    return state.layoutGridTypeReducer
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      layoutReducer: state.layoutGrid,
+      text: state.editorReducer.text
+    };
   });
-  const { grid } = mapStateToProps
+
+  const { grid } = mapStateToProps.layoutReducer;
   
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
@@ -118,8 +122,7 @@ const MainInput: FC<MainInputProps> = ({
           focused={focused}
           isMainInput={!!true}
           onSetArchive={onSetArchive}
-          ontoggle={() => onSetCart()}
-          onSetIsMain={onSetIsMain}
+          ontoggle={() => onSetNodes()}
           onLinkMode={onLinkMode}
           onDefaultColor={onDefaultColor}
           defaultColor={defaultColor}

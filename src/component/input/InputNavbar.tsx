@@ -9,14 +9,12 @@ import '../cart/Color.scss'
 interface InputNavbarProps {
   withHistory?: boolean;
   isMainInput?: boolean;
-  onHyperLinkEditMode?: () => void;
   ontoggle?: () => void;
   onSetArchive?: () => void;
   focused?: boolean;
   onRemoveCart?: () => void;
   onLinkMode?: () => void;
   onChangeArchived?: () => void;
-  onSetIsMain?: (bool: boolean) => void;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
   onSetLabel?: (oldGaps: string[]) => void;
@@ -31,12 +29,10 @@ export const InputNavbar: FC<InputNavbarProps> = ({
   isMainInput,
   onChangeArchived,
   onSetArchive,
-  onHyperLinkEditMode,
   withHistory,
   ontoggle,
   focused = true,
   onRemoveCart,
-  onSetIsMain,
   onSetLabel,
   filteredGaps,
   onLinkMode,
@@ -91,20 +87,20 @@ export const InputNavbar: FC<InputNavbarProps> = ({
     <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
       <div className={styles.main_tools}>
         <button type="button" className={styles.icon_btn}>
-          <Icon name="notification-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
           <Icon name="user-add" color="premium" size="xs" />
         </button>
+        <button onClick={toArchive} type="button" className={styles.icon_btn}>
+          <Icon name="dowland" color="premium" size="xs" />
+        </button>
         <Popover placement="bottom-start"
-          content={
-            <div className={styles.colorWrapper}> 
-              { colors.map((color) => 
-                <button 
-                  type='button' 
-                  onClick={() => {
-                    if (isMainInput) onDefaultColor(color.colorClass) 
-                    else onColorChange(color.colorClass) 
+    content={
+       <div className={styles.colorWrapper}> 
+          { colors.map((color) => 
+           <button 
+                type='button' 
+                onClick={() => {
+                  if (isMainInput) onDefaultColor(color.colorClass) 
+                  else onColorChange(color.colorClass) 
                   }} 
                   className={classNames(color.colorClass, isMainInput 
                     ? color.colorClass === defaultColor && styles.active 
@@ -118,9 +114,6 @@ export const InputNavbar: FC<InputNavbarProps> = ({
             <Icon name="color-picer" color="premium" size="xs" />
           </button>
         </Popover>
-        <button onClick={toArchive} type="button" className={styles.icon_btn}>
-          <Icon name="dowland" color="premium" size="xs" />
-        </button>
         <Popover
           isOpen={pop}
           content={

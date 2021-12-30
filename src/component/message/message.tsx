@@ -1,24 +1,20 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { Icon } from '../Icon/Icon';
 
-const OnErrorMessage = (message: string, icon: 'success' | 'error') => {
-  const [hasError, setHasError] = useState(false);
-  const [error, setError] = useState({
-    message: 'You signed in succesfully',
-    icon: 'success',
-  });
+interface ErrorMessageType {
+  success: boolean; 
+  active: boolean;
+  message: string;
+}
 
-  setError({ message, icon });
-  setHasError(true);
-  setTimeout(() => setHasError(false), 6000);
-
+const OnErrorMessage: FC<ErrorMessageType> = ({ success, active, message }) => {
   return (
-    <div className={classNames('errorMessage', hasError && 'active')}>
+    <div className={classNames('errorMessage', active && 'active')}>
       <div>
-        <Icon name={error.icon} />
+        <Icon name={success ? 'success' : 'error'} />
       </div>
-      {error.message}
+      {message}
     </div>
   );
 };

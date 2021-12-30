@@ -3,205 +3,176 @@ import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { API, graphqlOperation } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
-import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
-import { Node, Gaps } from '../../models';
+import { Node } from '../../models';
+import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
-import CartLayout from '../../component/cart-layout/CartLayout';
+import CartLayout from '../../atoms/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
-import { getNodes } from '../../api/nodes';
 import gapFilter from '../../utils/hooks/gapFilter';
+import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
+import CartModal from '../../atoms/modals/CartModal';
+import { setText } from '../../reducers/editor';
+import { initialStateStr } from '../../utils/editor/initialState';
+import { onUpdateNode } from '../../graphql/subscriptions';
 
 interface CartProps {
-  id: any;
+  id: string;
   title: string;
-  description: any;
+  description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[];
-  trashed: boolean;
+  gaps: string[];
+  _version: number;
   color: string;
 }
 
 interface HomePageProps {
-  gapsFilterKey?: any;
+  gapsFilterKey?: string;
 }
 
-const initialState = JSON.stringify({
-  blocks: [
-    {
-      key: 'cbbnn',
-      text: 'sdasdasda',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-  ],
-  entityMap: {},
-});
-
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
-  const [carts, setCart] = useState<CartProps[]>([]);
+  const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
-  const [isMain, setIsMain] = useState(false);
-  const onSetIsMain = useCallback((bool) => setIsMain(bool), [isMain]);
-  
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
-
-  const onDefaultPin = useCallback(() => {
-    setDefaultPin((pre) => !pre);
-  }, [defaultPin]);
+  const titleRef = useRef<HTMLDivElement>();
+  const userEmail = localStorage.getItem('userEmail');
+  const [filter] = useState({
+    collabarator: {
+      eq: 'saidumarovanilufar@mail.ru',
+    },
+  });
 
   const onDefaultColor = useCallback((optionalColor) => {
     setDefaultColor(optionalColor);
-  }, [defaultColor]);
+  }, [defaultColor])
 
-  const onColorChange = useCallback(
-    async (id, color) => {
-      try {
-        setCart(carts.map((cart) => cart.id === id ? { ...cart, color } : cart));
+  const dispatch = useDispatch();
 
-        // await API.graphql(graphqlOperation(updateNode, { input: { id, color } })); 
-      } catch (err) {
-      console.log('error changing color', err);
-    }      
-  }, [carts]) 
+  const cleanUp = useCallback(() => {
+    titleRef.current.innerHTML = '';
+    setDefaultPin(false);
+    dispatch(setText(initialStateStr));
+  }, []);
 
-  const titleRef = useRef<HTMLDivElement>();
+  const onDefaultPin = useCallback(() => {
+    setDefaultPin((pre) => !pre);
+  }, []);
 
-  async function fetchTodos() {
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      grid: state.layoutGrid.grid,
+      text: state.editorReducer.text,
+    };
+  });
+
+  const { grid, text } = mapStateToProps;
+
+  async function getAllNodes() {
     try {
-      const nodes = await getNodes();
+      const data = await API.graphql({ query: listNodes, variables: { filter } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      setCart(nodes);
+      const { items } = data.data.listNodes;
+      // eslint-disable-next-line no-console
+      console.log('getAllNodes', items);
+      setNodes(items);
     } catch (err) {
-      console.log(`err listing nodes`, err);
+      throw new Error('Get Nodes Error');
     }
   }
 
   useEffect(() => {
-    fetchTodos();
+    getAllNodes();
   }, []);
 
-  const onRemoveCart = useCallback(
-    async (id) => {
+  const onColorChange = useCallback(
+    async (id, color, _version) => {
       try {
-        setCart(carts.filter((cart) => cart.id !== id));
-        
-        const modelToDelete = await DataStore.query(Node, id);
-        DataStore.delete(modelToDelete);
+        const updatedNode = { 
+          id, color, _version
+        };
+  
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode }
+        });
       } catch (err) {
-        console.log('err removing nodes', err);
-      }
-    },
-    [carts],
-  );
+      console.log('error changing color', err);
+    }      
+  }, [nodes]) 
 
-  const onChangePin = useCallback(
-    async (id, title, description) => {
-      try {
-        setCart(carts.map((cart) => cart.id === id 
-          ? { ...cart, title, description, pined: !cart.pined } : cart)
-        );
+  const onRemoveCart = useCallback(async (id, _version) => {
+    try {
+      await API.graphql({ query: deleteNode, variables: { input: { id, _version } } });
+    } catch (err) {
+      throw new Error('Remove node error');
+    }
+  }, []);
 
-        const currentCart = await DataStore.query(Node, id);
-        await DataStore.save(
-          Node.copyOf(currentCart, (item) => {
-            const cart = item;
-            cart.pined = !item.pined;
-          }),
-        );
-      } catch (err) {
-        console.log('error changing pinned attr', err);
-      }
-    },
-    [carts],
-  );
+  const onChangePin = useCallback(async (id, pined, _version) => {
+    try {
+      const updatedNode = {
+        id,
+        pined,
+        _version,
+      };
 
-  const onChangeArchived = useCallback(
-    async (id, title, description) => {
-      try {
-        setCart(carts.map((cart) => cart.id === id ? 
-          { ...cart, title, description, archived: true, pined: false } : cart)
-        );
+      await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, []);
 
-        const currentCart = await DataStore.query(Node, id);
+  const onChangeArchived = useCallback(async (id, title, description) => {
+    try {
+      //  TODO: Add update function
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
-        await DataStore.save(
-          Node.copyOf(currentCart, (item) => {
-            const cart = item;
-            cart.archived = true;
-            cart.pined = false;
-            cart.description = description;
-            cart.title = title;
-          }),
-        );
-      } catch (err) {
-          console.log('error changing archived attr', err);
-        }
-      },
-    [carts],
-  );
-
-  const onReSetCart = useCallback(
-    async (id, title, description) => {
-      try {
-        setCart(carts.map((cart) => (cart.id === id ? { ...cart, title, description } : cart)));
-        
-        const currentCart = await DataStore.query(Node, id);
-        await DataStore.save(
-          Node.copyOf(currentCart, (item) => {
-            const cart = item;
-            cart.description = description;
-            cart.title = title;
-          }),
-        );
-      } catch (err) {
-        console.log('error updating todo', err);
-      }
-    },
-    [carts],
-  );
-
-  const onSetLabel = useCallback(
-    async (id, oldGaps: string[]) => {
-      try {
-        if (oldGaps.length) {
-          setCart(carts.map((cart) => cart.id === id
-            ? { ...cart, gaps: cart.gaps
-                .concat(oldGaps.filter((old) => old && old))
-                .filter((val, pos, arr) => arr.indexOf(val) === pos) }
-            : cart
-          ));
-              
-          const currentCart = await DataStore.query(Node, id);
-          await DataStore.save(
-            Node.copyOf(currentCart, (item) => {
-              const cart = item;
-              cart.gaps = item.gaps
-                .concat(oldGaps.filter((old) => old && old))
-                .filter((val, pos, arr) => arr.indexOf(val) === pos);
-            }),
-          );
-        }
-      } catch (err) {
-        console.log('error creating label', err);
-      }
-    },
-    [carts],
-  );
+  const onSetLabel = useCallback(async (id, oldGaps: string[]) => {
+    try {
+      // if (oldGaps.length) {
+      //   setNodes(
+      //     nodes.map((cart) =>
+      //       cart.id === id
+      //         ? {
+      //             ...cart,
+      //             gaps: cart.gaps
+      //               .concat(oldGaps.filter((old) => old && old))
+      //               .filter((val, pos, arr) => arr.indexOf(val) === pos),
+      //           }
+      //         : cart,
+      //     ),
+      //   );
+      //   const original = await DataStore.query(Node, id);
+      //   await DataStore.save(
+      //     Node.copyOf(original, (item) => {
+      //       const cart = item;
+      //       cart.gaps = item.gaps
+      //         .concat(oldGaps.filter((old) => old && old))
+      //         .filter((val, pos, arr) => arr.indexOf(val) === pos);
+      //     }),
+      //   );
+      // }
+    } catch (err) {
+      console.log('error updating todo:', err);
+    }
+  }, []);
 
   const onReSetLabel = useCallback(
     async (oldValue, newValue) => {
       try {
-        setCart(
-          carts.map((cart) => ({
+        setNodes(
+          nodes.map((cart) => ({
             ...cart,
             gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub))
           }))
@@ -210,102 +181,69 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         console.log('error updating labels:', err);
       }
     },
-    [carts],
+    [nodes],
   );
 
-  const onSetCart = useCallback(async () => {
+  const onSetNodes = useCallback(async () => {
     try {
-      const cart = {
-        id: Date.now(),
+      const node = {
         title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
+        description: text,
+        gaps: [],
         pined: defaultPin,
         archived: false,
-        gaps: [],
         trashed: false,
-        color: defaultColor
+        collabarator: userEmail,
       };
-      setCart([cart, ...carts]);
-      setDefaultPin(false);
-      setDefaultColor('default');
-      
 
-      // await DataStore.save(
-      //   new Node({
-      //     title: titleRef.current.innerText,
-      //     description: JSON.stringify(initialState),
-      //     gaps: [],
-      //     pined: defaultPin,
-      //     archived: false,
-      //     trashed: false,
-      //     color: defaultColor,
-      //   }),
-      // );
-
-      titleRef.current.innerHTML = '';
+      await API.graphql({ query: createNode, variables: { input: node } });
+      cleanUp();
     } catch (err) {
-      console.log('error creating todo', err);
+      throw new Error('Create node error');
     }
-  }, [carts, defaultPin, defaultColor]);
+  }, [cleanUp, defaultPin, text, userEmail]);
 
   const onSetArchive = useCallback(async () => {
     try {
-      const cart = {
-        id: Date.now(),
-        title: titleRef.current.innerText,
-        description: JSON.stringify(initialState),
-        pined: false,
-        archived: true,
-        gaps: [],
-        trashed: false,
-        color: defaultColor
-      };
-      setCart([cart, ...carts]);
       setDefaultPin(false);
       setDefaultColor('default');
 
       await DataStore.save(
         new Node({
-          title: titleRef.current.innerText,
-          description: JSON.stringify(initialState),
-          gaps: [],
           pined: defaultPin,
           archived: true,
-          trashed: false,
         }),
       );
-
-      titleRef.current.innerHTML = '';
     } catch (err) {
       console.log(err);
     }
-  }, [carts]);
+  }, [nodes]);
 
-  const filteredGaps = gapFilter(carts);
+  const filteredGaps = gapFilter(nodes);
 
-  const cartsToProps = gapsFilterKey
-    ? carts.filter((cart) => cart.gaps.includes(gapsFilterKey))
-    : carts;
-
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      layoutReducer: state.layoutGridTypeReducer,
-    };
-  });
+  const nodesToProps = gapsFilterKey
+    ? nodes.filter((cart) => cart.gaps.includes(gapsFilterKey))
+    : nodes;
 
   const onFilterSearch = useCallback(
     async (value) => {
       try {
-        const nodes = await getNodes();
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
-        setCart(nodes.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0));
+        // setNodes(
+        //   carts.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0),
+        // );
       } catch (err) {
         console.log('error filtering by letters', err);
       }
-  }, [carts]);
-    
-  const { grid } = mapStateToProps.layoutReducer;
+    },
+    [nodes],
+  );
+
+  useEffect(() => {
+    getAllNodes();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRemoveCart, onChangePin, onColorChange]);
 
   return (
     <Layout onFilterSearch={onFilterSearch} filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
@@ -315,10 +253,9 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             focused={focused}
             setFocused={setFocused}
             onSetArchive={onSetArchive}
-            onSetCart={onSetCart}
+            onSetNodes={onSetNodes}
             defaultPin={defaultPin}
             onDefaultPin={onDefaultPin}
-            onSetIsMain={onSetIsMain}
             titleRef={titleRef}
             defaultColor={defaultColor}
             onDefaultColor={onDefaultColor}
@@ -326,16 +263,16 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         </div>
         <CartLayout
           onChangePin={onChangePin}
-          onReSetCart={onReSetCart}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
           gridType={grid}
-          carts={cartsToProps}
+          carts={nodes}
           onSetLabel={onSetLabel}
           filteredGaps={filteredGaps}
           onColorChange={onColorChange}
         />
         <AddLinkModal />
+        <CartModal />
       </div>
     </Layout>
   );

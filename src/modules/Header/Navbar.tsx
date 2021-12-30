@@ -8,9 +8,7 @@ import styles from './Navbar.module.scss';
 import Popover from '../../component/popover/Popover';
 import { Icon } from '../../component/Icon/Icon';
 import { Avatar } from '../../component/avatar/Avatar';
-import { googleLinks1, googleLinks2 } from '../../utils/google-links';
 import { toggleGrid } from '../../reducers/layout';
-import onErrorMessage from '../../component/message/message';
 
 /**
  * Main Header component for user interaction
@@ -20,9 +18,6 @@ export const Navbar: FC = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
-  const mapStateToProps = useSelector((state: RootState) => {
-    return state.layoutGridTypeReducer;
-  });
   const dispatch = useDispatch();
 
   async function signOut() {
@@ -32,7 +27,6 @@ export const Navbar: FC = () => {
       localStorage.removeItem('assessToken');
       localStorage.removeItem('userEmail');
       history.push('/sginin');
-
       // onErrorMessage('You sgin out succesfully', 'success');
     } catch (error) {
       // onErrorMessage('Error sgin out', 'error');
@@ -59,7 +53,14 @@ export const Navbar: FC = () => {
     });
   }, [loading]);
 
-  const { grid } = mapStateToProps;
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      layoutReducer: state.layoutGrid,
+      text: state.editorReducer.text
+    };
+  });
+
+  const { grid } = mapStateToProps.layoutReducer;
   return (
     <nav className={styles.navbar}>
       <button type="button" onClick={loadChanges}>

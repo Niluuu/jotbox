@@ -25,6 +25,7 @@
     }
   },
   "rules": {  
+    "no-underscore-dangle":  ["error", { "allow": ["_place"] }],
     "no-param-reassign": 0,
     "consistent-return": "off",
     "prettier/prettier": "warn",
@@ -92,7 +93,8 @@
     {
       "files": ["*.stories.tsx", "*.stories.js"],
       "rules": {
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "no-underscore-dangle": "off"
       }
     }
   ]

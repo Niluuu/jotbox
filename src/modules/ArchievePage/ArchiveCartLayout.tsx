@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import styles from '../../component/cart-layout/CartLayout.module.scss';
+import styles from '../../atoms/cart-layout/CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
 interface CartProps {
@@ -9,8 +9,8 @@ interface CartProps {
   description: any;
   pined: boolean;
   archived: boolean;
-  gaps: any[];
-  trashed: boolean;
+  gaps: string[];
+  _version: number;
   color: string;
 }
 
@@ -19,8 +19,8 @@ interface ArchiveCartLayout {
   isNotification?: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: string) => void;
-  onChangeArchived?: (id: any, title: string, description: any) => void;
-  onChangePin?: (id: any, title: string, description: any) => void;
+  onChangeArchived?: (id: string, title: string, description: string) => void;
+  onChangePin?: (id: string, pined: boolean) => void;
   onHyperLinkEditMode?: () => void;
   onColorChange?: (id: any, color: string) => void;
 }
@@ -47,13 +47,14 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
                 title={cart.title}
                 gridType={gridType}
                 gaps={cart.gaps}
+                /* eslint no-underscore-dangle: 0 */
+                _version={cart._version}
                 description={cart.description}
                 pined={cart.pined}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
                 color={cart.color}
-                trashed={cart.trashed}
                 onColorChange={onColorChange}
               />
             ))}

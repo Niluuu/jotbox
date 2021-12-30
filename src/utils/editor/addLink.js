@@ -1,14 +1,28 @@
 import createLinkifyPlugin from '@draft-js-plugins/linkify';
 import linkifyIt from 'linkify-it';
 import tlds from 'tlds';
+import styles from '../../component/tooltip/Tooltip.module.scss';
 
 export const linkifyPlugin = createLinkifyPlugin({
   component(props) {
-    // eslint-disable-next-line no-alert, jsx-a11y/anchor-has-content
-    // eslint-disable jsx-props-no-spreading
-    /* eslint-disable react/jsx-props-no-spreading */
-    return <a {...props} onClick={() => window.open(props.href)} style={{color: "blue", textDecoration: "underline"}} />;
+    return (
+      <div className={styles.linkfy}>
+        <div className={styles.tooltip}>
+          <span onClick={() => window.open(props.href)}>
+            <span>open</span>
+          </span>
+        </div>
+        <a
+          {...props}
+          className={styles.link}
+        />
+      </div>
+    );
   },
 
-  customExtractLinks: (text) => linkifyIt().tlds(tlds).set({ fuzzyEmail: false }).match(text),
+  customExtractLinks: (text) =>
+    linkifyIt()
+      .tlds(tlds)
+      .set({ fuzzyEmail: false })
+      .match(text),
 });

@@ -5,8 +5,8 @@
   border: 1px solid transparent;
   box-sizing: border-box;
   border-radius: 8px;
-  min-height: 290px;
-  max-height: 290px;
+  min-height: 330px;
+  max-height: 330px;
   min-width: 245px;
   max-width: 245px;
   width: 245px;
@@ -116,6 +116,8 @@
 
   .icon_btn {
     padding-right: 0;
+    display: flex;
+    justify-content: flex-end;
   }
 
   &.popup {
@@ -157,8 +159,8 @@
   .cart {
     border-radius: 7px;
     padding: 4px 7px;
-    min-height: 255px;
-    max-height: 255px;
+    min-height: 310px;
+    max-height: 310px;
     min-width: 245px;
     max-width: 245px;
     width: 225px;
@@ -274,5 +276,16 @@
       max-width: 275px;
       width: 275px;
     }
+  }
+}
+
+.popupCart {
+  width: 100%;
+  box-shadow: none;
+  max-width: 100%;
+  border: transparent;
+
+  &:hover {
+    box-shadow: none;
   }
 }

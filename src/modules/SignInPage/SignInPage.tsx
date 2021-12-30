@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
 import styles from './SignInPage.module.scss';
-import onErrorMessage from '../../component/message/message';
+import OnErrorMessage from '../../component/message/message';
 
 const SignInPage: FC = () => {
   const history = useHistory();
@@ -12,6 +12,9 @@ const SignInPage: FC = () => {
     password: '',
   });
   const [typePassword, settypePassword] = useState(false);
+  const [hasError, setHasError] = useState({ 
+    active: false, success: false, message: 'You Signed Up Successfully'
+  });
 
   const signIn = async (e) => {
     e.preventDefault();
@@ -23,12 +26,19 @@ const SignInPage: FC = () => {
         });
 
         localStorage.setItem("assessToken", data.signInUserSession.accessToken.jwtToken)
-        localStorage.setItem("userEmail",data.attributes.email)
-        history.push("/")
+        localStorage.setItem("userEmail", data.attributes.email)
 
-        // onErrorMessage('You signed in succesfully', 'success');
+        setHasError({ active: true, success: true, message: 'You Signed In Successfully' })
+
+        setTimeout(() => {
+          setHasError((prev) => ({ ...prev, active: false }))
+          history.push("/")
+        }, 5000);
+        
       } catch (err) {
-        // onErrorMessage(err.message, 'error');
+        setHasError({ active: true, success: false, message: err.message })
+
+        setTimeout(() => setHasError((prev) => ({ ...prev, active: false })), 5000);
       }
     }
   };
@@ -76,6 +86,9 @@ const SignInPage: FC = () => {
           <button type="submit" onClick={signIn}>Next</button>
         </div>
       </form>
+      <OnErrorMessage 
+        active={hasError.active} success={hasError.success} message={hasError.message}
+      />
     </div>
   );
 };

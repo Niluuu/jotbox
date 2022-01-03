@@ -91,25 +91,22 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     getAllNodes();
   }, []);
 
-  const onColorChange = useCallback(
-    async (id, color, _version) => {
-      try {
-        const updatedNode = {
-          id,
-          color,
-          _version,
-        };
+  const onColorChange = useCallback(async (id, color, _version) => {
+    try {
+      const updatedNode = {
+        id,
+        color,
+        _version,
+      };
 
-        await API.graphql({
-          query: updateNode,
-          variables: { input: updatedNode },
-        });
-      } catch (err) {
-        throw new Error('Color update error');
-      }
-    },
-    [nodes],
-  );
+      await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+    } catch (err) {
+      throw new Error('Color update error');
+    }
+  }, []);
 
   const onRemoveCart = useCallback(async (id, _version) => {
     try {

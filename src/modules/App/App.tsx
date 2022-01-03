@@ -25,14 +25,12 @@ const App: FC = () => {
 
   useEffect(() => {
     getGaps();
-  }, []);
+  }, [gapsRoute]);
 
   return (
     <Switch>
       <ProtectedRoute exact path="/" component={HomePage} />
-      {gapsRoute.map((gap) => (
-        <ProtectedRoute path={`/gap/:${gap}`} component={HomePage} />
-      ))}
+      {gapsRoute.map((gap) => <ProtectedRoute path={`/gap/:${gap}`} component={HomePage} />)}
       <ProtectedRoute exact path="/archive" component={ArchievePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />

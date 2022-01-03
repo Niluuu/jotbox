@@ -8,6 +8,7 @@ import { InputNavbar } from '../input/InputNavbar';
 import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/nodes';
+import './Color.scss';
 
 interface CartProps {
   id: string;
@@ -33,6 +34,8 @@ interface CartProps {
   filteredGaps?: string[];
   gridType?: boolean;
   popupCart?: boolean;
+  color: string;
+  onColorChange?: (id: string, color: string, _version: number) => void;
 }
 
 const Cart: FC<CartProps> = ({
@@ -57,6 +60,8 @@ const Cart: FC<CartProps> = ({
   filteredGaps,
   gridType,
   popupCart,
+  color,
+  onColorChange,
 }) => {
   const dispatch = useDispatch();
 
@@ -68,7 +73,12 @@ const Cart: FC<CartProps> = ({
     <div
       id={id}
       key={id}
-      className={classNames(styles.cart, gridType && styles.column, popupCart && styles.popupCart)}
+      className={classNames(
+        styles.cart,
+        gridType && styles.column,
+        popupCart && styles.popupCart,
+        color,
+      )}
     >
       {!isTrashPage && (
         <button
@@ -87,7 +97,7 @@ const Cart: FC<CartProps> = ({
         <div className={styles.cart_title}>
           <p> {title} </p>
         </div>
-        {description && <MainEditor initialState={description} />}
+        {description && <MainEditor color={color} initialState={description} />}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
       <div className={styles.main_chips}>
@@ -109,6 +119,8 @@ const Cart: FC<CartProps> = ({
             cartLabel={cartLabel}
             onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
             filteredGaps={filteredGaps}
+            onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
+            currentColor={color}
           />
         )}
       </div>

@@ -11,13 +11,14 @@ interface CartProps {
   pined: boolean;
   archived: boolean;
   gaps: string[];
+  color: string;
 }
 
 interface CartLayoutProps {
   gridType: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: string, _version: number) => void;
-  onChangeArchived?: (id: string, title: string, description: any) => void;
+  onChangeArchived?: (id: string, title: string, description: string) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onHyperLinkEditMode?: () => void;
   onSetIsMain?: (bool: boolean) => void;
@@ -25,6 +26,7 @@ interface CartLayoutProps {
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: string[];
+  onColorChange?: (id: string, color: string, _version: number) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -38,7 +40,8 @@ const CartLayout: FC<CartLayoutProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
-  filteredGaps
+  filteredGaps,
+  onColorChange,
 }) => {
   const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
@@ -61,6 +64,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 title={cart.title}
                 description={cart.description}
                 pined={cart.pined}
+                color={cart.color}
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
                 onChangeArchived={onChangeArchived}
@@ -73,6 +77,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
                 gridType={gridType}
+                onColorChange={onColorChange}
               />
             ))}
       </div>
@@ -94,6 +99,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gaps={cart.gaps}
                 description={cart.description}
                 pined={cart.pined}
+                color={cart.color}
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
                 onChangeArchived={onChangeArchived}
@@ -102,9 +108,11 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
+                cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
                 gridType={gridType}
+                onColorChange={onColorChange}
               />
             ))}
       </div>

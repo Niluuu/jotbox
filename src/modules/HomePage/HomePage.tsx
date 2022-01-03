@@ -16,7 +16,6 @@ import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
-import { onUpdateNode } from '../../graphql/subscriptions';
 
 interface CartProps {
   id: string;
@@ -26,6 +25,7 @@ interface CartProps {
   archived: boolean;
   gaps: string[];
   _version: number;
+  color: string;
 }
 
 interface HomePageProps {
@@ -35,8 +35,8 @@ interface HomePageProps {
 const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
-  const [isMain, setIsMain] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
+  const [defaultColor, setDefaultColor] = useState('default');
   const titleRef = useRef<HTMLDivElement>();
   const userEmail = localStorage.getItem('userEmail');
   const [filter] = useState({
@@ -46,7 +46,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   });
 
   const dispatch = useDispatch();
-  const onSetIsMain = useCallback((bool) => setIsMain(bool), []);
 
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
@@ -57,6 +56,13 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
   }, []);
+
+  const onDefaultColor = useCallback(
+    (optionalColor) => {
+      setDefaultColor(optionalColor);
+    },
+    [defaultColor],
+  );
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -84,6 +90,26 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   useEffect(() => {
     getAllNodes();
   }, []);
+
+  const onColorChange = useCallback(
+    async (id, color, _version) => {
+      try {
+        const updatedNode = {
+          id,
+          color,
+          _version,
+        };
+
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+      } catch (err) {
+        throw new Error('Color update error');
+      }
+    },
+    [nodes],
+  );
 
   const onRemoveCart = useCallback(async (id, _version) => {
     try {
@@ -157,9 +183,8 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub)),
           })),
         );
-        const original = await DataStore.query(Node);
       } catch (err) {
-        console.log('error updating todo:', err);
+        throw new Error(`OnReSetLabel ${err}`);
       }
     },
     [nodes],
@@ -187,6 +212,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onSetArchive = useCallback(async () => {
     try {
       setDefaultPin(false);
+      setDefaultColor('default');
 
       await DataStore.save(
         new Node({
@@ -214,7 +240,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         //   carts.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0),
         // );
       } catch (err) {
-        console.log(err);
+        console.log('error filtering by letters', err);
       }
     },
     [nodes],
@@ -222,8 +248,8 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   useEffect(() => {
     getAllNodes();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onRemoveCart, onChangePin]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRemoveCart, onChangePin, onColorChange]);
 
   return (
     <Layout onFilterSearch={onFilterSearch} filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
@@ -236,8 +262,9 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
             onSetNodes={onSetNodes}
             defaultPin={defaultPin}
             onDefaultPin={onDefaultPin}
-            onSetIsMain={onSetIsMain}
             titleRef={titleRef}
+            defaultColor={defaultColor}
+            onDefaultColor={onDefaultColor}
           />
         </div>
         <CartLayout
@@ -248,6 +275,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
           carts={nodes}
           onSetLabel={onSetLabel}
           filteredGaps={filteredGaps}
+          onColorChange={onColorChange}
         />
         <AddLinkModal />
         <CartModal />

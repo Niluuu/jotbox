@@ -5,16 +5,17 @@ import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import ArchiveCartLayout from './ArchiveCartLayout';
 
-
 interface CartProps {
   id: string;
   title: string;
-  description: string;
+  description: any;
   pined: boolean;
   archived: boolean;
   gaps: string[];
   _version: number;
+  color: string;
 }
+
 export interface ArchievePageProps {
   gridType?: boolean;
   setHyperLink?: (e: string) => void;
@@ -44,6 +45,10 @@ const ArchievePage: FC<ArchievePageProps> = ({
 }) => {
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
+
+  const onColorChange = () => {
+    console.log('ok')
+  }
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.column)}>
@@ -84,6 +89,7 @@ const ArchievePage: FC<ArchievePageProps> = ({
         onRemoveCart={onRemoveCart}
         carts={carts}
         gridType={gridType}
+        onColorChange={onColorChange}
       />
     </div>
   );

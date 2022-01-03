@@ -6,11 +6,12 @@ import Cart from '../../component/cart/Cart';
 interface CartProps {
   id: string;
   title: string;
-  description: string;
+  description: any;
   pined: boolean;
   archived: boolean;
   gaps: string[];
   _version: number;
+  color: string;
 }
 
 interface ArchiveCartLayout {
@@ -21,6 +22,7 @@ interface ArchiveCartLayout {
   onChangeArchived?: (id: string, title: string, description: string) => void;
   onChangePin?: (id: string, pined: boolean) => void;
   onHyperLinkEditMode?: () => void;
+  onColorChange?: (id: any, color: string) => void;
 }
 
 const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
@@ -29,6 +31,7 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
   onChangePin,
   onRemoveCart,
   carts,
+  onColorChange
 }) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
@@ -51,6 +54,8 @@ const ArchiveCartLayout: FC<ArchiveCartLayout> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
+                color={cart.color}
+                onColorChange={onColorChange}
               />
             ))}
       </div>

@@ -18,7 +18,9 @@ interface MainInputProps {
   setFocused: (e: any) => void;
   outsideRef?: any;
   onSetIsMain?: (e: boolean) => void;
-  titleRef: any
+  titleRef: any;
+  onDefaultColor?: (optionalColor: string) => void;
+  defaultColor?: string;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -29,7 +31,9 @@ const MainInput: FC<MainInputProps> = ({
   focused,
   onSetNodes,
   onSetIsMain,
-  titleRef
+  titleRef,
+  defaultColor,
+  onDefaultColor
 }) => {
   const outsideRef = useRef(null);
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
@@ -65,14 +69,14 @@ const MainInput: FC<MainInputProps> = ({
 
   return (
     <div 
-      className={classNames(styles.main_input, grid && styles.column)}
+      className={classNames(styles.main_input, grid && styles.column, defaultColor)}
       tabIndex={-1}
       onFocus={handleClickInside}
       onBlur={(e) => onFocusOut(e)}
       onClick={handleClickInside} 
       ref={outsideRef}>
       <div className={classNames(styles.main_header, focused && styles.show)}>
-      <div
+        <div
           ref={titleRef}
           id="title"
           className={styles.textarea}
@@ -92,7 +96,13 @@ const MainInput: FC<MainInputProps> = ({
       </div>
      
       <div className={styles.main_row}>
-        <MainEditor linkMode={linkMode} onLinkMode={onLinkMode} editorRef={editorRef}/>
+        <MainEditor  
+          isMainInput={!!true}
+          defaultColor={defaultColor} 
+          linkMode={linkMode} 
+          onLinkMode={onLinkMode} 
+          editorRef={editorRef}
+          />
       </div>
       { !focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
@@ -114,6 +124,8 @@ const MainInput: FC<MainInputProps> = ({
           onSetArchive={onSetArchive}
           ontoggle={() => onSetNodes()}
           onLinkMode={onLinkMode}
+          onDefaultColor={onDefaultColor}
+          defaultColor={defaultColor}
           withHistory />
       ) : null}
     </div>

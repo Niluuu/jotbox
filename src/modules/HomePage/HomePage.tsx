@@ -16,7 +16,6 @@ import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
-import { onUpdateNode } from '../../graphql/subscriptions';
 
 interface CartProps {
   id: string;
@@ -58,9 +57,12 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     setDefaultPin((pre) => !pre);
   }, []);
 
-  const onDefaultColor = useCallback((optionalColor) => {
-    setDefaultColor(optionalColor);
-  }, [defaultColor])
+  const onDefaultColor = useCallback(
+    (optionalColor) => {
+      setDefaultColor(optionalColor);
+    },
+    [defaultColor],
+  );
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -92,18 +94,22 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onColorChange = useCallback(
     async (id, color, _version) => {
       try {
-        const updatedNode = { 
-          id, color, _version
+        const updatedNode = {
+          id,
+          color,
+          _version,
         };
-  
+
         await API.graphql({
           query: updateNode,
-          variables: { input: updatedNode }
+          variables: { input: updatedNode },
         });
       } catch (err) {
-      console.log('error changing color', err);
-    }      
-  }, [nodes]) 
+        throw new Error('Color update error');
+      }
+    },
+    [nodes],
+  );
 
   const onRemoveCart = useCallback(async (id, _version) => {
     try {
@@ -174,11 +180,11 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         setNodes(
           nodes.map((cart) => ({
             ...cart,
-            gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub))
-          }))
+            gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub)),
+          })),
         );
       } catch (err) {
-        console.log('error updating labels:', err);
+        throw new Error(`OnReSetLabel ${err}`);
       }
     },
     [nodes],
@@ -242,7 +248,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
 
   useEffect(() => {
     getAllNodes();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onRemoveCart, onChangePin, onColorChange]);
 
   return (

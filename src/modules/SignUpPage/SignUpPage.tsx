@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Link , useHistory} from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import styles from './SignUpPage.module.scss';
 import OnErrorMessage from '../../component/message/message';
@@ -7,15 +7,16 @@ import OnErrorMessage from '../../component/message/message';
 const SignUpPage: FC = () => {
   const history = useHistory();
   const [typePassword, settypePassword] = useState(false);
-  const [hasError, setHasError] = useState({ 
-    active: false, success: false, message: 'You Signed Up Successfully'
+  const [hasError, setHasError] = useState({
+    active: false,
+    success: false,
+    message: 'You Signed Up Successfully',
   });
 
   const [userState, setUserState] = useState({
     userName: '',
     password: '',
   });
-
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -26,17 +27,16 @@ const SignUpPage: FC = () => {
           username: userState.userName,
           password: userState.password,
         });
-        localStorage.setItem("userEmail", userState.userName)
+        localStorage.setItem('userEmail', userState.userName);
 
-        setHasError({ active: true, success: true, message: 'You Signed Up Successfully' })
+        setHasError({ active: true, success: true, message: 'You Signed Up Successfully' });
 
         setTimeout(() => {
-          setHasError((prev) => ({ ...prev, active: false }))
-          history.push("/confirmCode");
+          setHasError((prev) => ({ ...prev, active: false }));
+          history.push('/confirmCode');
         }, 5000);
-
       } catch (err) {
-        setHasError({ active: true, success: false, message: err.message })
+        setHasError({ active: true, success: false, message: err.message });
 
         setTimeout(() => setHasError((prev) => ({ ...prev, active: false })), 5000);
 
@@ -96,11 +96,16 @@ const SignUpPage: FC = () => {
           </div>
           <div className={styles.sign__buttonDiv}>
             <Link to="/signIn">Sign in instead</Link>
-            <button type="submit"  onClick={(e) => signUp(e)}> submit </button>
+            <button type="submit" onClick={(e) => signUp(e)}>
+              {' '}
+              submit{' '}
+            </button>
           </div>
         </form>
-        <OnErrorMessage 
-          active={hasError.active} success={hasError.success} message={hasError.message}
+        <OnErrorMessage
+          active={hasError.active}
+          success={hasError.success}
+          message={hasError.message}
         />
       </div>
     </div>

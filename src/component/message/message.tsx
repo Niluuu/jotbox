@@ -1,9 +1,9 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import { Icon } from '../Icon/Icon';
 
 interface ErrorMessageType {
-  success: boolean; 
+  success: boolean;
   active: boolean;
   message: string;
 }

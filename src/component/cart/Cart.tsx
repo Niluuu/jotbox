@@ -8,7 +8,7 @@ import { InputNavbar } from '../input/InputNavbar';
 import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/nodes';
-import './Color.scss'
+import './Color.scss';
 
 interface CartProps {
   id: string;
@@ -35,7 +35,7 @@ interface CartProps {
   gridType?: boolean;
   popupCart?: boolean;
   color: string;
-  onColorChange?: (id: any, color: string, _version: number) => void;
+  onColorChange?: (id: string, color: string, _version: number) => void;
 }
 
 const Cart: FC<CartProps> = ({
@@ -61,7 +61,7 @@ const Cart: FC<CartProps> = ({
   gridType,
   popupCart,
   color,
-  onColorChange
+  onColorChange,
 }) => {
   const dispatch = useDispatch();
 
@@ -73,7 +73,12 @@ const Cart: FC<CartProps> = ({
     <div
       id={id}
       key={id}
-      className={classNames(styles.cart, gridType && styles.column, popupCart && styles.popupCart, color)}
+      className={classNames(
+        styles.cart,
+        gridType && styles.column,
+        popupCart && styles.popupCart,
+        color,
+      )}
     >
       {!isTrashPage && (
         <button

@@ -19,13 +19,17 @@ export interface SiderProps {
 
 /**
  * Main Sider component for user interaction
-*/
+ */
 
 export const Sider: FC<SiderProps> = ({ onReSetLabel, isSidebarOpen, filteredGaps }) => {
   return (
-    <aside className={classNames(styles.sider, isSidebarOpen ? styles.open: null)}>
+    <aside className={classNames(styles.sider, isSidebarOpen ? styles.open : null)}>
       <div className={styles.sider_children}>
-      <Submenu arraySubmenu={routes(filteredGaps)} labels={gapRoutes(filteredGaps)} onReSetLabel={onReSetLabel} />
+        <Submenu
+          arraySubmenu={routes(filteredGaps)}
+          labels={gapRoutes(filteredGaps)}
+          onReSetLabel={onReSetLabel}
+        />
       </div>
     </aside>
   );

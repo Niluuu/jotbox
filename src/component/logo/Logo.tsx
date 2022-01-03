@@ -13,10 +13,6 @@ export interface LogoProps {
    */
   onClick?: () => void;
   /**
-   * Logos only intent
-   */
-  dark?: boolean;
-  /**
    * className
    */
   className?: string;
@@ -31,11 +27,10 @@ export interface LogoProps {
  * Main Logo component for user interaction
  */
 
-const Logo: FC<LogoProps> = ({ dark, hideIcon, onClick, className, title = 'Jotbox' }) => {
+const Logo: FC<LogoProps> = ({ hideIcon, onClick, className }) => {
   return (
     <a className={classNames(styles.logo, className)} onClick={onClick}>
       {!hideIcon && <img src={LogoSvg} />}
-      <span className={styles.logo__title}>{title}</span>
     </a>
   );
 };

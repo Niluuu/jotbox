@@ -112,6 +112,7 @@ export const onCreateGaps = /* GraphQL */ `
     onCreateGaps {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -125,6 +126,7 @@ export const onUpdateGaps = /* GraphQL */ `
     onUpdateGaps {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -138,6 +140,7 @@ export const onDeleteGaps = /* GraphQL */ `
     onDeleteGaps {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt

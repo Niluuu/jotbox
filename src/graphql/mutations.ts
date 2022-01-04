@@ -133,6 +133,7 @@ export const createGaps = /* GraphQL */ `
     createGaps(input: $input, condition: $condition) {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -149,6 +150,7 @@ export const updateGaps = /* GraphQL */ `
     updateGaps(input: $input, condition: $condition) {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -165,6 +167,7 @@ export const deleteGaps = /* GraphQL */ `
     deleteGaps(input: $input, condition: $condition) {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt

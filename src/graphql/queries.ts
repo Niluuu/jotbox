@@ -156,6 +156,7 @@ export const getGaps = /* GraphQL */ `
     getGaps(id: $id) {
       id
       title
+      collabarator
       _version
       _deleted
       _lastChangedAt
@@ -174,6 +175,7 @@ export const listGapss = /* GraphQL */ `
       items {
         id
         title
+        collabarator
         _version
         _deleted
         _lastChangedAt
@@ -201,6 +203,7 @@ export const syncGaps = /* GraphQL */ `
       items {
         id
         title
+        collabarator
         _version
         _deleted
         _lastChangedAt

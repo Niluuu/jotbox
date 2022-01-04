@@ -15,12 +15,6 @@
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
-            },
-            {
-              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-              "userPoolConfig": {
-                "userPoolId": "authjotbox"
-              }
             }
           ]
         }
@@ -53,13 +47,6 @@
           "EMAIL"
         ]
       }
-    }
-  },
-  "storage": {
-    "s3jotboxstoraged17oh96r8b4gc1": {
-      "service": "S3",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
     }
   }
 }

@@ -46,6 +46,7 @@ export declare class Users {
 export declare class Gaps {
   readonly id: string;
   readonly title: string;
+  readonly collabarator?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Gaps, GapsMetaData>);

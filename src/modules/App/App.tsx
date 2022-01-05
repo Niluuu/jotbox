@@ -12,6 +12,7 @@ const App: FC = () => {
     <Switch>
       <ProtectedRoute exact path="/" component={HomePage} />
       <ProtectedRoute exact path="/archive" component={ArchievePage} />
+      <ProtectedRoute path="/gaps/:label" component={HomePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/confirmCode" component={ConfirmPage} />

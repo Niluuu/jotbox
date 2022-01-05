@@ -118,15 +118,6 @@ export const Submenu: FC<SubmenuProps> = () => {
   );
 };
 
-interface Item {
-  name: string;
-  url: string;
-  icon: string;
-  active?: boolean;
-  modal: boolean;
-  gaps?: any;
-}
-
 interface SubmenuItemProps {
   item: any;
   location: any;

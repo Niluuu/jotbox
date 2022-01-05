@@ -1,6 +1,7 @@
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
 import { DataStore } from '@aws-amplify/datastore';
 import { API } from 'aws-amplify';
 import { Node } from '../../models';
@@ -44,6 +45,17 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     },
   });
 
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      grid: state.layoutGrid.grid,
+      text: state.editorReducer.text,
+    };
+  });
+
+  const { grid, text } = mapStateToProps;
+  const { label } = useParams();
+  console.log('label', label);
+
   const dispatch = useDispatch();
 
   const cleanUp = useCallback(() => {
@@ -59,15 +71,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   const onDefaultColor = useCallback((optionalColor) => {
     setDefaultColor(optionalColor);
   }, []);
-
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      grid: state.layoutGrid.grid,
-      text: state.editorReducer.text,
-    };
-  });
-
-  const { grid, text } = mapStateToProps;
 
   async function getAllNodes() {
     try {
@@ -160,9 +163,9 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         }),
       );
     } catch (err) {
-     throw new Error("Set archive error")
+      throw new Error('Set archive error');
     }
-  }, [nodes]);
+  }, []);
 
   useEffect(() => {
     getAllNodes();

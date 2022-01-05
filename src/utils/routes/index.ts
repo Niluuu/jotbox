@@ -3,7 +3,7 @@ export const getLabels = (labels: any[]) => {
     ? labels.map((label) => ({
         id: label.id,
         name: label.title,
-        url: `/gap/${label}`,
+        url: `/gaps/${label.title}`,
         icon: 'notes',
       }))
     : [];

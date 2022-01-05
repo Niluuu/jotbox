@@ -14,10 +14,6 @@ export interface ModalProps {
    */
   toggleModal?: () => void;
   /**
-   * Labels
-   */
-  labels?: any;
-  /**
    * Title of modal
    */
   title?: string;
@@ -34,16 +30,17 @@ const Modal: FC<ModalProps> = ({
   isOpen,
   isLarge,
   isTop,
-  labels,
   children,
   title,
 }) => {
   return (
     <>
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
-      <div
-        className={classNames(styles['popup-container'], {[styles.isOpen]: isOpen})}>
-        <div className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large)} id="popup-login">
+      <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
+        <div
+          className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large)}
+          id="popup-login"
+        >
           <div className={styles.popup__title}>
             {title}
             {!removeIcon && (

@@ -1,29 +1,32 @@
-export const gapRoutes = (gaps) => {
-  const gapLabels = gaps
-    ? gaps.map((gap) => ({
-        name: gap,
-        url: `/gap/${gap}`,
+export const getLabels = (labels: any[]) => {
+  const result = labels
+    ? labels.map((label) => ({
+        id: label.id,
+        name: label.title,
+        url: `/gap/${label}`,
         icon: 'notes',
       }))
     : [];
 
-  return gapLabels;
+  return result;
 };
 
-export const routes = (labels) => {
-  const allRoutes = [
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const routes = (labels: any[]) => {
+  const result = [
     { name: 'Заметки', gaps: null, icon: 'notes', active: true, url: '/', modal: false },
     { name: 'Изменение ярлыков', gaps: null, icon: 'labels', url: '/*', modal: true },
     {
       name: 'gaps',
       icon: null,
-      active: null,
-      url: null,
+      active: false,
+      url: '',
       modal: null,
-      gaps: gapRoutes(labels),
+      gaps: getLabels(labels),
     },
     { name: 'Архив', gaps: null, icon: 'archive', active: false, url: '/archives', modal: false },
     { name: 'Корзина', gaps: null, icon: 'basket', active: false, url: '/trash', modal: false },
   ];
-  return allRoutes;
+
+  return result;
 };

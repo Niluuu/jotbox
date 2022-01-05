@@ -11,7 +11,6 @@ import CartLayout from '../../atoms/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
-import gapFilter from '../../utils/hooks/gapFilter';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
@@ -57,12 +56,9 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     setDefaultPin((pre) => !pre);
   }, []);
 
-  const onDefaultColor = useCallback(
-    (optionalColor) => {
-      setDefaultColor(optionalColor);
-    },
-    [defaultColor],
-  );
+  const onDefaultColor = useCallback((optionalColor) => {
+    setDefaultColor(optionalColor);
+  }, []);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -133,60 +129,6 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
     }
   }, []);
 
-  const onChangeArchived = useCallback(async (id, title, description) => {
-    try {
-      //  TODO: Add update function
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  const onSetLabel = useCallback(async (id, oldGaps: string[]) => {
-    try {
-      // if (oldGaps.length) {
-      //   setNodes(
-      //     nodes.map((cart) =>
-      //       cart.id === id
-      //         ? {
-      //             ...cart,
-      //             gaps: cart.gaps
-      //               .concat(oldGaps.filter((old) => old && old))
-      //               .filter((val, pos, arr) => arr.indexOf(val) === pos),
-      //           }
-      //         : cart,
-      //     ),
-      //   );
-      //   const original = await DataStore.query(Node, id);
-      //   await DataStore.save(
-      //     Node.copyOf(original, (item) => {
-      //       const cart = item;
-      //       cart.gaps = item.gaps
-      //         .concat(oldGaps.filter((old) => old && old))
-      //         .filter((val, pos, arr) => arr.indexOf(val) === pos);
-      //     }),
-      //   );
-      // }
-    } catch (err) {
-      console.log('error updating todo:', err);
-    }
-  }, []);
-
-  const onReSetLabel = useCallback(
-    async (oldValue, newValue) => {
-      try {
-        setNodes(
-          nodes.map((cart) => ({
-            ...cart,
-            gaps: cart.gaps.map((sub) => (sub === oldValue ? newValue : sub)),
-          })),
-        );
-      } catch (err) {
-        throw new Error(`OnReSetLabel ${err}`);
-      }
-    },
-    [nodes],
-  );
-
   const onSetNodes = useCallback(async () => {
     try {
       const node = {
@@ -218,30 +160,9 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         }),
       );
     } catch (err) {
-      console.log(err);
+     throw new Error("Set archive error")
     }
   }, [nodes]);
-
-  const filteredGaps = gapFilter(nodes);
-
-  const nodesToProps = gapsFilterKey
-    ? nodes.filter((cart) => cart.gaps.includes(gapsFilterKey))
-    : nodes;
-
-  const onFilterSearch = useCallback(
-    async (value) => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        // setNodes(
-        //   carts.filter((cart) => cart.title.toLowerCase().indexOf(value.toLowerCase()) >= 0),
-        // );
-      } catch (err) {
-        console.log('error filtering by letters', err);
-      }
-    },
-    [nodes],
-  );
 
   useEffect(() => {
     getAllNodes();
@@ -249,7 +170,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   }, [onRemoveCart, onChangePin, onColorChange]);
 
   return (
-    <Layout onFilterSearch={onFilterSearch} filteredGaps={filteredGaps} onReSetLabel={onReSetLabel}>
+    <Layout>
       <div className={classNames(styles.home_page, grid && styles.column)}>
         <div className={styles.home_page__main_input}>
           <MainInput
@@ -266,12 +187,10 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
         </div>
         <CartLayout
           onChangePin={onChangePin}
-          onChangeArchived={onChangeArchived}
+          onChangeArchived={(e) => e}
           onRemoveCart={onRemoveCart}
           gridType={grid}
           carts={nodes}
-          onSetLabel={onSetLabel}
-          filteredGaps={filteredGaps}
           onColorChange={onColorChange}
         />
         <AddLinkModal />

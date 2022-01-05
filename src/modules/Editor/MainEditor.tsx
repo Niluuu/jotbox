@@ -4,7 +4,6 @@ import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
-import { RootState } from '../../app/store';
 import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import mentions from './Mentions';

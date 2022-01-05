@@ -1,5 +1,5 @@
 import { FC, useCallback, useState,useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
 import { RootState } from '../../app/store';

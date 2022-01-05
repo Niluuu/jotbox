@@ -2,7 +2,6 @@ import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './Sider.module.scss';
 import { Submenu } from '../../component/submenu/Submenu';
-import { gapRoutes, routes } from '../../utils/routes';
 
 export interface SiderProps {
   /**
@@ -13,23 +12,17 @@ export interface SiderProps {
    * sidebar is open or not
    */
   isSidebarOpen: boolean;
-  filteredGaps?: any[];
-  onReSetLabel: (oldValue, newValue) => void;
 }
 
 /**
  * Main Sider component for user interaction
  */
 
-export const Sider: FC<SiderProps> = ({ onReSetLabel, isSidebarOpen, filteredGaps }) => {
+export const Sider: FC<SiderProps> = ({ isSidebarOpen }) => {
   return (
     <aside className={classNames(styles.sider, isSidebarOpen ? styles.open : null)}>
       <div className={styles.sider_children}>
-        <Submenu
-          arraySubmenu={routes(filteredGaps)}
-          labels={gapRoutes(filteredGaps)}
-          onReSetLabel={onReSetLabel}
-        />
+        <Submenu />
       </div>
     </aside>
   );

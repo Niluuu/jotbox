@@ -2,7 +2,7 @@ import { FC, useState, useCallback } from 'react';
 import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
@@ -22,8 +22,15 @@ interface MainEditorProps {
   isMainInput?: boolean;
 }
 
-const MainEditor: FC<MainEditorProps> = 
-  ({ linkMode, onLinkMode, initialState, editorRef, color, defaultColor, isMainInput }) => {
+const MainEditor: FC<MainEditorProps> = ({
+  linkMode,
+  onLinkMode,
+  initialState,
+  editorRef,
+  color,
+  defaultColor,
+  isMainInput,
+}) => {
   const initalEditorState = initialState
     ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
     : EditorState.createEmpty();
@@ -37,14 +44,13 @@ const MainEditor: FC<MainEditorProps> =
 
   const onChange = useCallback(
     (newEditorState) => {
-      setPlaseHolder(false)
+      setPlaseHolder(false);
       setEditorState(newEditorState);
 
       const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
-      
+
       if (initialState) dispatch(setUpdatedText(convert));
       dispatch(setText(convert));
-
     },
     [editorState],
   );
@@ -90,15 +96,23 @@ const MainEditor: FC<MainEditorProps> =
 
   return (
     <div>
-      <div className={classNames(
-        styles.editor, isMainInput ? defaultColor : color, 
-          !isMainInput ? styles.cart: null
+      <div
+        className={classNames(
+          styles.editor,
+          isMainInput ? defaultColor : color,
+          !isMainInput ? styles.cart : null,
         )}
         onClick={() => {
           editorRef.current!.focus();
         }}
       >
-        <Editor editorState={editorState} onChange={onChange} plugins={plugins} ref={editorRef} placeholder={plaseHolder ? "Заметка...": null} />
+        <Editor
+          editorState={editorState}
+          onChange={onChange}
+          plugins={plugins}
+          ref={editorRef}
+          placeholder={plaseHolder ? 'Заметка...' : null}
+        />
         <MentionSuggestions
           open={open}
           onOpenChange={onOpenChange}

@@ -28,15 +28,13 @@ interface CartProps {
   color: string;
 }
 
-interface HomePageProps {
-  gapsFilterKey?: string;
-}
-
-const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
+const HomePage: FC = () => {
+  const { label } = useParams();
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
+  const [gaps, setGaps] = useState(null);
   const titleRef = useRef<HTMLDivElement>();
   const userEmail = localStorage.getItem('userEmail');
   const [filter] = useState({
@@ -44,6 +42,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       eq: userEmail,
     },
   });
+  console.log('label', typeof label);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -53,16 +52,13 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
   });
 
   const { grid, text } = mapStateToProps;
-  const { label } = useParams();
-  console.log('label', label);
-
   const dispatch = useDispatch();
 
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
     dispatch(setText(initialStateStr));
-  }, []);
+  }, [dispatch]);
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -137,7 +133,7 @@ const HomePage: FC<HomePageProps> = ({ gapsFilterKey }) => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps: [],
+        gaps,
         pined: defaultPin,
         archived: false,
         trashed: false,

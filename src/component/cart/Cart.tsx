@@ -18,7 +18,6 @@ interface CartProps {
   isTrashPage?: boolean;
   gaps?: string[];
   _version?: number;
-  onHyperLinkEditMode?: () => void;
   onRemoveCart?: (id: string, _version: number) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onResetNodes?: (id: string, title: string, description: string) => void;
@@ -53,7 +52,6 @@ const Cart: FC<CartProps> = ({
   onSetIsMain,
   onRemoveCart,
   onResetNodes,
-  onHyperLinkEditMode,
   onCartLabel,
   cartLabel,
   onSetLabel,
@@ -117,8 +115,6 @@ const Cart: FC<CartProps> = ({
             onChangeArchived={() => onChangeArchived(id, title, description)}
             onCartLabel={onCartLabel}
             cartLabel={cartLabel}
-            onSetLabel={(oldGaps: string[]) => onSetLabel(id, oldGaps)}
-            filteredGaps={filteredGaps}
             onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
             currentColor={color}
           />

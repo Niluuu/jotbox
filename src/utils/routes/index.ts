@@ -4,7 +4,7 @@ export const getLabels = (labels: any[]) => {
         id: label.id,
         name: label.title,
         url: `/gaps/${label.title}`,
-        icon: 'notes',
+        icon: 'gaps',
       }))
     : [];
 
@@ -25,7 +25,6 @@ export const routes = (labels: any[]) => {
       gaps: getLabels(labels),
     },
     { name: 'Архив', gaps: null, icon: 'archive', active: false, url: '/archives', modal: false },
-    { name: 'Корзина', gaps: null, icon: 'basket', active: false, url: '/trash', modal: false },
   ];
 
   return result;

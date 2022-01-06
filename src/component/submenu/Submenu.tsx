@@ -2,12 +2,14 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../Icon/Icon';
 import { SubmenuModal } from '../../atoms/modals/SubmenuModal';
 import { routes } from '../../utils/routes/index';
 import { listGapss } from '../../graphql/queries';
 import { createGaps, updateGaps } from '../../graphql/mutations';
+import { gapsToProps } from '../../reducers/gaps';
 
 export interface SubmenuProps {
   /**
@@ -30,6 +32,7 @@ export const Submenu: FC<SubmenuProps> = () => {
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const [listGaps, setListGaps] = useState([]);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
+  const dispatch = useDispatch();
 
   async function getGaps() {
     try {
@@ -39,6 +42,7 @@ export const Submenu: FC<SubmenuProps> = () => {
       const { items } = res.data.listGapss;
 
       setListGaps(items);
+      dispatch(gapsToProps(items));
     } catch (err) {
       throw new Error('Get gaps route');
     }

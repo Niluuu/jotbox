@@ -23,7 +23,6 @@ interface CartLayoutProps {
   onHyperLinkEditMode?: () => void;
   onSetIsMain?: (bool: boolean) => void;
   onCartLabel?: (value: string) => void;
-  cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: string[];
   onColorChange?: (id: string, color: string, _version: number) => void;
@@ -38,7 +37,6 @@ const CartLayout: FC<CartLayoutProps> = ({
   carts,
   onSetIsMain,
   onCartLabel,
-  cartLabel,
   onSetLabel,
   filteredGaps,
   onColorChange,
@@ -70,10 +68,8 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
-                cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
                 gridType={gridType}
@@ -105,10 +101,8 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onHyperLinkEditMode={onHyperLinkEditMode}
                 onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
-                cartLabel={cartLabel}
                 onSetLabel={onSetLabel}
                 filteredGaps={filteredGaps}
                 gridType={gridType}

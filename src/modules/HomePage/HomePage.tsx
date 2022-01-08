@@ -29,20 +29,16 @@ interface CartProps {
 }
 
 const HomePage: FC = () => {
+  const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
+  const collabarator = { eq: userEmail };
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
-  const [gaps, setGaps] = useState(null);
   const titleRef = useRef<HTMLDivElement>();
-  const userEmail = localStorage.getItem('userEmail');
-  const [filter] = useState({
-    collabarator: {
-      eq: userEmail,
-    },
-  });
-  console.log('label', typeof label);
+  const [filter, setFilter] = useState({ collabarator });
+  const [selectedGaps, setSelectedGaps] = useState([]);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -53,6 +49,17 @@ const HomePage: FC = () => {
 
   const { grid, text } = mapStateToProps;
   const dispatch = useDispatch();
+
+  const toggleGaps = useCallback(
+    (gap) => {
+      console.log(`gap`, gap);
+      setSelectedGaps((pre) =>
+        !pre.includes(gap) ? [...selectedGaps, gap] : selectedGaps.filter((elm) => elm !== gap),
+      );
+    },
+    [selectedGaps],
+  );
+  console.log(`selectedGaps`, selectedGaps);
 
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
@@ -75,16 +82,12 @@ const HomePage: FC = () => {
       //  @ts-ignore
       const { items } = data.data.listNodes;
       // eslint-disable-next-line no-console
-      console.log('getAllNodes', items);
       setNodes(items);
+      console.log(`items`, items);
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
   }
-
-  useEffect(() => {
-    getAllNodes();
-  }, []);
 
   const onColorChange = useCallback(async (id, color, _version) => {
     try {
@@ -133,7 +136,7 @@ const HomePage: FC = () => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps,
+        gaps: [],
         pined: defaultPin,
         archived: false,
         trashed: false,
@@ -166,7 +169,18 @@ const HomePage: FC = () => {
   useEffect(() => {
     getAllNodes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onRemoveCart, onChangePin, onColorChange]);
+  }, []);
+
+  useEffect(() => {
+    getAllNodes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRemoveCart, onChangePin, onColorChange, filter]);
+
+  useEffect(() => {
+    const gaps = { contains: label };
+    const newFiler = label !== undefined ? { collabarator, gaps } : { collabarator };
+    setFilter(newFiler);
+  }, [label]);
 
   return (
     <Layout>
@@ -182,6 +196,8 @@ const HomePage: FC = () => {
             titleRef={titleRef}
             defaultColor={defaultColor}
             onDefaultColor={onDefaultColor}
+            selectedGaps={selectedGaps}
+            toggleGaps={toggleGaps}
           />
         </div>
         <CartLayout

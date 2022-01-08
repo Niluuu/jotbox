@@ -32,7 +32,6 @@ export const Submenu: FC<SubmenuProps> = () => {
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const [listGaps, setListGaps] = useState([]);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
-  const dispatch = useDispatch();
 
   async function getGaps() {
     try {
@@ -42,7 +41,6 @@ export const Submenu: FC<SubmenuProps> = () => {
       const { items } = res.data.listGapss;
 
       setListGaps(items);
-      dispatch(gapsToProps(items));
     } catch (err) {
       throw new Error('Get gaps route');
     }
@@ -66,28 +64,25 @@ export const Submenu: FC<SubmenuProps> = () => {
     }
   }, []);
 
-  const onUpdateGap = useCallback(
-    async (title, id, _version) => {
-      const updatedLabel = {
-        title,
-        id,
-        _version,
-      };
+  const onUpdateGap = useCallback(async (title, id, _version) => {
+    const updatedLabel = {
+      title,
+      id,
+      _version,
+    };
 
-      try {
-        const res = await API.graphql({ query: updateGaps, variables: { input: updatedLabel } });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const newLabel = res.data.updateGaps;
-        const updatedList = listGaps.filter((gap) => gap.id !== newLabel.id);
+    try {
+      const res = await API.graphql({ query: updateGaps, variables: { input: updatedLabel } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const newLabel = res.data.updateGaps;
+      const updatedList = listGaps.filter((gap) => gap.id !== newLabel.id);
 
-        setListGaps([...updatedList, newLabel]);
-      } catch (err) {
-        throw new Error('Get gaps route');
-      }
-    },
-    [listGaps],
-  );
+      setListGaps([...updatedList, newLabel]);
+    } catch (err) {
+      throw new Error('Get gaps route');
+    }
+  }, []);
 
   useEffect(() => {
     getGaps();

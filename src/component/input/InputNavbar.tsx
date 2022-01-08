@@ -1,12 +1,14 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { API, graphqlOperation } from 'aws-amplify';
 import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 import '../cart/Color.scss';
 import { colors } from '../../utils/editor/color';
+import { listGapss } from '../../graphql/queries';
 
 interface InputNavbarProps {
   withHistory?: boolean;
@@ -24,6 +26,9 @@ interface InputNavbarProps {
   currentColor?: string;
   defaultColor?: string;
   onDefaultColor?: (optionalColor: string) => void;
+  initialGaps?: string[];
+  toggleGaps?: (gap: string) => void;
+  selectedGaps: string[];
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -41,7 +46,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     currentColor,
     defaultColor,
     onDefaultColor,
+    toggleGaps,
+    selectedGaps,
   } = props;
+  const [listGaps, setListGaps] = useState([]);
   const [tooltip, setTooltip] = useState(false);
   const [labelEditPopover, setLabelEditPopover] = useState(false);
 
@@ -52,14 +60,27 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     else onChangeArchived();
   };
 
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      gaps: state.gapsReducer.gaps,
-    };
-  });
+  async function getGaps() {
+    try {
+      const res = await API.graphql(graphqlOperation(listGapss));
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const { items } = res.data.listGapss;
 
-  const { gaps } = mapStateToProps;
-  console.log('gaps', gaps);
+      setListGaps(items);
+    } catch (err) {
+      throw new Error('Get gaps route');
+    }
+  }
+
+  useEffect(() => {
+    getGaps();
+  }, []);
+
+  const toggleSelectedGap = useCallback((e) => {
+    toggleGaps(e.target.value);
+  }, []); 
+
   return (
     <>
       <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
@@ -102,13 +123,20 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             content={
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
-                 dasdas
-                  {gaps.map((gap) => (
-                    <li>
-                      <input type="checkbox" />
-                      {gap}
-                    </li>
-                  ))}
+                  {listGaps.length > 0 &&
+                    listGaps.map((gap) => (
+                      <li key={gap.id}>
+                        <label>
+                          <input
+                            type="checkbox"
+                            value={gap.title}
+                            onClick={(e) => toggleSelectedGap(e)}
+                            checked={selectedGaps.includes(gap.title)}
+                          />
+                          {gap.title}
+                        </label>
+                      </li>
+                    ))}
                 </ul>
               </div>
             }

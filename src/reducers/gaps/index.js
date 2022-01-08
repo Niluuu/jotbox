@@ -7,7 +7,7 @@ export const gaps = createSlice({
   },
   reducers: {
     gapsToProps: (state, action) => {
-      state.gasp = action.payload;
+      state.gaps = action.payload;
     },
   },
 });

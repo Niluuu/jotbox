@@ -55,7 +55,6 @@ const Cart: FC<CartProps> = ({
   onCartLabel,
   cartLabel,
   onSetLabel,
-  filteredGaps,
   gridType,
   popupCart,
   color,
@@ -117,6 +116,7 @@ const Cart: FC<CartProps> = ({
             cartLabel={cartLabel}
             onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
             currentColor={color}
+            selectedGaps={gaps}
           />
         )}
       </div>

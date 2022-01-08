@@ -215,6 +215,11 @@
   }
 }
 
+.gaps {
+  width: 100%;
+  position: relative;
+}
+
 @media screen and (max-width: 1001px) {  
   .main {
     &_input {

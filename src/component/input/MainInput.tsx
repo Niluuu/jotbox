@@ -8,6 +8,7 @@ import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
 import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import MainEditor from '../../modules/Editor/MainEditor';
+import { Chip } from '../chip/Chip';
 
 interface MainInputProps {
   focused: boolean;
@@ -21,6 +22,8 @@ interface MainInputProps {
   titleRef: any;
   onDefaultColor?: (optionalColor: string) => void;
   defaultColor?: string;
+  selectedGaps?: string[];
+  toggleGaps: (gap: string) => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -34,11 +37,14 @@ const MainInput: FC<MainInputProps> = ({
   titleRef,
   defaultColor,
   onDefaultColor,
+  selectedGaps,
+  toggleGaps,
 }) => {
   const outsideRef = useRef(null);
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
   useOnClickOutside(outsideRef, handleClickOutside);
+
   const editorRef = useRef<Editor>(null);
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -120,6 +126,9 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
+      <div className={classNames(styles.main_tools, styles.gaps)}>
+        {selectedGaps && selectedGaps.map((gap) => <Chip onDelate={(e) => e}>{gap} </Chip>)}
+      </div>
       {focused ? (
         <InputNavbar
           focused={focused}
@@ -130,6 +139,8 @@ const MainInput: FC<MainInputProps> = ({
           onDefaultColor={onDefaultColor}
           defaultColor={defaultColor}
           withHistory
+          toggleGaps={toggleGaps}
+          selectedGaps={selectedGaps}
         />
       ) : null}
     </div>

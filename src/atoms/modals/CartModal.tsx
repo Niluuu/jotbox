@@ -138,6 +138,7 @@ const CartModal: FC = () => {
               ontoggle={toggleModal}
               onLinkMode={onLinkMode}
               withHistory
+              selectedGaps={[]}
             />
           </div>
         )}

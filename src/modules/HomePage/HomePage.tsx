@@ -64,7 +64,7 @@ const HomePage: FC = () => {
     setDefaultPin(false);
     dispatch(setText(initialStateStr));
     setSelectedGaps(label !== undefined ? [] : [label]);
-  }, [dispatch]);
+  }, [dispatch, label]);
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -74,60 +74,77 @@ const HomePage: FC = () => {
     setDefaultColor(optionalColor);
   }, []);
 
-  async function getAllNodes() {
+  const getAllNodes = useCallback(async () => {
     try {
       const data = await API.graphql({ query: listNodes, variables: { filter } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = data.data.listNodes;
-      // eslint-disable-next-line no-console
       setNodes(items);
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
-  }
+  }, [filter]);
 
-  const onColorChange = useCallback(async (id, color, _version) => {
-    try {
-      const updatedNode = {
-        id,
-        color,
-        _version,
-      };
+  const onColorChange = useCallback(
+    async (id, color, _version) => {
+      try {
+        const updatedNode = {
+          id,
+          color,
+          _version,
+        };
 
-      await API.graphql({
-        query: updateNode,
-        variables: { input: updatedNode },
-      });
-    } catch (err) {
-      throw new Error('Color update error');
-    }
-  }, []);
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
 
-  const onRemoveCart = useCallback(async (id, _version) => {
-    try {
-      await API.graphql({ query: deleteNode, variables: { input: { id, _version } } });
-    } catch (err) {
-      throw new Error('Remove node error');
-    }
-  }, []);
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Color update error');
+      }
+    },
+    [getAllNodes],
+  );
 
-  const onChangePin = useCallback(async (id, pined, _version) => {
-    try {
-      const updatedNode = {
-        id,
-        pined,
-        _version,
-      };
+  const onRemoveCart = useCallback(
+    async (id, _version) => {
+      try {
+        await API.graphql({
+          query: deleteNode,
+          variables: { input: { id, _version } },
+        });
 
-      await API.graphql({
-        query: updateNode,
-        variables: { input: updatedNode },
-      });
-    } catch (err) {
-      throw new Error('Update node error');
-    }
-  }, []);
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Remove node error');
+      }
+    },
+    [getAllNodes],
+  );
+
+  const onChangePin = useCallback(
+    async (id, pined, _version) => {
+      try {
+        const updatedNode = {
+          id,
+          pined,
+          _version,
+        };
+
+        const res = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [getAllNodes],
+  );
 
   const onSetNodes = useCallback(async () => {
     try {
@@ -142,11 +159,12 @@ const HomePage: FC = () => {
       };
 
       await API.graphql({ query: createNode, variables: { input: node } });
+      getAllNodes();
       cleanUp();
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, getAllNodes]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -159,21 +177,15 @@ const HomePage: FC = () => {
           archived: true,
         }),
       );
+      getAllNodes();
     } catch (err) {
       throw new Error('Set archive error');
     }
-  }, []);
+  }, [defaultPin, getAllNodes]);
 
   useEffect(() => {
     getAllNodes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
-  useEffect(() => {
-    getAllNodes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onRemoveCart, onChangePin, onColorChange, filter]);
+  }, [getAllNodes]);
 
   useEffect(() => {
     const gaps = { contains: label };

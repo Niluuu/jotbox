@@ -126,9 +126,15 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
-      <div className={classNames(styles.main_tools, styles.gaps)}>
-        {selectedGaps && selectedGaps.map((gap) => <Chip onDelate={(e) => e}>{gap} </Chip>)}
-      </div>
+
+      {focused && selectedGaps && (
+        <div className={classNames(styles.main_tools, styles.gaps)}>
+          {selectedGaps.map((gap) => (
+            <Chip onDelate={(e) => e}>{gap} </Chip>
+          ))}
+        </div>
+      )}
+
       {focused ? (
         <InputNavbar
           focused={focused}

@@ -52,19 +52,18 @@ const HomePage: FC = () => {
 
   const toggleGaps = useCallback(
     (gap) => {
-      console.log(`gap`, gap);
       setSelectedGaps((pre) =>
         !pre.includes(gap) ? [...selectedGaps, gap] : selectedGaps.filter((elm) => elm !== gap),
       );
     },
     [selectedGaps],
   );
-  console.log(`selectedGaps`, selectedGaps);
 
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
     dispatch(setText(initialStateStr));
+    setSelectedGaps(label !== undefined ? [] : [label]);
   }, [dispatch]);
 
   const onDefaultPin = useCallback(() => {
@@ -83,7 +82,6 @@ const HomePage: FC = () => {
       const { items } = data.data.listNodes;
       // eslint-disable-next-line no-console
       setNodes(items);
-      console.log(`items`, items);
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
@@ -136,7 +134,7 @@ const HomePage: FC = () => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps: [],
+        gaps: selectedGaps,
         pined: defaultPin,
         archived: false,
         trashed: false,
@@ -148,7 +146,7 @@ const HomePage: FC = () => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -171,6 +169,7 @@ const HomePage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
   useEffect(() => {
     getAllNodes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,6 +179,7 @@ const HomePage: FC = () => {
     const gaps = { contains: label };
     const newFiler = label !== undefined ? { collabarator, gaps } : { collabarator };
     setFilter(newFiler);
+    setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
 
   return (

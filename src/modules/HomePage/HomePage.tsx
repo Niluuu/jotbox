@@ -199,10 +199,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
 
-  const nodesToProps = archive
-    ? nodes.filter((cart) => cart.archived)
-    : nodes.filter((cart) => !cart.archived);
-
   return (
     <Layout>
       <div className={classNames(styles.home_page, grid && styles.column)}>
@@ -228,7 +224,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           onChangeArchived={(e) => e}
           onRemoveCart={onRemoveCart}
           gridType={grid}
-          carts={nodesToProps}
+          carts={nodes}
           onColorChange={onColorChange}
         />
         <AddLinkModal />

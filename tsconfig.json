@@ -17,5 +17,7 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "exclude": ["src/__cached__"]
+  "exclude": ["src/__cached__"],
+  "allowSyntheticDefaultImports" : true,
+  "esModuleInterop" : true
 }

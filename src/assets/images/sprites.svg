@@ -17,6 +17,9 @@
     <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"></path>
     <path d="M9 8h2v9H9zm4 0h2v9h-2z"></path>
   </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="box">
+    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
+  </symbol>
   <symbol viewBox="0 0 24 24" id="burger">
     <path fill="#5f6368" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
   </symbol>
@@ -33,6 +36,9 @@
     <circle cx="9.5" cy="7.5" r="1.5"></circle>
     <circle cx="14.5" cy="7.5" r="1.5"></circle>
     <circle cx="17.5" cy="11.5" r="1.5"></circle>
+  </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="default-color">
+    <path d="M21.19 21.19l-3.06-3.06-1.43-1.43-8.3-8.3L7 7 2.81 2.81 1.39 4.22l4.25 4.25A8.056 8.056 0 0 0 4.01 13H4c0 4.42 3.58 8 8 8 1.74 0 3.35-.57 4.66-1.51l3.12 3.12 1.41-1.42zM12 19c-3.22 0-5.86-2.55-5.99-5.74l.01-.19c.04-1.14.42-2.25 1.06-3.18l8.16 8.16c-.95.6-2.05.95-3.24.95zm0-14.17l4.25 4.24a6.014 6.014 0 0 1 1.74 4.01l.01.17c-.02.56-.13 1.11-.3 1.62l1.53 1.53c.49-1.03.77-2.18.77-3.4h-.01a7.975 7.975 0 0 0-2.33-5.35L12 2 8.41 5.58 9.83 7 12 4.83z"></path>
   </symbol>
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="delete-forever">
     <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -177,11 +183,15 @@
 </svg><svg>
   <use xlink:href="#basket"></use>
 </svg><svg>
+  <use xlink:href="#box"></use>
+</svg><svg>
   <use xlink:href="#burger"></use>
 </svg><svg>
   <use xlink:href="#cloud"></use>
 </svg><svg>
   <use xlink:href="#color-picer"></use>
+</svg><svg>
+  <use xlink:href="#default-color"></use>
 </svg><svg>
   <use xlink:href="#delete-forever"></use>
 </svg><svg>

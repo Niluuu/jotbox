@@ -11,6 +11,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Note: You can run `npm run dev` to run both `codgen:watch` & `npm start` concurrently but the debugging experience is note ideal running both scripts.
 
+### Aws
+
+1. Install aws globally read more (https://docs.amplify.aws/start/getting-started/installation/q/integration/react/) 
+
+2. In terminal `amplify pull --appId d17oh96r8b4gc1 --envName staging` to get backend.
+
+Note: You can run `npm run dev` to run both `codgen:watch` & `npm start` concurrently but the debugging experience is note ideal running both scripts.
+
 ### Launch Storybooks
 
 1. Do 1st step for Main Project

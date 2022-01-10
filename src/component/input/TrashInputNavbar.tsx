@@ -4,19 +4,13 @@ import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 
 interface TrashInputNavbarProps {
-  isLogin?: boolean;
-  withHistory?: boolean;
-  ontoggle?: () => void;
   onRestoreTrash?: () => void;
   onRemoveTrash?: () => void;
 }
 
 export const TrashInputNavbar: FC<TrashInputNavbarProps> = ({
-  isLogin,
-  withHistory,
   onRemoveTrash,
   onRestoreTrash,
-  ontoggle,
 }) => {
   return (
     <div className={classNames(styles.input_navbar)}>

@@ -11,10 +11,11 @@ ordelaluz/svg-spreact-cli
  * 
  */
 
-export type iconSizes = 'xs' | 'small' | 'medium' | 'large';
+export type iconSizes = 'xs' | 'small' | 'medium' | 'large' | 'min';
 export type iconNames =
   | 'account'
   | 'burger'
+  | 'box'
   | 'remove'
   | 'search'
   | 'setting'

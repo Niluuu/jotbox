@@ -9,6 +9,7 @@ import { apollo } from './apollo';
 import { store } from './app/store';
 import App from './modules/App/App';
 import './styles/index.scss';
+import 'es6-shim';
 
 Amplify.configure(awsExports);
 

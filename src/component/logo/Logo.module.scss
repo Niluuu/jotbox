@@ -15,8 +15,9 @@
   img {
     flex-shrink: 0;
     margin-right: 10px;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 68px;
+    position: absolute;
   }
 
   &__title {
@@ -24,5 +25,14 @@
     color: $gray-color1;
     opacity: 1;
     margin-right: 70px;
+  }
+}
+
+
+@media screen and (max-width: 567px) {
+  .logo {
+    &__title {
+      display: none !important;
+    }
   }
 }

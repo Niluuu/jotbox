@@ -1,99 +1,206 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
+import { API, graphqlOperation } from 'aws-amplify';
+import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
+import '../cart/Color.scss';
+import { colors } from '../../utils/editor/color';
+import { listGapss } from '../../graphql/queries';
 
 interface InputNavbarProps {
-  isLogin?: boolean;
   withHistory?: boolean;
   isMainInput?: boolean;
-  onOptionEditMode?: () => void;
-  onHyperLinkEditMode?: () => void;
   ontoggle?: () => void;
   onSetArchive?: () => void;
   focused?: boolean;
   onRemoveCart?: () => void;
+  onLinkMode?: () => void;
   onChangeArchived?: () => void;
-  onSetIsMain?: (bool: boolean) => void;
+  onCartLabel?: (value: string) => void;
+  cartLabel?: string;
+  onColorChange?: (color: string) => void;
+  currentColor?: string;
+  defaultColor?: string;
+  onDefaultColor?: (optionalColor: string) => void;
+  initialGaps?: string[];
+  toggleGaps?: (gap: string) => void;
+  selectedGaps: string[];
 }
 
-export const InputNavbar: FC<InputNavbarProps> = ({
-  isLogin,
-  isMainInput,
-  onChangeArchived,
-  onSetArchive,
-  onHyperLinkEditMode,
-  onOptionEditMode,
-  withHistory,
-  ontoggle,
-  focused = true,
-  onRemoveCart,
-  onSetIsMain
-}) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const onEdit = () => {
-    if (isMainInput) onSetIsMain(true)
-    else onSetIsMain(false)
+export const InputNavbar: FC<InputNavbarProps> = (props) => {
+  const {
+    isMainInput,
+    onChangeArchived,
+    onSetArchive,
+    withHistory,
+    ontoggle,
+    focused = true,
+    onRemoveCart,
+    onLinkMode,
+    onColorChange,
+    currentColor,
+    defaultColor,
+    onDefaultColor,
+    toggleGaps,
+    selectedGaps,
+  } = props;
+  const [listGaps, setListGaps] = useState([]);
+  const [tooltip, setTooltip] = useState(false);
+  const [labelEditPopover, setLabelEditPopover] = useState(false);
 
-    if (onHyperLinkEditMode) onHyperLinkEditMode()
-    setIsOpen(pre => !pre)
-  }
-
-  const toArchive = () => {
+  const toggleTooltip = () => setTooltip((pre) => !pre);
+  const toggleLabelEditPopover = () => setLabelEditPopover((pre) => !pre);
+  const toggleArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
   };
+
+  async function getGaps() {
+    try {
+      const res = await API.graphql(graphqlOperation(listGapss));
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const { items } = res.data.listGapss;
+      setListGaps(items);
+    } catch (err) {
+      throw new Error('Get gaps route');
+    }
+  }
+
+  useEffect(() => {
+    getGaps();
+  }, []);
+
+  const toggleSelectedGap = useCallback((e) => {
+    toggleGaps(e.target.value);
+  }, []);
+
   return (
-    <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
-      <div className={styles.main_tools}>
-        <button type="button" className={styles.icon_btn}>
-          <Icon name="notification-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
-          <Icon name="user-add" color="premium" size="xs" />
-        </button>
-        <button type="button" className={styles.icon_btn}>
-          <Icon name="img" color="premium" size="xs" />
-        </button>
-        <button onClick={toArchive} type="button" className={styles.icon_btn}>
-          <Icon name="dowland" color="premium" size="xs" />
-        </button>
-        <Popover isOpen={isOpen}
-          content={
-            <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
-              <ul className={styles.popover_content}>
-                <li key="1" onClick={onEdit}>
-                  {' '}
-                  <a href="#">Добавить линк</a>{' '}
-                </li>
-                {onRemoveCart && (
-                  <li key="2" onClick={onRemoveCart}>
-                    {' '}
-                    <a href="#">Удалить карточку</a>{' '}
-                  </li>
-                )}
-              </ul>
-            </div>
-          } placement="bottom-start">
-          <button onClick={() => setIsOpen(true)} type="button" className={styles.icon_btn}>
-            <Icon name="other" color="premium" size="xs" />
+    <>
+      <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
+        <div className={styles.main_tools}>
+          <button onClick={toggleArchive} type="button" className={styles.icon_btn}>
+            <Icon name="dowland" color="premium" size="xs" />
           </button>
-        </Popover>
-        {withHistory ? (
-          <>
+          <Popover
+            placement="bottom-start"
+            content={
+              <div className={styles.colorWrapper}>
+                {colors.map((color) => (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isMainInput) onDefaultColor(color.colorClass);
+                      else onColorChange(color.colorClass);
+                    }}
+                    className={classNames(
+                      color.colorClass,
+                      isMainInput
+                        ? color.colorClass === defaultColor && styles.active
+                        : color.colorClass === currentColor && styles.active,
+                    )}
+                  >
+                    {color.colorClass === 'default' && (
+                      <Icon name="default-color" color="premium" size="xs" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            }
+          >
             <button type="button" className={styles.icon_btn}>
-              <Icon name="back" color="premium" size="xs" />
+              <Icon name="color-picer" color="premium" size="xs" />
             </button>
-            <button type="button" className={classNames(styles.icon_btn, styles.icon_rotate)}>
-              <Icon name="back" color="premium" size="xs" />
+          </Popover>
+          <Popover
+            isOpen={labelEditPopover}
+            content={
+              <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
+                <ul className={styles.popover_content}>
+                  <div className={styles.labelWrapper}>
+                    <h5> Добавить Ярлык </h5>
+                    <div className={styles.labelSearch}>
+                      <input type="text" placeholder="Введите Названия Ярлыка..." />
+                      <Icon size="min" name="search" />
+                    </div>
+                    {listGaps.map((gap) => (
+                      <li key={gap.id} className={styles.labelGap}>
+                        <label>
+                          <input
+                            type="checkbox"
+                            value={gap.title}
+                            onClick={(e) => toggleSelectedGap(e)}
+                            checked={selectedGaps.includes(gap.title)}
+                          />
+                          {selectedGaps.includes(gap.title) ? (
+                            <Icon name="edit-bordered" color="premium" size="xs" />
+                          ) : (
+                            <Icon name="box" color="premium" size="xs" />
+                          )}
+                          <span> {gap.title} </span>
+                        </label>
+                      </li>
+                    ))}
+                  </div>
+                </ul>
+              </div>
+            }
+            placement="bottom-start"
+          >
+            <button onClick={toggleLabelEditPopover} type="button" className={styles.icon_btn}>
+              <Icon name="gaps" color="premium" size="xs" />
             </button>
-          </>
-        ) : null}
+          </Popover>
+          <Popover
+            isOpen={tooltip}
+            content={
+              <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
+                <ul className={styles.popover_content}>
+                  {onRemoveCart && (
+                    <li key="2" onClick={onRemoveCart}>
+                      <span>Удалить карточку</span>
+                    </li>
+                  )}
+                  <li
+                    key="1"
+                    onClick={() => {
+                      onLinkMode();
+                    }}
+                  >
+                    <span>Добавить линк</span>
+                  </li>
+                </ul>
+              </div>
+            }
+            placement="bottom-start"
+          >
+            <button onClick={toggleTooltip} type="button" className={styles.icon_btn}>
+              <Icon name="other" color="premium" size="xs" />
+            </button>
+          </Popover>
+
+          {withHistory ? (
+            <>
+              <button
+                style={{ position: 'relative', right: '3px' }}
+                type="button"
+                className={styles.icon_btn}
+              >
+                <Icon name="back" color="premium" size="xs" />
+              </button>
+              <button type="button" className={classNames(styles.icon_btn, styles.icon_rotate)}>
+                <Icon name="back" color="premium" size="xs" />
+              </button>
+            </>
+          ) : null}
+        </div>
+        <button onClick={ontoggle} type="button" className={styles.btn}>
+          Закрыть
+        </button>
       </div>
-      <button onClick={ontoggle} type="button" className={styles.btn}>
-        Закрыть
-      </button>
-    </div>
+    </>
   );
 };

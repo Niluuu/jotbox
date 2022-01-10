@@ -1,165 +1,245 @@
-import { FC, useState } from 'react';
+import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
+import { DataStore } from '@aws-amplify/datastore';
+import { API } from 'aws-amplify';
+import { Node } from '../../models';
+import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
-import CartLayout from '../../component/cart-layout/CartLayout';
-import Modal from '../../component/modal/Modal';
-import { Icon } from '../../component/Icon/Icon';
+import CartLayout from '../../atoms/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
+import { RootState } from '../../app/store';
+import AddLinkModal from '../../atoms/modals/AddLinkModal';
+import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
+import CartModal from '../../atoms/modals/CartModal';
+import { setText } from '../../reducers/editor';
+import { initialStateStr } from '../../utils/editor/initialState';
 
 interface CartProps {
-  id: any;
+  id: string;
   title: string;
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: any[];
+  gaps: string[];
+  _version: number;
+  color: string;
 }
 
-export interface HomePageProps {
-  gridType: boolean;
-  focused: boolean;
-  onHyperLinkEditMode: () => void;
-  onDefaultPin: () => void;
-  onSetCart: () => void;
-  onCloseModal: () => void;
-  onSetHyperLink: () => void;
-  onSetArchive: () => void;
-  textRef?: any;
-  titleRef?: any;
-  defaultPin: boolean;
-  hyperLinkEditMode: boolean;
-  hyper: any;
-  setFocused: (e: any) => void;
-  carts: CartProps[];
-  cartTitleRef?: any;
-  cartTextRef?: any;
-  cartHyper?: any;
-  onRemoveCart?: (id: any) => void;
-  onChangePin?: (id: any, title: string, description: any) => void;
-  onReSetCart?: (id: any, title: string, description: any) => void;
-  onChangeArchived?: (id: any, title: string, description: any) => void;
-  onSetIsMain?: (bool: boolean) => void;
-  setHyperText: (e: any) => void;
-  setHyperLink: (e: any) => void;
-  hyperText: any;
-  hyperLink: any;
-  toggleSider?: () => void;
-  changeGrid?: () => void;
-  isSidebarOpen?: boolean;
-  filterByLetter: (value: string) => void;
-  filterLetter: any;
-  filteredGaps: any[];
+interface HomeProps {
+  archive: boolean;
 }
 
-const HomePage: FC<HomePageProps> = ({
-  gridType,
-  setHyperLink,
-  setHyperText,
-  hyperText,
-  hyperLink,
-  onCloseModal,
-  onSetHyperLink,
-  filteredGaps,
-  setFocused,
-  carts,
-  cartHyper,
-  onChangeArchived,
-  onChangePin,
-  onReSetCart,
-  onRemoveCart,
-  textRef,
-  hyperLinkEditMode,
-  titleRef,
-  defaultPin,
-  hyper,
-  focused,
-  onHyperLinkEditMode,
-  onSetArchive,
-  onSetCart,
-  onDefaultPin,
-  onSetIsMain,
-  toggleSider,
-  changeGrid,
-  isSidebarOpen,
-  filterByLetter,
-  filterLetter
-}) => {
-  const [textFocus, setTextFocus] = useState(false);
-  const [linkFocus, setLinkFocus] = useState(false);
+const HomePage: FC<HomeProps> = ({ archive }) => {
+  const userEmail = localStorage.getItem('userEmail');
+  const { label } = useParams();
+  const collabarator = { eq: userEmail };
+  const [nodes, setNodes] = useState<CartProps[]>([]);
+  const [focused, setFocused] = useState(false);
+  const [defaultPin, setDefaultPin] = useState(false);
+  const [defaultColor, setDefaultColor] = useState('default');
+  const [defaultArchive, setDefaultArchive] = useState(false);
+  const titleRef = useRef<HTMLDivElement>();
+  const [filter, setFilter] = useState({ collabarator });
+  const [selectedGaps, setSelectedGaps] = useState([]);
+
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      grid: state.layoutGrid.grid,
+      text: state.editorReducer.text,
+    };
+  });
+
+  const { grid, text } = mapStateToProps;
+  const dispatch = useDispatch();
+
+  const toggleGaps = useCallback(
+    (gap) => {
+      setSelectedGaps((pre) =>
+        !pre.includes(gap) ? [...selectedGaps, gap] : selectedGaps.filter((elm) => elm !== gap),
+      );
+    },
+    [selectedGaps],
+  );
+
+  const cleanUp = useCallback(() => {
+    titleRef.current.innerHTML = '';
+    setDefaultPin(false);
+    dispatch(setText(initialStateStr));
+    setSelectedGaps(label !== undefined ? [] : [label]);
+  }, [dispatch, label]);
+
+  const onDefaultPin = useCallback(() => {
+    setDefaultPin((pre) => !pre);
+  }, []);
+
+  const onDefaultArchived = useCallback(() => {
+    setDefaultArchive((pre) => !pre);
+  }, []);
+
+  const onDefaultColor = useCallback((optionalColor) => {
+    setDefaultColor(optionalColor);
+  }, []);
+
+  const getAllNodes = useCallback(async () => {
+    try {
+      const data = await API.graphql({ query: listNodes, variables: { filter } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const { items } = data.data.listNodes;
+      setNodes(items);
+    } catch (err) {
+      throw new Error('Get Nodes Error');
+    }
+  }, [filter]);
+
+  const onColorChange = useCallback(
+    async (id, color, _version) => {
+      try {
+        const updatedNode = {
+          id,
+          color,
+          _version,
+        };
+
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Color update error');
+      }
+    },
+    [getAllNodes],
+  );
+
+  const onRemoveCart = useCallback(
+    async (id, _version) => {
+      try {
+        await API.graphql({
+          query: deleteNode,
+          variables: { input: { id, _version } },
+        });
+
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Remove node error');
+      }
+    },
+    [getAllNodes],
+  );
+
+  const onChangePin = useCallback(
+    async (id, pined, _version) => {
+      try {
+        const updatedNode = {
+          id,
+          pined,
+          _version,
+        };
+
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [getAllNodes],
+  );
+
+  const onSetNodes = useCallback(async () => {
+    try {
+      const node = {
+        title: titleRef.current.innerText,
+        description: text,
+        gaps: selectedGaps,
+        pined: defaultPin,
+        color: defaultColor,
+        archived: defaultArchive,
+        collabarator: userEmail,
+      };
+
+      await API.graphql({ query: createNode, variables: { input: node } });
+      getAllNodes();
+      cleanUp();
+    } catch (err) {
+      throw new Error('Create node error');
+    }
+  }, [
+    cleanUp,
+    defaultPin,
+    text,
+    userEmail,
+    selectedGaps,
+    defaultColor,
+    defaultArchive,
+    getAllNodes,
+  ]);
+
+  const onSetArchive = useCallback(async () => {
+    try {
+      await DataStore.save(
+        new Node({
+          pined: defaultPin,
+          archived: true,
+        }),
+      );
+
+      getAllNodes();
+    } catch (err) {
+      throw new Error('Set archive error');
+    }
+  }, [defaultPin, getAllNodes]);
+
+  useEffect(() => {
+    getAllNodes();
+  }, [getAllNodes]);
+
+  useEffect(() => {
+    const gaps = { contains: label };
+    const newFiler = label !== undefined ? { collabarator, gaps } : { collabarator };
+    setFilter(newFiler);
+    setSelectedGaps(label !== undefined ? [label] : []);
+  }, [label]);
 
   return (
-    <Layout
-      gridType={gridType}
-      toggleSider={toggleSider}
-      isSidebarOpen={isSidebarOpen}
-      changeGrid={changeGrid}
-      filterByLetter={filterByLetter}
-      filterLetter={filterLetter}
-      filteredGaps={filteredGaps}
-    >
-      <div className={classNames(styles.home_page, gridType && styles.column)}>
-        <div className={styles.home_page__main_input}>
-          <MainInput
-            focused={focused}
-            setFocused={setFocused}
-            onHyperLinkEditMode={onHyperLinkEditMode}
-            onSetArchive={onSetArchive}
-            onSetCart={onSetCart}
-            titleRef={titleRef}
-            textRef={textRef}
-            gridType={gridType}
-            defaultPin={defaultPin}
-            onDefaultPin={onDefaultPin}
-            onSetIsMain={onSetIsMain}
-            hyper={hyper}
-          />
-        </div>
+    <Layout>
+      <div className={classNames(styles.home_page, grid && styles.column)}>
+        {!archive && (
+          <div className={styles.home_page__main_input}>
+            <MainInput
+              focused={focused}
+              setFocused={setFocused}
+              onSetArchive={onSetArchive}
+              onSetNodes={onSetNodes}
+              defaultPin={defaultPin}
+              onDefaultPin={onDefaultPin}
+              titleRef={titleRef}
+              defaultColor={defaultColor}
+              onDefaultColor={onDefaultColor}
+              selectedGaps={selectedGaps}
+              toggleGaps={toggleGaps}
+            />
+          </div>
+        )}
         <CartLayout
           onChangePin={onChangePin}
-          onReSetCart={onReSetCart}
-          onChangeArchived={onChangeArchived}
+          onChangeArchived={(e) => e}
           onRemoveCart={onRemoveCart}
-          carts={carts}
-          cartHyper={cartHyper}
-          onHyperLinkEditMode={onHyperLinkEditMode}
-          onSetIsMain={onSetIsMain}
-          gridType={gridType}
+          gridType={grid}
+          carts={nodes}
+          onColorChange={onColorChange}
         />
-        <Modal
-          title="Добавить линк"
-          isTop={!!true}
-          isOpen={hyperLinkEditMode}
-          toggleModal={onCloseModal}
-        >
-          <div className={styles.gaps}>
-            <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
-            <input
-              type="text"
-              value={hyperText}
-              onChange={(e) => setHyperText(e.currentTarget.value)}
-              placeholder="Введите текст..."
-              onFocus={() => setTextFocus(true)}
-              onBlur={() => setTextFocus(false)}
-            />
-            {textFocus && <Icon name="done" color="premium" size="xs" />}
-          </div>
-          <div className={styles.gaps}>
-            <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
-            <input
-              type="text"
-              value={hyperLink}
-              onChange={(e) => setHyperLink(e.currentTarget.value)}
-              placeholder="Введите линк..."
-              onFocus={() => setLinkFocus(true)}
-              onBlur={() => setLinkFocus(false)}
-            />
-            {linkFocus && <Icon name="done" color="premium" size="xs" />}
-          </div>
-          <div className={styles.bottom_btn} onClick={onSetHyperLink}>
-            <button type="button">Done</button>
-          </div>
-        </Modal>
+        <AddLinkModal />
+        <CartModal />
       </div>
     </Layout>
   );

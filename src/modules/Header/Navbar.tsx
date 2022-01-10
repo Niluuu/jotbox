@@ -1,32 +1,35 @@
-import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../app/store';
 import styles from './Navbar.module.scss';
 import Popover from '../../component/popover/Popover';
 import { Icon } from '../../component/Icon/Icon';
 import { Avatar } from '../../component/avatar/Avatar';
-import { googleLinks1, googleLinks2 } from '../../utils/google-links';
-
-export interface NavbarProps {
-  isLoggedIn: boolean;
-  gridType: boolean;
-  changeGrid: () => void;
-}
+import { toggleGrid } from '../../reducers/layout';
 
 /**
  * Main Header component for user interaction
  */
 
-export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) => {
+export const Navbar: FC = () => {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
-  
+  const dispatch = useDispatch();
 
   async function signOut() {
     try {
       await Auth.signOut();
+
+      localStorage.removeItem('assessToken');
+      localStorage.removeItem('userEmail');
+      history.push('/sginin');
+      // onErrorMessage('You sgin out succesfully', 'success');
     } catch (error) {
-      console.log('error signing out: ', error);
+      // onErrorMessage('Error sgin out', 'error');
     }
   }
 
@@ -36,7 +39,7 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
         setUpdated(val);
       }, 2000);
 
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       resolve(true);
       setLoading(true);
       completeUpdate(true);
@@ -50,6 +53,14 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
     });
   }, [loading]);
 
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      layoutReducer: state.layoutGrid,
+      text: state.editorReducer.text
+    };
+  });
+
+  const { grid } = mapStateToProps.layoutReducer;
   return (
     <nav className={styles.navbar}>
       <button type="button" onClick={loadChanges}>
@@ -58,8 +69,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
           className={loading && !updated ? styles.loading : undefined}
         />
       </button>
-      <button type="button" onClick={changeGrid}>
-        <Icon name={gridType ? 'grid' : 'grid4'} />
+      <button type="button" onClick={() => dispatch(toggleGrid())}>
+        <Icon name={grid ? 'grid' : 'grid4'} />
       </button>
 
       <Popover
@@ -93,70 +104,6 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
 
       <Popover
         content={
-          <div className={classNames(styles.navbar_popover, 'scroll-bar')}>
-            <ul className={styles.navbar_popover_ul}>
-              {googleLinks1.map(({ name, position, url }, i) => {
-                return (
-                  <li className={styles.navbar_popover_link}>
-                    {i === 0 ? (
-                      <a href={url} className={styles.link_avatar}>
-                        <Avatar hover />
-                        <p>{name}</p>
-                      </a>
-                    ) : (
-                      <a href={url}>
-                        <div
-                          style={{
-                            backgroundImage:
-                              'url(https://ssl.gstatic.com/gb/images/p1_c9bc74a1.png)',
-                            backgroundPosition: position,
-                          }}
-                        >
-                          <p>{name}</p>
-                        </div>
-                      </a>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-            <ul
-              className={styles.navbar_popover_ul}
-              style={{ borderTop: '1px solid #f1f3f4', paddingTop: '40px' }}
-            >
-              {googleLinks2.map(({ name, position, url }, i) => {
-                return (
-                  <li className={styles.navbar_popover_link}>
-                    <a href={url}>
-                      <div
-                        style={{
-                          backgroundImage: 'url(https://ssl.gstatic.com/gb/images/p1_c9bc74a1.png)',
-                          backgroundPosition: position,
-                        }}
-                      >
-                        <p>{name}</p>
-                      </div>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-            <div className={styles.navbar_popover__more_link}>
-              <a href="https://www.google.co.uz/intl/ru/about/products">
-                Другие приложения и продукты от Google
-              </a>
-            </div>
-          </div>
-        }
-        placement="bottom-start"
-      >
-        <button type="button" className={styles.options}>
-          <Icon name="grid3" />
-        </button>
-      </Popover>
-
-      <Popover
-        content={
           <div className={classNames(styles.navbar_popover__profile, 'scroll-bar')}>
             <div className={styles.profile__info}>
               <div className={styles.profile__info_pictures}>
@@ -165,8 +112,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
                   <Icon name="picture" />
                 </span>
               </div>
-              <h1>{localStorage.getItem("userEmail")}</h1>
-              <p>{localStorage.getItem("userEmail")}</p>
+              <h1>{localStorage.getItem('userEmail')}</h1>
+              <p>{localStorage.getItem('userEmail')}</p>
               <a href="https://myaccount.google.com/?utm_source=OGB&utm_medium=act">
                 Управление аккаунтом Google
               </a>
@@ -179,7 +126,7 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
               <a onClick={signOut} href="#">
-                Sign out of all Accounts
+                Sign out
               </a>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>
@@ -189,7 +136,8 @@ export const Navbar: FC<NavbarProps> = ({ isLoggedIn, changeGrid, gridType }) =>
             </div>
           </div>
         }
-        placement="bottom-start">
+        placement="bottom-start"
+      >
         <Avatar hover />
       </Popover>
     </nav>

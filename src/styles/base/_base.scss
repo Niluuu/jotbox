@@ -178,9 +178,9 @@ textarea {
 
 .errorMessage {
   position: fixed;
-  top: -10%;
+  top: -40%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translatex(-50%);
   border: 1px solid rgb(100, 100, 100);
   border-radius: 5px;
   box-shadow: 0 0 15px rgb(100, 100, 100);
@@ -196,7 +196,7 @@ textarea {
 
   div {
     svg {
-        transform: translateY(35%);
+      transform: translateY(35%);
     }
   }
   
@@ -204,4 +204,8 @@ textarea {
     top: 1%;
     transition: all .3s ease;
   }
+}
+
+.DraftEditor-editorContainer {
+  z-index: inherit;
 }

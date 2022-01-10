@@ -1,26 +1,28 @@
-import { FC, useState, useRef, useEffect, useCallback, createRef } from 'react';
-import { Link as UrlLink } from 'react-router-dom';
+import { FC, useCallback, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
+import Editor from '@draft-js-plugins/editor';
+import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
 import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
+import MainEditor from '../../modules/Editor/MainEditor';
+import { Chip } from '../chip/Chip';
 
 interface MainInputProps {
-  gridType: boolean;
-  onHyperLinkEditMode?: () => void;
-  hyper: any;
-  hyperLinkEditMode?: boolean;
-  textRef?: any;
-  titleRef?: any;
   focused: boolean;
   defaultPin: boolean;
   onDefaultPin: () => void;
-  onSetCart: () => void;
+  onSetNodes: () => void;
   onSetArchive: () => void;
   setFocused: (e: any) => void;
   outsideRef?: any;
-  onSetIsMain?: (e: boolean) => void;
+  titleRef: any;
+  onDefaultColor?: (optionalColor: string) => void;
+  defaultColor?: string;
+  selectedGaps?: string[];
+  toggleGaps: (gap: string) => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -29,22 +31,28 @@ const MainInput: FC<MainInputProps> = ({
   onDefaultPin,
   setFocused,
   focused,
+  onSetNodes,
   titleRef,
-  onHyperLinkEditMode,
-  gridType,
-  onSetCart,
-  hyperLinkEditMode,
-  hyper,
-  textRef,
-  onSetIsMain,
+  defaultColor,
+  onDefaultColor,
+  selectedGaps,
+  toggleGaps,
 }) => {
   const outsideRef = useRef(null);
-  const [edit, setEdit] = useState(true);
-
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
-
   useOnClickOutside(outsideRef, handleClickOutside);
+
+  const editorRef = useRef<Editor>(null);
+
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      layoutReducer: state.layoutGrid,
+      text: state.editorReducer.text,
+    };
+  });
+
+  const { grid } = mapStateToProps.layoutReducer;
 
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
@@ -52,9 +60,20 @@ const MainInput: FC<MainInputProps> = ({
     }
   }, []);
 
+  const [linkMode, setlinkMode] = useState(false);
+  const onLinkMode = () => {
+    setlinkMode((prev) => !prev);
+  };
+
+  const onKeyPressed = (e) => {
+    if (e.keyCode === 13) {
+      editorRef.current!.focus();
+    }
+  };
+
   return (
     <div
-      className={classNames(styles.main_input, gridType && styles.column)}
+      className={classNames(styles.main_input, grid && styles.column, defaultColor)}
       tabIndex={-1}
       onFocus={handleClickInside}
       onBlur={(e) => onFocusOut(e)}
@@ -71,30 +90,26 @@ const MainInput: FC<MainInputProps> = ({
           aria-multiline
           role="textbox"
           spellCheck
+          onKeyDown={(e) => onKeyPressed(e)}
         />
-        <div className={styles.main_tools}>
-          <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
-            { !defaultPin 
-              ? <Icon name="pin" color="premium" size="xs" />
-              : <Icon name="pin-black" color="premium" size="xs" /> }
-          </button>
-        </div>
+
+        <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
+          {!defaultPin ? (
+            <Icon name="pin" color="premium" size="xs" />
+          ) : (
+            <Icon name="pin-black" color="premium" size="xs" />
+          )}
+        </button>
       </div>
+
       <div className={styles.main_row}>
-        <div
-          id="text"
-          ref={textRef}
-          className={styles.textarea}
-          role={styles.textbox}
-          contentEditable={edit}
-          suppressContentEditableWarning
-        >
-          {hyper?.map((hyp) => (
-              <a onClick={() => setEdit(false)} href={hyp.link} style={{ color: 'blue' }}>
-                {hyp.text}
-              </a>
-          ))}
-        </div>
+        <MainEditor
+          isMainInput={!!true}
+          defaultColor={defaultColor}
+          linkMode={linkMode}
+          onLinkMode={onLinkMode}
+          editorRef={editorRef}
+        />
       </div>
       {!focused ? (
         <div className={classNames(styles.main_tools, styles.bottom_tools)}>
@@ -109,43 +124,55 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
       ) : null}
-      { focused ? (
+
+      {focused && selectedGaps && (
+        <div className={classNames(styles.main_tools, styles.gaps)}>
+          {selectedGaps.map((gap) => (
+            <Chip onDelate={(e) => e}>{gap} </Chip>
+          ))}
+        </div>
+      )}
+
+      {focused ? (
         <InputNavbar
           focused={focused}
-          onHyperLinkEditMode={onHyperLinkEditMode}
           isMainInput={!!true}
           onSetArchive={onSetArchive}
-          ontoggle={() => onSetCart()}
-          onSetIsMain={onSetIsMain}
+          ontoggle={() => onSetNodes()}
+          onLinkMode={onLinkMode}
+          onDefaultColor={onDefaultColor}
+          defaultColor={defaultColor}
           withHistory
+          toggleGaps={toggleGaps}
+          selectedGaps={selectedGaps}
         />
       ) : null}
     </div>
   );
 };
 
-interface LinkProps {
-  path: string;
-  show?: boolean;
-  setShow: (boolean) => void;
-}
+// interface LinkProps {
+//   path: string;
+//   show?: boolean;
+//   setShow: (boolean) => void;
+// }
 
-const Link: FC<LinkProps> = ({ show, path, setShow }) => {
-  const handleClick = useCallback(
-    (e) => {
-      setShow(false);
-    },
-    [show],
-  );
+// const Link: FC<LinkProps> = ({ show, path, setShow }) => {
+//   const handleClick = useCallback(
+//     (e) => {
+//       setShow(false);
+//     },
+//     [show],
+//   );
 
-  return (
-    <div className={classNames(styles.toltip, show && styles.show)}>
-      <a href={path} onClick={() => handleClick(path)}>
-        <Icon name="link" />
-        Открыть ссылку
-      </a>
-    </div>
-  );
-};
+//   return (
+//     <div className={classNames(styles.toltip, show && styles.show)}>
+//       <a href={path} onClick={() => handleClick(path)}>
+//         <Icon name="link" />
+//         Открыть ссылку
+//       </a>
+//     </div>
+//   );
+// };
 
 export default MainInput;

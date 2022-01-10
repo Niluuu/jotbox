@@ -2,6 +2,7 @@ import { FC } from 'react';
 
 import classNames from 'classnames';
 import styles from './Modal.module.scss';
+import '../cart/Color.scss';
 import { Icon } from '../Icon/Icon';
 
 export interface ModalProps {
@@ -14,16 +15,13 @@ export interface ModalProps {
    */
   toggleModal?: () => void;
   /**
-   * Labels
-   */
-  labels?: any;
-  /**
    * Title of modal
    */
   title?: string;
   isLarge?: boolean;
   isTop?: boolean;
   removeIcon?: boolean;
+  color?: string;
 }
 
 // TODO: implement pure function with testable storybook
@@ -34,16 +32,18 @@ const Modal: FC<ModalProps> = ({
   isOpen,
   isLarge,
   isTop,
-  labels,
   children,
   title,
+  color,
 }) => {
   return (
     <>
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
-      <div
-        className={classNames(styles['popup-container'], {[styles.isOpen]: isOpen})}>
-        <div className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large)} id="popup-login">
+      <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
+        <div
+          className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large, color)}
+          id="popup-login"
+        >
           <div className={styles.popup__title}>
             {title}
             {!removeIcon && (

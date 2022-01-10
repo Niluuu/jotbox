@@ -66,7 +66,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = res.data.listGapss;
-
       setListGaps(items);
     } catch (err) {
       throw new Error('Get gaps route');
@@ -79,7 +78,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
 
   const toggleSelectedGap = useCallback((e) => {
     toggleGaps(e.target.value);
-  }, []); 
+  }, []);
 
   return (
     <>
@@ -123,9 +122,14 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             content={
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
-                  {listGaps.length > 0 &&
-                    listGaps.map((gap) => (
-                      <li key={gap.id}>
+                  <div className={styles.labelWrapper}>
+                    <h5> Добавить Ярлык </h5>
+                    <div className={styles.labelSearch}>
+                      <input type="text" placeholder="Введите Названия Ярлыка..." />
+                      <Icon size="min" name="search" />
+                    </div>
+                    {listGaps.map((gap) => (
+                      <li key={gap.id} className={styles.labelGap}>
                         <label>
                           <input
                             type="checkbox"
@@ -133,10 +137,16 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                             onClick={(e) => toggleSelectedGap(e)}
                             checked={selectedGaps.includes(gap.title)}
                           />
-                          {gap.title}
+                          {selectedGaps.includes(gap.title) ? (
+                            <Icon name="edit-bordered" color="premium" size="xs" />
+                          ) : (
+                            <Icon name="box" color="premium" size="xs" />
+                          )}
+                          <span> {gap.title} </span>
                         </label>
                       </li>
                     ))}
+                  </div>
                 </ul>
               </div>
             }

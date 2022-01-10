@@ -28,7 +28,11 @@ interface CartProps {
   color: string;
 }
 
-const HomePage: FC = () => {
+interface HomeProps {
+  archive: boolean;
+}
+
+const HomePage: FC<HomeProps> = ({ archive }) => {
   const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
   const collabarator = { eq: userEmail };
@@ -115,7 +119,7 @@ const HomePage: FC = () => {
           query: deleteNode,
           variables: { input: { id, _version } },
         });
-
+        
         getAllNodes();
       } catch (err) {
         throw new Error('Remove node error');
@@ -155,6 +159,7 @@ const HomePage: FC = () => {
         pined: defaultPin,
         archived: false,
         trashed: false,
+        color: defaultColor,
         collabarator: userEmail,
       };
 
@@ -164,7 +169,7 @@ const HomePage: FC = () => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, getAllNodes]);
+  }, [cleanUp, defaultPin, text, defaultColor, userEmail, selectedGaps, getAllNodes]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -194,30 +199,36 @@ const HomePage: FC = () => {
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
 
+  const nodesToProps = archive
+    ? nodes.filter((cart) => cart.archived)
+    : nodes.filter((cart) => !cart.archived);
+
   return (
     <Layout>
       <div className={classNames(styles.home_page, grid && styles.column)}>
-        <div className={styles.home_page__main_input}>
-          <MainInput
-            focused={focused}
-            setFocused={setFocused}
-            onSetArchive={onSetArchive}
-            onSetNodes={onSetNodes}
-            defaultPin={defaultPin}
-            onDefaultPin={onDefaultPin}
-            titleRef={titleRef}
-            defaultColor={defaultColor}
-            onDefaultColor={onDefaultColor}
-            selectedGaps={selectedGaps}
-            toggleGaps={toggleGaps}
-          />
-        </div>
+        {!archive && (
+          <div className={styles.home_page__main_input}>
+            <MainInput
+              focused={focused}
+              setFocused={setFocused}
+              onSetArchive={onSetArchive}
+              onSetNodes={onSetNodes}
+              defaultPin={defaultPin}
+              onDefaultPin={onDefaultPin}
+              titleRef={titleRef}
+              defaultColor={defaultColor}
+              onDefaultColor={onDefaultColor}
+              selectedGaps={selectedGaps}
+              toggleGaps={toggleGaps}
+            />
+          </div>
+        )}
         <CartLayout
           onChangePin={onChangePin}
           onChangeArchived={(e) => e}
           onRemoveCart={onRemoveCart}
           gridType={grid}
-          carts={nodes}
+          carts={nodesToProps}
           onColorChange={onColorChange}
         />
         <AddLinkModal />

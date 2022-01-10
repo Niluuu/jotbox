@@ -41,18 +41,17 @@ const CartLayout: FC<CartLayoutProps> = ({
   filteredGaps,
   onColorChange,
 }) => {
-  const notifications = carts !== undefined && carts.filter((cart) => !cart.archived);
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      {carts !== undefined && notifications.some((cart) => cart.pined) && (
+      {carts !== undefined && carts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {notifications &&
+        {carts &&
           carts !== undefined &&
-          notifications
+          carts
             .filter((cart) => cart.pined)
             .map((cart) => (
               <Cart
@@ -77,15 +76,15 @@ const CartLayout: FC<CartLayoutProps> = ({
               />
             ))}
       </div>
-      {carts !== undefined && notifications.some((cart) => !cart.pined) && (
+      {carts !== undefined && carts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>
       )}
       <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {notifications &&
+        {carts &&
           carts !== undefined &&
-          notifications
+          carts
             .filter((cart) => !cart.pined)
             .map((cart) => (
               <Cart

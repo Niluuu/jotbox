@@ -15,7 +15,7 @@ export const Chip: React.FC<ChipProps> = ({ delateIcon, onDelate, children }) =>
   return (
     <div className={styles.chip}>
       <span>{children}</span>
-      {delateIcon ? <Icon name="exit" size="xs" /> : null}
+      <Icon name="exit" size="xs" />
     </div>
   );
 };

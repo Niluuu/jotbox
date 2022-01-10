@@ -41,7 +41,7 @@
     "generate-icons": "svg-spreact ./src/assets/images/svg-icons  > ./src/assets/images/sprites.svg",
     "start": "react-scripts start",
     "dev": "run-p start codegen:watch",
-    "build": "npm run codegen && react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint:ts": "eslint --ext .ts --ext .tsx src",

@@ -178,43 +178,6 @@
   }
 }
 
-.labels {
-  width: 350px;
-
-  input[type='text'] {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #d0d2d3;
-  }
-  
-  button {
-    padding: 0 15px 0 0;
-    &.confirm {
-      background: #3e4bc2;
-      border-radius: 0;
-      color: #fff;
-      background: #3e4bc2;
-      height: 30px;
-      margin-top: 3px;
-      width: 100%;
-      
-      &:hover {
-        background: #707efb !important;
-      }
-    }
-  }
-
-  &__input {
-    display: flex;
-    align-items: center;
-    margin: 3px 0;
-
-    input {
-      margin-right: 5px;
-    }
-  }
-}
-
 .gaps {
   width: 100%;
   position: relative;
@@ -224,9 +187,10 @@
   .main {
     &_input {
       width: 450px;
-      max-width: 450px
+      max-width: 450px;
     }
   }
+
   .main_tools {
     .icon_btn {
       width: 40px;
@@ -240,9 +204,10 @@
   .main {
     &_input {
       width: 350px;
-      max-width: 350px
+      max-width: 350px;
     }
   }
+
   .main_tools {
     .icon_btn {
       width: 38px;
@@ -256,9 +221,10 @@
   .main {
     &_input {
       width: 275px;
-      max-width: 275px
+      max-width: 275px;
     }
   }
+
   .main_tools {
     .icon_btn {
       width: 35px;
@@ -285,9 +251,52 @@
     justify-content: center;
     align-items: center;
     
-    &.active {
-      border: 2px solid rgb(100, 75, 130);
-      box-shadow: 0 0 2px rgb(100, 75, 130); 
+  }
+
+  .active {
+    border: 2px solid rgb(100, 75, 130);
+    box-shadow: 0 0 2px rgb(100, 75, 130); 
+  }
+}
+
+.labelWrapper {
+  width: 250px;
+  padding: 10px 12px;
+
+  h5 {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Roboto';
+  }
+}
+
+.labelSearch {
+  display: grid;
+  grid-template-columns: 11fr 1fr;
+  width: 100%;
+  padding: 7px 0 8px;
+
+  input {
+    margin-right: 5px;
+    border-color: transparent;
+    padding-left: 0;
+  }
+}
+
+.labelGap {
+  padding: 0 !important;
+
+  label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    input {
+      width: 0 !important;
+    }
+
+    span {
+      padding-left: 7.5px;
     }
   }
 }

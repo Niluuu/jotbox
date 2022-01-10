@@ -5,13 +5,12 @@ import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
 import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import ConfirmPage from '../SignUpPage/Confirm';
-import ArchievePage from '../ArchievePage/ArchievePage';
 
 const App: FC = () => {
   return (
     <Switch>
       <ProtectedRoute exact path="/" component={HomePage} />
-      <ProtectedRoute exact path="/archive" component={ArchievePage} />
+      <ProtectedRoute exact path="/archives" component={() => <HomePage archive={!false} />} />
       <ProtectedRoute path="/gaps/:label" component={HomePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />

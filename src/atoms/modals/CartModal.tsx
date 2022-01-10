@@ -96,7 +96,7 @@ const CartModal: FC = () => {
   }, [nodeID, titleRef, updatedPined, updatedText]);
 
   return (
-    <Modal isLarge={!!true} isOpen={updateModalIsOpen}>
+    <Modal color={updatedColor} isLarge={!!true} isOpen={updateModalIsOpen}>
       <>
         {node[0] !== undefined && (
           <div tabIndex={-1}>
@@ -130,6 +130,7 @@ const CartModal: FC = () => {
                 onLinkMode={onLinkMode}
                 editorRef={editorRef}
                 initialState={node[0].description}
+                color={updatedColor}
               />
             </div>
             <InputNavbar

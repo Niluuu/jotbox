@@ -1,6 +1,6 @@
-import { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { FC } from 'react';
 import styles from './Avatar.module.scss';
-import avatar from '../../assets/images/avatar.jpg';
+import avatar from '../../assets/images/avatar.png';
 
 export interface AvatarProps {
   hover?: boolean;

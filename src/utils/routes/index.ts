@@ -24,8 +24,7 @@ export const routes = (labels: any[]) => {
       modal: null,
       gaps: getLabels(labels),
     },
-    // TODO: ArchivePage
-    // { name: 'Архив', gaps: null, icon: 'archive', active: false, url: '/archive', modal: false },
+    { name: 'Архив', gaps: null, icon: 'archive', active: false, url: '/archive', modal: false },
   ];
 
   return result;

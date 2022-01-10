@@ -28,7 +28,11 @@ interface CartProps {
   color: string;
 }
 
-const HomePage: FC = () => {
+interface HomeProps {
+  archive: boolean;
+}
+
+const HomePage: FC<HomeProps> = ({ archive }) => {
   const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
   const collabarator = { eq: userEmail };
@@ -209,21 +213,23 @@ const HomePage: FC = () => {
   return (
     <Layout>
       <div className={classNames(styles.home_page, grid && styles.column)}>
-        <div className={styles.home_page__main_input}>
-          <MainInput
-            focused={focused}
-            setFocused={setFocused}
-            onSetArchive={onSetArchive}
-            onSetNodes={onSetNodes}
-            defaultPin={defaultPin}
-            onDefaultPin={onDefaultPin}
-            titleRef={titleRef}
-            defaultColor={defaultColor}
-            onDefaultColor={onDefaultColor}
-            selectedGaps={selectedGaps}
-            toggleGaps={toggleGaps}
-          />
-        </div>
+        {!archive && (
+          <div className={styles.home_page__main_input}>
+            <MainInput
+              focused={focused}
+              setFocused={setFocused}
+              onSetArchive={onSetArchive}
+              onSetNodes={onSetNodes}
+              defaultPin={defaultPin}
+              onDefaultPin={onDefaultPin}
+              titleRef={titleRef}
+              defaultColor={defaultColor}
+              onDefaultColor={onDefaultColor}
+              selectedGaps={selectedGaps}
+              toggleGaps={toggleGaps}
+            />
+          </div>
+        )}
         <CartLayout
           onChangePin={onChangePin}
           onChangeArchived={(e) => e}

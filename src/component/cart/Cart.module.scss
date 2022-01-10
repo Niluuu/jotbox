@@ -289,3 +289,13 @@
     box-shadow: none;
   }
 }
+
+.extraGap {
+  background: $gray-color2;
+  color: $primary-black;
+  margin-right: 8px;
+  padding: 1px 10px;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+}

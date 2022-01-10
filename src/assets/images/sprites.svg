@@ -17,6 +17,9 @@
     <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"></path>
     <path d="M9 8h2v9H9zm4 0h2v9h-2z"></path>
   </symbol>
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="box">
+    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
+  </symbol>
   <symbol viewBox="0 0 24 24" id="burger">
     <path fill="#5f6368" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
   </symbol>
@@ -179,6 +182,8 @@
   <use xlink:href="#back"></use>
 </svg><svg>
   <use xlink:href="#basket"></use>
+</svg><svg>
+  <use xlink:href="#box"></use>
 </svg><svg>
   <use xlink:href="#burger"></use>
 </svg><svg>

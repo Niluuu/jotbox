@@ -18,7 +18,6 @@ interface MainInputProps {
   onSetArchive: () => void;
   setFocused: (e: any) => void;
   outsideRef?: any;
-  onSetIsMain?: (e: boolean) => void;
   titleRef: any;
   onDefaultColor?: (optionalColor: string) => void;
   defaultColor?: string;
@@ -33,7 +32,6 @@ const MainInput: FC<MainInputProps> = ({
   setFocused,
   focused,
   onSetNodes,
-  onSetIsMain,
   titleRef,
   defaultColor,
   onDefaultColor,

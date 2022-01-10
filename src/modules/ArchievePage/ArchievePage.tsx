@@ -1,20 +1,11 @@
-import { FC, useState} from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
+import { API } from 'aws-amplify';
 import styles from '../HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import ArchiveCartLayout from './ArchiveCartLayout';
-
-interface CartProps {
-  id: string;
-  title: string;
-  description: any;
-  pined: boolean;
-  archived: boolean;
-  gaps: string[];
-  _version: number;
-  color: string;
-}
+import { listNodes } from '../../graphql/queries';
 
 export interface ArchievePageProps {
   gridType?: boolean;
@@ -22,7 +13,6 @@ export interface ArchievePageProps {
   setHyperText?: (e: string) => void;
   onCloseModal?: () => void;
   hyperLinkEditMode?: boolean;
-  carts?: CartProps[];
   onRemoveCart?: (id: string) => void;
   onChangeArchived?: (id: string, title: string, description: string) => void;
   onChangePin?: (id: string, pined: boolean) => void;
@@ -37,18 +27,34 @@ const ArchievePage: FC<ArchievePageProps> = ({
   hyperText,
   hyperLink,
   onCloseModal,
-  carts,
   onChangeArchived,
   onChangePin,
   onRemoveCart,
   hyperLinkEditMode,
 }) => {
+  const userEmail = localStorage.getItem('userEmail');
+  const collabarator = { eq: userEmail };
   const [textFocus, setTextFocus] = useState(false);
   const [linkFocus, setLinkFocus] = useState(false);
+  const [nodes, setNodes] = useState([]);
+  const [filter] = useState({ collabarator, archived: { eq: true } });
 
-  const onColorChange = () => {
-    console.log('ok')
-  }
+  const getAllNodes = useCallback(async () => {
+    try {
+      const data = await API.graphql({ query: listNodes, variables: { filter } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const { items } = data.data.listNodes;
+      setNodes(items);
+      console.log(`items`, items);
+    } catch (err) {
+      throw new Error('Get Nodes Error');
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    getAllNodes();
+  }, []);
 
   return (
     <div className={classNames(styles.home_page, gridType && styles.column)}>
@@ -87,9 +93,9 @@ const ArchievePage: FC<ArchievePageProps> = ({
         onChangeArchived={onChangeArchived}
         onChangePin={onChangePin}
         onRemoveCart={onRemoveCart}
-        carts={carts}
+        carts={nodes}
         gridType={gridType}
-        onColorChange={onColorChange}
+        onColorChange={(e) => e}
       />
     </div>
   );

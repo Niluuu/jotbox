@@ -18,7 +18,13 @@ interface CartLayoutProps {
   gridType: boolean;
   carts: CartProps[];
   onRemoveCart?: (id: string, _version: number) => void;
-  onChangeArchived?: (id: string, title: string, description: string) => void;
+  onChangeArchived?: (
+    id: string,
+    archived: boolean,
+    _version: number,
+    title: string,
+    description: string,
+  ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onHyperLinkEditMode?: () => void;
   onSetIsMain?: (bool: boolean) => void;
@@ -73,6 +79,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 filteredGaps={filteredGaps}
                 gridType={gridType}
                 onColorChange={onColorChange}
+                archived={cart.archived}
               />
             ))}
       </div>
@@ -106,6 +113,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 filteredGaps={filteredGaps}
                 gridType={gridType}
                 onColorChange={onColorChange}
+                archived={cart.archived}
               />
             ))}
       </div>

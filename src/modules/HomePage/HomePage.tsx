@@ -40,9 +40,10 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
-  const [defaultArchive, setDefaultArchive] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
-  const [filter, setFilter] = useState({ collabarator });
+  const archived = archive ? { eq: true } : { eq: false };
+  const archivedFilter = { collabarator, archived };
+  const [filter, setFilter] = useState(archivedFilter);
   const [selectedGaps, setSelectedGaps] = useState([]);
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -73,10 +74,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
-  }, []);
-
-  const onDefaultArchived = useCallback(() => {
-    setDefaultArchive((pre) => !pre);
   }, []);
 
   const onDefaultColor = useCallback((optionalColor) => {
@@ -139,7 +136,32 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         const updatedNode = {
           id,
           pined,
+          archived: false,
           _version,
+        };
+
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [getAllNodes],
+  );
+
+  const onChangeArchived = useCallback(
+    async (id, archiveAttr, _version, title, description) => {
+      try {
+        const updatedNode = {
+          id,
+          archived: archiveAttr,
+          _version,
+          title,
+          description
         };
 
         await API.graphql({
@@ -163,7 +185,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         gaps: selectedGaps,
         pined: defaultPin,
         color: defaultColor,
-        archived: defaultArchive,
+        archived: true,
         collabarator: userEmail,
       };
 
@@ -180,25 +202,38 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     userEmail,
     selectedGaps,
     defaultColor,
-    defaultArchive,
     getAllNodes,
     defaultColor
   ]);
 
   const onSetArchive = useCallback(async () => {
     try {
-      await DataStore.save(
-        new Node({
-          pined: defaultPin,
-          archived: true,
-        }),
-      );
+      const node = {
+        title: titleRef.current.innerText,
+        description: text,
+        gaps: selectedGaps,
+        pined: defaultPin,
+        color: defaultColor,
+        archived: true,
+        collabarator: userEmail,
+      };
 
+      await API.graphql({ query: createNode, variables: { input: node } });
       getAllNodes();
+      cleanUp();
     } catch (err) {
-      throw new Error('Set archive error');
+      throw new Error('Create node error');
     }
-  }, [defaultPin, getAllNodes]);
+  }, [
+    cleanUp,
+    defaultPin,
+    text,
+    userEmail,
+    selectedGaps,
+    defaultColor,
+    getAllNodes,
+    defaultColor
+  ]);
 
   useEffect(() => {
     getAllNodes();
@@ -206,7 +241,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     const gaps = { contains: label };
-    const newFiler = label !== undefined ? { collabarator, gaps } : { collabarator };
+    const newFiler = label !== undefined ? { collabarator, archived, gaps } : archivedFilter;
     setFilter(newFiler);
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
@@ -233,7 +268,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         )}
         <CartLayout
           onChangePin={onChangePin}
-          onChangeArchived={(e) => e}
+          onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
           gridType={grid}
           carts={nodes}

@@ -40,6 +40,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
+  const [defaultArchive, setDefaultArchive] = useState(false);
   const titleRef = useRef<HTMLDivElement>();
   const [filter, setFilter] = useState({ collabarator });
   const [selectedGaps, setSelectedGaps] = useState([]);
@@ -72,6 +73,10 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
+  }, []);
+
+  const onDefaultArchived = useCallback(() => {
+    setDefaultArchive((pre) => !pre);
   }, []);
 
   const onDefaultColor = useCallback((optionalColor) => {
@@ -137,7 +142,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           _version,
         };
 
-        const res = await API.graphql({
+        await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
@@ -157,9 +162,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         description: text,
         gaps: selectedGaps,
         pined: defaultPin,
-        archived: false,
-        trashed: false,
         color: defaultColor,
+        archived: defaultArchive,
         collabarator: userEmail,
       };
 
@@ -169,19 +173,27 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, defaultColor, userEmail, selectedGaps, getAllNodes]);
+  }, [
+    cleanUp,
+    defaultPin,
+    text,
+    userEmail,
+    selectedGaps,
+    defaultColor,
+    defaultArchive,
+    getAllNodes,
+    defaultColor
+  ]);
 
   const onSetArchive = useCallback(async () => {
     try {
-      setDefaultPin(false);
-      setDefaultColor('default');
-
       await DataStore.save(
         new Node({
           pined: defaultPin,
           archived: true,
         }),
       );
+
       getAllNodes();
     } catch (err) {
       throw new Error('Set archive error');

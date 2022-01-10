@@ -21,7 +21,6 @@ interface InputNavbarProps {
   onChangeArchived?: () => void;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
-  onSetLabel?: (oldGaps: string[]) => void;
   onColorChange?: (color: string) => void;
   currentColor?: string;
   defaultColor?: string;
@@ -40,7 +39,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     ontoggle,
     focused = true,
     onRemoveCart,
-    onSetLabel,
     onLinkMode,
     onColorChange,
     currentColor,

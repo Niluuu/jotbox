@@ -5,7 +5,6 @@ import styles from '../SignInPage/SignInPage.module.scss';
 
 const ConfirmPage: FC = () => {
   const history = useHistory();
-  const [errorMessage, setErrorMessage] = useState('');
   const [confirmCode, setConfirmCode] = useState('');
 
   const confirmSignUp = async (e) => {
@@ -17,9 +16,9 @@ const ConfirmPage: FC = () => {
         const data = await Auth.confirmSignUp(userEmail, confirmCode);
 
         localStorage.setItem('assessToken', data.signInUserSession.accessToken.jwtToken);
-        history.push('/');
+        history.push('/sginin');
       } catch (error) {
-        console.log('error sign Up:', error);
+        throw new Error(`confirm error: ${error}`);
       }
     }
   };

@@ -10,7 +10,7 @@ const App: FC = () => {
   return (
     <Switch>
       <ProtectedRoute exact path="/" component={HomePage} />
-      <ProtectedRoute exact path="/archives" component={() => <HomePage archive={!false} />} />
+      <ProtectedRoute exact path="/archive" component={() => <HomePage archive={!false} />} />
       <ProtectedRoute path="/gaps/:label" component={HomePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />

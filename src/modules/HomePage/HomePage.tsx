@@ -124,7 +124,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           query: deleteNode,
           variables: { input: { id, _version } },
         });
-        
+
         getAllNodes();
       } catch (err) {
         throw new Error('Remove node error');
@@ -182,7 +182,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     defaultColor,
     defaultArchive,
     getAllNodes,
-    defaultColor
   ]);
 
   const onSetArchive = useCallback(async () => {

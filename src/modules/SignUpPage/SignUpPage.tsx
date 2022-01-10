@@ -10,7 +10,7 @@ const SignUpPage: FC = () => {
   const [hasError, setHasError] = useState({
     active: false,
     success: false,
-    message: 'You Signed Up Successfully',
+    message: 'You signed up successfully',
   });
 
   const [userState, setUserState] = useState({
@@ -40,7 +40,7 @@ const SignUpPage: FC = () => {
 
         setTimeout(() => setHasError((prev) => ({ ...prev, active: false })), 5000);
 
-        console.log('error sign Up:', err);
+        throw new Error(`Error sign up: ${err}`);
       }
     }
   };

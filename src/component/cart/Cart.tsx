@@ -21,7 +21,13 @@ interface CartProps {
   onRemoveCart?: (id: string, _version: number) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onResetNodes?: (id: string, title: string, description: string) => void;
-  onChangeArchived?: (id: string, title: string, description: string) => void;
+  onChangeArchived?: (
+    id: string,
+    archived: boolean,
+    _version: number,
+    title: string,
+    description: string,
+  ) => void;
   onRestoreTrash?: (id: string) => void;
   onRemoveTrash?: (id: string) => void;
   onSetIsMain?: (bool: boolean) => void;
@@ -35,6 +41,7 @@ interface CartProps {
   popupCart?: boolean;
   color: string;
   onColorChange?: (id: string, color: string, _version: number) => void;
+  archived: boolean;
 }
 
 const Cart: FC<CartProps> = ({
@@ -59,6 +66,7 @@ const Cart: FC<CartProps> = ({
   popupCart,
   color,
   onColorChange,
+  archived
 }) => {
   const dispatch = useDispatch();
 
@@ -120,7 +128,7 @@ const Cart: FC<CartProps> = ({
             onRemoveCart={() => onRemoveCart(id, _version)}
             withHistory={!!true}
             isMainInput={!true}
-            onChangeArchived={() => onChangeArchived(id, title, description)}
+            onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
             onCartLabel={onCartLabel}
             cartLabel={cartLabel}
             onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}

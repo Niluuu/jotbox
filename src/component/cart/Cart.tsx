@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState, useRef } from 'react';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
@@ -57,6 +57,7 @@ const Cart: FC<CartProps> = (props) => {
   } = props;
   const [isMain] = useState(false);
   const dispatch = useDispatch();
+  const editorRef = useRef(null);
 
   const onOpenModal = useCallback(
     (nodeId) => {
@@ -91,7 +92,9 @@ const Cart: FC<CartProps> = (props) => {
         <div className={styles.cart_title}>
           <p>{title}</p>
         </div>
-        {description && <MainEditor color={color} initialState={description} />}
+        {description && (
+          <MainEditor color={color} initialState={description} editorRef={editorRef} />
+        )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
       <div className={styles.main_chips}>

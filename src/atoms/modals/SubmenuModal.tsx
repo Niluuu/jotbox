@@ -29,32 +29,35 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
 
   return (
     <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
-      <li className={styles.gaps}>
-        {focus ? (
-          <Icon name="exit" color="premium" size="xs" onClick={() => alert('delate')} />
-        ) : (
-          <Icon name="add" color="premium" size="xs" onClick={() => setVal('')} />
-        )}
+      <div className={styles.popup_row}>
+        <li className={styles.gaps}>
+          {focus ? (
+            <Icon name="exit" color="premium" size="xs" onClick={() => alert('delate')} />
+          ) : (
+            <Icon name="add" color="premium" size="xs" onClick={() => setVal('')} />
+          )}
 
-        <input
-          type="text"
-          value={val}
-          onChange={changeValName}
-          placeholder="Create new label"
-          onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
-        />
+          <input
+            type="text"
+            value={val}
+            onChange={changeValName}
+            placeholder="Create new label"
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
+          />
 
-        {focus || val.length > 0 ? (
-          <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
-        ) : null}
-      </li>
-      {listGaps &&
-        listGaps.map(({ id, title, _version }) => {
-          return (
-            <Gaps key={id} title={title} id={id} version={_version} onUpdateGap={onUpdateGap} />
-          );
-        })}
+          {focus || val.length > 0 ? (
+            <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
+          ) : null}
+        </li>
+
+        {listGaps &&
+          listGaps.map(({ id, title, _version }) => {
+            return (
+              <Gaps key={id} title={title} id={id} version={_version} onUpdateGap={onUpdateGap} />
+            );
+          })}
+      </div>
 
       <div className={styles.bottom_btn}>
         <button type="button" onClick={toggleModal}>

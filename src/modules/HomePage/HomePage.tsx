@@ -2,9 +2,7 @@ import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { DataStore } from '@aws-amplify/datastore';
 import { API } from 'aws-amplify';
-import { Node } from '../../models';
 import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -161,7 +159,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           archived: archiveAttr,
           _version,
           title,
-          description
+          description,
         };
 
         await API.graphql({
@@ -195,15 +193,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [
-    cleanUp,
-    defaultPin,
-    text,
-    userEmail,
-    selectedGaps,
-    defaultColor,
-    getAllNodes,
-  ]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -223,16 +213,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [
-    cleanUp,
-    defaultPin,
-    text,
-    userEmail,
-    selectedGaps,
-    defaultColor,
-    getAllNodes,
-    defaultColor
-  ]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
 
   useEffect(() => {
     getAllNodes();

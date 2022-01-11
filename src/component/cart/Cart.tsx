@@ -5,7 +5,6 @@ import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
-import { TrashInputNavbar } from '../input/TrashInputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/nodes';
 import './Color.scss';
@@ -49,7 +48,6 @@ const Cart: FC<CartProps> = (props) => {
     description,
     gaps,
     _version,
-    isTrashPage,
     onChangePin,
     onChangeArchived,
     onRemoveCart,

@@ -34,14 +34,14 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
   const collabarator = { eq: userEmail };
+  const archived = archive ? { eq: true } : { eq: false };
+  const [filter, setFilter] = useState({ collabarator, archived });
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
   const titleRef = useRef<HTMLDivElement>();
-  const archived = archive ? { eq: true } : { eq: false };
-  const archivedFilter = { collabarator, archived };
-  const [filter, setFilter] = useState(archivedFilter);
+
   const [selectedGaps, setSelectedGaps] = useState([]);
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -221,7 +221,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     const gaps = { contains: label };
-    const newFiler = label !== undefined ? { collabarator, archived, gaps } : archivedFilter;
+    const newFiler =
+      label !== undefined ? { collabarator, archived, gaps } : { collabarator, archived };
     setFilter(newFiler);
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);

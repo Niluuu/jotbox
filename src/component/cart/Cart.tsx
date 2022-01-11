@@ -28,15 +28,12 @@ interface CartProps {
     title: string,
     description: string,
   ) => void;
-  onRestoreTrash?: (id: string) => void;
-  onRemoveTrash?: (id: string) => void;
   onSetIsMain?: (bool: boolean) => void;
   onLabelEdit?: () => void;
   labelEdit?: boolean;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
   onSetLabel?: (id, oldGaps: string[]) => void;
-  filteredGaps?: string[];
   gridType?: boolean;
   popupCart?: boolean;
   color: string;
@@ -44,35 +41,35 @@ interface CartProps {
   archived: boolean;
 }
 
-const Cart: FC<CartProps> = ({
-  id,
-  title,
-  pined,
-  description,
-  gaps,
-  _version,
-  isTrashPage,
-  onChangePin,
-  onChangeArchived,
-  onRestoreTrash,
-  onRemoveTrash,
-  onSetIsMain,
-  onRemoveCart,
-  onResetNodes,
-  onCartLabel,
-  cartLabel,
-  onSetLabel,
-  gridType,
-  popupCart,
-  color,
-  onColorChange,
-  archived
-}) => {
+const Cart: FC<CartProps> = (props) => {
+  const {
+    id,
+    title,
+    pined,
+    description,
+    gaps,
+    _version,
+    isTrashPage,
+    onChangePin,
+    onChangeArchived,
+    onRemoveCart,
+    onCartLabel,
+    cartLabel,
+    gridType,
+    popupCart,
+    color,
+    onColorChange,
+    archived,
+  } = props;
+
   const dispatch = useDispatch();
 
-  const onOpenModal = useCallback((nodeId) => {
-    dispatch(getIdNode(nodeId));
-  }, []);
+  const onOpenModal = useCallback(
+    (nodeId) => {
+      dispatch(getIdNode(nodeId));
+    },
+    [dispatch],
+  );
 
   return (
     <div
@@ -85,19 +82,17 @@ const Cart: FC<CartProps> = ({
         color,
       )}
     >
-      {!isTrashPage && (
-        <button
-          type="button"
-          onClick={() => onChangePin(id, !pined, _version)}
-          className={styles.icon_btn}
-        >
-          {!pined ? (
-            <Icon name="pin" color="premium" size="xs" />
-          ) : (
-            <Icon name="pin-black" color="premium" size="xs" />
-          )}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => onChangePin(id, !pined, _version)}
+        className={styles.icon_btn}
+      >
+        {!pined ? (
+          <Icon name="pin" color="premium" size="xs" />
+        ) : (
+          <Icon name="pin-black" color="premium" size="xs" />
+        )}
+      </button>
       <div className={styles.cart_content} onClick={() => !popupCart && onOpenModal(id)}>
         <div className={styles.cart_title}>
           <p> {title} </p>
@@ -118,24 +113,17 @@ const Cart: FC<CartProps> = ({
           ))}
       </div>
       <div className={styles.input_navbar}>
-        {isTrashPage ? (
-          <TrashInputNavbar
-            onRestoreTrash={() => onRestoreTrash(id)}
-            onRemoveTrash={() => onRemoveTrash(id)}
-          />
-        ) : (
-          <InputNavbar
-            onRemoveCart={() => onRemoveCart(id, _version)}
-            withHistory={!!true}
-            isMainInput={!true}
-            onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
-            onCartLabel={onCartLabel}
-            cartLabel={cartLabel}
-            onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
-            currentColor={color}
-            selectedGaps={gaps}
-          />
-        )}
+        <InputNavbar
+          onRemoveCart={() => onRemoveCart(id, _version)}
+          withHistory={!!true}
+          isMainInput={!true}
+          onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
+          onCartLabel={onCartLabel}
+          cartLabel={cartLabel}
+          onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
+          currentColor={color}
+          selectedGaps={gaps}
+        />
       </div>
     </div>
   );

@@ -42,8 +42,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const [defaultColor, setDefaultColor] = useState('default');
   const titleRef = useRef<HTMLDivElement>();
   const archived = archive ? { eq: true } : { eq: false };
-  const archivedFilter = { collabarator, archived };
-  const [filter, setFilter] = useState(archivedFilter);
+  const [filter, setFilter] = useState({ collabarator, archived });
   const [selectedGaps, setSelectedGaps] = useState([]);
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -161,7 +160,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           archived: archiveAttr,
           _version,
           title,
-          description
+          description,
         };
 
         await API.graphql({
@@ -195,15 +194,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [
-    cleanUp,
-    defaultPin,
-    text,
-    userEmail,
-    selectedGaps,
-    defaultColor,
-    getAllNodes,
-  ]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -223,16 +214,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [
-    cleanUp,
-    defaultPin,
-    text,
-    userEmail,
-    selectedGaps,
-    defaultColor,
-    getAllNodes,
-    defaultColor
-  ]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
 
   useEffect(() => {
     getAllNodes();
@@ -240,7 +222,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     const gaps = { contains: label };
-    const newFiler = label !== undefined ? { collabarator, archived, gaps } : archivedFilter;
+    const newFiler =
+      label !== undefined ? { collabarator, archived, gaps } : { collabarator, archived };
     setFilter(newFiler);
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);

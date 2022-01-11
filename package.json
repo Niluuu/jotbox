@@ -51,8 +51,6 @@
     "storybook": "start-storybook -p 6006 -s public",
     "storybook:dev": "run-p storybook codegen:watch",
     "build-storybook": "build-storybook -s public",
-    "codegen": "",
-    "codegen:watch": "",
     "publish-storybooks": "npx chromatic"
   },
   "husky": {

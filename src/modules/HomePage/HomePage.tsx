@@ -37,7 +37,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       text: state.editorReducer.text,
     };
   });
-  
+
   const { grid, text } = mapStateToProps;
   const dispatch = useDispatch();
 
@@ -52,7 +52,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const [defaultColor, setDefaultColor] = useState('default');
   const titleRef = useRef<HTMLDivElement>();
   const [selectedGaps, setSelectedGaps] = useState([]);
-
 
   const toggleGaps = useCallback(
     (gap) => {

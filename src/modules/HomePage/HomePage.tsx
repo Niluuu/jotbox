@@ -27,6 +27,9 @@ interface CartProps {
 }
 
 interface HomeProps {
+  /**
+   * Is archived page or not
+   */
   archive: boolean;
 }
 

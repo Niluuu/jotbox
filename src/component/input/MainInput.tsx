@@ -11,17 +11,44 @@ import MainEditor from '../../modules/Editor/MainEditor';
 import { Chip } from '../chip/Chip';
 
 interface MainInputProps {
+  /**
+   * Is main input focused
+   */
   focused: boolean;
+  /**
+   * Is main input creates pined node
+   */
   defaultPin: boolean;
+  /**
+   * Outside ref
+   */
+  outsideRef?: React.LegacyRef<HTMLDivElement> | null;
+  /**
+   * Node title
+   */
+  titleRef: React.LegacyRef<HTMLDivElement> | null;
+  /**
+   * Default node color
+   */
+  defaultColor?: string;
+  /**
+   * Default funtions to create nodes
+   */
   onDefaultPin: () => void;
   onSetNodes: () => void;
   onSetArchive: () => void;
-  setFocused: (e: any) => void;
-  outsideRef?: any;
-  titleRef: any;
   onDefaultColor?: (optionalColor: string) => void;
-  defaultColor?: string;
+  /**
+   * Outside click handler
+   */
+  setFocused: (e: boolean) => void;
+  /**
+   * Default node labels
+   */
   selectedGaps?: string[];
+  /**
+   * Node labels handler
+   */
   toggleGaps: (gap: string) => void;
 }
 
@@ -42,7 +69,6 @@ const MainInput: FC<MainInputProps> = ({
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
   useOnClickOutside(outsideRef, handleClickOutside);
-
   const editorRef = useRef<Editor>(null);
 
   const mapStateToProps = useSelector((state: RootState) => {

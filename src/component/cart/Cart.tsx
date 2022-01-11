@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState } from 'react';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
@@ -29,7 +29,6 @@ interface CartProps {
   labelEdit?: boolean;
   onCartLabel?: (value: string) => void;
   cartLabel?: string;
-  filteredGaps?: string[];
   gridType?: boolean;
   popupCart?: boolean;
   color: string;
@@ -56,7 +55,7 @@ const Cart: FC<CartProps> = (props) => {
     onColorChange,
     archived,
   } = props;
-
+  const [isMain] = useState(false);
   const dispatch = useDispatch();
 
   const onOpenModal = useCallback(
@@ -108,8 +107,8 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar
-          withHistory={!!true}
-          isMainInput={!true}
+          withHistory
+          isMainInput={isMain}
           cartLabel={cartLabel}
           currentColor={color}
           selectedGaps={gaps}

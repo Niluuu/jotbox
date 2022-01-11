@@ -182,7 +182,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         gaps: selectedGaps,
         pined: defaultPin,
         color: defaultColor,
-        archived: true,
+        archived: false,
         collabarator: userEmail,
       };
 

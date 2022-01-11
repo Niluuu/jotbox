@@ -27,7 +27,6 @@ interface CartLayoutProps {
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onCartLabel?: (value: string) => void;
-  filteredGaps?: string[];
   onColorChange?: (id: string, color: string, _version: number) => void;
 }
 

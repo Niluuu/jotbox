@@ -31,6 +31,18 @@ interface HomeProps {
 }
 
 const HomePage: FC<HomeProps> = ({ archive }) => {
+  const userEmail = localStorage.getItem('userEmail');
+  const { label } = useParams();
+  const collabarator = { eq: userEmail };
+  const [nodes, setNodes] = useState<CartProps[]>([]);
+  const [focused, setFocused] = useState(false);
+  const [defaultPin, setDefaultPin] = useState(false);
+  const [defaultColor, setDefaultColor] = useState('default');
+  const titleRef = useRef<HTMLDivElement>();
+  const archived = archive ? { eq: true } : { eq: false };
+  const [filter, setFilter] = useState({ collabarator, archived });
+  const [selectedGaps, setSelectedGaps] = useState([]);
+
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,

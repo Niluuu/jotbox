@@ -40,8 +40,8 @@
   "scripts": {
     "generate-icons": "svg-spreact ./src/assets/images/svg-icons  > ./src/assets/images/sprites.svg",
     "start": "react-scripts start",
-    "dev": "run-p start codegen:watch",
-    "build": "npm run codegen && react-scripts build",
+    "dev": "run-p start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint:ts": "eslint --ext .ts --ext .tsx src",
@@ -50,9 +50,7 @@
     "lint:fix:scss": "stylelint --fix 'src/**/*.scss'",
     "storybook": "start-storybook -p 6006 -s public",
     "storybook:dev": "run-p storybook codegen:watch",
-    "build-storybook": "npm run codegen && build-storybook -s public",
-    "codegen": "graphql-codegen --config codegen.yml",
-    "codegen:watch": "graphql-codegen --config codegen.yml --watch",
+    "build-storybook": "build-storybook -s public",
     "publish-storybooks": "npx chromatic"
   },
   "husky": {

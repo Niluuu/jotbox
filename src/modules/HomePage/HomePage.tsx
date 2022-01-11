@@ -53,18 +53,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const { grid, text } = mapStateToProps;
   const dispatch = useDispatch();
 
-  const userEmail = localStorage.getItem('userEmail');
-  const { label } = useParams();
-  const collabarator = { eq: userEmail };
-  const archived = archive ? { eq: true } : { eq: false };
-  const [filter, setFilter] = useState({ collabarator, archived });
-  const [nodes, setNodes] = useState<CartProps[]>([]);
-  const [focused, setFocused] = useState(false);
-  const [defaultPin, setDefaultPin] = useState(false);
-  const [defaultColor, setDefaultColor] = useState('default');
-  const titleRef = useRef<HTMLDivElement>();
-  const [selectedGaps, setSelectedGaps] = useState([]);
-
   const toggleGaps = useCallback(
     (gap) => {
       setSelectedGaps((pre) =>

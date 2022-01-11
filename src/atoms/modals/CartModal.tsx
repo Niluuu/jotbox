@@ -96,7 +96,12 @@ const CartModal: FC = () => {
   }, [nodeID, titleRef, updatedPined, updatedText]);
 
   return (
-    <Modal color={updatedColor} isLarge={!!true} isOpen={updateModalIsOpen}>
+    <Modal
+      removeIcon={updatedColor === undefined && true}
+      color={updatedColor}
+      isLarge={!!true}
+      isOpen={updateModalIsOpen}
+    >
       <>
         {node[0] !== undefined && (
           <div tabIndex={-1}>

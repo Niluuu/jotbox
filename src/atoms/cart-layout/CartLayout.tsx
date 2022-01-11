@@ -26,9 +26,7 @@ interface CartLayoutProps {
     description: string,
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
-  onSetIsMain?: (bool: boolean) => void;
   onCartLabel?: (value: string) => void;
-  onSetLabel?: (id, oldGaps: string[]) => void;
   filteredGaps?: string[];
   onColorChange?: (id: string, color: string, _version: number) => void;
 }
@@ -39,22 +37,19 @@ const CartLayout: FC<CartLayoutProps> = ({
   onChangePin,
   onRemoveCart,
   carts,
-  onSetIsMain,
   onCartLabel,
-  onSetLabel,
   onColorChange,
 }) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      {carts !== undefined && carts.some((cart) => cart.pined) && (
+      {carts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
       )}
-      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {carts &&
-          carts !== undefined &&
-          carts
+      {carts && (
+        <div className={classNames(styles.carts_layout, gridType && styles.column)}>
+          {carts
             .filter((cart) => cart.pined)
             .map((cart) => (
               <Cart
@@ -71,23 +66,21 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
-                onSetLabel={onSetLabel}
                 gridType={gridType}
                 onColorChange={onColorChange}
               />
             ))}
-      </div>
-      {carts !== undefined && carts.some((cart) => !cart.pined) && (
+        </div>
+      )}
+      {carts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>
       )}
-      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {carts &&
-          carts !== undefined &&
-          carts
+      {carts && (
+        <div className={classNames(styles.carts_layout, gridType && styles.column)}>
+          {carts
             .filter((cart) => !cart.pined)
             .map((cart) => (
               <Cart
@@ -104,14 +97,13 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onSetIsMain={onSetIsMain}
                 onCartLabel={onCartLabel}
-                onSetLabel={onSetLabel}
                 gridType={gridType}
                 onColorChange={onColorChange}
               />
             ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

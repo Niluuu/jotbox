@@ -41,7 +41,13 @@ const Modal: FC<ModalProps> = ({
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
       <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
         <div
-          className={classNames(styles.popup, isTop && styles.top, isLarge && styles.large, color)}
+          className={classNames(
+            styles.popup,
+            isTop && styles.top,
+            isLarge && styles.large,
+            color,
+            removeIcon && styles.hide,
+          )}
           id="popup-login"
         >
           <div className={styles.popup__title}>

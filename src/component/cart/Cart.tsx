@@ -10,14 +10,49 @@ import { getIdNode } from '../../reducers/nodes';
 import './Color.scss';
 
 interface CartProps {
+  /**
+   * Node Id
+   */
   id: string;
+  /**
+   * Node title
+   */
   title: string;
+  /**
+   * Node description
+   */
   description: string;
+  /**
+   * Node is pined?
+   */
   pined: boolean;
+  /**
+   * Node labels
+   */
   gaps?: string[];
+  /**
+   * Node version of node
+   */
   _version?: number;
+  /**
+   * Node archived or not?
+   */
+  archived: boolean;
+  /**
+   * Node color
+   */
+  color: string;
+  /**
+   * Delete node
+   */
   onRemoveCart?: (id: string, _version: number) => void;
+  /**
+   * Toggle node pined
+   */
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
+  /**
+   * Change node archived
+   */
   onChangeArchived?: (
     id: string,
     archived: boolean,
@@ -25,14 +60,18 @@ interface CartProps {
     title: string,
     description: string,
   ) => void;
-  onLabelEdit?: () => void;
-  labelEdit?: boolean;
-  onCartLabel?: (value: string) => void;
-  gridType?: boolean;
-  popupCart?: boolean;
-  color: string;
+  /**
+   * Node color change func
+   */
   onColorChange?: (id: string, color: string, _version: number) => void;
-  archived: boolean;
+  /**
+   * Layout type for cart size
+   */
+  gridType: boolean;
+  /**
+   * ?
+   */
+  popupCart?: boolean;
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -46,7 +85,6 @@ const Cart: FC<CartProps> = (props) => {
     onChangePin,
     onChangeArchived,
     onRemoveCart,
-    onCartLabel,
     gridType,
     popupCart,
     color,

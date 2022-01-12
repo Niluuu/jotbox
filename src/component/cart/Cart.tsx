@@ -28,7 +28,6 @@ interface CartProps {
   onLabelEdit?: () => void;
   labelEdit?: boolean;
   onCartLabel?: (value: string) => void;
-  cartLabel?: string;
   gridType?: boolean;
   popupCart?: boolean;
   color: string;
@@ -48,7 +47,6 @@ const Cart: FC<CartProps> = (props) => {
     onChangeArchived,
     onRemoveCart,
     onCartLabel,
-    cartLabel,
     gridType,
     popupCart,
     color,
@@ -112,10 +110,8 @@ const Cart: FC<CartProps> = (props) => {
         <InputNavbar
           withHistory
           isMainInput={isMain}
-          cartLabel={cartLabel}
           currentColor={color}
           selectedGaps={gaps}
-          onCartLabel={onCartLabel}
           onRemoveCart={() => onRemoveCart(id, _version)}
           onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
           onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}

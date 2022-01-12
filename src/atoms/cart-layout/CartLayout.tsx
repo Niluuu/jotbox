@@ -26,7 +26,6 @@ interface CartLayoutProps {
     description: string,
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
-  onCartLabel?: (value: string) => void;
   onColorChange?: (id: string, color: string, _version: number) => void;
 }
 
@@ -36,7 +35,6 @@ const CartLayout: FC<CartLayoutProps> = ({
   onChangePin,
   onRemoveCart,
   carts,
-  onCartLabel,
   onColorChange,
 }) => {
   return (
@@ -65,7 +63,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onCartLabel={onCartLabel}
                 gridType={gridType}
                 onColorChange={onColorChange}
               />
@@ -96,7 +93,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onCartLabel={onCartLabel}
                 gridType={gridType}
                 onColorChange={onColorChange}
               />

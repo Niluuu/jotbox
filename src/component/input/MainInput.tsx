@@ -87,7 +87,8 @@ const MainInput: FC<MainInputProps> = ({
   }, []);
 
   const [linkMode, setlinkMode] = useState(false);
-  const onLinkMode = () => {
+
+  const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
   };
 
@@ -130,10 +131,10 @@ const MainInput: FC<MainInputProps> = ({
 
       <div className={styles.main_row}>
         <MainEditor
-          isMainInput={!!true}
+          isMainInput
           defaultColor={defaultColor}
           linkMode={linkMode}
-          onLinkMode={onLinkMode}
+          createLinkToEditor={createLinkToEditor}
           editorRef={editorRef}
         />
       </div>
@@ -161,14 +162,14 @@ const MainInput: FC<MainInputProps> = ({
 
       {focused ? (
         <InputNavbar
+          isMainInput
+          withHistory
           focused={focused}
-          isMainInput={!!true}
           onSetArchive={onSetArchive}
-          ontoggle={() => onSetNodes()}
-          onLinkMode={onLinkMode}
+          onSetNode={() => onSetNodes()}
+          createLinkToEditor={createLinkToEditor}
           onDefaultColor={onDefaultColor}
           defaultColor={defaultColor}
-          withHistory
           toggleGaps={toggleGaps}
           selectedGaps={selectedGaps}
         />
@@ -176,29 +177,5 @@ const MainInput: FC<MainInputProps> = ({
     </div>
   );
 };
-
-// interface LinkProps {
-//   path: string;
-//   show?: boolean;
-//   setShow: (boolean) => void;
-// }
-
-// const Link: FC<LinkProps> = ({ show, path, setShow }) => {
-//   const handleClick = useCallback(
-//     (e) => {
-//       setShow(false);
-//     },
-//     [show],
-//   );
-
-//   return (
-//     <div className={classNames(styles.toltip, show && styles.show)}>
-//       <a href={path} onClick={() => handleClick(path)}>
-//         <Icon name="link" />
-//         Открыть ссылку
-//       </a>
-//     </div>
-//   );
-// };
 
 export default MainInput;

@@ -14,7 +14,7 @@ import styles from './Editor.module.scss';
 
 interface MainEditorProps {
   linkMode?: any;
-  onLinkMode?: any;
+  createLinkToEditor?: any;
   initialState?: any;
   editorRef?: any;
   color?: string;
@@ -24,7 +24,7 @@ interface MainEditorProps {
 
 const MainEditor: FC<MainEditorProps> = ({
   linkMode,
-  onLinkMode,
+  createLinkToEditor,
   initialState,
   editorRef,
   color,
@@ -120,7 +120,7 @@ const MainEditor: FC<MainEditorProps> = ({
           onSearchChange={onSearchChange}
         />
       </div>
-      <Modal title="Add Link" toggleModal={onLinkMode} isOpen={linkMode}>
+      <Modal title="Add Link" toggleModal={createLinkToEditor} isOpen={linkMode}>
         <div className={styles.linkWrapper}>
           <div className={styles.inputs}>
             <div className={styles.inputs_item}>
@@ -141,7 +141,7 @@ const MainEditor: FC<MainEditorProps> = ({
                 onFocus={() => setfocus(true)}
                 onBlur={() => setfocus(false)}
               />
-              <button onMouseDown={confirmLink} onClick={onLinkMode} type="button">
+              <button onMouseDown={confirmLink} onClick={createLinkToEditor} type="button">
                 <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" />
               </button>
             </div>

@@ -250,11 +250,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           </div>
         )}
         <CartLayout
+          gridType={grid}
+          carts={nodes}
           onChangePin={onChangePin}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
-          gridType={grid}
-          carts={nodes}
           onColorChange={onColorChange}
         />
         <AddLinkModal />

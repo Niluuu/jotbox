@@ -22,7 +22,7 @@ const CartModal: FC = () => {
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
 
-  const onLinkMode = () => setlinkMode((prev) => !prev);
+  const createLinkToEditor = () => setlinkMode((prev) => !prev);
   const togglePined = () => setUpdatedPined((prev) => !prev);
   const toggleArchived = () => setUpdatedArchive((prev) => !prev);
 
@@ -132,7 +132,7 @@ const CartModal: FC = () => {
             <div className={styles.main_row}>
               <MainEditor
                 linkMode={linkMode}
-                onLinkMode={onLinkMode}
+                createLinkToEditor={createLinkToEditor}
                 editorRef={editorRef}
                 initialState={node[0].description}
                 color={updatedColor}
@@ -141,8 +141,8 @@ const CartModal: FC = () => {
             <InputNavbar
               isMainInput={!!true}
               onSetArchive={toggleArchived}
-              ontoggle={toggleModal}
-              onLinkMode={onLinkMode}
+              onSetNode={toggleModal}
+              createLinkToEditor={createLinkToEditor}
               withHistory
               selectedGaps={[]}
             />

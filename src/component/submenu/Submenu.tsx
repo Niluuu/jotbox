@@ -40,7 +40,14 @@ export const Submenu: FC<SubmenuProps> = () => {
       //  @ts-ignore
       const { items } = res.data.listGapss;
 
-      setListGaps(items);
+      const rawLabels = new Set();
+      const filteredLabels = items.filter((label) => {
+        const duplicate = rawLabels.has(label.title);
+        rawLabels.add(label.title);
+        return !duplicate;
+      });
+
+      setListGaps(filteredLabels);
     } catch (err) {
       throw new Error('Get gaps route');
     }

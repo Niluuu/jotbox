@@ -6,7 +6,7 @@ import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
-import { getIdNode } from '../../reducers/nodes';
+import { getIdNode } from '../../reducers/getNodeId';
 import './Color.scss';
 
 interface CartProps {

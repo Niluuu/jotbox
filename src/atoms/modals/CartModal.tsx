@@ -3,7 +3,7 @@ import { API } from 'aws-amplify';
 import { useSelector, useDispatch } from 'react-redux';
 import Editor from '@draft-js-plugins/editor';
 import { RootState } from '../../app/store';
-import { closeUpdateModalIsOpen } from '../../reducers/nodes';
+import { closeUpdateModalIsOpen } from '../../reducers/getNodeId';
 import styles from '../../modules/HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
@@ -34,11 +34,11 @@ const CartModal: FC = () => {
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
-      nodesReducer: state.nodesReducer,
+      nodeIdReducer: state.nodeIdReducer,
       editorReducer: state.editorReducer,
     };
   });
-  const { nodeID, updateModalIsOpen } = mapStateToProps.nodesReducer;
+  const { nodeID, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
   const { updatedText } = mapStateToProps.editorReducer;
 
   const nodeGet = useCallback(
@@ -93,7 +93,7 @@ const CartModal: FC = () => {
   const toggleModal = useCallback(() => {
     dispatch(closeUpdateModalIsOpen());
     onUpdate();
-  }, [nodeID, titleRef, updatedPined, updatedText]);
+  }, [dispatch, onUpdate]);
 
   return (
     <Modal

@@ -15,8 +15,17 @@ interface CartProps {
 }
 
 interface CartLayoutProps {
+  /**
+   * Grid type layout
+   */
   gridType: boolean;
+  /**
+   * Nodes
+   */
   carts: CartProps[];
+  /**
+   * Node change functions
+   */
   onRemoveCart?: (id: string, _version: number) => void;
   onChangeArchived?: (
     id: string,
@@ -26,38 +35,27 @@ interface CartLayoutProps {
     description: string,
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
-  onHyperLinkEditMode?: () => void;
-  onSetIsMain?: (bool: boolean) => void;
-  onCartLabel?: (value: string) => void;
-  onSetLabel?: (id, oldGaps: string[]) => void;
-  filteredGaps?: string[];
   onColorChange?: (id: string, color: string, _version: number) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
   gridType,
+  carts,
   onChangeArchived,
   onChangePin,
   onRemoveCart,
-  onHyperLinkEditMode,
-  carts,
-  onSetIsMain,
-  onCartLabel,
-  onSetLabel,
-  filteredGaps,
   onColorChange,
 }) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      {carts !== undefined && carts.some((cart) => cart.pined) && (
+      {carts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
       )}
-      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {carts &&
-          carts !== undefined &&
-          carts
+      {carts && (
+        <div className={classNames(styles.carts_layout, gridType && styles.column)}>
+          {carts
             .filter((cart) => cart.pined)
             .map((cart) => (
               <Cart
@@ -70,28 +68,24 @@ const CartLayout: FC<CartLayoutProps> = ({
                 color={cart.color}
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
+                archived={cart.archived}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onSetIsMain={onSetIsMain}
-                onCartLabel={onCartLabel}
-                onSetLabel={onSetLabel}
-                filteredGaps={filteredGaps}
                 gridType={gridType}
                 onColorChange={onColorChange}
-                archived={cart.archived}
               />
             ))}
-      </div>
-      {carts !== undefined && carts.some((cart) => !cart.pined) && (
+        </div>
+      )}
+      {carts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>
       )}
-      <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-        {carts &&
-          carts !== undefined &&
-          carts
+      {carts && (
+        <div className={classNames(styles.carts_layout, gridType && styles.column)}>
+          {carts
             .filter((cart) => !cart.pined)
             .map((cart) => (
               <Cart
@@ -104,19 +98,16 @@ const CartLayout: FC<CartLayoutProps> = ({
                 color={cart.color}
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
+                archived={cart.archived}
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onSetIsMain={onSetIsMain}
-                onCartLabel={onCartLabel}
-                onSetLabel={onSetLabel}
-                filteredGaps={filteredGaps}
                 gridType={gridType}
                 onColorChange={onColorChange}
-                archived={cart.archived}
               />
             ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

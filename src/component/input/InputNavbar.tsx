@@ -1,8 +1,6 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
 import { API, graphqlOperation } from 'aws-amplify';
-import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
@@ -12,21 +10,61 @@ import { listGapss } from '../../graphql/queries';
 
 interface InputNavbarProps {
   withHistory?: boolean;
+  /**
+   * Is main input navbar?
+   */
   isMainInput?: boolean;
-  ontoggle?: () => void;
-  onSetArchive?: () => void;
+  /**
+   * Is main input cliked
+   */
   focused?: boolean;
+  /**
+   * Create node func
+   */
+  onSetNode?: () => void;
+  /**
+   * Node remove func
+   */
   onRemoveCart?: () => void;
-  onLinkMode?: () => void;
+  /**
+   * Archived node func
+   */
+  onSetArchive?: () => void;
+  /**
+   * Node toggle archived func
+   */
   onChangeArchived?: () => void;
-  onCartLabel?: (value: string) => void;
-  cartLabel?: string;
+  /**
+   * Create link text to editor
+   */
+  createLinkToEditor?: () => void;
+  /**
+   * Node colors change func
+   */
   onColorChange?: (color: string) => void;
+  /**
+   * Node current color
+   */
   currentColor?: string;
+  /**
+   * Node pre color
+   */
   defaultColor?: string;
+  /**
+   * Node set defoult color func
+   */
   onDefaultColor?: (optionalColor: string) => void;
+  /**
+   * Node initial gaps
+   */
   initialGaps?: string[];
+  /**
+   * Oncreate node toggleselected gaps
+   */
   toggleGaps?: (gap: string) => void;
+  /**
+   * Oncreate selected gaps
+   */
   selectedGaps: string[];
 }
 
@@ -36,10 +74,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     onChangeArchived,
     onSetArchive,
     withHistory,
-    ontoggle,
+    onSetNode,
     focused = true,
     onRemoveCart,
-    onLinkMode,
+    createLinkToEditor,
     onColorChange,
     currentColor,
     defaultColor,
@@ -167,7 +205,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                   <li
                     key="1"
                     onClick={() => {
-                      onLinkMode();
+                      createLinkToEditor();
                     }}
                   >
                     <span>Добавить линк</span>
@@ -197,7 +235,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </>
           ) : null}
         </div>
-        <button onClick={ontoggle} type="button" className={styles.btn}>
+        <button onClick={onSetNode} type="button" className={styles.btn}>
           Закрыть
         </button>
       </div>

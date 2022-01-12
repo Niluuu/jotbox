@@ -2,9 +2,7 @@ import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { DataStore } from '@aws-amplify/datastore';
 import { API } from 'aws-amplify';
-import { Node } from '../../models';
 import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -29,6 +27,9 @@ interface CartProps {
 }
 
 interface HomeProps {
+  /**
+   * Is archived page or not
+   */
   archive: boolean;
 }
 
@@ -184,7 +185,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         gaps: selectedGaps,
         pined: defaultPin,
         color: defaultColor,
-        archived: true,
+        archived: false,
         collabarator: userEmail,
       };
 
@@ -249,11 +250,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           </div>
         )}
         <CartLayout
+          gridType={grid}
+          carts={nodes}
           onChangePin={onChangePin}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
-          gridType={grid}
-          carts={nodes}
           onColorChange={onColorChange}
         />
         <AddLinkModal />

@@ -37,14 +37,18 @@ $base-nav-z-index: 5;
   &.large {
     padding-bottom: 10px !important;
     min-width: 600px !important;
-
+    
     .popup__title {
       margin: 0;
     }
-
+    
     .popup_exit_icon {
       padding-right: 5px;
     }
+  }
+
+  &.hide {
+    display: none;
   }
 
   &-container {
@@ -128,3 +132,4 @@ $base-nav-z-index: 5;
     cursor: pointer;
   }
 }
+

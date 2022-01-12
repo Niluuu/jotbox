@@ -119,6 +119,13 @@
   }
 }
 
+.popup_row {
+  max-height: 90%;
+  min-height: 150px;
+  overflow-y: scroll;
+  height: 300px;
+}
+
 .active {
   background: $yellow;
 }
@@ -188,6 +195,7 @@
 
   .gaps {
     padding: 8px;
+
     input {
       padding: 4px 8px;
     }
@@ -269,6 +277,7 @@
 
   .gaps {
     padding: 8px;
+    
     input {
       padding: 4px 8px;
     }

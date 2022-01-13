@@ -51,12 +51,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     return {
       grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
-      nodeID: state.nodeIdReducer.nodeID,
       updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
     };
   });
 
-  const { grid, text, nodeID, updateModalIsOpen } = mapStateToProps;
+  const { grid, text, updateModalIsOpen } = mapStateToProps;
   const dispatch = useDispatch();
 
   const toggleGaps = useCallback(
@@ -71,8 +70,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
-    dispatch(setText(initialStateStr));
     setSelectedGaps(label !== undefined ? [] : [label]);
+    dispatch(setText(initialStateStr));
   }, [dispatch, label]);
 
   const onDefaultPin = useCallback(() => {

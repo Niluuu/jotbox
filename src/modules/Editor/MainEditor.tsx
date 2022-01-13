@@ -30,12 +30,10 @@ const MainEditor: FC<MainEditorProps> = ({
   defaultColor,
   isMainInput,
 }) => {
-  const propsState = useCallback(() => {
-    return initialState
-      ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
-      : EditorState.createEmpty();
-  }, [initialState]);
-  const [editorState, setEditorState] = useState(propsState);
+  const [editorState, setEditorState] = useState(
+    EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))),
+  );
+  console.log(`initialState`, initialState)
   const [urlValue, seturlValue] = useState('');
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);

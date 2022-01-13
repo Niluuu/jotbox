@@ -15,7 +15,6 @@ import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
 import { setNodesToProps } from '../../reducers/nodes';
-import { nodeId } from '../../reducers/getNodeId';
 
 interface CartProps {
   id: string;
@@ -52,10 +51,12 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     return {
       grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
+      nodeID: state.nodeIdReducer.nodeID,
+      updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
     };
   });
 
-  const { grid, text } = mapStateToProps;
+  const { grid, text, nodeID, updateModalIsOpen } = mapStateToProps;
   const dispatch = useDispatch();
 
   const toggleGaps = useCallback(
@@ -222,7 +223,17 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     getAllNodes();
-  }, [getAllNodes, nodeId]);
+  }, [getAllNodes]);
+
+  useEffect(() => {
+    getAllNodes();
+
+    if (updateModalIsOpen) {
+      return () => {
+        setNodes([]);
+      };
+    }
+  }, [updateModalIsOpen, getAllNodes]);
 
   useEffect(() => {
     const gaps = { contains: label };

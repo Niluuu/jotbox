@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useEffect, memo } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
@@ -9,7 +9,6 @@ import Modal from '../../component/modal/Modal';
 import { RootState } from '../../app/store';
 import { Icon } from '../../component/Icon/Icon';
 import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
-
 import styles from './Editor.module.scss';
 
 interface MainEditorProps {
@@ -31,26 +30,26 @@ const MainEditor: FC<MainEditorProps> = ({
   defaultColor,
   isMainInput,
 }) => {
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      nodes: state.nodesReducer.nodes,
-    };
-  });
-  const { nodes } = mapStateToProps;
-
-  const initalEditorState = useCallback(() => {
+  const propsState = useCallback(() => {
     return initialState
       ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
       : EditorState.createEmpty();
-  }, []);
-
-  const [editorState, setEditorState] = useState(initalEditorState);
+  }, [initialState]);
+  const [editorState, setEditorState] = useState(propsState);
   const [urlValue, seturlValue] = useState('');
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [plaseHolder, setPlaseHolder] = useState(true);
   const dispatch = useDispatch();
+
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      nodes: state.nodesReducer.nodes,
+    };
+  });
+
+  const { nodes } = mapStateToProps;
 
   const convertNodesToSuggestions = useCallback((listNodes) => {
     const mention = [];
@@ -75,7 +74,7 @@ const MainEditor: FC<MainEditorProps> = ({
       if (initialState) dispatch(setUpdatedText(convert));
       dispatch(setText(convert));
     },
-    [dispatch, initialState, editorState],
+    [dispatch, initialState],
   );
 
   const onOpenChange = useCallback((_open: boolean) => {

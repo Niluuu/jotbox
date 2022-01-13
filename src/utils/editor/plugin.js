@@ -26,13 +26,11 @@ const mentionPlugin = createMentionPlugin({
     };
 
     return (
-      <div className={classNames(styles.linkfy, styles.link)}>
+      <div
+        className={classNames(styles.linkfy, styles.link)}
+        onClick={() => onOpenModal(mention.link)}
+      >
         <span>[[{children}]]</span>
-        <div className={styles.tooltip}>
-          <span onClick={() => onOpenModal(mention.link)}>
-            <span>open</span>
-          </span>
-        </div>
       </div>
     );
   },

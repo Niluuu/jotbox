@@ -1,6 +1,8 @@
+import { useDispatch } from 'react-redux';
+import classNames from 'classnames';
 import createHashtagPlugin from '@draft-js-plugins/hashtag';
 import createMentionPlugin from '@draft-js-plugins/mention';
-import createAutoListPlugin from 'draft-js-autolist-plugin'
+import createAutoListPlugin from 'draft-js-autolist-plugin';
 import { linkifyPlugin } from './addLink';
 import { customPlugin } from './link';
 
@@ -9,32 +11,34 @@ import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
 import '@draft-js-plugins/mention/lib/plugin.css';
 
-const autoListPlugin = createAutoListPlugin()
+import styles from '../../component/tooltip/Tooltip.module.scss';
+
+const autoListPlugin = createAutoListPlugin();
 const hashtagPlugin = createHashtagPlugin();
 
 const mentionPlugin = createMentionPlugin({
   mentionComponent(mentionProps) {
-    const { children } = mentionProps;
+    const { children, mention } = mentionProps;
+    // const useThunkDispatch =  useDispatch();
+
+    const onOpenModal = (nodeId) => {
+      alert(`${nodeId}`);
+    };
+
     return (
-      <span
-        // eslint-disable-next-line no-alert
-        onClick={() => alert('Clicked on the Mention!')}
+      <div
+        className={classNames(styles.linkfy, styles.link)}
+        onClick={() => onOpenModal(mention.link)}
       >
-          [{children}]
-      </span>
+        <span>[[{children}]]</span>
+      </div>
     );
   },
   entityMutability: 'IMMUTABLE',
-  mentionTrigger: ['['],
+  mentionTrigger: ['[['],
   supportWhitespace: true,
 });
 // eslint-disable-next-line no-shadow
 export const { MentionSuggestions } = mentionPlugin;
 // eslint-disable-next-line no-shadow
-export const plugins = [
-  autoListPlugin,
-  mentionPlugin,
-  linkifyPlugin,
-  hashtagPlugin,
-  customPlugin,
-];
+export const plugins = [autoListPlugin, mentionPlugin, linkifyPlugin, hashtagPlugin, customPlugin];

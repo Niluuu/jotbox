@@ -6,8 +6,8 @@ import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
-import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import MainEditor from '../../modules/Editor/MainEditor';
+import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
 
 interface MainInputProps {

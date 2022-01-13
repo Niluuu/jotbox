@@ -14,6 +14,8 @@ import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
+import { setNodesToProps } from '../../reducers/nodes';
+import { nodeId } from '../../reducers/getNodeId';
 
 interface CartProps {
   id: string;
@@ -87,10 +89,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       //  @ts-ignore
       const { items } = data.data.listNodes;
       setNodes(items);
+      dispatch(setNodesToProps(items));
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
-  }, [filter]);
+  }, [filter, dispatch]);
 
   const onColorChange = useCallback(
     async (id, color, _version) => {
@@ -219,7 +222,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     getAllNodes();
-  }, [getAllNodes]);
+  }, [getAllNodes, nodeId]);
 
   useEffect(() => {
     const gaps = { contains: label };

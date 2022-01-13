@@ -3,7 +3,7 @@ import { API } from 'aws-amplify';
 import { useSelector, useDispatch } from 'react-redux';
 import Editor from '@draft-js-plugins/editor';
 import { RootState } from '../../app/store';
-import { closeUpdateModalIsOpen } from '../../reducers/nodes';
+import { closeUpdateModalIsOpen, getIdNode } from '../../reducers/getNodeId';
 import styles from '../../modules/HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
@@ -34,26 +34,23 @@ const CartModal: FC = () => {
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
-      nodesReducer: state.nodesReducer,
+      nodeIdReducer: state.nodeIdReducer,
       editorReducer: state.editorReducer,
     };
   });
-  const { nodeID, updateModalIsOpen } = mapStateToProps.nodesReducer;
+  const { nodeID, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
   const { updatedText } = mapStateToProps.editorReducer;
 
-  const nodeGet = useCallback(
-    async (id) => {
-      try {
-        const data = await API.graphql({ query: getNode, variables: { id } });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        setNode([data.data.getNode]);
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [nodeID],
-  );
+  const nodeGet = useCallback(async (id) => {
+    try {
+      const data = await API.graphql({ query: getNode, variables: { id } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      setNode([data.data.getNode]);
+    } catch (err) {
+      throw new Error('Node get error ');
+    }
+  }, []);
 
   useEffect(() => {
     if (node[0] !== undefined) {
@@ -69,31 +66,40 @@ const CartModal: FC = () => {
     if (nodeID.length > 0) {
       nodeGet(nodeID);
     }
-  }, [nodeID]);
+  }, [nodeGet, nodeID]);
 
-  const onUpdate = useCallback(async () => {
-    try {
-      const nodeDetails = {
-        id: nodeID,
-        title: titleRef.current.innerText,
-        description: updatedText,
-        /* eslint no-underscore-dangle: 0 */
-        _version: node[0]._version,
-      };
+  const onUpdate = useCallback(
+    async (id) => {
+      try {
+        const nodeDetails = {
+          id,
+          title: titleRef.current.innerText,
+          description: updatedText,
+          /* eslint no-underscore-dangle: 0 */
+          _version: node[0]._version,
+        };
 
-      await API.graphql({
-        query: updateNode,
-        variables: { input: nodeDetails },
-      });
-    } catch (err) {
-      throw new Error('Update cart: Something went wrong');
-    }
-  }, [nodeID, titleRef, updatedPined, updatedText]);
+        await API.graphql({
+          query: updateNode,
+          variables: { input: nodeDetails },
+        });
 
-  const toggleModal = useCallback(() => {
-    dispatch(closeUpdateModalIsOpen());
-    onUpdate();
-  }, [nodeID, titleRef, updatedPined, updatedText]);
+        dispatch(getIdNode(''));
+        dispatch(closeUpdateModalIsOpen());
+        setNode([]);
+      } catch (err) {
+        throw new Error('Update cart: Something went wrong');
+      }
+    },
+    [dispatch, node, updatedText],
+  );
+
+  const toggleModal = useCallback(
+    (id) => {
+      onUpdate(id);
+    },
+    [onUpdate],
+  );
 
   return (
     <Modal
@@ -130,21 +136,24 @@ const CartModal: FC = () => {
             </div>
 
             <div className={styles.main_row}>
-              <MainEditor
-                linkMode={linkMode}
-                createLinkToEditor={createLinkToEditor}
-                editorRef={editorRef}
-                initialState={node[0].description}
-                color={updatedColor}
-              />
+              {nodeID && (
+                <MainEditor
+                  linkMode={linkMode}
+                  createLinkToEditor={createLinkToEditor}
+                  editorRef={editorRef}
+                  initialState={node[0].description}
+                  color={updatedColor}
+                />
+              )}
             </div>
             <InputNavbar
               isMainInput={!!true}
               onSetArchive={toggleArchived}
-              onSetNode={toggleModal}
+              onSetNode={() => toggleModal(node[0].id)}
               createLinkToEditor={createLinkToEditor}
               withHistory
               selectedGaps={[]}
+              initialGaps={node[0] && node[0].gaps}
             />
           </div>
         )}

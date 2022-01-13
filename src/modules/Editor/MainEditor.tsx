@@ -1,21 +1,20 @@
-import { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
-import mentions from './Mentions';
+import { RootState } from '../../app/store';
 import { Icon } from '../../component/Icon/Icon';
 import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
-
 import styles from './Editor.module.scss';
 
 interface MainEditorProps {
-  linkMode?: any;
-  createLinkToEditor?: any;
-  initialState?: any;
+  linkMode?: boolean;
+  createLinkToEditor?: () => void;
+  initialState?: string;
   editorRef?: any;
   color?: string;
   defaultColor?: string;
@@ -31,16 +30,39 @@ const MainEditor: FC<MainEditorProps> = ({
   defaultColor,
   isMainInput,
 }) => {
-  const initalEditorState = initialState
-    ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
-    : EditorState.createEmpty();
-  const [editorState, setEditorState] = useState(initalEditorState);
+  const propsState = useCallback(() => {
+    return initialState
+      ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)))
+      : EditorState.createEmpty();
+  }, [initialState]);
+  const [editorState, setEditorState] = useState(propsState);
   const [urlValue, seturlValue] = useState('');
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
-  const [suggestions, setSuggestions] = useState(mentions);
+  const [suggestions, setSuggestions] = useState([]);
   const [plaseHolder, setPlaseHolder] = useState(true);
   const dispatch = useDispatch();
+
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      nodes: state.nodesReducer.nodes,
+    };
+  });
+
+  const { nodes } = mapStateToProps;
+
+  const convertNodesToSuggestions = useCallback((listNodes) => {
+    const mention = [];
+
+    listNodes.filter((node) => mention.push({ name: node.title, link: node.id }));
+
+    return mention;
+  }, []);
+
+  useEffect(() => {
+    const mention = convertNodesToSuggestions(nodes);
+    setSuggestions(mention);
+  }, [nodes, convertNodesToSuggestions]);
 
   const onChange = useCallback(
     (newEditorState) => {
@@ -52,16 +74,19 @@ const MainEditor: FC<MainEditorProps> = ({
       if (initialState) dispatch(setUpdatedText(convert));
       dispatch(setText(convert));
     },
-    [editorState],
+    [dispatch, initialState],
   );
 
   const onOpenChange = useCallback((_open: boolean) => {
     setOpen(_open);
   }, []);
 
-  const onSearchChange = useCallback(({ trigger, value }: { trigger: string; value: string }) => {
-    setSuggestions(defaultSuggestionsFilter(value, mentions, trigger));
-  }, []);
+  const onSearchChange = useCallback(
+    ({ trigger, value }: { trigger: string; value: string }) => {
+      setSuggestions(defaultSuggestionsFilter(value, suggestions, trigger));
+    },
+    [suggestions],
+  );
 
   const onURLChange = (e) => seturlValue(e.target.value);
 

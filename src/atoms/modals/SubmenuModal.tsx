@@ -8,6 +8,7 @@ export interface SubmenuModalProps {
   toggleModal: () => void;
   onCreateGap: (title: string) => void;
   onUpdateGap: (title: string, id: string, version: number) => void;
+  onDeleteGap: (id: string, version: number) => void;
   close?: string;
   modalTitle?: string;
   listGaps: any;
@@ -18,6 +19,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   toggleModal,
   onCreateGap,
   onUpdateGap,
+  onDeleteGap,
   listGaps,
   close = 'Ok',
   modalTitle = 'Изменение ярлыков',
@@ -29,35 +31,39 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
 
   return (
     <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
-      <div className={styles.popup_row}>
-        <li className={styles.gaps}>
-          {focus ? (
-            <Icon name="exit" color="premium" size="xs" onClick={() => alert('delate')} />
-          ) : (
-            <Icon name="add" color="premium" size="xs" onClick={() => setVal('')} />
-          )}
+      <li className={styles.gaps}>
+        {focus ? (
+          <Icon name="exit" color="premium" size="xs" onClick={() => alert('delate')} />
+        ) : (
+          <Icon name="add" color="premium" size="xs" onClick={() => setVal('')} />
+        )}
 
-          <input
-            type="text"
-            value={val}
-            onChange={changeValName}
-            placeholder="Create new label"
-            onFocus={() => setFocus(true)}
-            onBlur={() => setFocus(false)}
-          />
+        <input
+          type="text"
+          value={val}
+          onChange={changeValName}
+          placeholder="Create new label"
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+        />
 
-          {focus || val.length > 0 ? (
-            <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
-          ) : null}
-        </li>
-
-        {listGaps &&
-          listGaps.map(({ id, title, _version }) => {
-            return (
-              <Gaps key={id} title={title} id={id} version={_version} onUpdateGap={onUpdateGap} />
-            );
-          })}
-      </div>
+        {focus || val.length > 0 ? (
+          <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
+        ) : null}
+      </li>
+      {listGaps &&
+        listGaps.map(({ id, title, _version }) => {
+          return (
+            <Gaps
+              key={id}
+              title={title}
+              id={id}
+              version={_version}
+              onDeleteGap={onDeleteGap}
+              onUpdateGap={onUpdateGap}
+            />
+          );
+        })}
 
       <div className={styles.bottom_btn}>
         <button type="button" onClick={toggleModal}>
@@ -74,9 +80,10 @@ interface GapsProps {
   title: string;
   version: number;
   onUpdateGap: (title: string, id: string, version: number) => void;
+  onDeleteGap: (id: string, version: number) => void;
 }
 
-const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, version }) => {
+const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) => {
   const [val, setVal] = useState(title);
   const [focus, setFocus] = useState(false);
 
@@ -90,7 +97,8 @@ const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, version }) => {
   return (
     <li className={styles.gaps}>
       <Icon
-        name={focus ? 'delete' : 'filled-label'}
+        // name={focus ? 'delete' : 'filled-label'}
+        name="delete"
         color="premium"
         size="xs"
         className={styles.gaps_icon}

@@ -1,6 +1,7 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { API, graphqlOperation } from 'aws-amplify';
+import uniqid from 'uniqid';
+import { API } from 'aws-amplify';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
@@ -96,21 +97,35 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     else onChangeArchived();
   };
 
-  async function getGaps() {
+  const [filter, setFilter] = useState({ title: { contains: '' } });
+
+  const getGaps = useCallback(async () => {
     try {
-      const res = await API.graphql(graphqlOperation(listGapss));
+      const res = await API.graphql({ query: listGapss, variables: { filter } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = res.data.listGapss;
-      setListGaps(items);
+
+      const newLabels = new Set();
+      const filteredLabels = items.filter((label) => {
+        const duplicate = newLabels.has(label.title);
+        newLabels.add(label.title);
+        return !duplicate;
+      });
+
+      setListGaps(filteredLabels);
     } catch (err) {
       throw new Error('Get gaps route');
     }
-  }
+  }, [filter]);
+
+  const onLabelFilter = useCallback((value: string) => {
+    setFilter(() => ({ title: { contains: value } }));
+  }, []);
 
   useEffect(() => {
     getGaps();
-  }, []);
+  }, [getGaps, onLabelFilter]);
 
   const toggleSelectedGap = useCallback((e) => {
     toggleGaps(e.target.value);
@@ -161,7 +176,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                   <div className={styles.labelWrapper}>
                     <h5> Добавить Ярлык </h5>
                     <div className={styles.labelSearch}>
-                      <input type="text" placeholder="Введите Названия Ярлыка..." />
+                      <input 
+                        type="text" 
+                        onChange={(e) => onLabelFilter(e.currentTarget.value)}
+                        placeholder="Введите Названия Ярлыка..." />
                       <Icon size="min" name="search" />
                     </div>
                     {listGaps.map((gap) => (
@@ -198,12 +216,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   {onRemoveCart && (
-                    <li key="2" onClick={onRemoveCart}>
+                    <li key={uniqid()} onClick={onRemoveCart}>
                       <span>Удалить карточку</span>
                     </li>
                   )}
                   <li
-                    key="1"
+                    key={uniqid()}
                     onClick={() => {
                       createLinkToEditor();
                     }}

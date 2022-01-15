@@ -134,15 +134,16 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
       <div className={styles.main_chips}>
-        {gaps && gaps.length > 2 ? (
-          <div>
-            <Chip onDelate={(e) => e}> {gaps[0]} </Chip>
-            <Chip onDelate={(e) => e}> {gaps[1]} </Chip>
-            <div className={styles.extraGap}> +{gaps.length - 2} </div>
-          </div>
-        ) : (
-          gaps.map((gap) => <Chip onDelate={(e) => e}> {gap} </Chip>)
-        )}
+        {gaps &&
+          (gaps.length > 2 ? (
+            <>
+              <Chip onDelate={(e) => e}> {gaps[0]} </Chip>
+              <Chip onDelate={(e) => e}> {gaps[1]} </Chip>
+              <div className={styles.extraGap}> +{gaps.length - 2} </div>
+            </>
+          ) : (
+            gaps.map((gap) => <Chip onDelate={(e) => e}> {gap} </Chip>)
+          ))}
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar

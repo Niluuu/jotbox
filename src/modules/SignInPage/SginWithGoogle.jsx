@@ -1,15 +1,22 @@
 /* eslint-disable default-case */
-import { useState, useEffect, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
-import OnErrorMessage from '../../component/message/message';
+import { useHistory } from 'react-router-dom';
 
 function SgininWithGooole() {
   const [user, setUser] = useState(null);
+  const history = useHistory();
 
   function getUser() {
     return Auth.currentAuthenticatedUser()
-      .then(userData => userData)
+      .then((userData) => userData)
+      .then((userData) => {
+        if (userData.attributes) {
+          localStorage.setItem('assessToken', userData.signInUserSession.accessToken.jwtToken);
+          localStorage.setItem('userEmail', userData.attributes.email);
+          history.push('/');
+        }
+      })
       .catch(() => console.log('Not signed in'));
   }
 
@@ -18,7 +25,7 @@ function SgininWithGooole() {
       switch (event) {
         case 'signIn':
         case 'cognitoHostedUI':
-          getUser().then(userData => setUser(userData))
+          getUser().then((userData) => setUser(userData));
           break;
         case 'signOut':
           setUser(null);
@@ -30,20 +37,21 @@ function SgininWithGooole() {
       }
     });
 
-    getUser().then(userData => setUser(userData));
+    getUser().then((userData) => setUser(userData));
   }, []);
 
-  
-
   return (
-    <div>
-      <p>User: {user ? JSON.stringify(user.attributes) : 'None'}</p>
+    <>
       {user ? (
-        <button type="button" onClick={() => Auth.signOut()}>Sign Out</button>
+        <button type="button" onClick={() => Auth.signOut()}>
+          Sign Out
+        </button>
       ) : (
-        <button type="button" onClick={() => Auth.federatedSignIn({provider: 'Google'})}>Open Google</button>
+        <button type="button" onClick={() => Auth.federatedSignIn({ provider: 'Google' })}>
+          Sgin in with google
+        </button>
       )}
-    </div>
+    </>
   );
 }
 export default SgininWithGooole;

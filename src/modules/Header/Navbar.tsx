@@ -1,6 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
+import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
 import styles from './Navbar.module.scss';
@@ -17,6 +18,7 @@ export const Navbar: FC = () => {
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   async function signOut() {
     try {
@@ -24,10 +26,9 @@ export const Navbar: FC = () => {
 
       localStorage.removeItem('assessToken');
       localStorage.removeItem('userEmail');
-      // history.push('/');
-      // onErrorMessage('You sgin out succesfully', 'success');
+      history.push('/');
     } catch (error) {
-      // onErrorMessage('Error sgin out', 'error');
+      throw new Error('Sgin out error');
     }
   }
 

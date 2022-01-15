@@ -29,12 +29,16 @@ const SignUpPage: FC = () => {
         });
         localStorage.setItem('userEmail', userState.userName);
 
-        setHasError({ active: true, success: true, message: 'You Signed Up Successfully' });
+        setHasError({
+          active: true,
+          success: true,
+          message: 'Confirm your account. We sended code to your account.',
+        });
 
         setTimeout(() => {
           setHasError((prev) => ({ ...prev, active: false }));
           history.push('/confirmCode');
-        }, 5000);
+        }, 3000);
       } catch (err) {
         setHasError({ active: true, success: false, message: err.message });
 

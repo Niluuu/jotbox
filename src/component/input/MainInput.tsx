@@ -73,12 +73,12 @@ const MainInput: FC<MainInputProps> = ({
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
-      layoutReducer: state.layoutGrid,
+      grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
     };
   });
 
-  const { grid } = mapStateToProps.layoutReducer;
+  const { grid, text } = mapStateToProps;
 
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
@@ -136,6 +136,7 @@ const MainInput: FC<MainInputProps> = ({
           linkMode={linkMode}
           createLinkToEditor={createLinkToEditor}
           editorRef={editorRef}
+          initialState={text}
         />
       </div>
       {!focused ? (

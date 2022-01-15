@@ -2,10 +2,16 @@ import { FC, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import styles from '../SignInPage/SignInPage.module.scss';
+import OnErrorMessage from '../../component/message/message';
 
 const ConfirmPage: FC = () => {
   const history = useHistory();
   const [confirmCode, setConfirmCode] = useState('');
+  const [hasError, setHasError] = useState({
+    active: false,
+    success: false,
+    message: 'You signed up successfully',
+  });
 
   const confirmSignUp = async (e) => {
     const userEmail = localStorage.getItem('userEmail');
@@ -16,9 +22,20 @@ const ConfirmPage: FC = () => {
         const data = await Auth.confirmSignUp(userEmail, confirmCode);
 
         localStorage.setItem('assessToken', data.signInUserSession.accessToken.jwtToken);
-        history.push('/sginin');
+
+        setHasError({
+          active: true,
+          success: true,
+          message: 'You sgin uped succsessfully. You can Sgin in know',
+        });
+
+        setTimeout(() => {
+          setHasError((prev) => ({ ...prev, active: false }));
+          history.push('/sginin');
+        }, 3000);
       } catch (error) {
-        throw new Error(`confirm error: ${error}`);
+        setHasError({ active: true, success: false, message: 'Something went wrong' });
+        setTimeout(() => setHasError((prev) => ({ ...prev, active: false })), 5000);
       }
     }
   };
@@ -40,6 +57,11 @@ const ConfirmPage: FC = () => {
           <button type="submit"> Confirm </button>
         </div>
       </form>
+      <OnErrorMessage
+        active={hasError.active}
+        success={hasError.success}
+        message={hasError.message}
+      />
     </div>
   );
 };

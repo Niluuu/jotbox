@@ -15,7 +15,6 @@ import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
 import { setNodesToProps } from '../../reducers/nodes';
-import { nodeId } from '../../reducers/getNodeId';
 
 interface CartProps {
   id: string;
@@ -52,10 +51,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     return {
       grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
+      updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
     };
   });
 
-  const { grid, text } = mapStateToProps;
+  const { grid, text, updateModalIsOpen } = mapStateToProps;
   const dispatch = useDispatch();
 
   const toggleGaps = useCallback(
@@ -70,8 +70,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
-    dispatch(setText(initialStateStr));
     setSelectedGaps(label !== undefined ? [] : [label]);
+    dispatch(setText(initialStateStr));
   }, [dispatch, label]);
 
   const onDefaultPin = useCallback(() => {
@@ -222,7 +222,17 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     getAllNodes();
-  }, [getAllNodes, nodeId]);
+  }, [getAllNodes]);
+
+  useEffect(() => {
+    getAllNodes();
+
+    if (updateModalIsOpen) {
+      return () => {
+        setNodes([]);
+      };
+    }
+  }, [updateModalIsOpen, getAllNodes]);
 
   useEffect(() => {
     const gaps = { contains: label };

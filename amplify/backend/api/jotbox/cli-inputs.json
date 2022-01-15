@@ -4,13 +4,16 @@
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "expirationTime": 30,
-      "apiKeyExpirationDate": "2022-02-05T11:05:04.827Z",
-      "keyDescription": "api key description"
+      "keyDescription": "api key description",
+      "expirationTime": 30
     },
     "additionalAuthTypes": [
       {
         "mode": "AWS_IAM"
+      },
+      {
+        "mode": "AMAZON_COGNITO_USER_POOLS",
+        "cognitoUserPoolId": "authjotbox"
       }
     ],
     "conflictResolution": {
@@ -19,6 +22,6 @@
       }
     },
     "apiName": "jotbox",
-    "gqlSchemaPath": "C:\\Users\\hp\\Desktop\\projects\\jotbox\\amplify\\backend\\api\\jotbox\\schema.graphql"
+    "gqlSchemaPath": "/tmp/amplify-a2b998a5-0059-41e4-9a39-50b07a664b75/amplify/backend/api/jotbox/schema.graphql"
   }
 }

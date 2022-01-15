@@ -1,22 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
 export const nodes = createSlice({
   name: 'nodes',
   initialState: {
-    nodeID: "",
-    updateModalIsOpen: false
+    nodes: [],
   },
   reducers: {
-    getIdNode: (state, action) => {
-        state.nodeID = action.payload
-        state.updateModalIsOpen = true 
-    },
-    closeUpdateModalIsOpen: (state) => {
-      state.updateModalIsOpen = false
+    setNodesToProps: (state, action) => {
+      state.nodes = action.payload;
     },
   },
-})
+});
 
-export const { getIdNode, closeUpdateModalIsOpen } = nodes.actions
+export const { setNodesToProps } = nodes.actions;
 
-export default nodes.reducer
+export default nodes.reducer;

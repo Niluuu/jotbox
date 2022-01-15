@@ -15,8 +15,17 @@ interface CartProps {
 }
 
 interface CartLayoutProps {
+  /**
+   * Grid type layout
+   */
   gridType: boolean;
+  /**
+   * Nodes
+   */
   carts: CartProps[];
+  /**
+   * Node change functions
+   */
   onRemoveCart?: (id: string, _version: number) => void;
   onChangeArchived?: (
     id: string,
@@ -26,18 +35,15 @@ interface CartLayoutProps {
     description: string,
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
-  onCartLabel?: (value: string) => void;
-  filteredGaps?: string[];
   onColorChange?: (id: string, color: string, _version: number) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
   gridType,
+  carts,
   onChangeArchived,
   onChangePin,
   onRemoveCart,
-  carts,
-  onCartLabel,
   onColorChange,
 }) => {
   return (
@@ -66,7 +72,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onCartLabel={onCartLabel}
                 gridType={gridType}
                 onColorChange={onColorChange}
               />
@@ -97,7 +102,6 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onChangeArchived={onChangeArchived}
                 onChangePin={onChangePin}
                 onRemoveCart={onRemoveCart}
-                onCartLabel={onCartLabel}
                 gridType={gridType}
                 onColorChange={onColorChange}
               />

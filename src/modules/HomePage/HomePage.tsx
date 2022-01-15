@@ -14,6 +14,7 @@ import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
+import { setNodesToProps } from '../../reducers/nodes';
 
 interface CartProps {
   id: string;
@@ -27,31 +28,35 @@ interface CartProps {
 }
 
 interface HomeProps {
+  /**
+   * Is archived page or not
+   */
   archive: boolean;
 }
 
 const HomePage: FC<HomeProps> = ({ archive }) => {
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      grid: state.layoutGrid.grid,
-      text: state.editorReducer.text,
-    };
-  });
-
-  const { grid, text } = mapStateToProps;
-  const dispatch = useDispatch();
-
   const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
   const collabarator = { eq: userEmail };
-  const archived = archive ? { eq: true } : { eq: false };
-  const [filter, setFilter] = useState({ collabarator, archived });
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
   const titleRef = useRef<HTMLDivElement>();
+  const archived = archive ? { eq: true } : { eq: false };
+  const [filter, setFilter] = useState({ collabarator, archived });
   const [selectedGaps, setSelectedGaps] = useState([]);
+
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      grid: state.layoutGrid.grid,
+      text: state.editorReducer.text,
+      updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
+    };
+  });
+
+  const { grid, text, updateModalIsOpen } = mapStateToProps;
+  const dispatch = useDispatch();
 
   const toggleGaps = useCallback(
     (gap) => {
@@ -65,8 +70,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
-    dispatch(setText(initialStateStr));
     setSelectedGaps(label !== undefined ? [] : [label]);
+    dispatch(setText(initialStateStr));
   }, [dispatch, label]);
 
   const onDefaultPin = useCallback(() => {
@@ -84,10 +89,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       //  @ts-ignore
       const { items } = data.data.listNodes;
       setNodes(items);
+      dispatch(setNodesToProps(items));
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
-  }, [filter]);
+  }, [filter, dispatch]);
 
   const onColorChange = useCallback(
     async (id, color, _version) => {
@@ -219,6 +225,16 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   }, [getAllNodes]);
 
   useEffect(() => {
+    getAllNodes();
+
+    if (updateModalIsOpen) {
+      return () => {
+        setNodes([]);
+      };
+    }
+  }, [updateModalIsOpen, getAllNodes]);
+
+  useEffect(() => {
     const gaps = { contains: label };
     const newFiler =
       label !== undefined ? { collabarator, archived, gaps } : { collabarator, archived };
@@ -247,11 +263,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           </div>
         )}
         <CartLayout
+          gridType={grid}
+          carts={nodes}
           onChangePin={onChangePin}
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
-          gridType={grid}
-          carts={nodes}
           onColorChange={onColorChange}
         />
         <AddLinkModal />

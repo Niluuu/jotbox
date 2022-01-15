@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState, useRef } from 'react';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
@@ -6,18 +6,53 @@ import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
-import { getIdNode } from '../../reducers/nodes';
+import { getIdNode } from '../../reducers/getNodeId';
 import './Color.scss';
 
 interface CartProps {
+  /**
+   * Node Id
+   */
   id: string;
+  /**
+   * Node title
+   */
   title: string;
+  /**
+   * Node description
+   */
   description: string;
+  /**
+   * Node is pined?
+   */
   pined: boolean;
+  /**
+   * Node labels
+   */
   gaps?: string[];
+  /**
+   * Node version of node
+   */
   _version?: number;
+  /**
+   * Node archived or not?
+   */
+  archived: boolean;
+  /**
+   * Node color
+   */
+  color: string;
+  /**
+   * Delete node
+   */
   onRemoveCart?: (id: string, _version: number) => void;
+  /**
+   * Toggle node pined
+   */
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
+  /**
+   * Change node archived
+   */
   onChangeArchived?: (
     id: string,
     archived: boolean,
@@ -25,16 +60,18 @@ interface CartProps {
     title: string,
     description: string,
   ) => void;
-  onLabelEdit?: () => void;
-  labelEdit?: boolean;
-  onCartLabel?: (value: string) => void;
-  cartLabel?: string;
-  filteredGaps?: string[];
-  gridType?: boolean;
-  popupCart?: boolean;
-  color: string;
+  /**
+   * Node color change func
+   */
   onColorChange?: (id: string, color: string, _version: number) => void;
-  archived: boolean;
+  /**
+   * Layout type for cart size
+   */
+  gridType: boolean;
+  /**
+   * ?
+   */
+  popupCart?: boolean;
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -48,16 +85,15 @@ const Cart: FC<CartProps> = (props) => {
     onChangePin,
     onChangeArchived,
     onRemoveCart,
-    onCartLabel,
-    cartLabel,
     gridType,
     popupCart,
     color,
     onColorChange,
     archived,
   } = props;
-
+  const [isMain] = useState(false);
   const dispatch = useDispatch();
+  const editorRef = useRef(null);
 
   const onOpenModal = useCallback(
     (nodeId) => {
@@ -92,7 +128,9 @@ const Cart: FC<CartProps> = (props) => {
         <div className={styles.cart_title}>
           <p>{title}</p>
         </div>
-        {description && <MainEditor color={color} initialState={description} />}
+        {description && (
+          <MainEditor color={color} initialState={description} editorRef={editorRef} />
+        )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
       <div className={styles.main_chips}>
@@ -109,12 +147,10 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar
-          withHistory={!!true}
-          isMainInput={!true}
-          cartLabel={cartLabel}
+          withHistory
+          isMainInput={isMain}
           currentColor={color}
           selectedGaps={gaps}
-          onCartLabel={onCartLabel}
           onRemoveCart={() => onRemoveCart(id, _version)}
           onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
           onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}

@@ -6,22 +6,49 @@ import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import { InputNavbar } from './InputNavbar';
-import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import MainEditor from '../../modules/Editor/MainEditor';
+import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
 
 interface MainInputProps {
+  /**
+   * Is main input focused
+   */
   focused: boolean;
+  /**
+   * Is main input creates pined node
+   */
   defaultPin: boolean;
+  /**
+   * Outside ref
+   */
+  outsideRef?: React.LegacyRef<HTMLDivElement> | null;
+  /**
+   * Node title
+   */
+  titleRef: React.LegacyRef<HTMLDivElement> | null;
+  /**
+   * Default node color
+   */
+  defaultColor?: string;
+  /**
+   * Default funtions to create nodes
+   */
   onDefaultPin: () => void;
   onSetNodes: () => void;
   onSetArchive: () => void;
-  setFocused: (e: any) => void;
-  outsideRef?: any;
-  titleRef: any;
   onDefaultColor?: (optionalColor: string) => void;
-  defaultColor?: string;
+  /**
+   * Outside click handler
+   */
+  setFocused: (e: boolean) => void;
+  /**
+   * Default node labels
+   */
   selectedGaps?: string[];
+  /**
+   * Node labels handler
+   */
   toggleGaps: (gap: string) => void;
 }
 
@@ -42,17 +69,16 @@ const MainInput: FC<MainInputProps> = ({
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
   useOnClickOutside(outsideRef, handleClickOutside);
-
   const editorRef = useRef<Editor>(null);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
-      layoutReducer: state.layoutGrid,
+      grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
     };
   });
 
-  const { grid } = mapStateToProps.layoutReducer;
+  const { grid, text } = mapStateToProps;
 
   const onFocusOut = useCallback((e) => {
     if (e.currentTarget.contains(document.activeElement)) {
@@ -61,7 +87,8 @@ const MainInput: FC<MainInputProps> = ({
   }, []);
 
   const [linkMode, setlinkMode] = useState(false);
-  const onLinkMode = () => {
+
+  const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
   };
 
@@ -104,11 +131,12 @@ const MainInput: FC<MainInputProps> = ({
 
       <div className={styles.main_row}>
         <MainEditor
-          isMainInput={!!true}
+          isMainInput
           defaultColor={defaultColor}
           linkMode={linkMode}
-          onLinkMode={onLinkMode}
+          createLinkToEditor={createLinkToEditor}
           editorRef={editorRef}
+          initialState={text}
         />
       </div>
       {!focused ? (
@@ -135,14 +163,14 @@ const MainInput: FC<MainInputProps> = ({
 
       {focused ? (
         <InputNavbar
+          isMainInput
+          withHistory
           focused={focused}
-          isMainInput={!!true}
           onSetArchive={onSetArchive}
-          ontoggle={() => onSetNodes()}
-          onLinkMode={onLinkMode}
+          onSetNode={() => onSetNodes()}
+          createLinkToEditor={createLinkToEditor}
           onDefaultColor={onDefaultColor}
           defaultColor={defaultColor}
-          withHistory
           toggleGaps={toggleGaps}
           selectedGaps={selectedGaps}
         />
@@ -150,29 +178,5 @@ const MainInput: FC<MainInputProps> = ({
     </div>
   );
 };
-
-// interface LinkProps {
-//   path: string;
-//   show?: boolean;
-//   setShow: (boolean) => void;
-// }
-
-// const Link: FC<LinkProps> = ({ show, path, setShow }) => {
-//   const handleClick = useCallback(
-//     (e) => {
-//       setShow(false);
-//     },
-//     [show],
-//   );
-
-//   return (
-//     <div className={classNames(styles.toltip, show && styles.show)}>
-//       <a href={path} onClick={() => handleClick(path)}>
-//         <Icon name="link" />
-//         Открыть ссылку
-//       </a>
-//     </div>
-//   );
-// };
 
 export default MainInput;

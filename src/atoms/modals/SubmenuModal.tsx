@@ -33,6 +33,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
     <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
       <li className={styles.gaps}>
         {focus ? (
+          // eslint-disable-next-line no-alert
           <Icon name="exit" color="premium" size="xs" onClick={() => alert('delate')} />
         ) : (
           <Icon name="add" color="premium" size="xs" onClick={() => setVal('')} />

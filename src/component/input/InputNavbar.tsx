@@ -1,6 +1,7 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { API, graphqlOperation } from 'aws-amplify';
+import uniqid from 'uniqid';
+import { API } from 'aws-amplify';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
@@ -101,7 +102,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const getGaps = useCallback(async () => {
     try {
       const res = await API.graphql({ query: listGapss, variables: { filter } });
-      // const res = await API.graphql({ query: listGapss });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = res.data.listGapss;
@@ -216,12 +216,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   {onRemoveCart && (
-                    <li key="2" onClick={onRemoveCart}>
+                    <li key={uniqid()} onClick={onRemoveCart}>
                       <span>Удалить карточку</span>
                     </li>
                   )}
                   <li
-                    key="1"
+                    key={uniqid()}
                     onClick={() => {
                       createLinkToEditor();
                     }}

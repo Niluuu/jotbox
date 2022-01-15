@@ -8,6 +8,7 @@ export interface SubmenuModalProps {
   toggleModal: () => void;
   onCreateGap: (title: string) => void;
   onUpdateGap: (title: string, id: string, version: number) => void;
+  onDeleteGap: (id: string, version: number) => void;
   close?: string;
   modalTitle?: string;
   listGaps: any;
@@ -18,6 +19,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   toggleModal,
   onCreateGap,
   onUpdateGap,
+  onDeleteGap,
   listGaps,
   close = 'Ok',
   modalTitle = 'Изменение ярлыков',
@@ -52,7 +54,14 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
       {listGaps &&
         listGaps.map(({ id, title, _version }) => {
           return (
-            <Gaps key={id} title={title} id={id} version={_version} onUpdateGap={onUpdateGap} />
+            <Gaps
+              key={id}
+              title={title}
+              id={id}
+              version={_version}
+              onDeleteGap={onDeleteGap}
+              onUpdateGap={onUpdateGap}
+            />
           );
         })}
 
@@ -71,9 +80,10 @@ interface GapsProps {
   title: string;
   version: number;
   onUpdateGap: (title: string, id: string, version: number) => void;
+  onDeleteGap: (id: string, version: number) => void;
 }
 
-const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, version }) => {
+const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) => {
   const [val, setVal] = useState(title);
   const [focus, setFocus] = useState(false);
 
@@ -87,7 +97,8 @@ const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, version }) => {
   return (
     <li className={styles.gaps}>
       <Icon
-        name={focus ? 'delete' : 'filled-label'}
+        // name={focus ? 'delete' : 'filled-label'}
+        name="delete"
         color="premium"
         size="xs"
         className={styles.gaps_icon}

@@ -68,10 +68,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       //  @ts-ignore
       const { items } = res.data.listGapss;
 
-      const rawLabels = new Set();
+      const newLabels = new Set();
       const filteredLabels = items.filter((label) => {
-        const duplicate = rawLabels.has(label.title);
-        rawLabels.add(label.title);
+        const duplicate = newLabels.has(label.title);
+        newLabels.add(label.title);
         return !duplicate;
       });
 

@@ -56,7 +56,7 @@ export const Navbar: FC = () => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       layoutReducer: state.layoutGrid,
-      text: state.editorReducer.text
+      text: state.editorReducer.text,
     };
   });
 

@@ -3,7 +3,9 @@ import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
 import styles from './SignInPage.module.scss';
+
 import OnErrorMessage from '../../component/message/message';
+import SgininWithGooole from './SginWithGoogle';
 
 const SignInPage: FC = () => {
   const history = useHistory();
@@ -62,7 +64,8 @@ const SignInPage: FC = () => {
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={signIn}>
         <h1 className={styles.sign__title}> Sign In </h1>
-        {/* <h1 className={styles.sign__subTitle}> Use your Google Account </h1> */}
+        <h1 className={styles.sign__subTitle}> Use your Google Account </h1>
+        <SgininWithGooole />
         <input
           type="text"
           name="userName"
@@ -89,6 +92,7 @@ const SignInPage: FC = () => {
           </button>
         </div>
       </form>
+
       <OnErrorMessage
         active={hasError.active}
         success={hasError.success}

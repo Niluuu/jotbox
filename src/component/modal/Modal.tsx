@@ -46,7 +46,7 @@ const Modal: FC<ModalProps> = ({
     <>
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
       <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
-        <div 
+        <div
           ref={modalRef}
           className={classNames(
             styles.popup,
@@ -57,18 +57,7 @@ const Modal: FC<ModalProps> = ({
           )}
           id="popup-login"
         >
-          <div className={styles.popup__title}>
-            {title}
-            {!removeIcon && (
-              <Icon
-                name="exit"
-                size="xs"
-                color="premium"
-                className={styles.popup_exit_icon}
-                onClick={toggleModal}
-              />
-            )}
-          </div>
+          <div className={styles.popup__title}>{title}</div>
           {children}
         </div>
       </div>

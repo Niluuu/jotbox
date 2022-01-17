@@ -11,6 +11,7 @@ import { getNode } from '../../graphql/queries';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
+import '../../component/cart/Color.scss';
 
 const CartModal: FC = () => {
   const [node, setNode] = useState([]);
@@ -112,8 +113,18 @@ const CartModal: FC = () => {
     >
       <>
         {node[0] !== undefined && (
-          <div tabIndex={-1}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div tabIndex={-1} style={{position: 'relative'}}>
+            <div
+              className={updatedColor}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '95%',
+                padding: '10px',
+                position: 'absolute',
+                zIndex: 1,
+              }}
+            >
               <div
                 ref={titleRef}
                 id="title"

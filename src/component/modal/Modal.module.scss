@@ -23,11 +23,11 @@ $base-nav-z-index: 5;
 .popup {
   pointer-events: initial;
   background: $color-white;
-  border-radius: 0 !important;
+  border-radius: 15px !important;
   max-width: 100%;
   margin: 0 auto;
-  padding: 20px !important;
-  min-width: 250px !important;
+  padding: 15px 0 0 !important;
+  min-width: 200px !important;
   z-index: $base-nav-z-index + 5;
   max-height: 95vh;
   position: relative;
@@ -37,8 +37,7 @@ $base-nav-z-index: 5;
   }
   
   &.large {
-    padding-bottom: 10px !important;
-    min-width: 600px !important;
+    min-width: 560px !important;
     
     .popup__title {
       margin: 0;

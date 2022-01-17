@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 
 import classNames from 'classnames';
+import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import styles from './Modal.module.scss';
 import '../cart/Color.scss';
 import { Icon } from '../Icon/Icon';
@@ -36,11 +37,17 @@ const Modal: FC<ModalProps> = ({
   title,
   color,
 }) => {
+  const modalRef = useRef(null);
+  const outsideClick = () => {
+    if (isOpen) toggleModal();
+  };
+  useOnClickOutside(modalRef, outsideClick);
   return (
     <>
       <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
       <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
-        <div
+        <div 
+          ref={modalRef}
           className={classNames(
             styles.popup,
             isTop && styles.top,

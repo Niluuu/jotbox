@@ -66,6 +66,8 @@ interface InputNavbarProps {
    * Oncreate selected gaps
    */
   selectedGaps: string[];
+  toggleGapsCart?: (gap: any) => void;
+  shadow?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -84,6 +86,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     onDefaultColor,
     toggleGaps,
     selectedGaps,
+    toggleGapsCart,
+    shadow,
   } = props;
   const [listGaps, setListGaps] = useState([]);
   const [tooltip, setTooltip] = useState(false);
@@ -127,13 +131,23 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     getGaps();
   }, [getGaps, onLabelFilter]);
 
-  const toggleSelectedGap = useCallback((e) => {
-    toggleGaps(e.target.value);
-  }, []);
+  const toggleSelectedGap = useCallback(
+    (e) => {
+      if (isMainInput) toggleGaps(e.target.value);
+      else toggleGapsCart(e.target.value);
+    },
+    [isMainInput, toggleGaps, toggleGapsCart],
+  );
 
   return (
     <>
-      <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
+      <div
+        className={classNames(
+          styles.input_navbar,
+          !focused && styles.hide,
+          shadow && styles.shadow,
+        )}
+      >
         <div className={styles.main_tools}>
           <button onClick={toggleArchive} type="button" className={styles.icon_btn}>
             <Icon name="dowland" color="premium" size="xs" />
@@ -176,10 +190,11 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                   <div className={styles.labelWrapper}>
                     <h5> Добавить Ярлык </h5>
                     <div className={styles.labelSearch}>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         onChange={(e) => onLabelFilter(e.currentTarget.value)}
-                        placeholder="Введите Названия Ярлыка..." />
+                        placeholder="Введите Названия Ярлыка..."
+                      />
                       <Icon size="min" name="search" />
                     </div>
                     {listGaps.map((gap) => (

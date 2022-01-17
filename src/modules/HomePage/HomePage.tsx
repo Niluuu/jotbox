@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { API } from 'aws-amplify';
-import { listNodes } from '../../graphql/queries';
+import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../atoms/cart-layout/CartLayout';
@@ -90,6 +90,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       const { items } = data.data.listNodes;
       setNodes(items);
       dispatch(setNodesToProps(items));
+      return items;
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
@@ -175,6 +176,33 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         getAllNodes();
       } catch (err) {
         throw new Error('Update node error');
+      }
+    },
+    [getAllNodes],
+  );
+
+  const toggleGapsCart = useCallback(
+    async (id, _version, gap) => {
+      try {
+        const data = await API.graphql({ query: getNode, variables: { id } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const cart = data.data.getNode;
+        const cartGaps = cart.gaps;
+
+        const updatedGaps = cartGaps.includes(gap)
+          ? cartGaps.filter((el) => el !== gap)
+          : [...cartGaps, gap];
+
+        const updatedNode = { id, _version, gaps: updatedGaps };
+
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        getAllNodes();
+      } catch (err) {
+        throw new Error('Toggle Update Label for Carts Error');
       }
     },
     [getAllNodes],
@@ -269,6 +297,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           onChangeArchived={onChangeArchived}
           onRemoveCart={onRemoveCart}
           onColorChange={onColorChange}
+          toggleGapsCart={toggleGapsCart}
         />
         <AddLinkModal />
         <CartModal />

@@ -97,6 +97,7 @@ const CartModal: FC = () => {
   const toggleModal = useCallback(
     (id) => {
       onUpdate(id);
+      setUpdatedColor(undefined);
     },
     [onUpdate],
   );
@@ -107,6 +108,7 @@ const CartModal: FC = () => {
       color={updatedColor}
       isLarge={!!true}
       isOpen={updateModalIsOpen}
+      toggleModal={() => toggleModal(node[0].id)}
     >
       <>
         {node[0] !== undefined && (
@@ -143,6 +145,7 @@ const CartModal: FC = () => {
                   editorRef={editorRef}
                   initialState={node[0].description}
                   color={updatedColor}
+                  isModal
                 />
               )}
             </div>
@@ -153,6 +156,7 @@ const CartModal: FC = () => {
               createLinkToEditor={createLinkToEditor}
               withHistory
               selectedGaps={[]}
+              shadow
               initialGaps={node[0] && node[0].gaps}
             />
           </div>

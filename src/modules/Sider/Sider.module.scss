@@ -10,6 +10,12 @@
   background: #fff;
   z-index: 1 !important;
   border-right: 0;
+  overflow-y: scroll;
+  position: fixed;
+  top: 75px;
+  left: 0;
+  height: 100vh;
+  padding-bottom: 100px;
 
   &:hover {
     flex: 0 0 260px;

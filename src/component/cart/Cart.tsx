@@ -72,6 +72,7 @@ interface CartProps {
    * ?
    */
   popupCart?: boolean;
+  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -89,6 +90,7 @@ const Cart: FC<CartProps> = (props) => {
     popupCart,
     color,
     onColorChange,
+    toggleGapsCart,
     archived,
   } = props;
   const [isMain] = useState(false);
@@ -137,12 +139,14 @@ const Cart: FC<CartProps> = (props) => {
         {gaps &&
           (gaps.length > 2 ? (
             <>
-              <Chip onDelate={(e) => e}> {gaps[0]} </Chip>
-              <Chip onDelate={(e) => e}> {gaps[1]} </Chip>
+              <Chip onDelate={() => toggleGapsCart(id, _version, gaps[0])}> {gaps[0]} </Chip>
+              <Chip onDelate={() => toggleGapsCart(id, _version, gaps[1])}> {gaps[1]} </Chip>
               <div className={styles.extraGap}> +{gaps.length - 2} </div>
             </>
           ) : (
-            gaps.map((gap) => <Chip onDelate={(e) => e}> {gap} </Chip>)
+            gaps.map((gap) => (
+              <Chip onDelate={() => toggleGapsCart(id, _version, gap)}> {gap} </Chip>
+            ))
           ))}
       </div>
       <div className={styles.input_navbar}>
@@ -153,6 +157,7 @@ const Cart: FC<CartProps> = (props) => {
           selectedGaps={gaps}
           onRemoveCart={() => onRemoveCart(id, _version)}
           onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
+          toggleGapsCart={(gap) => toggleGapsCart(id, _version, gap)}
           onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
         />
       </div>

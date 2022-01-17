@@ -4,7 +4,7 @@ import styles from './Chip.module.scss';
 
 export interface ChipProps {
   delateIcon?: boolean;
-  onDelate: (e: any) => void;
+  onDelate?: () => void;
 }
 
 /**
@@ -15,7 +15,7 @@ export const Chip: React.FC<ChipProps> = ({ delateIcon, onDelate, children }) =>
   return (
     <div className={styles.chip}>
       <span>{children}</span>
-      <Icon name="exit" size="xs" />
+      <Icon onClick={() => onDelate()} name="exit" size="xs" />
     </div>
   );
 };

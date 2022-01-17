@@ -16,6 +16,11 @@
   padding: 16px 1px;
 }
 
+.editor.modal {
+  overflow-y: scroll;
+  min-height: 300px;
+}
+
 .editor :global(.public-DraftEditor-content) {
   min-height: 0;
 }

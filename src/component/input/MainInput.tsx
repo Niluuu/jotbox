@@ -156,7 +156,7 @@ const MainInput: FC<MainInputProps> = ({
       {focused && selectedGaps && (
         <div className={classNames(styles.main_tools, styles.gaps)}>
           {selectedGaps.map((gap) => (
-            <Chip onDelate={(e) => e}>{gap} </Chip>
+            <Chip>{gap} </Chip>
           ))}
         </div>
       )}

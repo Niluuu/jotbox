@@ -4,6 +4,9 @@
 .navbar {
   position: absolute;
   right: 0;
+  height: 100%;
+  padding-top: 10px;
+  padding-right: 5px;
 
   button {
     cursor: pointer;
@@ -240,8 +243,6 @@
         }
 
         &.signOut {
-          border-top: none;
-
           a {
             margin: 20px 70px;
             border: 1px solid #e8eaed;
@@ -251,8 +252,6 @@
         }
 
         &.privacy {
-          border-top: none;
-          
           a {
             font-size: 12px;
             font-weight: 600;

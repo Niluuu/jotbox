@@ -4,7 +4,8 @@
 .home_page {
   width: 100%;
   min-height: 167px;
-  padding-top: 75px;
+  padding-top: 90px;
+  padding-left: 50px;
 
   &__main_input {
     padding: 10px 0 0;
@@ -19,11 +20,11 @@
       background: rgb(212, 212, 212);
     }
   }
-  
+
   &.column {
     width: 100%;
     grid-template-columns: repeat(1, auto);
-    
+
     .home_page__main_input {
       padding: 10px 0 0;
     }
@@ -55,6 +56,57 @@
 
     &:focus {
       border-bottom: 1px solid $gray-color2;
+    }
+  }
+}
+
+.textarea {
+  outline: none !important;
+}
+
+
+@include desktop {
+  .home_page {
+    padding-left: 75px;
+
+    &.open {
+      padding-left: 300px;
+    }
+
+    &__main_input {
+      .other_options {
+        position: absolute;
+      }
+    }
+
+    &.column {
+      .home_page__main_input {
+        padding: 10px 0 0;
+      }
+    }
+  }
+}
+
+@include desktop-large {
+  .home_page {
+    padding-left: 200px;
+    padding-top: 100px;
+
+    &.open {
+      padding-left: 325px;
+    }
+
+
+    &__main_input {
+      .other_options {
+        position: absolute;
+      }
+    }
+
+    &.column {
+      .home_page__main_input {
+        padding: 10px 0 0;
+      }
     }
   }
 }

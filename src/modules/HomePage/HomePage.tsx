@@ -270,9 +270,18 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
 
+  const [isSidebarOpen, setisSidebarOpen] = useState(true);
+  const toggleSider = () => setisSidebarOpen((pre) => !pre);
+
   return (
-    <Layout>
-      <div className={classNames(styles.home_page, grid && styles.column)}>
+    <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
+      <div
+        className={classNames(
+          styles.home_page,
+          grid && styles.column,
+          !isSidebarOpen && styles.open,
+        )}
+      >
         {!archive && (
           <div className={styles.home_page__main_input}>
             <MainInput

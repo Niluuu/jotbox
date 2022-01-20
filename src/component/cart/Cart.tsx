@@ -117,7 +117,7 @@ const Cart: FC<CartProps> = (props) => {
     >
       <button
         type="button"
-        className={styles.icon_btn}
+        className={classNames(styles.icon_btn, styles.pin)}
         onClick={() => onChangePin(id, !pined, _version)}
       >
         {pined ? (

@@ -92,10 +92,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   } = props;
   const [listGaps, setListGaps] = useState([]);
   const [tooltip, setTooltip] = useState(false);
-  const [labelEditPopover, setLabelEditPopover] = useState(false);
 
   const toggleTooltip = () => setTooltip((pre) => !pre);
-  const toggleLabelEditPopover = () => setLabelEditPopover((pre) => !pre);
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
@@ -183,7 +181,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </button>
           </Popover>
           <Popover
-            isOpen={labelEditPopover}
             content={
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
@@ -221,7 +218,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             }
             placement="bottom-start"
           >
-            <button onClick={toggleLabelEditPopover} type="button" className={styles.icon_btn}>
+            <button type="button" className={styles.icon_btn}>
               <Icon name="gaps" color="premium" size="xs" />
             </button>
           </Popover>

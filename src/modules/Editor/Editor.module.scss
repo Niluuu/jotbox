@@ -6,7 +6,6 @@
   cursor: text;
   padding: 5px;
   border-radius: 2px;
-  background: #fefefe;
   height: auto;
   min-height: 1px;
   position: relative;
@@ -22,7 +21,7 @@
 .editor.modal {
   overflow-y: scroll;
   min-height: 300px;
-  padding: 50px 10px 0;
+  padding: 50px 10px 0 !important;
 }
 
 .editor :global(.public-DraftEditor-content) {

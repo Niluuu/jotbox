@@ -24,10 +24,9 @@ $base-nav-z-index: 5;
   pointer-events: initial;
   background: $color-white;
   border-radius: 15px !important;
-  max-width: 100%;
+  width: 95%;
   margin: 0 auto;
-  padding: 15px 0 0 !important;
-  min-width: 200px !important;
+  padding: 12.5px 0 0 !important;
   z-index: $base-nav-z-index + 5;
   max-height: 95vh;
   position: relative;
@@ -35,16 +34,14 @@ $base-nav-z-index: 5;
   &.top {
     z-index: $base-nav-z-index + 10 !important;
   }
-  
+
   &.large {
-    min-width: 560px !important;
-    
-    .popup__title {
-      margin: 0;
-    }
-    
-    .popup_exit_icon {
-      padding-right: 5px;
+    @include media($sm) {
+      min-width: 628px;
+      border-radius: 20px;
+      max-width: 628px;
+      margin: 30px auto;
+      padding: 65px 73px;
     }
   }
 
@@ -70,18 +67,9 @@ $base-nav-z-index: 5;
     }
   }
 
-  @include media($sm) {
-    min-width: 628px;
-    border-radius: 20px;
-    max-width: 628px;
-    margin: 30px auto;
-    padding: 65px 73px;
-  }
-
   &__title {
     line-height: 1.2;
     font-weight: $font-weight-bold;
-    margin-bottom: 30px;
     text-align: center;
   }
 
@@ -133,4 +121,3 @@ $base-nav-z-index: 5;
     cursor: pointer;
   }
 }
-

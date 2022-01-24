@@ -249,21 +249,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <Icon name="other" color="premium" size="xs" />
             </button>
           </Popover>
-
-          {withHistory ? (
-            <>
-              <button
-                style={{ position: 'relative', right: '3px' }}
-                type="button"
-                className={styles.icon_btn}
-              >
-                <Icon name="back" color="premium" size="xs" />
-              </button>
-              <button type="button" className={classNames(styles.icon_btn, styles.icon_rotate)}>
-                <Icon name="back" color="premium" size="xs" />
-              </button>
-            </>
-          ) : null}
         </div>
         <button onClick={onSetNode} type="button" className={styles.btn}>
           Закрыть

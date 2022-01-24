@@ -122,7 +122,8 @@ const CartModal: FC = () => {
                 width: '95%',
                 padding: '10px',
                 position: 'absolute',
-                zIndex: 1,
+                zIndex: 100,
+                background: '#fff',
               }}
             >
               <div

@@ -36,6 +36,7 @@ interface CartLayoutProps {
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onColorChange?: (id: string, color: string, _version: number) => void;
+  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -45,6 +46,7 @@ const CartLayout: FC<CartLayoutProps> = ({
   onChangePin,
   onRemoveCart,
   onColorChange,
+  toggleGapsCart,
 }) => {
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
@@ -74,6 +76,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 gridType={gridType}
                 onColorChange={onColorChange}
+                toggleGapsCart={toggleGapsCart}
               />
             ))}
         </div>
@@ -104,6 +107,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 gridType={gridType}
                 onColorChange={onColorChange}
+                toggleGapsCart={toggleGapsCart}
               />
             ))}
         </div>

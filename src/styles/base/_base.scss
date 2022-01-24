@@ -40,7 +40,7 @@ body {
   width: 100%;
   margin: 0 !important;
   padding: 0;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
   position: relative;
 
   @include tablet-landscape() {
@@ -202,10 +202,30 @@ textarea {
   
   &.active {
     top: 1%;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
   }
 }
 
 .DraftEditor-editorContainer {
   z-index: inherit;
+}
+
+.public-DraftStyleDefault-ul {
+  margin-top: 0 !important;
+}
+
+@include desktop {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
 }

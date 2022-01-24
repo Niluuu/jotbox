@@ -4,29 +4,24 @@
 .avatar {
   cursor: pointer;
   display: inline-flex;
-  border: 6px solid transparent;
   border-radius: 50%;
-
-  &:hover {
-    border-color: $gray-color3;
-  }
 
   img {
     border-radius: 50%;
     width: 20px;
-    height: 28px;
+    height: 20px;
   }
 }
 
 .img_avatar {
   cursor: pointer;
   display: inline-block;
-  border: 6px solid transparent;
+  border: 5px solid transparent;
   border-radius: 50%;
 
   img {
     border-radius: 50%;
     width: 20px;
-    height: 28px;
+    height: 20px;
   }
 }

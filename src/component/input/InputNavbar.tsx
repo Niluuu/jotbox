@@ -67,6 +67,8 @@ interface InputNavbarProps {
    * Oncreate selected gaps
    */
   selectedGaps: string[];
+  toggleGapsCart?: (gap: any) => void;
+  shadow?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -85,13 +87,13 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     onDefaultColor,
     toggleGaps,
     selectedGaps,
+    toggleGapsCart,
+    shadow,
   } = props;
   const [listGaps, setListGaps] = useState([]);
   const [tooltip, setTooltip] = useState(false);
-  const [labelEditPopover, setLabelEditPopover] = useState(false);
 
   const toggleTooltip = () => setTooltip((pre) => !pre);
-  const toggleLabelEditPopover = () => setLabelEditPopover((pre) => !pre);
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
@@ -127,13 +129,23 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     getGaps();
   }, [getGaps, onLabelFilter]);
 
-  const toggleSelectedGap = useCallback((e) => {
-    toggleGaps(e.target.value);
-  }, []);
+  const toggleSelectedGap = useCallback(
+    (e) => {
+      if (isMainInput) toggleGaps(e.target.value);
+      else toggleGapsCart(e.target.value);
+    },
+    [isMainInput, toggleGaps, toggleGapsCart],
+  );
 
   return (
     <>
-      <div className={classNames(styles.input_navbar, !focused && styles.hide)}>
+      <div
+        className={classNames(
+          styles.input_navbar,
+          !focused && styles.hide,
+          shadow && styles.shadow,
+        )}
+      >
         <div className={styles.main_tools}>
           <button onClick={toggleArchive} type="button" className={styles.icon_btn}>
             <Icon name="dowland" color="premium" size="xs" />
@@ -169,17 +181,17 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </button>
           </Popover>
           <Popover
-            isOpen={labelEditPopover}
             content={
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   <div className={styles.labelWrapper}>
                     <h5> Добавить Ярлык </h5>
                     <div className={styles.labelSearch}>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         onChange={(e) => onLabelFilter(e.currentTarget.value)}
-                        placeholder="Введите Названия Ярлыка..." />
+                        placeholder="Введите Названия Ярлыка..."
+                      />
                       <Icon size="min" name="search" />
                     </div>
                     {listGaps.map((gap) => (
@@ -206,7 +218,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             }
             placement="bottom-start"
           >
-            <button onClick={toggleLabelEditPopover} type="button" className={styles.icon_btn}>
+            <button type="button" className={styles.icon_btn}>
               <Icon name="gaps" color="premium" size="xs" />
             </button>
           </Popover>
@@ -237,21 +249,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <Icon name="other" color="premium" size="xs" />
             </button>
           </Popover>
-
-          {withHistory ? (
-            <>
-              <button
-                style={{ position: 'relative', right: '3px' }}
-                type="button"
-                className={styles.icon_btn}
-              >
-                <Icon name="back" color="premium" size="xs" />
-              </button>
-              <button type="button" className={classNames(styles.icon_btn, styles.icon_rotate)}>
-                <Icon name="back" color="premium" size="xs" />
-              </button>
-            </>
-          ) : null}
         </div>
         <button onClick={onSetNode} type="button" className={styles.btn}>
           Закрыть

@@ -11,8 +11,13 @@ import { getNode } from '../../graphql/queries';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
+import '../../component/cart/Color.scss';
 
-const CartModal: FC = () => {
+interface CartModalType {
+  onColorChange: (id: string, color: string, _version: number) => void;
+}
+
+const CartModal: FC<CartModalType> = ({ onColorChange }) => {
   const [node, setNode] = useState([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
@@ -97,21 +102,39 @@ const CartModal: FC = () => {
   const toggleModal = useCallback(
     (id) => {
       onUpdate(id);
+      setUpdatedColor(undefined);
     },
     [onUpdate],
   );
 
+  const modalColorChange = (color) => {
+    onColorChange(node[0].id, color, node[0]._version);
+    nodeGet(nodeID);
+  };
   return (
     <Modal
       removeIcon={updatedColor === undefined && true}
       color={updatedColor}
-      isLarge={!!true}
+      isLarge
       isOpen={updateModalIsOpen}
+      cartmodal
+      toggleModal={() => toggleModal(node[0].id)}
     >
       <>
         {node[0] !== undefined && (
-          <div tabIndex={-1}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div tabIndex={-1} style={{ position: 'relative' }}>
+            <div
+              className={updatedColor}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '98%',
+                padding: '5px 0 10px 10px',
+                position: 'absolute',
+                zIndex: 100,
+                background: '#fff',
+              }}
+            >
               <div
                 ref={titleRef}
                 id="title"
@@ -143,16 +166,19 @@ const CartModal: FC = () => {
                   editorRef={editorRef}
                   initialState={node[0].description}
                   color={updatedColor}
+                  isModal
                 />
               )}
             </div>
             <InputNavbar
-              isMainInput={!!true}
+              isMainInput={!true}
               onSetArchive={toggleArchived}
               onSetNode={() => toggleModal(node[0].id)}
+              onColorChange={(color) => modalColorChange(color)}
               createLinkToEditor={createLinkToEditor}
               withHistory
               selectedGaps={[]}
+              shadow
               initialGaps={node[0] && node[0].gaps}
             />
           </div>

@@ -2,11 +2,11 @@ import { FC, useState } from 'react';
 import { Header } from '../../modules/Header/Header';
 import { Sider } from '../../modules/Sider/Sider';
 
-const Layout: FC = (props) => {
-  const { children } = props;
-  const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  const toggleSider = () => setisSidebarOpen((pre) => !pre);
-
+interface LayoutProps {
+  toggleSider: () => void;
+  isSidebarOpen: boolean;
+}
+const Layout: FC<LayoutProps> = ({ children, toggleSider, isSidebarOpen }) => {
   return (
     <>
       <Header onClick={toggleSider} />

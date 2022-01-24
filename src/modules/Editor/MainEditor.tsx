@@ -19,6 +19,7 @@ interface MainEditorProps {
   color?: string;
   defaultColor?: string;
   isMainInput?: boolean;
+  isModal?: boolean;
 }
 
 const MainEditor: FC<MainEditorProps> = ({
@@ -29,6 +30,7 @@ const MainEditor: FC<MainEditorProps> = ({
   color,
   defaultColor,
   isMainInput,
+  isModal,
 }) => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))),
@@ -123,6 +125,7 @@ const MainEditor: FC<MainEditorProps> = ({
           styles.editor,
           isMainInput ? defaultColor : color,
           !isMainInput ? styles.cart : null,
+          isModal ? styles.modal : null,
         )}
         onClick={() => {
           editorRef.current!.focus();

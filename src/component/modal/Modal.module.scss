@@ -7,11 +7,11 @@ $base-nav-z-index: 5;
 .backdrop {
   position: fixed;
   top: 0;
-  right: -100%;
+  right: -125%;
   background: rgba(10, 10, 10, 0.6);
   height: 100vh;
   width: 100vw;
-  z-index: $base-nav-z-index + 5;
+  z-index: $base-nav-z-index + 5 !important;
   display: flex;
   align-items: center;
   
@@ -23,27 +23,30 @@ $base-nav-z-index: 5;
 .popup {
   pointer-events: initial;
   background: $color-white;
-  border-radius: 0 !important;
-  max-width: 100%;
+  border-radius: 15px !important;
+    
+
   margin: 0 auto;
-  padding: 20px !important;
-  min-width: 200px !important;
-  z-index: $base-nav-z-index + 5;
+  padding: 12.5px 0 0 !important;
+  z-index: $base-nav-z-index + 5 !important;
+  max-height: 95vh;
+  position: relative;
+  
+  &.cartmodal {
+    width: 95%;
+  }
   
   &.top {
     z-index: $base-nav-z-index + 10 !important;
   }
-  
+
   &.large {
-    padding-bottom: 10px !important;
-    min-width: 600px !important;
-    
-    .popup__title {
-      margin: 0;
-    }
-    
-    .popup_exit_icon {
-      padding-right: 5px;
+    @include media($sm) {
+      min-width: 628px;
+      border-radius: 20px;
+      max-width: 628px;
+      margin: 30px auto;
+      padding: 65px 73px;
     }
   }
 
@@ -55,11 +58,11 @@ $base-nav-z-index: 5;
     pointer-events: none;
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -125%;
     background: rgba(0, 0, 0, 0.47);
     height: 100vh;
     width: 100vw;
-    z-index: $base-nav-z-index + 10;
+    z-index: $base-nav-z-index + 10 !important;
     display: flex;
     align-items: center;
     box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%);
@@ -69,18 +72,9 @@ $base-nav-z-index: 5;
     }
   }
 
-  @include media($sm) {
-    min-width: 628px;
-    border-radius: 20px;
-    max-width: 628px;
-    margin: 30px auto;
-    padding: 65px 73px;
-  }
-
   &__title {
     line-height: 1.2;
     font-weight: $font-weight-bold;
-    margin-bottom: 30px;
     text-align: center;
   }
 
@@ -132,4 +126,3 @@ $base-nav-z-index: 5;
     cursor: pointer;
   }
 }
-

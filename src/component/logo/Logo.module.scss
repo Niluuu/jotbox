@@ -15,8 +15,8 @@
   img {
     flex-shrink: 0;
     margin-right: 10px;
-    width: 60px;
-    height: 68px;
+    width: 40px;
+    height: 45px;
     position: absolute;
   }
 
@@ -28,11 +28,22 @@
   }
 }
 
-
-@media screen and (max-width: 567px) {
+@include desktop {
   .logo {
-    &__title {
-      display: none !important;
+    .icon,
+    img {
+      width: 50px;
+      height: 55px;
+    }
+  }
+}
+
+@include desktop-large {
+  .logo {
+    .icon,
+    img {
+      width: 52.5px;
+      height: 60px;
     }
   }
 }

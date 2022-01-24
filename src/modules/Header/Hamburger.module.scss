@@ -7,15 +7,16 @@
   border-radius: 50%;
   cursor: pointer !important;
   background-color: $color-white;
-  padding: 12px;
+
+  padding: 7.5px 10px;
 
   &:hover {
     background: $light-gray-hover !important;
   }
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 
     path {
       fill: $gray-color1;
@@ -25,5 +26,27 @@
 
   input {
     display: none;
+  }
+}
+
+@include desktop {
+  .header_button {
+    padding: 9px 10px;
+
+    svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+@include desktop-large {
+  .header_button {
+    padding: 10px 12.5px;
+
+    svg {
+      width: 27.5px;
+      height: 27.5px;
+    }
   }
 }

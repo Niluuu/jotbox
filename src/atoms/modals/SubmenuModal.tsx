@@ -52,19 +52,21 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
         ) : null}
       </li>
-      {listGaps &&
-        listGaps.map(({ id, title, _version }) => {
-          return (
-            <Gaps
-              key={id}
-              title={title}
-              id={id}
-              version={_version}
-              onDeleteGap={onDeleteGap}
-              onUpdateGap={onUpdateGap}
-            />
-          );
-        })}
+      <div style={{ overflowY: 'scroll', height: '50vh' }}>
+        {listGaps &&
+          listGaps.map(({ id, title, _version }) => {
+            return (
+              <Gaps
+                key={id}
+                title={title}
+                id={id}
+                version={_version}
+                onDeleteGap={onDeleteGap}
+                onUpdateGap={onUpdateGap}
+              />
+            );
+          })}
+      </div>
 
       <div className={styles.bottom_btn}>
         <button type="button" onClick={toggleModal}>

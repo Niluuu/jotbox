@@ -3,38 +3,18 @@
 
 .sider {
   height: 100vh;
-  max-width: 70px;
-  min-width: 70px;
-  width: 70px;
-  margin-right: 120px;
+  width: 40px;
   background: #fff;
   z-index: 1 !important;
   border-right: 0;
-
-  &:hover {
-    flex: 0 0 260px;
-    max-width: 260px;
-    min-width: 260px;
-    width: 260px;
-    box-shadow: 0 10px 10px $gray-color5;
-    margin-right: 45px;
-
-    .menu_item__title {
-      display: block;
-    }
-
-    .sider_submenu:hover {
-      border-radius: 0 25px 25px 0;
-    }
-
-    .sider_submenu__menu_item {
-      border-radius: 0 25px 25px 0 !important;
-      width: 100%;
-      padding-left: 10px;
-      margin-left: 0;
-    }
-  }
-
+  overflow-y: scroll;
+  position: fixed;
+  top: 98px;
+  left: 0;
+  height: 100vh;
+  padding-left: 1px;
+  padding-bottom: 125px;
+  
   .menu_item__title {
     display: none;
 
@@ -42,79 +22,63 @@
     color: $gray-color1;
     white-space: nowrap;
   }
-
+  
   &_children {
+    width: 100%;
     padding: 0;
   }
-
+  
   &_menu {
+    width: 100%;
     padding: auto;
   }
-
+  
   &_submenu {
+    width: 100%;
     padding: auto;
     cursor: pointer;
-
-    &:hover {
-      background: $gray-color3;
-      border-radius: 50%;
-    }
+    padding: 1px 0;
 
     &__menu_item {
       box-sizing: border-box;
-      box-sizing: border-box;
       border: 1px solid transparent;
       border-radius: 0 25px 25px 0;
+      border-radius: 50%;
       color: #202124;
-      display: box;
       display: flex;
-      display: flex;
-      align-items: center;
       align-items: center;
       letter-spacing: 0.01785714em;
       font-weight: 500;
       line-height: 1.25rem;
-      height: 48px;
-      min-width: 48px;
-      overflow: hidden;
-      width: 47px;
-      border-radius: 50%;
-      margin-left: 10px;
-      transition: all 0.3s ease-out;
+      height: 35px;
+      width: 35px;
       position: relative;
+      transition: all 0.3s ease-out;
+      overflow: hidden;
+
+      &:hover {
+        background: rgb(225, 225, 225);
+      }
 
       svg {
-        padding-left: 11px;
         position: absolute;
+        padding-left: 8px;
+        width: 17.5px !important;
       }
     }
   }
 
   &.open {
-    flex: 0 0 260px !important;
-    max-width: 260px !important;
-    min-width: 260px !important;
-    width: 260px !important;
-    padding-left: 0;
-    margin-right: 15px;
+    width: 260px;
+    border-right: 1px solid rgb(240, 240, 240) !important;
 
-    &:hover {
-      box-shadow: none;
-    }
-    
     .menu_item__title {
       display: block !important;
-    }
-
-    .sider_submenu:hover {
-      border-radius: 0 25px 25px 0;
     }
 
     .sider_submenu__menu_item {
       border-radius: 0 25px 25px 0;
       width: 100%;
-      padding-left: 10px;
-      margin-left: 0;
     }
   }
 }
@@ -133,6 +97,7 @@
 .gaps {
   padding: 10px;
   display: flex;
+  width: 100%;
 
   &_icons_row {
     padding: auto;
@@ -159,6 +124,7 @@
     padding: 12px 15px;
     background: $color-white;
     border-radius: 0%;
+    border-bottom-right-radius: 25px;
 
     &:hover {
       background: $color-white;
@@ -166,142 +132,86 @@
   }
 }
 
-@media screen and (max-width: 1368px) {
+@include tablet-portrait {
   .sider {
-    max-width: 60px;
-    min-width: 60px;
-    width: 60px;
-    margin-right: 75px;
-  
-    &:hover {
-      flex: 0 0 250px;
-      max-width: 250px;
-      min-width: 250px;
-      width: 250px;
-      margin-right: 35px;
-    }
-  
-    .menu_item__title {
-      padding-left: 50px;
-    }
-  
-    &.open {
-      flex: 0 0 250px !important;
-      max-width: 250px !important;
-      min-width: 250px !important;
-      width: 250px !important;
-    }
-  }
-
-  .gaps {
-    padding: 8px;
-
-    input {
-      padding: 4px 8px;
-    }
-  }
-  
-  .bottom_btn {
-    padding-top: 15px;
-  
-    button {
-      padding: 10px 12px;
-    }
-  }  
-}
-
-@media screen and (max-width: 1201px) {
-  .sider {
-    max-width: 60px;
-    min-width: 60px;
-    width: 60px;
-    margin-right: 0;
-  
-    &:hover {
-      flex: 0 0 210px;
-      max-width: 210px;
-      min-width: 210px;
-      width: 210px;
-      margin-right: 35px;
-    }
+    width: 50px;
+    top: 98px;
+    padding-bottom: 100px;
   
     &_submenu {
       &__menu_item {
-        font-size: 12px;
+        height: 37.5px;
+        width: 37.5px;
+  
+        svg {
+          padding-left: 8px;
+          width: 19px !important;
+        }
       }
     }
   
     &.open {
-      flex: 0 0 210px !important;
-      max-width: 210px !important;
-      min-width: 210px !important;
-      width: 210px !important;
+      width: 275px;
     }
-  }  
+  }
 }
 
-@media screen and (max-width: 1001px) {
+@include tablet-landscape {
   .sider {
-    max-width: 60px;
-    min-width: 60px;
-    width: 60px;
-    margin-right: 112px;
-    position: absolute;
-
-    &:hover {
-      flex: 0 0 255px;
-      max-width: 255px;
-      min-width: 255px;
-      width: 255px;
-      margin-right: 35px;
-    }
-  
-    .menu_item__title {
-      padding-left: 50px;
-    }
+    width: 55px;
   
     &_submenu {
       &__menu_item {
-        font-size: 13px;
+        height: 42.5px;
+        width: 42.5px;
+  
+        svg {
+          padding-left: 9px;
+          width: 22px !important;
+        }
       }
     }
   
     &.open {
-      flex: 0 0 255px !important;
-      max-width: 255px !important;
-      min-width: 255px !important;
-      width: 255px !important;
-      border-right: 1px solid rgb(233, 233, 233);
+      width: 300px;
     }
   }
-
-  .gaps {
-    padding: 8px;
-    
-    input {
-      padding: 4px 8px;
-    }
-  }
-  
-  .bottom_btn {
-    padding-top: 15px;
-  
-    button {
-      padding: 10px 12px;
-    }
-  }  
 }
 
-@media screen and (max-width: 567px) {
+@include desktop {
   .sider {
-    max-width: 0;
-    min-width: 0;
-    width: 0;
-    margin-right: 100px;
-    display: none;
+    width: 65px;
+    top: 70px;
 
-    &.open {
-      display: flex;
+    &_submenu {
+      &__menu_item {
+        height: 45px;
+        width: 45px;
+  
+        svg {
+          padding-left: 10px;
+          width: 25px !important;
+        }
+      }
+    }
+  }
+}
+
+@include desktop-large {
+  .sider {
+    width: 80px;
+    top: 85px;
+  
+    &_submenu {
+      &__menu_item {
+        height: 60px;
+        width: 60px;
+  
+        svg {
+          padding-left: 11.5px;
+          width: 35px !important;
+        }
+      }
     }
   }
 }

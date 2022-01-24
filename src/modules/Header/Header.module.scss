@@ -6,8 +6,17 @@
   align-items: center;
   border-width: 0 0 0 4px;
   position: relative;
-  padding: 10px;
   border-bottom: 1px solid $gray-color3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 1;
+  
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px;
 
   &_row {
     display: flex;
@@ -16,19 +25,21 @@
   }
 }
 
-@media screen and (max-width: 1201px) {
+@include desktop {
   .header {
-    padding: 8px;
+    flex-direction: row;
+    align-items: center;
 
+    padding: 10px 5px;
+  
     &_row {
-      padding-right: 20px;
+      padding-right: 75px;
     }
   }
 }
 
-@media screen and (max-width: 1001px) {
+@include desktop-large {
   .header {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 15px 5px;
   }
 }

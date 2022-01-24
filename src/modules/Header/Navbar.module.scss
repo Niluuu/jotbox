@@ -4,6 +4,8 @@
 .navbar {
   position: absolute;
   right: 0;
+  height: 100%;
+  padding-right: 5px;
 
   button {
     cursor: pointer;
@@ -12,6 +14,11 @@
       width: 24px;
       height: 24px;
     }
+
+  }
+
+  .gridButton {
+    display: none;
   }
 
   &_popover {
@@ -240,8 +247,6 @@
         }
 
         &.signOut {
-          border-top: none;
-
           a {
             margin: 20px 70px;
             border: 1px solid #e8eaed;
@@ -251,8 +256,6 @@
         }
 
         &.privacy {
-          border-top: none;
-          
           a {
             font-size: 12px;
             font-weight: 600;
@@ -280,26 +283,28 @@
   }
 }
 
-@media screen and (max-width: 1201px) {
+@include desktop {
   .navbar {
     position: absolute;
     right: 0;
+    height: 100%;
+    padding-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   
     button {
       cursor: pointer;
   
       svg {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
       }
+  
     }
-  }  
-}
-
-@media screen and (max-width: 567px) {
-  .navbar {
-    .options {
-      margin-left: 5px;
+    
+    .gridButton {
+      display: block;
     }
   }
 }

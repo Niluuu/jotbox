@@ -181,7 +181,7 @@
 @include desktop {
   .sider {
     width: 65px;
-    top: 74.5px;
+    top: 70px;
 
     &_submenu {
       &__menu_item {
@@ -200,7 +200,7 @@
 @include desktop-large {
   .sider {
     width: 80px;
-    top: 92px;
+    top: 85px;
   
     &_submenu {
       &__menu_item {

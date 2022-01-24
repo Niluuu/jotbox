@@ -13,7 +13,11 @@ import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import '../../component/cart/Color.scss';
 
-const CartModal: FC = () => {
+interface CartModalType {
+  onColorChange: (id: string, color: string, _version: number) => void;
+}
+
+const CartModal: FC<CartModalType> = ({ onColorChange }) => {
   const [node, setNode] = useState([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
@@ -103,24 +107,29 @@ const CartModal: FC = () => {
     [onUpdate],
   );
 
+  const modalColorChange = (color) => {
+    onColorChange(node[0].id, color, node[0]._version);
+    nodeGet(nodeID);
+  };
   return (
     <Modal
       removeIcon={updatedColor === undefined && true}
       color={updatedColor}
-      isLarge={!!true}
+      isLarge
       isOpen={updateModalIsOpen}
+      cartmodal
       toggleModal={() => toggleModal(node[0].id)}
     >
       <>
         {node[0] !== undefined && (
-          <div tabIndex={-1} style={{position: 'relative'}}>
+          <div tabIndex={-1} style={{ position: 'relative' }}>
             <div
               className={updatedColor}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                width: '95%',
-                padding: '10px',
+                width: '98%',
+                padding: '5px 0 10px 10px',
                 position: 'absolute',
                 zIndex: 100,
                 background: '#fff',
@@ -162,9 +171,10 @@ const CartModal: FC = () => {
               )}
             </div>
             <InputNavbar
-              isMainInput={!!true}
+              isMainInput={!true}
               onSetArchive={toggleArchived}
               onSetNode={() => toggleModal(node[0].id)}
+              onColorChange={(color) => modalColorChange(color)}
               createLinkToEditor={createLinkToEditor}
               withHistory
               selectedGaps={[]}

@@ -69,7 +69,7 @@ export const Navbar: FC = () => {
           className={loading && !updated ? styles.loading : undefined}
         />
       </button>
-      <button type="button" onClick={() => dispatch(toggleGrid())}>
+      <button className={styles.gridButton} type="button" onClick={() => dispatch(toggleGrid())}>
         <Icon name={grid ? 'grid' : 'grid4'} />
       </button>
 

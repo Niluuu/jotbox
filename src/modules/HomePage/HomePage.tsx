@@ -309,7 +309,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           toggleGapsCart={toggleGapsCart}
         />
         <AddLinkModal />
-        <CartModal />
+        <CartModal onColorChange={onColorChange} />
       </div>
     </Layout>
   );

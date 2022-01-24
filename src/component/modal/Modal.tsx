@@ -22,6 +22,7 @@ export interface ModalProps {
   isLarge?: boolean;
   isTop?: boolean;
   removeIcon?: boolean;
+  cartmodal?: boolean;
   color?: string;
 }
 
@@ -36,10 +37,14 @@ const Modal: FC<ModalProps> = ({
   children,
   title,
   color,
+  cartmodal,
 }) => {
   const modalRef = useRef(null);
   const outsideClick = () => {
-    if (isOpen) toggleModal();
+    if (isOpen)
+      setTimeout(() => {
+        toggleModal();
+      }, 1000);
   };
   useOnClickOutside(modalRef, outsideClick);
   return (
@@ -54,6 +59,7 @@ const Modal: FC<ModalProps> = ({
             isLarge && styles.large,
             color,
             removeIcon && styles.hide,
+            cartmodal && styles.cartmodal,
           )}
           id="popup-login"
         >

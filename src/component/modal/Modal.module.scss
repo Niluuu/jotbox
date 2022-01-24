@@ -11,7 +11,7 @@ $base-nav-z-index: 5;
   background: rgba(10, 10, 10, 0.6);
   height: 100vh;
   width: 100vw;
-  z-index: $base-nav-z-index + 5;
+  z-index: $base-nav-z-index + 5 !important;
   display: flex;
   align-items: center;
   
@@ -24,13 +24,18 @@ $base-nav-z-index: 5;
   pointer-events: initial;
   background: $color-white;
   border-radius: 15px !important;
-  width: 95%;
+    
+
   margin: 0 auto;
   padding: 12.5px 0 0 !important;
-  z-index: $base-nav-z-index + 5;
+  z-index: $base-nav-z-index + 5 !important;
   max-height: 95vh;
   position: relative;
-
+  
+  &.cartmodal {
+    width: 95%;
+  }
+  
   &.top {
     z-index: $base-nav-z-index + 10 !important;
   }
@@ -57,7 +62,7 @@ $base-nav-z-index: 5;
     background: rgba(0, 0, 0, 0.47);
     height: 100vh;
     width: 100vw;
-    z-index: $base-nav-z-index + 10;
+    z-index: $base-nav-z-index + 10 !important;
     display: flex;
     align-items: center;
     box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%);

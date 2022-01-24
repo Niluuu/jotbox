@@ -33,7 +33,7 @@
     padding: 10px 5px;
   
     &_row {
-      padding-right: 200px;
+      padding-right: 75px;
     }
   }
 }
@@ -41,9 +41,5 @@
 @include desktop-large {
   .header {
     padding: 15px 5px;
-  
-    &_row {
-      padding-right: 225px;
-    }
   }
 }

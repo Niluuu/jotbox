@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import { useHistory } from 'react-router-dom';
+import GoogleLogo from '../../assets/images/svg-icons/GoogleLogo';
 
-function SgininWithGooole() {
+function SigninWithGoogle() {
   const [user, setUser] = useState(null);
   const history = useHistory();
 
@@ -48,10 +49,11 @@ function SgininWithGooole() {
         </button>
       ) : (
         <button type="button" onClick={() => Auth.federatedSignIn({ provider: 'Google' })}>
-          Sgin in with google
+          <GoogleLogo />
+          Sign in with google
         </button>
       )}
     </>
   );
 }
-export default SgininWithGooole;
+export default SigninWithGoogle;

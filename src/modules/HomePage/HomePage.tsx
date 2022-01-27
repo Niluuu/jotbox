@@ -35,28 +35,36 @@ interface HomeProps {
 }
 
 const HomePage: FC<HomeProps> = ({ archive }) => {
-  const userEmail = localStorage.getItem('userEmail');
-  const { label } = useParams();
-  const collabarator = { eq: userEmail };
-  const [nodes, setNodes] = useState<CartProps[]>([]);
-  const [focused, setFocused] = useState(false);
-  const [defaultPin, setDefaultPin] = useState(false);
-  const [defaultColor, setDefaultColor] = useState('default');
-  const titleRef = useRef<HTMLDivElement>();
-  const archived = archive ? { eq: true } : { eq: false };
-  const [filter, setFilter] = useState({ collabarator, archived });
-  const [selectedGaps, setSelectedGaps] = useState([]);
-
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
       updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
+      filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
     };
   });
 
-  const { grid, text, updateModalIsOpen } = mapStateToProps;
+  const { grid, text, updateModalIsOpen, filterByTitleLetter } = mapStateToProps;
   const dispatch = useDispatch();
+
+  const userEmail = localStorage.getItem('userEmail');
+  const { label } = useParams();
+  const collabarator = { eq: userEmail };
+  const archived = archive ? { eq: true } : { eq: false };
+  const titleFilter = { contains: filterByTitleLetter };
+
+  const titleRef = useRef<HTMLDivElement>();
+  const [nodes, setNodes] = useState<CartProps[]>([]);
+  const [focused, setFocused] = useState(false);
+  const [defaultPin, setDefaultPin] = useState(false);
+  const [defaultColor, setDefaultColor] = useState('default');
+  const [selectedGaps, setSelectedGaps] = useState([]);
+  const [filter, setFilter] = useState({ collabarator, archived });
+
+  useEffect(() => {
+    const newFilter = { collabarator, archived, title: titleFilter };
+    setFilter(newFilter);
+  }, [filterByTitleLetter]);
 
   const toggleGaps = useCallback(
     (gap) => {
@@ -264,8 +272,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     const gaps = { contains: label };
+
     const newFiler =
-      label !== undefined ? { collabarator, archived, gaps } : { collabarator, archived };
+      label !== undefined
+        ? { collabarator, archived, gaps, title: titleFilter }
+        : { collabarator, archived, title: titleFilter };
     setFilter(newFiler);
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);

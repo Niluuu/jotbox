@@ -1,17 +1,24 @@
 import { FC, useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styles from './SearchInput.module.scss';
 import { Icon } from '../Icon/Icon';
+import { setFilterByTitle } from '../../reducers/filterByTitle';
 
 /**
  * Main Logo component for user interaction
  */
 
 const SearchInput: FC = () => {
+  const dispatch = useDispatch();
   const [value, setValue] = useState('');
 
-  const handleChange = useCallback((e) => {
-    setValue(e.target.value);
-  }, []);
+  const handleChange = useCallback(
+    (e) => {
+      dispatch(setFilterByTitle(e.target.value));
+      setValue(e.target.value);
+    },
+    [dispatch],
+  );
 
   const clearValue = useCallback(() => {
     setValue('');

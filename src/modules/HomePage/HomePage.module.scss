@@ -60,10 +60,29 @@
   }
 }
 
+.main_chips {
+  padding: 3px 10px;
+  display: flex;
+  flex-wrap: wrap;
+
+  div {
+    width: fit-content;
+  }
+}
+
+.extraGap {
+  background: $gray-color2;
+  color: $primary-black;
+  margin-right: 8px;
+  padding: 1px 10px;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+}
+
 .textarea {
   outline: none !important;
 }
-
 
 @include desktop {
   .home_page {
@@ -95,7 +114,6 @@
     &.open {
       padding-left: 325px;
     }
-
 
     &__main_input {
       .other_options {

@@ -78,6 +78,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const cleanUp = useCallback(() => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
+    setDefaultColor('default');
     setSelectedGaps(label !== undefined ? [] : [label]);
     dispatch(setText(initialStateStr));
   }, [dispatch, label]);
@@ -320,7 +321,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           toggleGapsCart={toggleGapsCart}
         />
         <AddLinkModal />
-        <CartModal onColorChange={onColorChange} />
+        <CartModal toggleGapsCart={toggleGapsCart} onColorChange={onColorChange} />
       </div>
     </Layout>
   );

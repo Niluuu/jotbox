@@ -12,12 +12,14 @@ import MainEditor from '../../modules/Editor/MainEditor';
 import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import '../../component/cart/Color.scss';
+import { Chip } from '../../component/chip/Chip';
 
 interface CartModalType {
   onColorChange: (id: string, color: string, _version: number) => void;
+  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
-const CartModal: FC<CartModalType> = ({ onColorChange }) => {
+const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
   const [node, setNode] = useState([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
@@ -109,8 +111,16 @@ const CartModal: FC<CartModalType> = ({ onColorChange }) => {
 
   const modalColorChange = (color) => {
     onColorChange(node[0].id, color, node[0]._version);
-    nodeGet(nodeID);
+
+    setTimeout(() => nodeGet(nodeID), 1000);
   };
+
+  const modalToggleGapsCart = (gap) => {
+    toggleGapsCart(node[0].id, node[0]._version, gap);
+
+    setTimeout(() => nodeGet(nodeID), 1000);
+  };
+
   return (
     <Modal
       removeIcon={updatedColor === undefined && true}
@@ -131,7 +141,7 @@ const CartModal: FC<CartModalType> = ({ onColorChange }) => {
                 width: '98%',
                 padding: '5px 0 10px 10px',
                 position: 'absolute',
-                zIndex: 100,
+                zIndex: 10,
                 background: '#fff',
               }}
             >
@@ -169,17 +179,32 @@ const CartModal: FC<CartModalType> = ({ onColorChange }) => {
                   isModal
                 />
               )}
+              <div className={styles.main_chips}>
+                {node[0].gaps && node[0].gaps.length > 10 ? (
+                  <>
+                    {node[0].gaps.slice(0, 10).map((gap) => (
+                      <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
+                    ))}
+                    <div className={styles.extraGap}> +{node[0].gaps.length - 10} </div>
+                  </>
+                ) : (
+                  node[0].gaps.map((gap) => (
+                    <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
+                  ))
+                )}
+              </div>
             </div>
             <InputNavbar
               isMainInput={!true}
               onSetArchive={toggleArchived}
               onSetNode={() => toggleModal(node[0].id)}
-              onColorChange={(color) => modalColorChange(color)}
               createLinkToEditor={createLinkToEditor}
               withHistory
-              selectedGaps={[]}
-              shadow
+              selectedGaps={node[0].gaps}
+              onColorChange={(color) => modalColorChange(color)}
+              toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
               initialGaps={node[0] && node[0].gaps}
+              shadow
             />
           </div>
         )}

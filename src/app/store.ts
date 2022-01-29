@@ -4,6 +4,7 @@ import editorReducer from '../reducers/editor';
 import nodeIdReducer from '../reducers/getNodeId';
 import gapsReducer from '../reducers/gaps';
 import nodesReducer from '../reducers/nodes';
+import filterByTitleReducer from '../reducers/filterByTitle';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     nodeIdReducer,
     gapsReducer,
     nodesReducer,
+    filterByTitleReducer,
   },
 });
 

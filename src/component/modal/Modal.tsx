@@ -1,10 +1,8 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 
 import classNames from 'classnames';
-import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import styles from './Modal.module.scss';
 import '../cart/Color.scss';
-import { Icon } from '../Icon/Icon';
 
 export interface ModalProps {
   /**
@@ -39,20 +37,14 @@ const Modal: FC<ModalProps> = ({
   color,
   cartmodal,
 }) => {
-  const modalRef = useRef(null);
-  const outsideClick = () => {
-    if (isOpen)
-      setTimeout(() => {
-        toggleModal();
-      }, 1000);
-  };
-  useOnClickOutside(modalRef, outsideClick);
   return (
     <>
-      <div className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })} />
+      <div
+        onClick={toggleModal}
+        className={classNames(styles.backdrop, { [styles.isOpen]: isOpen })}
+      />
       <div className={classNames(styles['popup-container'], { [styles.isOpen]: isOpen })}>
         <div
-          ref={modalRef}
           className={classNames(
             styles.popup,
             isTop && styles.top,

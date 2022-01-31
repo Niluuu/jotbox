@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import styles from './SignInPage.module.scss';
 
 import OnErrorMessage from '../../component/message/message';
-import SgininWithGooole from './SginWithGoogle';
+import SigninWithGoogle from './SginWithGoogle';
 
 const SignInPage: FC = () => {
   const history = useHistory();
@@ -65,7 +65,9 @@ const SignInPage: FC = () => {
       <form className={styles.sign__form} onSubmit={signIn}>
         <h1 className={styles.sign__title}> Sign In </h1>
         <h1 className={styles.sign__subTitle}> Use your Google Account </h1>
-        <SgininWithGooole />
+        <div className={styles.google_page}>
+          <SigninWithGoogle />
+        </div>
         <input
           type="text"
           name="userName"
@@ -81,7 +83,13 @@ const SignInPage: FC = () => {
           onChange={handleChange}
         />
         <div className={classNames(styles.sign__link, styles.password_input)}>
-          <input type="checkbox" id="showPassword" checked={typePassword} onChange={toggle} />
+          <input
+            className={styles.checkbox}
+            type="checkbox"
+            id="showPassword"
+            checked={typePassword}
+            onChange={toggle}
+          />
           <p>Show password</p>
         </div>
 

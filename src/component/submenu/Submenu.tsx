@@ -107,6 +107,7 @@ export const Submenu: FC<SubmenuProps> = () => {
 
         const complete = async () => {
           await API.graphql({ query: updateGaps, variables: { input: updatedLabel } });
+          getGaps();
         };
 
         if (duplicate.includes(title)) {
@@ -114,7 +115,6 @@ export const Submenu: FC<SubmenuProps> = () => {
           // eslint-disable-next-line no-restricted-globals
           if (confirm(answer)) complete();
         } else complete();
-        getGaps();
       } catch (err) {
         throw new Error('Get gaps route');
       }

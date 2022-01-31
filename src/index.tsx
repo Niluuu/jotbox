@@ -26,6 +26,9 @@ const [localRedirectSignOut, productionRedirectSignOut] = awsConfig.oauth.redire
   ',',
 );
 
+console.log(`localRedirectSignIn`, localRedirectSignIn)
+console.log(`productionRedirectSignOut`, productionRedirectSignOut)
+
 const updatedAwsConfig = {
   ...awsConfig,
   oauth: {

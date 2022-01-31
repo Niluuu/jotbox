@@ -31,7 +31,8 @@ const production = 'release-0-1-1.d17oh96r8b4gc1.amplifyapp.com';
 console.log(`localRedirectSignIn`, localRedirectSignIn);
 console.log(`productionRedirectSignIn`, productionRedirectSignIn);
 console.log(`productionRedirectSignOut`, productionRedirectSignOut);
-console.log(`productionRedirectSignOut`, production);
+console.log(`production`, production);
+
 
 const updatedAwsConfig = {
   ...awsConfig,

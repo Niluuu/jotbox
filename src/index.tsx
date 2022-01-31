@@ -20,24 +20,18 @@ const isLocalhost = Boolean(
 );
 
 // Assuming you have two redirect URIs, and the first is for localhost and second is for production
-const [localRedirectSignIn, productionRedirectSignIn] = awsConfig.oauth.redirectSignIn.split(',');
+const [localRedirectSignIn] = awsConfig.oauth.redirectSignIn.split(',');
+const [localRedirectSignOut] = awsConfig.oauth.redirectSignOut.split(',');
 
-const [localRedirectSignOut, productionRedirectSignOut] = awsConfig.oauth.redirectSignOut.split(
-  ',',
-);
-
-const production = 'release-0-1-1.d17oh96r8b4gc1.amplifyapp.com';
-
-console.log(`localRedirectSignIn`, localRedirectSignIn);
-console.log(`awsConfig`, awsConfig);
-
+awsConfig.oauth.redirectSignIn = `${window.location.origin}/`;
+awsConfig.oauth.redirectSignOut = `${window.location.origin}/`;
 
 const updatedAwsConfig = {
   ...awsConfig,
   oauth: {
     ...awsConfig.oauth,
-    redirectSignIn: isLocalhost ? localRedirectSignIn : production,
-    redirectSignOut: isLocalhost ? localRedirectSignOut : production,
+    redirectSignIn: localRedirectSignIn,
+    redirectSignOut: localRedirectSignOut,
   },
 };
 

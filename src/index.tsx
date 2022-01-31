@@ -35,8 +35,6 @@ const updatedAwsConfig = {
   },
 };
 
-console.log(`updatedAwsConfig`, updatedAwsConfig);
-
 Amplify.configure(updatedAwsConfig);
 
 ReactDOM.render(

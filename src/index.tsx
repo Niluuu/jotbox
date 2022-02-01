@@ -11,8 +11,6 @@ import App from './modules/App/App';
 import './styles/index.scss';
 import 'es6-shim';
 
-console.log(`awsConfig`, awsConfig);
-
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -36,8 +34,6 @@ const updatedAwsConfig = {
     redirectSignOut: isLocalhost ? localRedirectSignOut : productionRedirectSignOut,
   },
 };
-
-console.log(`updatedAwsConfig`, updatedAwsConfig);
 
 Amplify.configure(updatedAwsConfig);
 

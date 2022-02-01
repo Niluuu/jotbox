@@ -15,22 +15,35 @@ import '../../component/cart/Color.scss';
 import { Chip } from '../../component/chip/Chip';
 
 interface CartModalType {
+  onRemoveCart?: (id: string, _version: number) => void;
+  onChangeArchived?: (
+    id: string,
+    archived: boolean,
+    _version: number,
+    title: string,
+    description: string,
+  ) => void;
+  onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onColorChange: (id: string, color: string, _version: number) => void;
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
-const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
+const CartModal: FC<CartModalType> = ({
+  onRemoveCart,
+  onChangeArchived,
+  onChangePin,
+  onColorChange,
+  toggleGapsCart,
+}) => {
   const [node, setNode] = useState([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
-  const [updatedPined, setUpdatedPined] = useState(undefined);
   const [updatedArchive, setUpdatedArchive] = useState(undefined);
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
 
   const createLinkToEditor = () => setlinkMode((prev) => !prev);
-  const togglePined = () => setUpdatedPined((prev) => !prev);
   const toggleArchived = () => setUpdatedArchive((prev) => !prev);
 
   const onKeyPressed = (e) => {
@@ -61,9 +74,8 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
 
   useEffect(() => {
     if (node[0] !== undefined) {
-      const { pined, archived, color } = node[0];
+      const { archived, color } = node[0];
 
-      setUpdatedPined(pined);
       setUpdatedArchive(archived);
       setUpdatedColor(color);
     }
@@ -110,15 +122,38 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
   );
 
   const modalColorChange = (color) => {
-    onColorChange(node[0].id, color, node[0]._version);
+    const { id, _version } = node[0];
+    onColorChange(id, color, _version);
 
     setTimeout(() => nodeGet(nodeID), 1000);
   };
 
   const modalToggleGapsCart = (gap) => {
-    toggleGapsCart(node[0].id, node[0]._version, gap);
+    const { id, _version } = node[0];
+    toggleGapsCart(id, _version, gap);
 
     setTimeout(() => nodeGet(nodeID), 1000);
+  };
+
+  const modalChangePin = () => {
+    const { id, _version, pined } = node[0];
+    onChangePin(id, !pined, _version);
+
+    setTimeout(() => nodeGet(nodeID), 1000);
+  };
+
+  const modalRemoveCart = () => {
+    const { id, _version } = node[0];
+    onRemoveCart(id, _version);
+
+    setTimeout(() => toggleModal(id), 1000);
+  };
+
+  const modalChangeArchived = () => {
+    const { id, _version, archived, title, description } = node[0];
+    onChangeArchived(id, !archived, _version, title, description);
+
+    setTimeout(() => toggleModal(id), 1000);
   };
 
   return (
@@ -161,9 +196,9 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
 
               <button type="button" className={styles.icon_btn}>
                 {!node[0].pined ? (
-                  <Icon name="pin" color="premium" size="xs" onClick={togglePined} />
+                  <Icon name="pin" color="premium" size="xs" onClick={modalChangePin} />
                 ) : (
-                  <Icon name="pin-black" color="premium" size="xs" onClick={togglePined} />
+                  <Icon name="pin-black" color="premium" size="xs" onClick={modalChangePin} />
                 )}
               </button>
             </div>
@@ -195,15 +230,17 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
               </div>
             </div>
             <InputNavbar
-              isMainInput={!true}
-              onSetArchive={toggleArchived}
+              toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
+              onColorChange={(color) => modalColorChange(color)}
               onSetNode={() => toggleModal(node[0].id)}
               createLinkToEditor={createLinkToEditor}
-              withHistory
-              selectedGaps={node[0].gaps}
-              onColorChange={(color) => modalColorChange(color)}
-              toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
+              onChangeArchived={modalChangeArchived}
+              onRemoveCart={modalRemoveCart}
+              onSetArchive={toggleArchived}
               initialGaps={node[0] && node[0].gaps}
+              selectedGaps={node[0].gaps}
+              isMainInput={!true}
+              withHistory
               shadow
             />
           </div>

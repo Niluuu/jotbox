@@ -81,9 +81,8 @@ const MainInput: FC<MainInputProps> = ({
   const { grid, text } = mapStateToProps;
 
   const onFocusOut = useCallback((e) => {
-    if (e.currentTarget.contains(document.activeElement)) {
-      console.log('focus out', e.currentTarget.contains(document.activeElement));
-    }
+    if (e.currentTarget.contains(document.activeElement))
+      return e.currentTarget.contains(document.activeElement);
   }, []);
 
   const [linkMode, setlinkMode] = useState(false);

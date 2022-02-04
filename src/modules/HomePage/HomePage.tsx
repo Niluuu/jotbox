@@ -2,7 +2,8 @@ import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API } from 'aws-amplify';
+import { EditorState, ContentState } from 'draft-js';
 import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -12,8 +13,7 @@ import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
-import { setText } from '../../reducers/editor';
-import { initialStateStr } from '../../utils/editor/initialState';
+import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
 
 interface CartProps {
@@ -75,7 +75,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     setDefaultPin(false);
     setDefaultColor('default');
     setSelectedGaps([]);
-    dispatch(setText(initialStateStr));
+    dispatch(toggleOnCreateFunctionCall(true));
+
+    setTimeout(() => {
+      dispatch(toggleOnCreateFunctionCall(false));
+    }, 500);
   }, [dispatch]);
 
   const onDefaultPin = useCallback(() => {

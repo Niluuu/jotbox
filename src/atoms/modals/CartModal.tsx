@@ -240,8 +240,7 @@ const CartModal: FC<CartModalType> = ({
               currentColor={node[0].color}
               initialGaps={node[0] && node[0].gaps}
               selectedGaps={node[0].gaps}
-              isMainInput={!true}
-              withHistory
+              isMainInput
               shadow
             />
           </div>

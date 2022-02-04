@@ -1,5 +1,5 @@
 import { FC, useState, useCallback, useEffect } from 'react';
-import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
+import { EditorState, RichUtils, convertFromRaw, convertToRaw, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import { RootState } from '../../app/store';
 import { Icon } from '../../component/Icon/Icon';
 import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
 import styles from './Editor.module.scss';
+import { initialStateStr } from '../../utils/editor/initialState';
 
 interface MainEditorProps {
   linkMode?: boolean;
@@ -45,18 +46,27 @@ const MainEditor: FC<MainEditorProps> = ({
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       nodes: state.nodesReducer.nodes,
+      onCreateFuncCall: state.editorReducer.onCreateFuncCall,
     };
   });
 
-  const { nodes } = mapStateToProps;
+  const { nodes, onCreateFuncCall } = mapStateToProps;
 
   const convertNodesToSuggestions = useCallback((listNodes) => {
     const mention = [];
 
-    listNodes.filter((node) => mention.push({ name: node.title, link: node.id }));
+    listNodes.filter(
+      // eslint-disable-next-line no-underscore-dangle
+      (node) => node._deleted !== null && mention.push({ name: node.title, link: node.id }),
+    );
 
     return mention;
   }, []);
+
+  useEffect(() => {
+    if (isMainInput && onCreateFuncCall)
+      setEditorState(EditorState.push(editorState, ContentState.createFromText('')));
+  }, [editorState, isMainInput, onCreateFuncCall]);
 
   useEffect(() => {
     const mention = convertNodesToSuggestions(nodes);
@@ -70,6 +80,7 @@ const MainEditor: FC<MainEditorProps> = ({
 
       const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
 
+      console.log('initialState', initialState);
       if (initialState) dispatch(setUpdatedText(convert));
       dispatch(setText(convert));
     },

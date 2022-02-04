@@ -92,7 +92,7 @@ const CartModal: FC<CartModalType> = ({
       try {
         const nodeDetails = {
           id,
-          title: titleRef.current.innerText,
+          title: titleRef.current.innerText.toLowerCase(),
           description: updatedText,
           /* eslint no-underscore-dangle: 0 */
           _version: node[0]._version,
@@ -151,7 +151,7 @@ const CartModal: FC<CartModalType> = ({
 
   const modalChangeArchived = () => {
     const { id, _version, archived, title, description } = node[0];
-    onChangeArchived(id, !archived, _version, title, description);
+    onChangeArchived(id, !archived, _version, title.toLowerCase(), description);
 
     setTimeout(() => toggleModal(id), 1000);
   };
@@ -237,6 +237,7 @@ const CartModal: FC<CartModalType> = ({
               onChangeArchived={modalChangeArchived}
               onRemoveCart={modalRemoveCart}
               onSetArchive={toggleArchived}
+              currentColor={node[0].color}
               initialGaps={node[0] && node[0].gaps}
               selectedGaps={node[0].gaps}
               isMainInput

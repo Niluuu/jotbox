@@ -16,6 +16,7 @@ import { toggleGrid } from '../../reducers/layout';
 
 export const Navbar: FC = () => {
   const [loading, setLoading] = useState(false);
+  const [redirect, setRedirect] = useState(false);
   const [updated, setUpdated] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -26,9 +27,10 @@ export const Navbar: FC = () => {
 
       localStorage.removeItem('assessToken');
       localStorage.removeItem('userEmail');
-      history.push('/');
+      setRedirect(true);
+      history.push('/signIn');
     } catch (error) {
-      throw new Error('Sgin out error');
+      throw new Error('Sign out error');
     }
   }
 
@@ -102,9 +104,9 @@ export const Navbar: FC = () => {
               <p>{localStorage.getItem('userEmail')}</p>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
-              <a onClick={signOut} href="#">
+              <button type="button" onClick={signOut}>
                 Sign out
-              </a>
+              </button>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>
               <a href="#">

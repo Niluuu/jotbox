@@ -10,6 +10,7 @@ import { routes } from '../../utils/routes/index';
 import { listGapss } from '../../graphql/queries';
 import { createGaps, updateGaps, deleteGaps } from '../../graphql/mutations';
 import OnErrorMessage from '../message/message';
+import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 
 export interface SubmenuProps {
   /**
@@ -40,16 +41,13 @@ export const Submenu: FC<SubmenuProps> = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = res.data.listGapss;
+      // eslint-disable-next-line no-underscore-dangle
+      const noneDeletedItems = items.filter((elm) => elm._deleted !== true);
 
-      const newLabels = new Set();
-      const filteredLabels = items.filter((label) => {
-        const duplicate = newLabels.has(label.title);
-        newLabels.add(label.title);
-        return !duplicate;
-      });
+      const filteredLabels = restrictDouble(noneDeletedItems);
 
       setListGaps(filteredLabels);
-      return items;
+      return filteredLabels;
     } catch (err) {
       throw new Error('Get gaps route');
     }

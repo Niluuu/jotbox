@@ -15,7 +15,6 @@ import CartModal from '../../atoms/modals/CartModal';
 import { setText } from '../../reducers/editor';
 import { initialStateStr } from '../../utils/editor/initialState';
 import { setNodesToProps } from '../../reducers/nodes';
-import { Preloader } from '../../component/Preloader/Preloader';
 
 interface CartProps {
   id: string;

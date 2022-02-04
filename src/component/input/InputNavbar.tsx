@@ -10,7 +10,6 @@ import { colors } from '../../utils/editor/color';
 import { listGapss } from '../../graphql/queries';
 
 interface InputNavbarProps {
-  withHistory?: boolean;
   /**
    * Is main input navbar?
    */
@@ -76,7 +75,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     isMainInput,
     onChangeArchived,
     onSetArchive,
-    withHistory,
     onSetNode,
     focused = true,
     onRemoveCart,
@@ -91,15 +89,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     shadow,
   } = props;
   const [listGaps, setListGaps] = useState([]);
-  const [tooltip, setTooltip] = useState(false);
+  const [filter, setFilter] = useState({ title: { contains: '' } });
 
-  const toggleTooltip = () => setTooltip((pre) => !pre);
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
   };
-
-  const [filter, setFilter] = useState({ title: { contains: '' } });
 
   const getGaps = useCallback(async () => {
     try {
@@ -223,7 +218,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </button>
           </Popover>
           <Popover
-            isOpen={tooltip}
             content={
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
@@ -245,14 +239,16 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             }
             placement="bottom-start"
           >
-            <button onClick={toggleTooltip} type="button" className={styles.icon_btn}>
+            <button type="button" className={styles.icon_btn}>
               <Icon name="other" color="premium" size="xs" />
             </button>
           </Popover>
         </div>
-        <button onClick={onSetNode} type="button" className={styles.btn}>
-          Закрыть
-        </button>
+        {isMainInput && (
+          <button onClick={onSetNode} type="button" className={styles.btn}>
+            Закрыть
+          </button>
+        )}
       </div>
     </>
   );

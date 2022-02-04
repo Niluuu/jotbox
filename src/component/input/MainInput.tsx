@@ -164,7 +164,6 @@ const MainInput: FC<MainInputProps> = ({
       {focused ? (
         <InputNavbar
           isMainInput
-          withHistory
           focused={focused}
           onSetArchive={onSetArchive}
           onSetNode={() => onSetNodes()}

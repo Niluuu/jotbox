@@ -239,8 +239,7 @@ const CartModal: FC<CartModalType> = ({
               onSetArchive={toggleArchived}
               initialGaps={node[0] && node[0].gaps}
               selectedGaps={node[0].gaps}
-              isMainInput={!true}
-              withHistory
+              isMainInput
               shadow
             />
           </div>

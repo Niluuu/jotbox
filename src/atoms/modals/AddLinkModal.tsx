@@ -23,12 +23,7 @@ const AddLinkModal: FC = () => {
   };
 
   return (
-    <Modal
-      title="Добавить линк"
-      isTop={!!true}
-      isOpen={hyperLinkEditMode}
-      toggleModal={onCloseModal}
-    >
+    <Modal title="Добавить линк" isTop isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
       <div className={styles.gaps}>
         <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
         <input

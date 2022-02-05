@@ -17,10 +17,22 @@ export interface ModalProps {
    * Title of modal
    */
   title?: string;
+  /**
+   * Should modal be bigger?
+   */
   isLarge?: boolean;
   isTop?: boolean;
+  /**
+   * Should exit modal icon appear?
+   */
   removeIcon?: boolean;
+  /**
+   * Is modal for Carts?
+   */
   cartmodal?: boolean;
+  /**
+   * Color of Modal (Cart)
+   */
   color?: string;
 }
 

@@ -307,7 +307,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         className={classNames(
           styles.home_page,
           grid && styles.column,
-          !isSidebarOpen && styles.open,
+          isSidebarOpen && styles.open,
         )}
       >
         {!archive && (

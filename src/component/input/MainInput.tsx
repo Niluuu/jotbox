@@ -32,11 +32,20 @@ interface MainInputProps {
    */
   defaultColor?: string;
   /**
-   * Default funtions to create nodes
+   * Set default pined attribut when creating Node
    */
   onDefaultPin: () => void;
+  /**
+   * Creating Node
+   */
   onSetNodes: () => void;
+  /**
+   * Create default archived Node
+   */
   onSetArchive: () => void;
+  /**
+   * Set default color when creating Node
+   */
   onDefaultColor?: (optionalColor: string) => void;
   /**
    * Outside click handler

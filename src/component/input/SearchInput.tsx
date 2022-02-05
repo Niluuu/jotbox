@@ -22,7 +22,8 @@ const SearchInput: FC = () => {
 
   const clearValue = useCallback(() => {
     setValue('');
-  }, []);
+    dispatch(setFilterByTitle(''));
+  }, [dispatch]);
 
   return (
     <div className={styles.search__row}>

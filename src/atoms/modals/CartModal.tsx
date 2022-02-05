@@ -15,7 +15,13 @@ import '../../component/cart/Color.scss';
 import { Chip } from '../../component/chip/Chip';
 
 interface CartModalType {
+  /**
+   * Deleted Node
+   */
   onRemoveCart?: (id: string, _version: number) => void;
+  /**
+   * Change archived attribute of Node function
+   */
   onChangeArchived?: (
     id: string,
     archived: boolean,
@@ -23,8 +29,17 @@ interface CartModalType {
     title: string,
     description: string,
   ) => void;
+  /**
+   * Change pined attribute of Node function
+   */
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
+  /**
+   * Change color of Node function
+   */
   onColorChange: (id: string, color: string, _version: number) => void;
+  /**
+   * Toggleselected gaps when creating Node function
+   */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
@@ -240,7 +255,6 @@ const CartModal: FC<CartModalType> = ({
               currentColor={node[0].color}
               initialGaps={node[0] && node[0].gaps}
               selectedGaps={node[0].gaps}
-              isMainInput
               shadow
             />
           </div>

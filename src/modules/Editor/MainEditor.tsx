@@ -17,9 +17,21 @@ interface MainEditorProps {
   createLinkToEditor?: () => void;
   initialState?: string;
   editorRef?: any;
+  /**
+   * Color of Editor in Cart
+   */
   color?: string;
+  /**
+   * Color of Editor in MainInput
+   */
   defaultColor?: string;
+  /**
+   * Should editor appear in MainInput?
+   */
   isMainInput?: boolean;
+  /**
+   * Should editor appear in Modal?
+   */
   isModal?: boolean;
 }
 

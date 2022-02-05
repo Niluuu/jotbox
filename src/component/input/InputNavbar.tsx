@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-// import uniqid from 'uniqid';
+import uniqid from 'uniqid';
 import { API } from 'aws-amplify';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
@@ -67,7 +67,13 @@ interface InputNavbarProps {
    * Oncreate selected gaps
    */
   selectedGaps: string[];
+  /**
+   * Toggle gaps of Node function
+   */
   toggleGapsCart?: (gap: any) => void;
+  /**
+   * Should navbar has shadow in Modal?
+   */
   shadow?: boolean;
 }
 
@@ -234,14 +240,14 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                 <ul className={styles.popover_content}>
                   {onRemoveCart && (
                     <li
-                      // key={uniqid()}
+                      key={uniqid()}
                       onClick={onRemoveCart}
                     >
                       <span>Удалить карточку</span>
                     </li>
                   )}
                   <li
-                    // key={uniqid()}
+                    key={uniqid()}
                     onClick={() => {
                       createLinkToEditor();
                     }}

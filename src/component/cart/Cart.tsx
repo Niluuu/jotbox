@@ -72,6 +72,9 @@ interface CartProps {
    * ?
    */
   popupCart?: boolean;
+  /**
+   * Toggle gaps of Node function
+   */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 

@@ -22,12 +22,12 @@ export const Navbar: FC = () => {
   const history = useHistory();
 
   async function signOut() {
+    setRedirect(true);
     try {
       await Auth.signOut();
 
       localStorage.removeItem('assessToken');
       localStorage.removeItem('userEmail');
-      setRedirect(true);
       history.push('/signIn');
     } catch (error) {
       throw new Error('Sign out error');
@@ -104,9 +104,10 @@ export const Navbar: FC = () => {
               <p>{localStorage.getItem('userEmail')}</p>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
-              <button type="button" onClick={signOut}>
-                Sign out
-              </button>
+              <a className={redirect && styles.disable} onClick={signOut}>
+                {redirect ? 'Loading' : 'Sign out'}
+                {redirect && <Icon name="loading" />}
+              </a>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>
               <a href="#">

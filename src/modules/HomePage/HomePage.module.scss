@@ -82,6 +82,8 @@
 
 .textarea {
   outline: none !important;
+  font-weight: $font-weight-bold;
+  font-size: 16px;
 }
 
 @include desktop {

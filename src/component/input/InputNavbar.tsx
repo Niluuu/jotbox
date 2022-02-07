@@ -8,9 +8,9 @@ import Popover from '../popover/Popover';
 import '../cart/Color.scss';
 import { colors } from '../../utils/editor/color';
 import { listGapss } from '../../graphql/queries';
+import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 
 interface InputNavbarProps {
-  withHistory?: boolean;
   /**
    * Is main input navbar?
    */
@@ -67,7 +67,13 @@ interface InputNavbarProps {
    * Oncreate selected gaps
    */
   selectedGaps: string[];
+  /**
+   * Toggle gaps of Node function
+   */
   toggleGapsCart?: (gap: any) => void;
+  /**
+   * Should navbar has shadow in Modal?
+   */
   shadow?: boolean;
 }
 
@@ -76,7 +82,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     isMainInput,
     onChangeArchived,
     onSetArchive,
-    withHistory,
     onSetNode,
     focused = true,
     onRemoveCart,
@@ -91,15 +96,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     shadow,
   } = props;
   const [listGaps, setListGaps] = useState([]);
-  const [tooltip, setTooltip] = useState(false);
+  const [filter, setFilter] = useState({ title: { contains: '' } });
 
-  const toggleTooltip = () => setTooltip((pre) => !pre);
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
   };
-
-  const [filter, setFilter] = useState({ title: { contains: '' } });
 
   const getGaps = useCallback(async () => {
     try {
@@ -107,23 +109,31 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = res.data.listGapss;
+      // eslint-disable-next-line no-underscore-dangle
+      const noneDeletedItems = items.filter((elm) => elm._deleted !== true);
 
-      const newLabels = new Set();
-      const filteredLabels = items.filter((label) => {
-        const duplicate = newLabels.has(label.title);
-        newLabels.add(label.title);
-        return !duplicate;
-      });
+      const filteredLabels = restrictDouble(noneDeletedItems);
 
       setListGaps(filteredLabels);
+      return filteredLabels;
     } catch (err) {
       throw new Error('Get gaps route');
     }
   }, [filter]);
 
-  const onLabelFilter = useCallback((value: string) => {
-    setFilter(() => ({ title: { contains: value } }));
-  }, []);
+  const onLabelFilter = useCallback(
+    async (value: string) => {
+      try {
+        const data = await getGaps();
+        const newGaps = data.filter((elm) => elm.title.toLowerCase().includes(value.toLowerCase()));
+
+        setListGaps(newGaps);
+      } catch (err) {
+        throw new Error('Error filter by Letter');
+      }
+    },
+    [getGaps],
+  );
 
   useEffect(() => {
     getGaps();
@@ -164,8 +174,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                     className={classNames(
                       color.colorClass,
                       isMainInput
-                        ? color.colorClass === defaultColor && styles.active
-                        : color.colorClass === currentColor && styles.active,
+                        ? color.colorClass === defaultColor && styles.activeColor
+                        : color.colorClass === currentColor && styles.activeColor,
                     )}
                   >
                     {color.colorClass === 'default' && (
@@ -194,24 +204,26 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                       />
                       <Icon size="min" name="search" />
                     </div>
-                    {listGaps.map((gap) => (
-                      <li key={gap.id} className={styles.labelGap}>
-                        <label>
-                          <input
-                            type="checkbox"
-                            value={gap.title}
-                            onClick={(e) => toggleSelectedGap(e)}
-                            checked={selectedGaps.includes(gap.title)}
-                          />
-                          {selectedGaps.includes(gap.title) ? (
-                            <Icon name="edit-bordered" color="premium" size="xs" />
-                          ) : (
-                            <Icon name="box" color="premium" size="xs" />
-                          )}
-                          <span> {gap.title} </span>
-                        </label>
-                      </li>
-                    ))}
+                    <div className={styles.item}>
+                      {listGaps.map((gap) => (
+                        <li key={gap.id} className={styles.labelGap}>
+                          <label>
+                            <input
+                              type="checkbox"
+                              value={gap.title}
+                              onClick={(e) => toggleSelectedGap(e)}
+                              checked={selectedGaps.includes(gap.title)}
+                            />
+                            {selectedGaps.includes(gap.title) ? (
+                              <Icon name="edit-bordered" color="premium" size="xs" />
+                            ) : (
+                              <Icon name="box" color="premium" size="xs" />
+                            )}
+                            <span> {gap.title} </span>
+                          </label>
+                        </li>
+                      ))}
+                    </div>
                   </div>
                 </ul>
               </div>
@@ -223,12 +235,14 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </button>
           </Popover>
           <Popover
-            isOpen={tooltip}
             content={
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   {onRemoveCart && (
-                    <li key={uniqid()} onClick={onRemoveCart}>
+                    <li
+                      key={uniqid()}
+                      onClick={onRemoveCart}
+                    >
                       <span>Удалить карточку</span>
                     </li>
                   )}
@@ -245,14 +259,16 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             }
             placement="bottom-start"
           >
-            <button onClick={toggleTooltip} type="button" className={styles.icon_btn}>
+            <button type="button" className={styles.icon_btn}>
               <Icon name="other" color="premium" size="xs" />
             </button>
           </Popover>
         </div>
-        <button onClick={onSetNode} type="button" className={styles.btn}>
-          Закрыть
-        </button>
+        {isMainInput && (
+          <button onClick={onSetNode} type="button" className={styles.btn}>
+            Закрыть
+          </button>
+        )}
       </div>
     </>
   );

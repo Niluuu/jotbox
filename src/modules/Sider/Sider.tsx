@@ -20,7 +20,7 @@ export interface SiderProps {
 
 export const Sider: FC<SiderProps> = ({ isSidebarOpen }) => {
   return (
-    <aside className={classNames(styles.sider, !isSidebarOpen ? styles.open : null)}>
+    <aside className={classNames(styles.sider, isSidebarOpen ? styles.open : null)}>
       <div className={styles.sider_children}>
         <Submenu />
       </div>

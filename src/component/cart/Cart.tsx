@@ -72,6 +72,9 @@ interface CartProps {
    * ?
    */
   popupCart?: boolean;
+  /**
+   * Toggle gaps of Node function
+   */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
@@ -151,7 +154,6 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar
-          withHistory
           isMainInput={isMain}
           currentColor={color}
           selectedGaps={gaps}

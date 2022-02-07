@@ -6,7 +6,8 @@ export const editor = createSlice({
   initialState: {
     text: initialStateStr,
     updatedText:
-      '{"blocks":[{"key":"cbbnn","text":"update","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
+      '{"blocks":[{"key":"cbbnn","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
+    onCreateFuncCall: false,
   },
   reducers: {
     setText: (state, action) => {
@@ -15,9 +16,12 @@ export const editor = createSlice({
     setUpdatedText: (state, action) => {
       state.updatedText = action.payload;
     },
+    toggleOnCreateFunctionCall: (state, action) => {
+      state.onCreateFuncCall = action.payload;
+    },
   },
 });
 
-export const { setText, setUpdatedText } = editor.actions;
+export const { setText, setUpdatedText, toggleOnCreateFunctionCall } = editor.actions;
 
 export default editor.reducer;

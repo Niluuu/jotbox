@@ -199,12 +199,12 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px;
-  box-shadow: 0 0 10px #d0d2d3;
+  padding: 5px;
+  box-shadow: 0 0 5px #d0d2d3;
 
   button {
-    width: 32px;
-    height: 32px;
+    width: 20px;
+    height: 20px;
     border-radius: 100%;
     margin: 2px;
     border: 1px solid rgb(175, 175, 175);
@@ -213,7 +213,7 @@
     align-items: center;
   }
 
-  .active {
+  .activeColor {
     border: 2px solid rgb(100, 75, 130);
     box-shadow: 0 0 2px rgb(100, 75, 130);
   }
@@ -222,12 +222,19 @@
 .labelWrapper {
   width: 250px;
   padding: 10px 12px;
-
+  overflow: hidden !important;
+  
   h5 {
     font-size: 13px;
     font-weight: 600;
     font-family: 'Roboto';
   }
+  
+}
+
+.item {
+  height: 175px;
+  overflow-y: scroll;
 }
 
 .labelSearch {
@@ -334,6 +341,34 @@
       padding: 7px;
       margin: 0;
     }
+  }
+
+  .colorWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 0 10px #d0d2d3;
+  
+    button {
+      width: 32px;
+      height: 32px;
+      border-radius: 100%;
+      margin: 2px;
+      border: 1px solid rgb(175, 175, 175);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .activeColor {
+      border: 2px solid rgb(100, 75, 130);
+      box-shadow: 0 0 2px rgb(100, 75, 130);
+    }
+  }
+
+  .item {
+    height: 225px;
   }
 }
 

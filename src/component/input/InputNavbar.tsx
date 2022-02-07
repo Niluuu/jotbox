@@ -72,7 +72,7 @@ interface InputNavbarProps {
    */
   toggleGapsCart?: (gap: any) => void;
   /**
-   * Should navbar has shadow in Modal?
+   * Is Modal? Should navbar has shadow in Modal?
    */
   shadow?: boolean;
 }
@@ -239,10 +239,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   {onRemoveCart && (
-                    <li
-                      key={uniqid()}
-                      onClick={onRemoveCart}
-                    >
+                    <li key={uniqid()} onClick={onRemoveCart}>
                       <span>Удалить карточку</span>
                     </li>
                   )}
@@ -264,7 +261,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </button>
           </Popover>
         </div>
-        {isMainInput && (
+        {(isMainInput || shadow) && (
           <button onClick={onSetNode} type="button" className={styles.btn}>
             Закрыть
           </button>

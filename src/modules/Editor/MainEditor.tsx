@@ -10,7 +10,6 @@ import { RootState } from '../../app/store';
 import { Icon } from '../../component/Icon/Icon';
 import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
 import styles from './Editor.module.scss';
-import { initialStateStr } from '../../utils/editor/initialState';
 
 interface MainEditorProps {
   linkMode?: boolean;
@@ -92,7 +91,6 @@ const MainEditor: FC<MainEditorProps> = ({
 
       const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
 
-      console.log('initialState', initialState);
       if (initialState) dispatch(setUpdatedText(convert));
       dispatch(setText(convert));
     },

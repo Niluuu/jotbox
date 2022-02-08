@@ -1,6 +1,22 @@
 @import '/src/styles/base/mixins';
 @import '/src/styles/base/variables';
 
+.background {
+  background: rgba(50, 50, 50, 0.5);
+  z-index: 1 !important;
+  position: fixed;
+  top: 98px;
+  left: 260px;
+  height: 100vh;
+  width: 100%;
+  transform: translateX(100%);
+  transition: all 0.2s ease-out;
+  
+  &.open {
+    transform: translateX(0);
+  }
+}
+
 .sider {
   height: 100vh;
   width: 40px;
@@ -138,6 +154,10 @@
 }
 
 @include tablet-portrait {
+  .background {
+    left: 275px;
+  }
+  
   .sider {
     width: 50px;
     top: 98px;
@@ -162,6 +182,10 @@
 }
 
 @include tablet-landscape {
+  .background {
+    left: 300px;
+  }
+
   .sider {
     width: 55px;
   
@@ -184,6 +208,10 @@
 }
 
 @include desktop {
+  .background {
+    display: none;
+  }
+
   .sider {
     width: 65px;
     top: 70px;

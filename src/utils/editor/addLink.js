@@ -5,17 +5,15 @@ import styles from '../../component/tooltip/Tooltip.module.scss';
 
 export const linkifyPlugin = createLinkifyPlugin({
   component(props) {
+    const { href } = props;
     return (
       <div className={styles.linkfy}>
         <div className={styles.tooltip}>
-          <span onClick={() => window.open(props.href)}>
+          <span onClick={() => window.open(href)}>
             <span>open</span>
           </span>
         </div>
-        <a
-          {...props}
-          className={styles.link}
-        />
+        <a href={href} {...props} className={styles.link} />
       </div>
     );
   },

@@ -42,14 +42,15 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       text: state.editorReducer.text,
       updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
       filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
+      updateNodes: state.nodesReducer.updateNodes,
     };
   });
 
-  const { grid, text, updateModalIsOpen, filterByTitleLetter } = mapStateToProps;
+  const { grid, text, updateModalIsOpen, filterByTitleLetter, updateNodes } = mapStateToProps;
   const dispatch = useDispatch();
 
-  const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
+  const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
   const archived = archive ? { eq: true } : { eq: false };
 
@@ -121,7 +122,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   useEffect(() => {
     onFilterByTitle();
-  }, [filterByTitleLetter, onFilterByTitle]);
+  }, [updateNodes, filterByTitleLetter, onFilterByTitle]);
 
   const onColorChange = useCallback(
     async (id, color, _version) => {

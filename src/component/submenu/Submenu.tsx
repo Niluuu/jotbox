@@ -40,7 +40,7 @@ export const Submenu: FC<SubmenuProps> = () => {
   const [hasError, setHasError] = useState(false);
   const dispatch = useDispatch();
 
-  const fetchGaps = useCallback(async () => {
+  const getGapsRequest = useCallback(async () => {
     try {
       const res = await API.graphql(graphqlOperation(listGapss));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -68,7 +68,7 @@ export const Submenu: FC<SubmenuProps> = () => {
       };
 
       try {
-        const items = await fetchGaps();
+        const items = await getGapsRequest();
         const duplicate = items.map((gap) => gap.title);
 
         if (duplicate.includes(title)) {
@@ -77,24 +77,24 @@ export const Submenu: FC<SubmenuProps> = () => {
           setHasError(false);
           await API.graphql({ query: createGaps, variables: { input: newLabel } });
         }
-        fetchGaps();
+        getGapsRequest();
       } catch (err) {
         throw new Error('Create gaps route');
       }
     },
-    [fetchGaps, userEmail],
+    [getGapsRequest, userEmail],
   );
 
   const onDeleteGap = useCallback(
     async (id, _version) => {
       try {
         await API.graphql({ query: deleteGaps, variables: { input: { id, _version } } });
-        fetchGaps();
+        getGapsRequest();
       } catch (err) {
         throw new Error('Gap DELETE route');
       }
     },
-    [fetchGaps],
+    [getGapsRequest],
   );
 
   const onUpdateGap = useCallback(
@@ -124,12 +124,12 @@ export const Submenu: FC<SubmenuProps> = () => {
         // eslint-disable-next-line no-underscore-dangle
         const filteredNodes = items.filter((elm) => elm._deleted === null);
 
-        const gapItems = await fetchGaps();
+        const gapItems = await getGapsRequest();
         const duplicate = gapItems.map((gap) => gap.title);
 
         const complete = async () => {
           await API.graphql({ query: updateGaps, variables: { input: updatedLabel } });
-          fetchGaps();
+          getGapsRequest();
 
           filteredNodes.forEach(async (element) => {
             const updatedGaps = element.gaps.map((elm) => (elm === currentGap ? title : elm));
@@ -153,12 +153,12 @@ export const Submenu: FC<SubmenuProps> = () => {
         throw new Error('Update gaps route');
       }
     },
-    [fetchGaps, userEmail, dispatch],
+    [getGapsRequest, userEmail, dispatch],
   );
 
   useEffect(() => {
-    fetchGaps();
-  }, [fetchGaps]);
+    getGapsRequest();
+  }, [getGapsRequest]);
 
   useEffect(() => {
     if (!isOpenLabel) setHasError(false);

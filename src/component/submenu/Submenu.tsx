@@ -3,14 +3,16 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../Icon/Icon';
 import { SubmenuModal } from '../../atoms/modals/SubmenuModal';
 import { routes } from '../../utils/routes/index';
-import { listGapss } from '../../graphql/queries';
-import { createGaps, updateGaps, deleteGaps } from '../../graphql/mutations';
+import { getGaps, listGapss, listNodes } from '../../graphql/queries';
+import { createGaps, updateGaps, deleteGaps, updateNode } from '../../graphql/mutations';
 import OnErrorMessage from '../message/message';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
+import { setUpdateNodes } from '../../reducers/nodes';
 
 export interface SubmenuProps {
   /**
@@ -30,12 +32,15 @@ export interface SubmenuProps {
 export const Submenu: FC<SubmenuProps> = () => {
   const location = useLocation();
   const { pathname } = location;
+  const userEmail = localStorage.getItem('userEmail');
+
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const [listGaps, setListGaps] = useState([]);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
+  const dispatch = useDispatch();
 
-  const getGaps = useCallback(async () => {
+  const fetchGaps = useCallback(async () => {
     try {
       const res = await API.graphql(graphqlOperation(listGapss));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -55,14 +60,15 @@ export const Submenu: FC<SubmenuProps> = () => {
 
   const onCreateGap = useCallback(
     async (title) => {
-      const collabarator = localStorage.getItem('userEmail');
+      const collabarator = { eq: userEmail };
+
       const newLabel = {
         title,
         collabarator,
       };
 
       try {
-        const items = await getGaps();
+        const items = await fetchGaps();
         const duplicate = items.map((gap) => gap.title);
 
         if (duplicate.includes(title)) {
@@ -71,24 +77,24 @@ export const Submenu: FC<SubmenuProps> = () => {
           setHasError(false);
           await API.graphql({ query: createGaps, variables: { input: newLabel } });
         }
-        getGaps();
+        fetchGaps();
       } catch (err) {
         throw new Error('Create gaps route');
       }
     },
-    [getGaps],
+    [fetchGaps, userEmail],
   );
 
   const onDeleteGap = useCallback(
     async (id, _version) => {
       try {
         await API.graphql({ query: deleteGaps, variables: { input: { id, _version } } });
-        getGaps();
+        fetchGaps();
       } catch (err) {
         throw new Error('Gap DELETE route');
       }
     },
-    [getGaps],
+    [fetchGaps],
   );
 
   const onUpdateGap = useCallback(
@@ -100,12 +106,42 @@ export const Submenu: FC<SubmenuProps> = () => {
       };
 
       try {
-        const items = await getGaps();
-        const duplicate = items.map((gap) => gap.title);
+        const collabarator = { eq: userEmail };
+
+        const currentGapData = await API.graphql({ query: getGaps, variables: { id } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const currentGapRes = currentGapData.data.getGaps;
+        const currentGap = currentGapRes.title;
+
+        const nodeData = await API.graphql({
+          query: listNodes,
+          variables: { filter: { collabarator } },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const { items } = nodeData.data.listNodes;
+        // eslint-disable-next-line no-underscore-dangle
+        const filteredNodes = items.filter((elm) => elm._deleted === null);
+
+        const gapItems = await fetchGaps();
+        const duplicate = gapItems.map((gap) => gap.title);
 
         const complete = async () => {
           await API.graphql({ query: updateGaps, variables: { input: updatedLabel } });
-          getGaps();
+          fetchGaps();
+
+          filteredNodes.forEach(async (element) => {
+            const updatedGaps = element.gaps.map((elm) => (elm === currentGap ? title : elm));
+            // eslint-disable-next-line no-underscore-dangle
+            const updatedNode = { id: element.id, _version: element._version, gaps: updatedGaps };
+            await API.graphql({
+              query: updateNode,
+              variables: { input: updatedNode },
+            });
+          });
+
+          dispatch(setUpdateNodes());
         };
 
         if (duplicate.includes(title)) {
@@ -114,15 +150,15 @@ export const Submenu: FC<SubmenuProps> = () => {
           if (confirm(answer)) complete();
         } else complete();
       } catch (err) {
-        throw new Error('Get gaps route');
+        throw new Error('Update gaps route');
       }
     },
-    [getGaps],
+    [fetchGaps, userEmail, dispatch],
   );
 
   useEffect(() => {
-    getGaps();
-  }, [getGaps]);
+    fetchGaps();
+  }, [fetchGaps]);
 
   useEffect(() => {
     if (!isOpenLabel) setHasError(false);

@@ -13,6 +13,7 @@ import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import '../../component/cart/Color.scss';
 import { Chip } from '../../component/chip/Chip';
+import MentionContext from '../../utils/hooks/useCreatContext';
 
 interface CartModalType {
   /**
@@ -220,14 +221,16 @@ const CartModal: FC<CartModalType> = ({
 
             <div className={styles.main_row}>
               {nodeID && (
-                <MainEditor
-                  linkMode={linkMode}
-                  createLinkToEditor={createLinkToEditor}
-                  editorRef={editorRef}
-                  initialState={node[0].description}
-                  color={updatedColor}
-                  isModal
-                />
+                <MentionContext.Provider value={() => toggleModal(node[0].id)}>
+                  <MainEditor
+                    linkMode={linkMode}
+                    createLinkToEditor={createLinkToEditor}
+                    editorRef={editorRef}
+                    initialState={node[0].description}
+                    color={updatedColor}
+                    isModal
+                  />
+                </MentionContext.Provider>
               )}
               <div className={styles.main_chips}>
                 {node[0].gaps && node[0].gaps.length > 10 ? (

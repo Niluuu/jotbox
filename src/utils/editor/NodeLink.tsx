@@ -1,8 +1,9 @@
 import classNames from 'classnames';
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { getIdNode, closeUpdateModalIsOpen } from '../../reducers/getNodeId';
 import styles from '../../component/tooltip/Tooltip.module.scss';
+import MentionContext from '../hooks/useCreatContext';
 
 export interface NodeLinkProps {
   /**
@@ -17,17 +18,22 @@ export interface NodeLinkProps {
 
 export const NodeLink: FC<NodeLinkProps> = ({ id, children }) => {
   const dispatch = useDispatch();
+  const toggleModal = useContext(MentionContext);
 
   const handleClick = useCallback(
     (nodeId) => {
-      dispatch(getIdNode(''));
-      dispatch(closeUpdateModalIsOpen());
+      toggleModal();
+
+      setTimeout(() => {
+        dispatch(closeUpdateModalIsOpen());
+        dispatch(getIdNode(''));
+      }, 50);
 
       setTimeout(() => {
         dispatch(getIdNode(nodeId));
       }, 1000);
     },
-    [dispatch],
+    [dispatch, toggleModal],
   );
 
   return (

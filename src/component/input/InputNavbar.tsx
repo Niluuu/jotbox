@@ -239,7 +239,9 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   {onRemoveCart && (
-                    <li key={uniqid()} onClick={onRemoveCart}>
+                    <li 
+                      key={uniqid()} 
+                      onClick={onRemoveCart}>
                       <span>Удалить карточку</span>
                     </li>
                   )}

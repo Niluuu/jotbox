@@ -99,6 +99,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       const { items } = data.data.listNodes;
       // eslint-disable-next-line no-underscore-dangle
       const filteredItems = items.filter((elm) => elm._deleted === null);
+
       setNodes(filteredItems);
       dispatch(setNodesToProps(filteredItems));
       return filteredItems;
@@ -133,33 +134,44 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           _version,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
 
-        getAllNodes();
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
       } catch (err) {
         throw new Error('Color update error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onRemoveCart = useCallback(
     async (id, _version) => {
       try {
-        await API.graphql({
+        const data = await API.graphql({
           query: deleteNode,
           variables: { input: { id, _version } },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.deleteNode;
 
-        getAllNodes();
+        // eslint-disable-next-line no-underscore-dangle
+        if (item._deleted) {
+          setNodes(nodes.filter((elm) => elm.id !== id));
+        }
+        return item;
       } catch (err) {
         throw new Error('Remove node error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onChangePin = useCallback(
@@ -172,17 +184,21 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           _version,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
 
-        getAllNodes();
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onChangeArchived = useCallback(
@@ -192,25 +208,31 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           id,
           archived: archiveAttr,
           _version,
-          title: title.toLowerCase(),
+          title,
           description,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
 
-        getAllNodes();
+        if (item.archived === archiveAttr) {
+          setNodes(nodes.filter((elm) => elm.id !== id));
+        }
+        return item;
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const toggleGapsCart = useCallback(
-    async (id, _version, gap) => {
+    async (id, _version, gaps) => {
       try {
         const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -218,28 +240,33 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         const cart = data.data.getNode;
         const cartGaps = cart.gaps;
 
-        const updatedGaps = cartGaps.includes(gap)
-          ? cartGaps.filter((el) => el !== gap)
-          : [...cartGaps, gap];
+        const updatedGaps = cartGaps.includes(gaps)
+          ? cartGaps.filter((el) => el !== gaps)
+          : [...cartGaps, gaps];
 
         const updatedNode = { id, _version, gaps: updatedGaps };
 
-        await API.graphql({
+        const newData = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
-        getAllNodes();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = newData.data.updateNode;
+
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
       } catch (err) {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onSetNodes = useCallback(async () => {
     try {
       const node = {
-        title: titleRef.current.innerText.toLowerCase(),
+        title: titleRef.current.innerText,
         description: text,
         gaps: selectedGaps,
         pined: defaultPin,
@@ -248,13 +275,17 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         collabarator: userEmail,
       };
 
-      await API.graphql({ query: createNode, variables: { input: node } });
-      getAllNodes();
+      const data = await API.graphql({ query: createNode, variables: { input: node } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.createNode;
+
+      setNodes([item, ...nodes]);
       cleanUp();
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, nodes]);
 
   const onSetArchive = useCallback(async () => {
     try {
@@ -269,26 +300,15 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       };
 
       await API.graphql({ query: createNode, variables: { input: node } });
-      getAllNodes();
       cleanUp();
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor]);
 
   useEffect(() => {
     getAllNodes();
   }, [getAllNodes]);
-
-  useEffect(() => {
-    getAllNodes();
-
-    if (updateModalIsOpen) {
-      return () => {
-        setNodes([]);
-      };
-    }
-  }, [updateModalIsOpen, getAllNodes]);
 
   useEffect(() => {
     const gaps = { contains: label };

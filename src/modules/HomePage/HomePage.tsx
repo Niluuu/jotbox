@@ -311,6 +311,16 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   }, [getAllNodes]);
 
   useEffect(() => {
+    getAllNodes();
+
+    if (updateModalIsOpen) {
+      return () => {
+        setNodes([]);
+      };
+    }
+  }, [updateModalIsOpen, getAllNodes]);
+  
+  useEffect(() => {
     const gaps = { contains: label };
 
     const newFiler =

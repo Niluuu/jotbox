@@ -178,6 +178,12 @@ const CartModal: FC<CartModalType> = ({
     dispatch(closeUpdateModalIsOpen());
   }, [node, onChangeArchived, dispatch]);
 
+  const linkRef = useRef(null);
+  const onLinkEditor = () => {
+    linkRef.current.focus();
+    createLinkToEditor();
+  };
+
   return (
     <Modal
       removeIcon={updatedColor === undefined && true}
@@ -189,7 +195,7 @@ const CartModal: FC<CartModalType> = ({
     >
       <>
         {node[0] !== undefined && (
-          <div tabIndex={-1} style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }}>
             <div
               className={updatedColor}
               style={{
@@ -229,6 +235,7 @@ const CartModal: FC<CartModalType> = ({
               {nodeID && (
                 <MentionContext.Provider value={() => toggleModal(node[0].id)}>
                   <MainEditor
+                    linkRef={linkRef}
                     linkMode={linkMode}
                     createLinkToEditor={createLinkToEditor}
                     editorRef={editorRef}
@@ -257,7 +264,7 @@ const CartModal: FC<CartModalType> = ({
               toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
               onColorChange={(color) => modalColorChange(color)}
               onSetNode={() => toggleModal(node[0].id)}
-              createLinkToEditor={createLinkToEditor}
+              createLinkToEditor={onLinkEditor}
               onChangeArchived={modalChangeArchived}
               onRemoveCart={modalRemoveCart}
               onSetArchive={toggleArchived}

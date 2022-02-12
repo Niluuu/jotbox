@@ -106,6 +106,12 @@ const MainInput: FC<MainInputProps> = ({
     }
   };
 
+  const linkRef = useRef(null);
+  const onLinkEditor = () => {
+    linkRef.current.focus();
+    createLinkToEditor();
+  };
+
   return (
     <div
       className={classNames(styles.main_input, grid && styles.column, defaultColor)}
@@ -139,6 +145,7 @@ const MainInput: FC<MainInputProps> = ({
 
       <div className={styles.main_row}>
         <MainEditor
+          linkRef={linkRef}
           isMainInput
           defaultColor={defaultColor}
           linkMode={linkMode}
@@ -175,7 +182,7 @@ const MainInput: FC<MainInputProps> = ({
           focused={focused}
           onSetArchive={onSetArchive}
           onSetNode={() => onSetNodes()}
-          createLinkToEditor={createLinkToEditor}
+          createLinkToEditor={onLinkEditor}
           onDefaultColor={onDefaultColor}
           defaultColor={defaultColor}
           toggleGaps={toggleGaps}

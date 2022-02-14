@@ -60,41 +60,49 @@ export const Submenu: FC<SubmenuProps> = () => {
 
   const onCreateGap = useCallback(
     async (title) => {
-      const collabarator = { eq: userEmail };
-
-      const newLabel = {
-        title,
-        collabarator,
-      };
-
       try {
         const items = await getGapsRequest();
+        const newLabel = {
+          title,
+        };
         const duplicate = items.map((gap) => gap.title);
 
         if (duplicate.includes(title)) {
           setHasError(true);
         } else {
           setHasError(false);
-          await API.graphql({ query: createGaps, variables: { input: newLabel } });
+          const data = await API.graphql({ query: createGaps, variables: { input: newLabel } });
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //  @ts-ignore
+          const item = data.data.createGaps;
+          setListGaps([item, ...listGaps]);
         }
-        getGapsRequest();
       } catch (err) {
         throw new Error('Create gaps route');
       }
     },
-    [getGapsRequest, userEmail],
+    [getGapsRequest, listGaps],
   );
 
   const onDeleteGap = useCallback(
     async (id, _version) => {
       try {
-        await API.graphql({ query: deleteGaps, variables: { input: { id, _version } } });
-        getGapsRequest();
+        const data = await API.graphql({
+          query: deleteGaps,
+          variables: { input: { id, _version } },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.deleteGaps;
+        // eslint-disable-next-line no-underscore-dangle
+        if (item._deleted) {
+          setListGaps(listGaps.filter((elm) => elm.id !== id));
+        }
       } catch (err) {
         throw new Error('Gap DELETE route');
       }
     },
-    [getGapsRequest],
+    [listGaps],
   );
 
   const onUpdateGap = useCallback(
@@ -128,8 +136,14 @@ export const Submenu: FC<SubmenuProps> = () => {
         const duplicate = gapItems.map((gap) => gap.title);
 
         const complete = async () => {
-          await API.graphql({ query: updateGaps, variables: { input: updatedLabel } });
-          getGapsRequest();
+          const newData = await API.graphql({
+            query: updateGaps,
+            variables: { input: updatedLabel },
+          });
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //  @ts-ignore
+          const item = newData.data.updateGaps;
+          setListGaps(listGaps.map((elm) => (elm.id === id ? item : elm)));
 
           filteredNodes.forEach(async (element) => {
             const updatedGaps = element.gaps.map((elm) => (elm === currentGap ? title : elm));
@@ -153,7 +167,7 @@ export const Submenu: FC<SubmenuProps> = () => {
         throw new Error('Update gaps route');
       }
     },
-    [getGapsRequest, userEmail, dispatch],
+    [getGapsRequest, userEmail, listGaps, dispatch],
   );
 
   useEffect(() => {

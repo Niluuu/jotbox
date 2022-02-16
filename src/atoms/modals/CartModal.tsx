@@ -51,13 +51,18 @@ const CartModal: FC<CartModalType> = ({
   onColorChange,
   toggleGapsCart,
 }) => {
-  const [node, setNode] = useState([]);
+  const [node, setNode] = useState<any>([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
   const [updatedArchive, setUpdatedArchive] = useState(undefined);
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
+  const linkRef = useRef(null);
+  const onLinkEditor = () => {
+    linkRef.current.focus();
+    createLinkToEditor();
+  };
 
   const createLinkToEditor = () => setlinkMode((prev) => !prev);
   const toggleArchived = () => setUpdatedArchive((prev) => !prev);
@@ -137,40 +142,46 @@ const CartModal: FC<CartModalType> = ({
     [onUpdate],
   );
 
-  const modalColorChange = (color) => {
-    const { id, _version } = node[0];
-    onColorChange(id, color, _version);
+  const modalColorChange = useCallback(
+    async (color) => {
+      const { id, _version } = node[0];
+      const data = await onColorChange(id, color, _version);
 
-    setTimeout(() => nodeGet(nodeID), 1000);
-  };
+      setNode([data]);
+    },
+    [node, onColorChange],
+  );
 
-  const modalToggleGapsCart = (gap) => {
-    const { id, _version } = node[0];
-    toggleGapsCart(id, _version, gap);
+  const modalToggleGapsCart = useCallback(
+    async (gap) => {
+      const { id, _version } = node[0];
+      const data = await toggleGapsCart(id, _version, gap);
 
-    setTimeout(() => nodeGet(nodeID), 1000);
-  };
+      setNode([data]);
+    },
+    [node, toggleGapsCart],
+  );
 
-  const modalChangePin = () => {
+  const modalChangePin = useCallback(async() => {
     const { id, _version, pined } = node[0];
-    onChangePin(id, !pined, _version);
+    const data = await onChangePin(id, !pined, _version);
 
-    setTimeout(() => nodeGet(nodeID), 1000);
-  };
+    setNode([data]);
+  }, [node, onChangePin]);
 
-  const modalRemoveCart = () => {
+  const modalRemoveCart = useCallback(() => {
     const { id, _version } = node[0];
     onRemoveCart(id, _version);
 
-    setTimeout(() => toggleModal(id), 1000);
-  };
+    dispatch(closeUpdateModalIsOpen());
+  }, [node, onRemoveCart, dispatch]);
 
-  const modalChangeArchived = () => {
+  const modalChangeArchived = useCallback(() => {
     const { id, _version, archived, title, description } = node[0];
-    onChangeArchived(id, !archived, _version, title.toLowerCase(), description);
+    onChangeArchived(id, !archived, _version, title, description);
 
-    setTimeout(() => toggleModal(id), 1000);
-  };
+    dispatch(closeUpdateModalIsOpen());
+  }, [node, onChangeArchived, dispatch]);
 
   return (
     <Modal
@@ -183,7 +194,7 @@ const CartModal: FC<CartModalType> = ({
     >
       <>
         {node[0] !== undefined && (
-          <div tabIndex={-1} style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }}>
             <div
               className={updatedColor}
               style={{
@@ -223,6 +234,7 @@ const CartModal: FC<CartModalType> = ({
               {nodeID && (
                 <MentionContext.Provider value={() => toggleModal(node[0].id)}>
                   <MainEditor
+                    linkRef={linkRef}
                     linkMode={linkMode}
                     createLinkToEditor={createLinkToEditor}
                     editorRef={editorRef}
@@ -251,7 +263,7 @@ const CartModal: FC<CartModalType> = ({
               toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
               onColorChange={(color) => modalColorChange(color)}
               onSetNode={() => toggleModal(node[0].id)}
-              createLinkToEditor={createLinkToEditor}
+              createLinkToEditor={onLinkEditor}
               onChangeArchived={modalChangeArchived}
               onRemoveCart={modalRemoveCart}
               onSetArchive={toggleArchived}

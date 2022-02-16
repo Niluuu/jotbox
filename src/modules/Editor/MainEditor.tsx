@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useEffect } from 'react';
+import { FC, useState, useCallback, useEffect, useRef } from 'react';
 import { EditorState, RichUtils, convertFromRaw, convertToRaw, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
@@ -32,6 +32,8 @@ interface MainEditorProps {
    * Should editor appear in Modal?
    */
   isModal?: boolean;
+  // Ref to autofocus add link
+  linkRef?: any;
 }
 
 const MainEditor: FC<MainEditorProps> = ({
@@ -43,6 +45,7 @@ const MainEditor: FC<MainEditorProps> = ({
   defaultColor,
   isMainInput,
   isModal,
+  linkRef,
 }) => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))),
@@ -131,6 +134,14 @@ const MainEditor: FC<MainEditorProps> = ({
     seturlValue('');
   };
 
+  const confirmLinkKeyUp = (e) => {
+    e.preventDefault();
+    if (e.key === 'Enter') {
+      confirmLink(e);
+      createLinkToEditor();
+    }
+  };
+
   const removeLink = (e) => {
     e.preventDefault();
 
@@ -180,12 +191,14 @@ const MainEditor: FC<MainEditorProps> = ({
                 <Icon name={focus ? 'delete' : 'filled-label'} color="premium" size="xs" />
               </button>
               <input
+                ref={linkRef}
                 onChange={onURLChange}
                 type="text"
                 placeholder="Put your Link..."
                 value={urlValue}
                 onFocus={() => setfocus(true)}
                 onBlur={() => setfocus(false)}
+                onKeyUp={(e) => confirmLinkKeyUp(e)}
               />
               <button onMouseDown={confirmLink} onClick={createLinkToEditor} type="button">
                 <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" />

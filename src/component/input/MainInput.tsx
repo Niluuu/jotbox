@@ -75,10 +75,13 @@ const MainInput: FC<MainInputProps> = ({
   toggleGaps,
 }) => {
   const outsideRef = useRef(null);
+  const linkRef = useRef(null);
+  const [linkMode, setlinkMode] = useState(false);
+  const editorRef = useRef<Editor>(null);
+
   const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
   const handleClickInside = () => setTimeout(() => setFocused(true), 200);
   useOnClickOutside(outsideRef, handleClickOutside);
-  const editorRef = useRef<Editor>(null);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -93,9 +96,7 @@ const MainInput: FC<MainInputProps> = ({
     if (e.currentTarget.contains(document.activeElement))
       return e.currentTarget.contains(document.activeElement);
   }, []);
-
-  const [linkMode, setlinkMode] = useState(false);
-
+  
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
   };
@@ -106,7 +107,6 @@ const MainInput: FC<MainInputProps> = ({
     }
   };
 
-  const linkRef = useRef(null);
   const onLinkEditor = () => {
     linkRef.current.focus();
     createLinkToEditor();
@@ -116,8 +116,7 @@ const MainInput: FC<MainInputProps> = ({
     <div
       className={classNames(styles.main_input, grid && styles.column, defaultColor)}
       tabIndex={-1}
-      onFocus={handleClickInside}
-      onBlur={(e) => onFocusOut(e)}
+
       onClick={handleClickInside}
       ref={outsideRef}
     >

@@ -162,7 +162,7 @@ const CartModal: FC<CartModalType> = ({
     [node, toggleGapsCart],
   );
 
-  const modalChangePin = useCallback(async() => {
+  const modalChangePin = useCallback(async () => {
     const { id, _version, pined } = node[0];
     const data = await onChangePin(id, !pined, _version);
 

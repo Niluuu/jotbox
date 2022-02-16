@@ -107,6 +107,8 @@ const Cart: FC<CartProps> = (props) => {
     [dispatch],
   );
 
+  const isLarge = !title;
+
   return (
     <div
       id={id}
@@ -130,11 +132,11 @@ const Cart: FC<CartProps> = (props) => {
         )}
       </button>
       <div className={styles.cart_content} onClick={() => !popupCart && onOpenModal(id)}>
-        <div className={styles.cart_title}>
+        <div className={classNames(styles.cart_title, isLarge && styles.empty)}>
           <p>{title}</p>
         </div>
         {description && (
-          <MainEditor color={color} initialState={description} editorRef={editorRef} />
+          <MainEditor isLarge={isLarge} color={color} initialState={description} editorRef={editorRef} />
         )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
@@ -154,6 +156,7 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar
+          noAddLink
           isMainInput={isMain}
           currentColor={color}
           selectedGaps={gaps}

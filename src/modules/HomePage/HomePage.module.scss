@@ -86,6 +86,11 @@
   font-size: 16px;
 }
 
+.textarea[contenteditable]:empty::before {
+  content: 'Title';
+  color: rgb(150, 150, 150);
+}
+
 @include desktop {
   .home_page {
     padding-left: 75px;

@@ -15,7 +15,7 @@ import Editor from '@draft-js-plugins/editor';
 import { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { List, Repeat } from 'immutable'
+import { List, Repeat } from 'immutable';
 import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import { RootState } from '../../app/store';
@@ -55,7 +55,9 @@ interface MainEditorProps {
    * Ref to autofocus add link
    */
   linkRef?: any;
-  // Ref to autofocus add link
+  /**
+   * Ref to autofocus add link
+   */
   isLarge?: boolean;
   /**
    * If editor readOnly mode
@@ -149,6 +151,26 @@ const MainEditor: FC<MainEditorProps> = ({
     const selection = editorState.getSelection();
 
     if (!selection.isCollapsed()) {
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
+        url: urlValue,
+      });
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+      // Apply entity
+      let nextEditorState = EditorState.set(editorState, {
+        currentContent: contentStateWithEntity,
+      });
+
+      // Apply selection
+      nextEditorState = RichUtils.toggleLink(
+        nextEditorState,
+        nextEditorState.getSelection(),
+        entityKey,
+      );
+
+      setEditorState(nextEditorState);
+    } else {
       const selectionState = editorState.getSelection();
       const contentState = editorState.getCurrentContent();
       const currentBlock = contentState.getBlockForKey(selectionState.getStartKey());
@@ -228,30 +250,10 @@ const MainEditor: FC<MainEditorProps> = ({
       });
 
       newEditorState = EditorState.forceSelection(newEditorState, newSelection);
-
-      // update our component
-    } else {
-      const contentState = editorState.getCurrentContent();
-      const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
-        url: urlValue,
-      });
-      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-
-      // Apply entity
-      let nextEditorState = EditorState.set(editorState, {
-        currentContent: contentStateWithEntity,
-      });
-
-      // Apply selection
-      nextEditorState = RichUtils.toggleLink(
-        nextEditorState,
-        nextEditorState.getSelection(),
-        entityKey,
-      );
-
-      setEditorState(nextEditorState);
-      seturlValue('');
+      setEditorState(newEditorState);
     }
+    setTextLink('');
+    seturlValue('');
   };
 
   const confirmLinkKeyUp = (e) => {
@@ -260,6 +262,7 @@ const MainEditor: FC<MainEditorProps> = ({
     if (e.key === 'Enter') {
       confirmLink(e);
       createLinkToEditor();
+      setTextLink('');
     }
   };
 

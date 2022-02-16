@@ -58,6 +58,11 @@ const CartModal: FC<CartModalType> = ({
   const [updatedArchive, setUpdatedArchive] = useState(undefined);
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
+  const linkRef = useRef(null);
+  const onLinkEditor = () => {
+    linkRef.current.focus();
+    createLinkToEditor();
+  };
 
   const createLinkToEditor = () => setlinkMode((prev) => !prev);
   const toggleArchived = () => setUpdatedArchive((prev) => !prev);
@@ -138,9 +143,9 @@ const CartModal: FC<CartModalType> = ({
   );
 
   const modalColorChange = useCallback(
-    (color) => {
+    async (color) => {
       const { id, _version } = node[0];
-      const data = onColorChange(id, color, _version);
+      const data = await onColorChange(id, color, _version);
 
       setNode([data]);
     },
@@ -148,18 +153,18 @@ const CartModal: FC<CartModalType> = ({
   );
 
   const modalToggleGapsCart = useCallback(
-    (gap) => {
+    async (gap) => {
       const { id, _version } = node[0];
-      const data = toggleGapsCart(id, _version, gap);
+      const data = await toggleGapsCart(id, _version, gap);
 
       setNode([data]);
     },
     [node, toggleGapsCart],
   );
 
-  const modalChangePin = useCallback(() => {
+  const modalChangePin = useCallback(async() => {
     const { id, _version, pined } = node[0];
-    const data = onChangePin(id, !pined, _version);
+    const data = await onChangePin(id, !pined, _version);
 
     setNode([data]);
   }, [node, onChangePin]);
@@ -177,12 +182,6 @@ const CartModal: FC<CartModalType> = ({
 
     dispatch(closeUpdateModalIsOpen());
   }, [node, onChangeArchived, dispatch]);
-
-  const linkRef = useRef(null);
-  const onLinkEditor = () => {
-    linkRef.current.focus();
-    createLinkToEditor();
-  };
 
   return (
     <Modal

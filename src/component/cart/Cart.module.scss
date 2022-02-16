@@ -43,6 +43,10 @@
       height: 40px !important;
       overflow: hidden;
 
+      &.empty {
+        display: none !important;
+      }
+
       p {
         text-transform: initial;
         font-size: 13px;

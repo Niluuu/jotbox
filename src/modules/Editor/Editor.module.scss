@@ -18,6 +18,11 @@
   font-size: 12px;
 }
 
+.editor.large {
+  max-height: 190px;
+  height: 190px;
+}
+
 .editor.modal {
   overflow-y: scroll;
   min-height: 300px;
@@ -96,9 +101,15 @@
   }
 
   .editor.cart {
-    max-height: 150px;
-    height: 150px;
+    max-height: 140px;
+    height: 140px;
     padding: 1px;
+    
+  }
+
+  .editor.large {
+    max-height: 180px;
+    height: 180px;
   }
 }
 
@@ -108,8 +119,13 @@
   }
 
   .editor.cart {
-    max-height: 135px;
-    height: 135px;
+    max-height: 155px;
+    height: 155px;
     padding: 16px 1px;
+  }
+
+  .editor.large {
+    max-height: 220px;
+    height: 220px;
   }
 }

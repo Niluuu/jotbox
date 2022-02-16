@@ -75,6 +75,10 @@ interface InputNavbarProps {
    * Is Modal? Should navbar has shadow in Modal?
    */
   shadow?: boolean;
+  /**
+   * Add Link should not bee in carts
+   */
+  noAddLink?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -94,6 +98,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     selectedGaps,
     toggleGapsCart,
     shadow,
+    noAddLink,
   } = props;
   const [listGaps, setListGaps] = useState([]);
   const [filter, setFilter] = useState({ title: { contains: '' } });
@@ -246,14 +251,16 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                       <span>Удалить карточку</span>
                     </li>
                   )}
-                  <li
-                    key={uniqid()}
-                    onClick={() => {
-                      createLinkToEditor();
-                    }}
-                  >
-                    <span>Добавить линк</span>
-                  </li>
+                  {!noAddLink && (
+                    <li
+                      key={uniqid()}
+                      onClick={() => {
+                        createLinkToEditor();
+                      }}
+                    >
+                      <span>Добавить линк</span>
+                    </li>
+                  )}
                 </ul>
               </div>
             }

@@ -34,6 +34,8 @@ interface MainEditorProps {
   isModal?: boolean;
   // Ref to autofocus add link
   linkRef?: any;
+  // Ref to autofocus add link
+  isLarge?: boolean;
 }
 
 const MainEditor: FC<MainEditorProps> = ({
@@ -46,6 +48,7 @@ const MainEditor: FC<MainEditorProps> = ({
   isMainInput,
   isModal,
   linkRef,
+  isLarge,
 }) => {
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))),
@@ -157,6 +160,7 @@ const MainEditor: FC<MainEditorProps> = ({
           styles.editor,
           isMainInput ? defaultColor : color,
           !isMainInput ? styles.cart : null,
+          isLarge ? styles.large : null,
           isModal ? styles.modal : null,
         )}
         onClick={() => {

@@ -74,14 +74,9 @@ const MainInput: FC<MainInputProps> = ({
   selectedGaps,
   toggleGaps,
 }) => {
-  const outsideRef = useRef(null);
   const linkRef = useRef(null);
   const [linkMode, setlinkMode] = useState(false);
   const editorRef = useRef<Editor>(null);
-
-  const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
-  const handleClickInside = () => setTimeout(() => setFocused(true), 200);
-  useOnClickOutside(outsideRef, handleClickOutside);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -92,11 +87,6 @@ const MainInput: FC<MainInputProps> = ({
 
   const { grid, text } = mapStateToProps;
 
-  const onFocusOut = useCallback((e) => {
-    if (e.currentTarget.contains(document.activeElement))
-      return e.currentTarget.contains(document.activeElement);
-  }, []);
-  
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
   };
@@ -116,11 +106,8 @@ const MainInput: FC<MainInputProps> = ({
     <div
       className={classNames(styles.main_input, grid && styles.column, defaultColor)}
       tabIndex={-1}
-
-      onClick={handleClickInside}
-      ref={outsideRef}
     >
-      <div className={classNames(styles.main_header, focused && styles.show)}>
+      <div className={classNames(styles.main_header, styles.show)}>
         <div
           ref={titleRef}
           id="title"
@@ -153,21 +140,8 @@ const MainInput: FC<MainInputProps> = ({
           initialState={text}
         />
       </div>
-      {!focused ? (
-        <div className={classNames(styles.main_tools, styles.bottom_tools)}>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="edit-bordered" color="premium" size="xs" />
-          </button>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="pen" color="premium" size="xs" />
-          </button>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="img" color="premium" size="xs" />
-          </button>
-        </div>
-      ) : null}
-
-      {focused && selectedGaps && (
+  
+      {selectedGaps && (
         <div className={classNames(styles.main_tools, styles.gaps)}>
           {selectedGaps.map((gap) => (
             <Chip>{gap} </Chip>
@@ -175,10 +149,8 @@ const MainInput: FC<MainInputProps> = ({
         </div>
       )}
 
-      {focused ? (
         <InputNavbar
           isMainInput
-          focused={focused}
           onSetArchive={onSetArchive}
           onSetNode={() => onSetNodes()}
           createLinkToEditor={onLinkEditor}
@@ -187,7 +159,6 @@ const MainInput: FC<MainInputProps> = ({
           toggleGaps={toggleGaps}
           selectedGaps={selectedGaps}
         />
-      ) : null}
     </div>
   );
 };

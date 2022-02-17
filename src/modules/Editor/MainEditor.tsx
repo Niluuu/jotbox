@@ -85,7 +85,6 @@ const MainEditor: FC<MainEditorProps> = ({
   const [open, setOpen] = useState(false);
   const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const [plaseHolder, setPlaseHolder] = useState(true);
   const [textLink, setTextLink] = useState('');
 
   const dispatch = useDispatch();
@@ -121,7 +120,6 @@ const MainEditor: FC<MainEditorProps> = ({
 
   const onChange = useCallback(
     (newEditorState) => {
-      setPlaseHolder(false);
       setEditorState(newEditorState);
 
       const convert = JSON.stringify(convertToRaw(newEditorState.getCurrentContent()));
@@ -297,7 +295,7 @@ const MainEditor: FC<MainEditorProps> = ({
           onChange={onChange}
           plugins={plugins}
           ref={editorRef}
-          placeholder={plaseHolder ? 'Заметка...' : null}
+          placeholder={readOnly ? 'Пустая заметка' : 'Заметка...'}
           readOnly={readOnly}
         />
         <MentionSuggestions

@@ -16,10 +16,6 @@ interface InputNavbarProps {
    */
   isMainInput?: boolean;
   /**
-   * Is main input cliked
-   */
-  focused?: boolean;
-  /**
    * Create node func
    */
   onSetNode?: () => void;
@@ -87,7 +83,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     onChangeArchived,
     onSetArchive,
     onSetNode,
-    focused = true,
     onRemoveCart,
     createLinkToEditor,
     onColorChange,
@@ -101,7 +96,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     noAddLink,
   } = props;
   const [listGaps, setListGaps] = useState([]);
-  const [filter, setFilter] = useState({ title: { contains: '' } });
+  const [filter] = useState({ title: { contains: '' } });
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
@@ -157,7 +152,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       <div
         className={classNames(
           styles.input_navbar,
-          !focused && styles.hide,
           shadow && styles.shadow,
         )}
       >

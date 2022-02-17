@@ -112,7 +112,6 @@ const Cart: FC<CartProps> = (props) => {
   return (
     <div
       id={id}
-      key={id}
       className={classNames(
         styles.cart,
         color,
@@ -136,7 +135,7 @@ const Cart: FC<CartProps> = (props) => {
           <p>{title}</p>
         </div>
         {description && (
-          <MainEditor isLarge={isLarge} color={color} initialState={description} editorRef={editorRef} />
+          <MainEditor isLarge={isLarge} color={color} initialState={description} editorRef={editorRef} readOnly />
         )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />

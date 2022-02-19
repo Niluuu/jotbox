@@ -149,25 +149,25 @@ const MainEditor: FC<MainEditorProps> = ({
     const selection = editorState.getSelection();
 
     if (!selection.isCollapsed()) {
-      const contentState = editorState.getCurrentContent();
-      const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
+      const currentContent = editorState.getCurrentContent();
+
+      currentContent.createEntity('LINK', 'MUTABLE', {
         url: urlValue,
       });
-      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
 
-      // Apply entity
-      let nextEditorState = EditorState.set(editorState, {
-        currentContent: contentStateWithEntity,
-      });
+      const entityKey = currentContent.getLastCreatedEntityKey();
 
-      // Apply selection
-      nextEditorState = RichUtils.toggleLink(
-        nextEditorState,
-        nextEditorState.getSelection(),
+      const textWithEntity = Modifier.replaceText(
+        currentContent,
+        selection,
+        textLink,
+        editorState.getCurrentInlineStyle(),
         entityKey,
       );
 
-      setEditorState(nextEditorState);
+      const newState = EditorState.createWithContent(textWithEntity);
+
+      setEditorState(newState);
     } else {
       const selectionState = editorState.getSelection();
       const contentState = editorState.getCurrentContent();

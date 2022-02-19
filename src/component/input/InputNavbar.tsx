@@ -1,5 +1,6 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
 import uniqid from 'uniqid';
 import { API } from 'aws-amplify';
 import styles from './MainInput.module.scss';
@@ -9,6 +10,10 @@ import '../cart/Color.scss';
 import { colors } from '../../utils/editor/color';
 import { listGapss } from '../../graphql/queries';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
+import {
+  toggleIsInputCollabaratorOpen,
+  toggleIsCartCollabaratorOpen,
+} from '../../reducers/collabarator';
 
 interface InputNavbarProps {
   /**
@@ -75,6 +80,10 @@ interface InputNavbarProps {
    * Add Link should not bee in carts
    */
   noAddLink?: boolean;
+  /**
+   * Open Cart Modal function
+   */
+  onOpenModal?: () => void;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -94,9 +103,11 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     toggleGapsCart,
     shadow,
     noAddLink,
+    onOpenModal,
   } = props;
   const [listGaps, setListGaps] = useState([]);
   const [filter] = useState({ title: { contains: '' } });
+  const dispatch = useDispatch();
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
@@ -147,17 +158,23 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     [isMainInput, toggleGaps, toggleGapsCart],
   );
 
+  const toggleCollabarator = () => {
+    if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
+    else {
+      dispatch(toggleIsCartCollabaratorOpen());
+      if (noAddLink) onOpenModal();
+    }
+  };
+
   return (
     <>
-      <div
-        className={classNames(
-          styles.input_navbar,
-          shadow && styles.shadow,
-        )}
-      >
+      <div className={classNames(styles.input_navbar, shadow && styles.shadow)}>
         <div className={styles.main_tools}>
           <button onClick={toggleArchive} type="button" className={styles.icon_btn}>
             <Icon name="dowland" color="premium" size="xs" />
+          </button>
+          <button onClick={toggleCollabarator} type="button" className={styles.icon_btn}>
+            <Icon name="user-add" color="premium" size="xs" />
           </button>
           <Popover
             placement="bottom-start"

@@ -7,8 +7,8 @@
   padding: 5px;
   border-radius: 2px;
   height: auto;
-  min-height: 1px;
-  position: relative;
+  min-height: 20px;
+  position: unset;
 }
 
 .editor.cart {
@@ -16,6 +16,11 @@
   overflow: hidden;
   padding: 3px 0;
   font-size: 12px;
+}
+
+.editor.large {
+  max-height: 190px;
+  height: 190px;
 }
 
 .editor.modal {
@@ -92,13 +97,19 @@
 
 @include desktop {
   .editor {
-    padding: 13px 5px;
+    padding: 13px 11px;
   }
 
   .editor.cart {
-    max-height: 115px;
-    height: 115px;
-    padding: 12px 1px;
+    max-height: 140px;
+    height: 140px;
+    padding: 1px;
+    
+  }
+
+  .editor.large {
+    max-height: 180px;
+    height: 180px;
   }
 }
 
@@ -108,8 +119,13 @@
   }
 
   .editor.cart {
-    max-height: 135px;
-    height: 135px;
+    max-height: 155px;
+    height: 155px;
     padding: 16px 1px;
+  }
+
+  .editor.large {
+    max-height: 220px;
+    height: 220px;
   }
 }

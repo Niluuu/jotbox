@@ -13,24 +13,64 @@ import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import '../../component/cart/Color.scss';
 import { Chip } from '../../component/chip/Chip';
+import MentionContext from '../../utils/hooks/useCreatContext';
+import Collabarator from '../../component/Collabarator/Collabarator';
 
 interface CartModalType {
+  /**
+   * Deleted Node
+   */
+  onRemoveCart?: (id: string, _version: number) => void;
+  /**
+   * Change archived attribute of Node function
+   */
+  onChangeArchived?: (
+    id: string,
+    archived: boolean,
+    _version: number,
+    title: string,
+    description: string,
+  ) => void;
+  /**
+   * Change pined attribute of Node function
+   */
+  onChangePin?: (id: string, pined: boolean, _version: number) => void;
+  /**
+   * Change color of Node function
+   */
   onColorChange: (id: string, color: string, _version: number) => void;
+  /**
+   * Change collabarator of Node function
+   */
+  onChangeCollabarators: (id: string, _version: number) => void;
+  /**
+   * Toggleselected gaps when creating Node function
+   */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
-const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
-  const [node, setNode] = useState([]);
+const CartModal: FC<CartModalType> = ({
+  onRemoveCart,
+  onChangeArchived,
+  onChangePin,
+  onColorChange,
+  toggleGapsCart,
+  onChangeCollabarators,
+}) => {
+  const [node, setNode] = useState<any>([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
-  const [updatedPined, setUpdatedPined] = useState(undefined);
   const [updatedArchive, setUpdatedArchive] = useState(undefined);
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
+  const linkRef = useRef(null);
+  const onLinkEditor = () => {
+    linkRef.current.focus();
+    createLinkToEditor();
+  };
 
   const createLinkToEditor = () => setlinkMode((prev) => !prev);
-  const togglePined = () => setUpdatedPined((prev) => !prev);
   const toggleArchived = () => setUpdatedArchive((prev) => !prev);
 
   const onKeyPressed = (e) => {
@@ -43,8 +83,10 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
     return {
       nodeIdReducer: state.nodeIdReducer,
       editorReducer: state.editorReducer,
+      isCartCollabaratorOpen: state.collabaratorReducer.isCartCollabaratorOpen,
     };
   });
+  const { isCartCollabaratorOpen } = mapStateToProps;
   const { nodeID, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
   const { updatedText } = mapStateToProps.editorReducer;
 
@@ -61,9 +103,8 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
 
   useEffect(() => {
     if (node[0] !== undefined) {
-      const { pined, archived, color } = node[0];
+      const { archived, color } = node[0];
 
-      setUpdatedPined(pined);
       setUpdatedArchive(archived);
       setUpdatedColor(color);
     }
@@ -80,7 +121,7 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
       try {
         const nodeDetails = {
           id,
-          title: titleRef.current.innerText,
+          title: titleRef.current.innerText.toLowerCase(),
           description: updatedText,
           /* eslint no-underscore-dangle: 0 */
           _version: node[0]._version,
@@ -103,23 +144,54 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
 
   const toggleModal = useCallback(
     (id) => {
-      onUpdate(id);
-      setUpdatedColor(undefined);
+      if (!isCartCollabaratorOpen) {
+        onUpdate(id);
+        setUpdatedColor(undefined);
+      }
     },
-    [onUpdate],
+    [onUpdate, isCartCollabaratorOpen],
   );
 
-  const modalColorChange = (color) => {
-    onColorChange(node[0].id, color, node[0]._version);
+  const modalColorChange = useCallback(
+    async (color) => {
+      const { id, _version } = node[0];
+      const data = await onColorChange(id, color, _version);
 
-    setTimeout(() => nodeGet(nodeID), 1000);
-  };
+      setNode([data]);
+    },
+    [node, onColorChange],
+  );
 
-  const modalToggleGapsCart = (gap) => {
-    toggleGapsCart(node[0].id, node[0]._version, gap);
+  const modalToggleGapsCart = useCallback(
+    async (gap) => {
+      const { id, _version } = node[0];
+      const data = await toggleGapsCart(id, _version, gap);
 
-    setTimeout(() => nodeGet(nodeID), 1000);
-  };
+      setNode([data]);
+    },
+    [node, toggleGapsCart],
+  );
+
+  const modalChangePin = useCallback(async () => {
+    const { id, _version, pined } = node[0];
+    const data = await onChangePin(id, !pined, _version);
+
+    setNode([data]);
+  }, [node, onChangePin]);
+
+  const modalRemoveCart = useCallback(() => {
+    const { id, _version } = node[0];
+    onRemoveCart(id, _version);
+
+    dispatch(closeUpdateModalIsOpen());
+  }, [node, onRemoveCart, dispatch]);
+
+  const modalChangeArchived = useCallback(() => {
+    const { id, _version, archived, title, description } = node[0];
+    onChangeArchived(id, !archived, _version, title, description);
+
+    dispatch(closeUpdateModalIsOpen());
+  }, [node, onChangeArchived, dispatch]);
 
   return (
     <Modal
@@ -130,85 +202,95 @@ const CartModal: FC<CartModalType> = ({ onColorChange, toggleGapsCart }) => {
       cartmodal
       toggleModal={() => toggleModal(node[0].id)}
     >
-      <>
-        {node[0] !== undefined && (
-          <div tabIndex={-1} style={{ position: 'relative' }}>
-            <div
-              className={updatedColor}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '98%',
-                padding: '5px 0 10px 10px',
-                position: 'absolute',
-                zIndex: 10,
-                background: '#fff',
-              }}
-            >
+      {isCartCollabaratorOpen ? (
+        <Collabarator
+          onChangeCollabarators={() => onChangeCollabarators(node[0].id, node[0]._version)}
+        />
+      ) : (
+        <>
+          {node[0] !== undefined && (
+            <div style={{ position: 'relative' }}>
               <div
-                ref={titleRef}
-                id="title"
-                className={styles.textarea}
-                contentEditable
-                suppressContentEditableWarning
-                aria-multiline
-                role="textbox"
-                spellCheck
-                onKeyDown={(e) => onKeyPressed(e)}
+                className={updatedColor}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '98%',
+                  padding: '5px 0 10px 10px',
+                  position: 'absolute',
+                  zIndex: 10,
+                  background: '#fff',
+                }}
               >
-                {node[0].title}
+                <div
+                  ref={titleRef}
+                  id="title"
+                  className={styles.textarea}
+                  contentEditable
+                  suppressContentEditableWarning
+                  aria-multiline
+                  role="textbox"
+                  spellCheck
+                  onKeyDown={(e) => onKeyPressed(e)}
+                >
+                  {node[0].title}
+                </div>
+
+                <button type="button" className={styles.icon_btn}>
+                  {!node[0].pined ? (
+                    <Icon name="pin" color="premium" size="xs" onClick={modalChangePin} />
+                  ) : (
+                    <Icon name="pin-black" color="premium" size="xs" onClick={modalChangePin} />
+                  )}
+                </button>
               </div>
 
-              <button type="button" className={styles.icon_btn}>
-                {!node[0].pined ? (
-                  <Icon name="pin" color="premium" size="xs" onClick={togglePined} />
-                ) : (
-                  <Icon name="pin-black" color="premium" size="xs" onClick={togglePined} />
+              <div className={styles.main_row}>
+                {nodeID && (
+                  <MentionContext.Provider value={() => toggleModal(node[0].id)}>
+                    <MainEditor
+                      linkRef={linkRef}
+                      linkMode={linkMode}
+                      createLinkToEditor={createLinkToEditor}
+                      editorRef={editorRef}
+                      initialState={node[0].description}
+                      color={updatedColor}
+                      isModal
+                    />
+                  </MentionContext.Provider>
                 )}
-              </button>
-            </div>
-
-            <div className={styles.main_row}>
-              {nodeID && (
-                <MainEditor
-                  linkMode={linkMode}
-                  createLinkToEditor={createLinkToEditor}
-                  editorRef={editorRef}
-                  initialState={node[0].description}
-                  color={updatedColor}
-                  isModal
-                />
-              )}
-              <div className={styles.main_chips}>
-                {node[0].gaps && node[0].gaps.length > 10 ? (
-                  <>
-                    {node[0].gaps.slice(0, 10).map((gap) => (
+                <div className={styles.main_chips}>
+                  {node[0].gaps && node[0].gaps.length > 10 ? (
+                    <>
+                      {node[0].gaps.slice(0, 10).map((gap) => (
+                        <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
+                      ))}
+                      <div className={styles.extraGap}> +{node[0].gaps.length - 10} </div>
+                    </>
+                  ) : (
+                    node[0].gaps.map((gap) => (
                       <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
-                    ))}
-                    <div className={styles.extraGap}> +{node[0].gaps.length - 10} </div>
-                  </>
-                ) : (
-                  node[0].gaps.map((gap) => (
-                    <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
+              <InputNavbar
+                toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
+                onColorChange={(color) => modalColorChange(color)}
+                onSetNode={() => toggleModal(node[0].id)}
+                createLinkToEditor={onLinkEditor}
+                onChangeArchived={modalChangeArchived}
+                onRemoveCart={modalRemoveCart}
+                onSetArchive={toggleArchived}
+                currentColor={node[0].color}
+                initialGaps={node[0] && node[0].gaps}
+                selectedGaps={node[0].gaps}
+                shadow
+              />
             </div>
-            <InputNavbar
-              isMainInput={!true}
-              onSetArchive={toggleArchived}
-              onSetNode={() => toggleModal(node[0].id)}
-              createLinkToEditor={createLinkToEditor}
-              withHistory
-              selectedGaps={node[0].gaps}
-              onColorChange={(color) => modalColorChange(color)}
-              toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
-              initialGaps={node[0] && node[0].gaps}
-              shadow
-            />
-          </div>
-        )}
-      </>
+          )}
+        </>
+      )}
     </Modal>
   );
 };

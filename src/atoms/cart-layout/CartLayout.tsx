@@ -13,7 +13,6 @@ interface CartProps {
   gaps: string[];
   color: string;
 }
-
 interface CartLayoutProps {
   /**
    * Grid type layout
@@ -61,7 +60,7 @@ const CartLayout: FC<CartLayoutProps> = ({
             .filter((cart) => cart.pined)
             .map((cart) => (
               <Cart
-                key={cart.id}
+                key={`key-${cart.id}`}
                 id={cart.id}
                 gaps={cart.gaps}
                 title={cart.title}
@@ -92,7 +91,7 @@ const CartLayout: FC<CartLayoutProps> = ({
             .filter((cart) => !cart.pined)
             .map((cart) => (
               <Cart
-                key={cart.id}
+                key={`key-${cart.id}`}
                 id={cart.id}
                 title={cart.title}
                 gaps={cart.gaps}

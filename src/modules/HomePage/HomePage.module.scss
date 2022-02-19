@@ -82,6 +82,11 @@
 
 .textarea {
   outline: none !important;
+  font-weight: $font-weight-normal;
+}
+
+.textarea[contenteditable]:empty::before {
+  content: 'Введите заголовок';
 }
 
 @include desktop {

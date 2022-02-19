@@ -72,6 +72,9 @@ interface CartProps {
    * ?
    */
   popupCart?: boolean;
+  /**
+   * Toggle gaps of Node function
+   */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
 }
 
@@ -104,10 +107,11 @@ const Cart: FC<CartProps> = (props) => {
     [dispatch],
   );
 
+  const isLarge = !title;
+
   return (
     <div
       id={id}
-      key={id}
       className={classNames(
         styles.cart,
         color,
@@ -127,11 +131,17 @@ const Cart: FC<CartProps> = (props) => {
         )}
       </button>
       <div className={styles.cart_content} onClick={() => !popupCart && onOpenModal(id)}>
-        <div className={styles.cart_title}>
+        <div className={classNames(styles.cart_title, isLarge && styles.empty)}>
           <p>{title}</p>
         </div>
         {description && (
-          <MainEditor color={color} initialState={description} editorRef={editorRef} />
+          <MainEditor
+            isLarge={isLarge}
+            color={color}
+            initialState={description}
+            editorRef={editorRef}
+            readOnly
+          />
         )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
@@ -151,7 +161,8 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar
-          withHistory
+          onOpenModal={() => onOpenModal(id)}
+          noAddLink
           isMainInput={isMain}
           currentColor={color}
           selectedGaps={gaps}

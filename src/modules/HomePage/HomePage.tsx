@@ -1,8 +1,10 @@
+/* eslint-disable max-lines */
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { API } from 'aws-amplify';
+import { EditorState, ContentState } from 'draft-js';
 import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -12,9 +14,9 @@ import { RootState } from '../../app/store';
 import AddLinkModal from '../../atoms/modals/AddLinkModal';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
-import { setText } from '../../reducers/editor';
-import { initialStateStr } from '../../utils/editor/initialState';
+import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
+import { setInputCollabaratorUsers } from '../../reducers/collabarator';
 
 interface CartProps {
   id: string;
@@ -24,6 +26,7 @@ interface CartProps {
   archived: boolean;
   gaps: string[];
   _version: number;
+  _deleted: boolean;
   color: string;
 }
 
@@ -31,7 +34,7 @@ interface HomeProps {
   /**
    * Is archived page or not
    */
-  archive: boolean;
+  archive?: boolean;
 }
 
 const HomePage: FC<HomeProps> = ({ archive }) => {
@@ -41,17 +44,25 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       text: state.editorReducer.text,
       updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
       filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
+      updateNodes: state.nodesReducer.updateNodes,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
     };
   });
 
-  const { grid, text, updateModalIsOpen, filterByTitleLetter } = mapStateToProps;
+  const {
+    grid,
+    text,
+    updateModalIsOpen,
+    filterByTitleLetter,
+    updateNodes,
+    inputCollabaratorUsers,
+  } = mapStateToProps;
   const dispatch = useDispatch();
 
-  const userEmail = localStorage.getItem('userEmail');
   const { label } = useParams();
+  const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
   const archived = archive ? { eq: true } : { eq: false };
-  const titleFilter = { contains: filterByTitleLetter };
 
   const titleRef = useRef<HTMLDivElement>();
   const [nodes, setNodes] = useState<CartProps[]>([]);
@@ -60,11 +71,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const [defaultColor, setDefaultColor] = useState('default');
   const [selectedGaps, setSelectedGaps] = useState([]);
   const [filter, setFilter] = useState({ collabarator, archived });
-
-  useEffect(() => {
-    const newFilter = { collabarator, archived, title: titleFilter };
-    setFilter(newFilter);
-  }, [filterByTitleLetter]);
 
   const toggleGaps = useCallback(
     (gap) => {
@@ -79,9 +85,14 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
     setDefaultColor('default');
-    setSelectedGaps(label !== undefined ? [] : [label]);
-    dispatch(setText(initialStateStr));
-  }, [dispatch, label]);
+    dispatch(setInputCollabaratorUsers([]));
+    setSelectedGaps([]);
+    dispatch(toggleOnCreateFunctionCall(true));
+
+    setTimeout(() => {
+      dispatch(toggleOnCreateFunctionCall(false));
+    }, 500);
+  }, [dispatch]);
 
   const onDefaultPin = useCallback(() => {
     setDefaultPin((pre) => !pre);
@@ -97,13 +108,33 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = data.data.listNodes;
-      setNodes(items);
-      dispatch(setNodesToProps(items));
-      return items;
+      // eslint-disable-next-line no-underscore-dangle
+      const filteredItems = items.filter((elm) => elm._deleted === null);
+
+      setNodes(filteredItems);
+      dispatch(setNodesToProps(filteredItems));
+      return filteredItems;
     } catch (err) {
       throw new Error('Get Nodes Error');
     }
   }, [filter, dispatch]);
+
+  const onFilterByTitle = useCallback(async () => {
+    try {
+      const data = await getAllNodes();
+      const newNodes = data.filter((elm) =>
+        elm.title.toLowerCase().includes(filterByTitleLetter.toLowerCase()),
+      );
+
+      setNodes(newNodes);
+    } catch (err) {
+      throw new Error('Error filter by Letter');
+    }
+  }, [getAllNodes, filterByTitleLetter]);
+
+  useEffect(() => {
+    onFilterByTitle();
+  }, [updateNodes, filterByTitleLetter, onFilterByTitle]);
 
   const onColorChange = useCallback(
     async (id, color, _version) => {
@@ -114,33 +145,44 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           _version,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
 
-        getAllNodes();
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
       } catch (err) {
         throw new Error('Color update error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onRemoveCart = useCallback(
     async (id, _version) => {
       try {
-        await API.graphql({
+        const data = await API.graphql({
           query: deleteNode,
           variables: { input: { id, _version } },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.deleteNode;
 
-        getAllNodes();
+        // eslint-disable-next-line no-underscore-dangle
+        if (item._deleted) {
+          setNodes(nodes.filter((elm) => elm.id !== id));
+        }
+        return item;
       } catch (err) {
         throw new Error('Remove node error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onChangePin = useCallback(
@@ -153,18 +195,30 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           _version,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
 
-        getAllNodes();
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
+
+  const onChangeCollabarators = useCallback(async (id, _version) => {
+    try {
+      alert('onChangeCollabarators run');
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, []);
 
   const onChangeArchived = useCallback(
     async (id, archiveAttr, _version, title, description) => {
@@ -177,21 +231,27 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           description,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
 
-        getAllNodes();
+        if (item.archived === archiveAttr) {
+          setNodes(nodes.filter((elm) => elm.id !== id));
+        }
+        return item;
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const toggleGapsCart = useCallback(
-    async (id, _version, gap) => {
+    async (id, _version, gaps) => {
       try {
         const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -199,22 +259,27 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         const cart = data.data.getNode;
         const cartGaps = cart.gaps;
 
-        const updatedGaps = cartGaps.includes(gap)
-          ? cartGaps.filter((el) => el !== gap)
-          : [...cartGaps, gap];
+        const updatedGaps = cartGaps.includes(gaps)
+          ? cartGaps.filter((el) => el !== gaps)
+          : [...cartGaps, gaps];
 
         const updatedNode = { id, _version, gaps: updatedGaps };
 
-        await API.graphql({
+        const newData = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
-        getAllNodes();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = newData.data.updateNode;
+
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
       } catch (err) {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [getAllNodes],
+    [nodes],
   );
 
   const onSetNodes = useCallback(async () => {
@@ -229,18 +294,22 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         collabarator: userEmail,
       };
 
-      await API.graphql({ query: createNode, variables: { input: node } });
-      getAllNodes();
+      const data = await API.graphql({ query: createNode, variables: { input: node } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.createNode;
+
+      setNodes([item, ...nodes]);
       cleanUp();
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, nodes]);
 
   const onSetArchive = useCallback(async () => {
     try {
       const node = {
-        title: titleRef.current.innerText,
+        title: titleRef.current.innerText.toLowerCase(),
         description: text,
         gaps: selectedGaps,
         pined: defaultPin,
@@ -250,12 +319,11 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       };
 
       await API.graphql({ query: createNode, variables: { input: node } });
-      getAllNodes();
       cleanUp();
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, getAllNodes]);
+  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor]);
 
   useEffect(() => {
     getAllNodes();
@@ -275,9 +343,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     const gaps = { contains: label };
 
     const newFiler =
-      label !== undefined
-        ? { collabarator, archived, gaps, title: titleFilter }
-        : { collabarator, archived, title: titleFilter };
+      label !== undefined ? { collabarator, archived, gaps } : { collabarator, archived };
     setFilter(newFiler);
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
@@ -291,7 +357,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         className={classNames(
           styles.home_page,
           grid && styles.column,
-          !isSidebarOpen && styles.open,
+          isSidebarOpen && styles.open,
         )}
       >
         {!archive && (
@@ -321,7 +387,14 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
           toggleGapsCart={toggleGapsCart}
         />
         <AddLinkModal />
-        <CartModal toggleGapsCart={toggleGapsCart} onColorChange={onColorChange} />
+        <CartModal
+          onChangeCollabarators={onChangeCollabarators}
+          onChangePin={onChangePin}
+          onRemoveCart={onRemoveCart}
+          onChangeArchived={onChangeArchived}
+          toggleGapsCart={toggleGapsCart}
+          onColorChange={onColorChange}
+        />
       </div>
     </Layout>
   );

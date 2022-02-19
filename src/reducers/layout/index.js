@@ -7,11 +7,11 @@ export const layoutGridType = createSlice({
   },
   reducers: {
     toggleGrid: (state) => {
-      state.grid = !state.grid
-    }
+      state.grid = !state.grid;
+    },
   },
-})
+});
 
-export const { toggleGrid } = layoutGridType.actions
+export const { toggleGrid } = layoutGridType.actions;
 
-export default layoutGridType.reducer
+export default layoutGridType.reducer;

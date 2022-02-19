@@ -6,14 +6,13 @@
 
   &_input {
     box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
-    position: relative;
+    position: unset;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    border-radius: 8px;
+    border-radius: 15px;
     overflow: hidden;
-    padding: 0 8px;
     margin: 7px;
     width: 100%;
     max-width: 100%;
@@ -63,7 +62,7 @@
 .textarea {
   width: 95%;
   font-size: inherit;
-  padding: 1px 6px;
+  padding: 1px 12px;
   outline: none;
   margin: 10px 0;
   display: block;
@@ -193,18 +192,33 @@
 .gaps {
   width: 100%;
   position: relative;
+  padding: 0 9px;
+
+  .user {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgb(125, 125, 125);
+    color: #fff;
+    border: 1px solid #fff;
+    box-shadow: 0 0 3px rgb(125, 125, 125);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+  }
 }
 
 .colorWrapper {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px;
-  box-shadow: 0 0 10px #d0d2d3;
+  padding: 5px;
+  box-shadow: 0 0 5px #d0d2d3;
 
   button {
-    width: 32px;
-    height: 32px;
+    width: 20px;
+    height: 20px;
     border-radius: 100%;
     margin: 2px;
     border: 1px solid rgb(175, 175, 175);
@@ -213,7 +227,7 @@
     align-items: center;
   }
 
-  .active {
+  .activeColor {
     border: 2px solid rgb(100, 75, 130);
     box-shadow: 0 0 2px rgb(100, 75, 130);
   }
@@ -222,12 +236,18 @@
 .labelWrapper {
   width: 250px;
   padding: 10px 12px;
+  overflow: hidden !important;
 
   h5 {
     font-size: 13px;
     font-weight: 600;
     font-family: 'Roboto';
   }
+}
+
+.item {
+  height: 175px;
+  overflow-y: scroll;
 }
 
 .labelSearch {
@@ -250,6 +270,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     input {
       width: 0 !important;
@@ -291,7 +312,7 @@
 
   .input_navbar {
     padding: 4px 0;
-    
+
     .icon_btn {
       padding: 8px;
       margin: 0;
@@ -328,12 +349,40 @@
   }
 
   .input_navbar {
-    padding: 4px 0;
-    
+    padding: 4px;
+
     .icon_btn {
       padding: 7px;
       margin: 0;
     }
+  }
+
+  .colorWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 0 10px #d0d2d3;
+
+    button {
+      width: 32px;
+      height: 32px;
+      border-radius: 100%;
+      margin: 2px;
+      border: 1px solid rgb(175, 175, 175);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .activeColor {
+      border: 2px solid rgb(100, 75, 130);
+      box-shadow: 0 0 2px rgb(100, 75, 130);
+    }
+  }
+
+  .item {
+    height: 225px;
   }
 }
 
@@ -366,8 +415,8 @@
   }
 
   .input_navbar {
-    padding: 4px 0;
-    
+    padding: 4px 5px;
+
     .icon_btn {
       padding: 8px;
     }

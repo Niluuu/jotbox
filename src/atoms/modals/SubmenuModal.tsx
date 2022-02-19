@@ -105,6 +105,7 @@ const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) =
         color="premium"
         size="xs"
         className={styles.gaps_icon}
+        onClick={() => onDeleteGap(id, version)}
       />
       <input
         type="text"

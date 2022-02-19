@@ -135,7 +135,13 @@ const Cart: FC<CartProps> = (props) => {
           <p>{title}</p>
         </div>
         {description && (
-          <MainEditor isLarge={isLarge} color={color} initialState={description} editorRef={editorRef} readOnly />
+          <MainEditor
+            isLarge={isLarge}
+            color={color}
+            initialState={description}
+            editorRef={editorRef}
+            readOnly
+          />
         )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
@@ -155,6 +161,7 @@ const Cart: FC<CartProps> = (props) => {
       </div>
       <div className={styles.input_navbar}>
         <InputNavbar
+          onOpenModal={() => onOpenModal(id)}
           noAddLink
           isMainInput={isMain}
           currentColor={color}

@@ -1,0 +1,94 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.collabarator {
+  width: 100%;
+  font-family: $font-roboto;
+
+  .header {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgb(222, 222, 222);
+    padding: 10px 15px;
+  }
+  
+  .footer {
+    background: rgb(235, 235, 235);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding-right: 15px;
+    
+    button {
+      letter-spacing: 1px;
+      font-size: 14px;
+      font-weight: 600;
+      width: 75px;
+      height: 50px;
+      
+      &:hover {
+        background: rgb(225, 225, 225);
+      }
+    }
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    padding: 7.5px 18px;
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      line-height: 15px;
+      color: rgb(75, 75, 75);
+      width: 85%;
+      margin-right: 25px;
+
+      .title {
+        color: #000;
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 12px;
+      }
+
+      input {
+        font-size: 12px;
+        border: 0 solid transparent;
+      }
+    }
+
+    .img {
+      width: 35px;
+      height: 34px;
+      border-radius: 50%;
+      margin-right: 10px;
+      padding: 1px;
+      box-shadow: 0 0 3px rgb(150, 150, 150);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+    
+    .icon {
+      box-shadow: 0 0 3px #fff;
+      border: 1px solid rgb(150, 150, 150);
+    }
+
+    .confirm {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+  }
+}

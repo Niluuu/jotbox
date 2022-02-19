@@ -14,6 +14,7 @@ import { InputNavbar } from '../../component/input/InputNavbar';
 import '../../component/cart/Color.scss';
 import { Chip } from '../../component/chip/Chip';
 import MentionContext from '../../utils/hooks/useCreatContext';
+import Collabarator from '../../component/Collabarator/Collabarator';
 
 interface CartModalType {
   /**
@@ -39,6 +40,10 @@ interface CartModalType {
    */
   onColorChange: (id: string, color: string, _version: number) => void;
   /**
+   * Change collabarator of Node function
+   */
+  onChangeCollabarators: (id: string, _version: number) => void;
+  /**
    * Toggleselected gaps when creating Node function
    */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
@@ -50,6 +55,7 @@ const CartModal: FC<CartModalType> = ({
   onChangePin,
   onColorChange,
   toggleGapsCart,
+  onChangeCollabarators,
 }) => {
   const [node, setNode] = useState<any>([]);
   const dispatch = useDispatch();
@@ -77,8 +83,10 @@ const CartModal: FC<CartModalType> = ({
     return {
       nodeIdReducer: state.nodeIdReducer,
       editorReducer: state.editorReducer,
+      isModalCollabaratorOpen: state.collabaratorReducer.isModalCollabaratorOpen,
     };
   });
+  const { isModalCollabaratorOpen } = mapStateToProps;
   const { nodeID, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
   const { updatedText } = mapStateToProps.editorReducer;
 
@@ -136,10 +144,12 @@ const CartModal: FC<CartModalType> = ({
 
   const toggleModal = useCallback(
     (id) => {
-      onUpdate(id);
-      setUpdatedColor(undefined);
+      if (!isModalCollabaratorOpen) {
+        onUpdate(id);
+        setUpdatedColor(undefined);
+      }
     },
-    [onUpdate],
+    [onUpdate, isModalCollabaratorOpen],
   );
 
   const modalColorChange = useCallback(
@@ -192,89 +202,95 @@ const CartModal: FC<CartModalType> = ({
       cartmodal
       toggleModal={() => toggleModal(node[0].id)}
     >
-      <>
-        {node[0] !== undefined && (
-          <div style={{ position: 'relative' }}>
-            <div
-              className={updatedColor}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '98%',
-                padding: '5px 0 10px 10px',
-                position: 'absolute',
-                zIndex: 10,
-                background: '#fff',
-              }}
-            >
+      {isModalCollabaratorOpen ? (
+        <Collabarator
+          onChangeCollabarators={() => onChangeCollabarators(node[0].id, node[0]._version)}
+        />
+      ) : (
+        <>
+          {node[0] !== undefined && (
+            <div style={{ position: 'relative' }}>
               <div
-                ref={titleRef}
-                id="title"
-                className={styles.textarea}
-                contentEditable
-                suppressContentEditableWarning
-                aria-multiline
-                role="textbox"
-                spellCheck
-                onKeyDown={(e) => onKeyPressed(e)}
+                className={updatedColor}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '98%',
+                  padding: '5px 0 10px 10px',
+                  position: 'absolute',
+                  zIndex: 10,
+                  background: '#fff',
+                }}
               >
-                {node[0].title}
+                <div
+                  ref={titleRef}
+                  id="title"
+                  className={styles.textarea}
+                  contentEditable
+                  suppressContentEditableWarning
+                  aria-multiline
+                  role="textbox"
+                  spellCheck
+                  onKeyDown={(e) => onKeyPressed(e)}
+                >
+                  {node[0].title}
+                </div>
+
+                <button type="button" className={styles.icon_btn}>
+                  {!node[0].pined ? (
+                    <Icon name="pin" color="premium" size="xs" onClick={modalChangePin} />
+                  ) : (
+                    <Icon name="pin-black" color="premium" size="xs" onClick={modalChangePin} />
+                  )}
+                </button>
               </div>
 
-              <button type="button" className={styles.icon_btn}>
-                {!node[0].pined ? (
-                  <Icon name="pin" color="premium" size="xs" onClick={modalChangePin} />
-                ) : (
-                  <Icon name="pin-black" color="premium" size="xs" onClick={modalChangePin} />
+              <div className={styles.main_row}>
+                {nodeID && (
+                  <MentionContext.Provider value={() => toggleModal(node[0].id)}>
+                    <MainEditor
+                      linkRef={linkRef}
+                      linkMode={linkMode}
+                      createLinkToEditor={createLinkToEditor}
+                      editorRef={editorRef}
+                      initialState={node[0].description}
+                      color={updatedColor}
+                      isModal
+                    />
+                  </MentionContext.Provider>
                 )}
-              </button>
-            </div>
-
-            <div className={styles.main_row}>
-              {nodeID && (
-                <MentionContext.Provider value={() => toggleModal(node[0].id)}>
-                  <MainEditor
-                    linkRef={linkRef}
-                    linkMode={linkMode}
-                    createLinkToEditor={createLinkToEditor}
-                    editorRef={editorRef}
-                    initialState={node[0].description}
-                    color={updatedColor}
-                    isModal
-                  />
-                </MentionContext.Provider>
-              )}
-              <div className={styles.main_chips}>
-                {node[0].gaps && node[0].gaps.length > 10 ? (
-                  <>
-                    {node[0].gaps.slice(0, 10).map((gap) => (
+                <div className={styles.main_chips}>
+                  {node[0].gaps && node[0].gaps.length > 10 ? (
+                    <>
+                      {node[0].gaps.slice(0, 10).map((gap) => (
+                        <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
+                      ))}
+                      <div className={styles.extraGap}> +{node[0].gaps.length - 10} </div>
+                    </>
+                  ) : (
+                    node[0].gaps.map((gap) => (
                       <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
-                    ))}
-                    <div className={styles.extraGap}> +{node[0].gaps.length - 10} </div>
-                  </>
-                ) : (
-                  node[0].gaps.map((gap) => (
-                    <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
+              <InputNavbar
+                toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
+                onColorChange={(color) => modalColorChange(color)}
+                onSetNode={() => toggleModal(node[0].id)}
+                createLinkToEditor={onLinkEditor}
+                onChangeArchived={modalChangeArchived}
+                onRemoveCart={modalRemoveCart}
+                onSetArchive={toggleArchived}
+                currentColor={node[0].color}
+                initialGaps={node[0] && node[0].gaps}
+                selectedGaps={node[0].gaps}
+                shadow
+              />
             </div>
-            <InputNavbar
-              toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
-              onColorChange={(color) => modalColorChange(color)}
-              onSetNode={() => toggleModal(node[0].id)}
-              createLinkToEditor={onLinkEditor}
-              onChangeArchived={modalChangeArchived}
-              onRemoveCart={modalRemoveCart}
-              onSetArchive={toggleArchived}
-              currentColor={node[0].color}
-              initialGaps={node[0] && node[0].gaps}
-              selectedGaps={node[0].gaps}
-              shadow
-            />
-          </div>
-        )}
-      </>
+          )}
+        </>
+      )}
     </Modal>
   );
 };

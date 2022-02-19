@@ -5,7 +5,7 @@ import nodeIdReducer from '../reducers/getNodeId';
 import gapsReducer from '../reducers/gaps';
 import nodesReducer from '../reducers/nodes';
 import filterByTitleReducer from '../reducers/filterByTitle';
-import collabaratorReducer from '../reducers/collabaratorToggle';
+import collabaratorReducer from '../reducers/collabarator';
 
 export const store = configureStore({
   reducer: {

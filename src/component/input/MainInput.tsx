@@ -83,12 +83,12 @@ const MainInput: FC<MainInputProps> = ({
     return {
       grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
-      isCollabaratorOpen: state.collabaratorReducer.isCollabaratorOpen,
-      collabaratorUsers: state.collabaratorReducer.collabaratorUsers,
+      isInputCollabaratorOpen: state.collabaratorReducer.isInputCollabaratorOpen,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
     };
   });
 
-  const { grid, text, isCollabaratorOpen, collabaratorUsers } = mapStateToProps;
+  const { grid, text, isInputCollabaratorOpen, inputCollabaratorUsers } = mapStateToProps;
 
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
@@ -110,7 +110,7 @@ const MainInput: FC<MainInputProps> = ({
       className={classNames(styles.main_input, grid && styles.column, defaultColor)}
       tabIndex={-1}
     >
-      {isCollabaratorOpen ? (
+      {isInputCollabaratorOpen ? (
         <Collabarator isMainInput />
       ) : (
         <>
@@ -156,9 +156,9 @@ const MainInput: FC<MainInputProps> = ({
             </div>
           )}
 
-          {collabaratorUsers && (
+          {inputCollabaratorUsers && (
             <div className={classNames(styles.main_tools, styles.gaps)}>
-              {collabaratorUsers.map((user) => (
+              {inputCollabaratorUsers.map((user) => (
                 <div className={styles.user}>{user[0].toUpperCase()}</div>
               ))}
             </div>

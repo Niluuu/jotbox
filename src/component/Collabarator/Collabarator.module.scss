@@ -5,7 +5,7 @@
   width: 100%;
   font-family: $font-roboto;
 
-  .header {
+  &_header {
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -13,7 +13,7 @@
     padding: 10px 15px;
   }
   
-  .footer {
+  &_footer {
     background: rgb(235, 235, 235);
     display: flex;
     justify-content: flex-end;
@@ -22,7 +22,7 @@
     border-bottom-right-radius: 15px;
     padding-right: 15px;
     
-    button {
+    > div > button {
       letter-spacing: 1px;
       font-size: 14px;
       font-weight: 600;
@@ -35,34 +35,34 @@
     }
   }
 
-  .item {
+  .user {
     display: flex;
     align-items: center;
     font-size: 11px;
     padding: 7.5px 18px;
 
-    .text {
+    &_text {
       display: flex;
       flex-direction: column;
       line-height: 15px;
       color: rgb(75, 75, 75);
-      width: 85%;
+      width: 84%;
       margin-right: 25px;
-
-      .title {
-        color: #000;
-        font-weight: 600;
-        letter-spacing: 1px;
-        font-size: 12px;
-      }
-
-      input {
+  
+      > input {
         font-size: 12px;
         border: 0 solid transparent;
       }
     }
+  
+    &_title {
+      color: #000;
+      font-weight: 600;
+      letter-spacing: 1px;
+      font-size: 12px;
+    }
 
-    .img {
+    &_img {
       width: 35px;
       height: 34px;
       border-radius: 50%;
@@ -73,19 +73,19 @@
       align-items: center;
       justify-content: center;
       background: #fff;
-
+  
       svg {
         width: 16px;
         height: 16px;
       }
-    }
-    
-    .icon {
-      box-shadow: 0 0 3px #fff;
-      border: 1px solid rgb(150, 150, 150);
+  
+      &.icon {
+        box-shadow: 0 0 3px #fff;
+        border: 1px solid rgb(150, 150, 150);
+      }
     }
 
-    .confirm {
+    &_confirm {
       width: 16px;
       height: 16px;
       cursor: pointer;

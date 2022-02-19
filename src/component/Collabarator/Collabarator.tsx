@@ -5,11 +5,11 @@ import styles from './Collabarator.module.scss';
 import { Icon } from '../Icon/Icon';
 import avatar from '../../assets/images/avatar.png';
 import {
-  setCollabaratorUsers,
-  toggleIsCollabaratorOpen,
-  toggleIsModalCollabaratorOpen,
-  setCollabaratorModalUsers,
-} from '../../reducers/collabaratorToggle';
+  setInputCollabaratorUsers,
+  setCartCollabaratorUsers,
+  toggleIsInputCollabaratorOpen,
+  toggleIsCartCollabaratorOpen,
+} from '../../reducers/collabarator';
 import { RootState } from '../../app/store';
 
 interface CollabaratorProps {
@@ -25,55 +25,57 @@ interface CollabaratorProps {
 const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarators }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
-      collabaratorUsers: state.collabaratorReducer.collabaratorUsers,
-      collabaratorModalUsers: state.collabaratorReducer.collabaratorModalUsers,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
+      cartCollabaratorUsers: state.collabaratorReducer.cartCollabaratorUsers,
     };
   });
 
-  const { collabaratorUsers, collabaratorModalUsers } = mapStateToProps;
+  const { inputCollabaratorUsers, cartCollabaratorUsers } = mapStateToProps;
 
-  const [users, setUsers] = useState<any>(isMainInput ? collabaratorUsers : collabaratorModalUsers);
+  const [users, setUsers] = useState<any>(
+    isMainInput ? inputCollabaratorUsers : cartCollabaratorUsers,
+  );
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
 
   const save = () => {
     if (isMainInput) {
-      dispatch(setCollabaratorUsers(users));
-      dispatch(toggleIsCollabaratorOpen());
+      dispatch(setInputCollabaratorUsers(users));
+      dispatch(toggleIsInputCollabaratorOpen());
     } else {
-      dispatch(setCollabaratorModalUsers(users));
-      dispatch(toggleIsModalCollabaratorOpen());
+      dispatch(setCartCollabaratorUsers(users));
+      dispatch(toggleIsCartCollabaratorOpen());
       onChangeCollabarators();
     }
   };
 
   const cancel = () => {
-    if (isMainInput) dispatch(toggleIsCollabaratorOpen());
-    else dispatch(toggleIsModalCollabaratorOpen());
+    if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
+    else dispatch(toggleIsCartCollabaratorOpen());
   };
+
   return (
     <div className={styles.collabarator}>
-      <div className={styles.header}>Collabarators</div>
-      <div className={styles.item}>
-        <img className={styles.img} src={avatar} />
-        <div className={styles.text}>
-          <span className={styles.title}> Saidumarova Nilufar (Owner) </span>
-          {localStorage.getItem('userEmail')}
+      <div className={styles.collabarator_header}>Collabarators</div>
+      <div className={styles.user}>
+        <img className={styles.user_img} src={avatar} />
+        <div className={styles.user_text}>
+          <span className={styles.user_title}> {localStorage.getItem('userEmail')} (Owner) </span>
         </div>
       </div>
       {users.map((user) => (
-        <div className={styles.item}>
-          <img className={styles.img} src={avatar} />
-          <div className={styles.text}>
-            <span className={styles.title}> {user} </span>
+        <div className={styles.user}>
+          <img className={styles.user_img} src={avatar} />
+          <div className={styles.user_text}>
+            <span className={styles.user_title}> {user} </span>
           </div>
         </div>
       ))}
-      <div className={styles.item}>
-        <div className={classNames(styles.img, styles.icon)}>
+      <div className={styles.user}>
+        <div className={classNames(styles.user_img, styles.icon)}>
           <Icon name="add-accaunt" />
         </div>
-        <div className={styles.text}>
+        <div className={styles.user_text}>
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -87,12 +89,12 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
               setUsers([...users, value]);
               setValue('');
             }}
-            className={styles.confirm}
+            className={styles.user_confirm}
             name="done"
           />
         )}
       </div>
-      <div className={styles.footer}>
+      <div className={styles.collabarator_footer}>
         <div>
           <button type="button" onClick={cancel}>
             Cancel

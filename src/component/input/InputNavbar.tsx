@@ -11,9 +11,9 @@ import { colors } from '../../utils/editor/color';
 import { listGapss } from '../../graphql/queries';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import {
-  toggleIsCollabaratorOpen,
-  toggleIsModalCollabaratorOpen,
-} from '../../reducers/collabaratorToggle';
+  toggleIsInputCollabaratorOpen,
+  toggleIsCartCollabaratorOpen,
+} from '../../reducers/collabarator';
 
 interface InputNavbarProps {
   /**
@@ -159,9 +159,9 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   );
 
   const toggleCollabarator = () => {
-    if (isMainInput) dispatch(toggleIsCollabaratorOpen());
+    if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
     else {
-      dispatch(toggleIsModalCollabaratorOpen());
+      dispatch(toggleIsCartCollabaratorOpen());
       if (noAddLink) onOpenModal();
     }
   };

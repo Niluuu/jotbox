@@ -83,10 +83,10 @@ const CartModal: FC<CartModalType> = ({
     return {
       nodeIdReducer: state.nodeIdReducer,
       editorReducer: state.editorReducer,
-      isModalCollabaratorOpen: state.collabaratorReducer.isModalCollabaratorOpen,
+      isCartCollabaratorOpen: state.collabaratorReducer.isCartCollabaratorOpen,
     };
   });
-  const { isModalCollabaratorOpen } = mapStateToProps;
+  const { isCartCollabaratorOpen } = mapStateToProps;
   const { nodeID, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
   const { updatedText } = mapStateToProps.editorReducer;
 
@@ -144,12 +144,12 @@ const CartModal: FC<CartModalType> = ({
 
   const toggleModal = useCallback(
     (id) => {
-      if (!isModalCollabaratorOpen) {
+      if (!isCartCollabaratorOpen) {
         onUpdate(id);
         setUpdatedColor(undefined);
       }
     },
-    [onUpdate, isModalCollabaratorOpen],
+    [onUpdate, isCartCollabaratorOpen],
   );
 
   const modalColorChange = useCallback(
@@ -202,7 +202,7 @@ const CartModal: FC<CartModalType> = ({
       cartmodal
       toggleModal={() => toggleModal(node[0].id)}
     >
-      {isModalCollabaratorOpen ? (
+      {isCartCollabaratorOpen ? (
         <Collabarator
           onChangeCollabarators={() => onChangeCollabarators(node[0].id, node[0]._version)}
         />

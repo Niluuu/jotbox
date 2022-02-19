@@ -16,7 +16,7 @@ import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
-import { setCollabaratorUsers } from '../../reducers/collabaratorToggle';
+import { setInputCollabaratorUsers } from '../../reducers/collabarator';
 
 interface CartProps {
   id: string;
@@ -45,7 +45,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
       filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
       updateNodes: state.nodesReducer.updateNodes,
-      collabaratorUsers: state.collabaratorReducer.collabaratorUsers,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
     };
   });
 
@@ -55,7 +55,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     updateModalIsOpen,
     filterByTitleLetter,
     updateNodes,
-    collabaratorUsers,
+    inputCollabaratorUsers,
   } = mapStateToProps;
   const dispatch = useDispatch();
 
@@ -85,7 +85,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
     setDefaultColor('default');
-    dispatch(setCollabaratorUsers([]));
+    dispatch(setInputCollabaratorUsers([]));
     setSelectedGaps([]);
     dispatch(toggleOnCreateFunctionCall(true));
 

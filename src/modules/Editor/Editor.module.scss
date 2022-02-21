@@ -7,8 +7,8 @@
   padding: 5px;
   border-radius: 2px;
   height: auto;
-  min-height: 1px;
-  position: relative;
+  min-height: 20px;
+  position: unset;
 }
 
 .editor.cart {
@@ -97,7 +97,7 @@
 
 @include desktop {
   .editor {
-    padding: 13px 5px;
+    padding: 13px 11px;
   }
 
   .editor.cart {

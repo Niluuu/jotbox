@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,6 +16,7 @@ import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
+import { setInputCollabaratorUsers } from '../../reducers/collabarator';
 
 interface CartProps {
   id: string;
@@ -43,10 +45,18 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       updateModalIsOpen: state.nodeIdReducer.updateModalIsOpen,
       filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
       updateNodes: state.nodesReducer.updateNodes,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
     };
   });
 
-  const { grid, text, updateModalIsOpen, filterByTitleLetter, updateNodes } = mapStateToProps;
+  const {
+    grid,
+    text,
+    updateModalIsOpen,
+    filterByTitleLetter,
+    updateNodes,
+    inputCollabaratorUsers,
+  } = mapStateToProps;
   const dispatch = useDispatch();
 
   const { label } = useParams();
@@ -75,6 +85,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     titleRef.current.innerHTML = '';
     setDefaultPin(false);
     setDefaultColor('default');
+    dispatch(setInputCollabaratorUsers([]));
     setSelectedGaps([]);
     dispatch(toggleOnCreateFunctionCall(true));
 
@@ -201,6 +212,14 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     [nodes],
   );
 
+  const onChangeCollabarators = useCallback(async (id, _version) => {
+    try {
+      alert('onChangeCollabarators run');
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, []);
+
   const onChangeArchived = useCallback(
     async (id, archiveAttr, _version, title, description) => {
       try {
@@ -319,7 +338,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       };
     }
   }, [updateModalIsOpen, getAllNodes]);
-  
+
   useEffect(() => {
     const gaps = { contains: label };
 
@@ -369,6 +388,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         />
         <AddLinkModal />
         <CartModal
+          onChangeCollabarators={onChangeCollabarators}
           onChangePin={onChangePin}
           onRemoveCart={onRemoveCart}
           onChangeArchived={onChangeArchived}

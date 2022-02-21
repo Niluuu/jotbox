@@ -9,17 +9,16 @@ function findLinkEntities(contentBlock, callback, contentState) {
 
 const Link = (props) => {
   const { contentState, entityKey, children } = props;
-  const { url } = contentState.getEntity(entityKey).getData();
+  const { url, linkText } = contentState.getEntity(entityKey).getData();
 
   return (
     <div className={styles.linkfy}>
       <div className={styles.tooltip}>
-        <span onClick={() => window.open(url)}>
-          <span>open</span>
-        </span>
+        <span onClick={() => window.open(url)}>open</span>
+        <br />
       </div>
       <a href={url} className={styles.link}>
-        {children}
+        {linkText || children}
       </a>
     </div>
   );

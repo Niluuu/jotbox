@@ -9,6 +9,7 @@ import { InputNavbar } from './InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
+import Collabarator from '../Collabarator/Collabarator';
 
 interface MainInputProps {
   /**
@@ -74,27 +75,20 @@ const MainInput: FC<MainInputProps> = ({
   selectedGaps,
   toggleGaps,
 }) => {
-  const outsideRef = useRef(null);
-  const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
-  const handleClickInside = () => setTimeout(() => setFocused(true), 200);
-  useOnClickOutside(outsideRef, handleClickOutside);
+  const linkRef = useRef(null);
+  const [linkMode, setlinkMode] = useState(false);
   const editorRef = useRef<Editor>(null);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
       text: state.editorReducer.text,
+      isInputCollabaratorOpen: state.collabaratorReducer.isInputCollabaratorOpen,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
     };
   });
 
-  const { grid, text } = mapStateToProps;
-
-  const onFocusOut = useCallback((e) => {
-    if (e.currentTarget.contains(document.activeElement))
-      return e.currentTarget.contains(document.activeElement);
-  }, []);
-
-  const [linkMode, setlinkMode] = useState(false);
+  const { grid, text, isInputCollabaratorOpen, inputCollabaratorUsers } = mapStateToProps;
 
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
@@ -106,7 +100,6 @@ const MainInput: FC<MainInputProps> = ({
     }
   };
 
-  const linkRef = useRef(null);
   const onLinkEditor = () => {
     linkRef.current.focus();
     createLinkToEditor();
@@ -116,79 +109,73 @@ const MainInput: FC<MainInputProps> = ({
     <div
       className={classNames(styles.main_input, grid && styles.column, defaultColor)}
       tabIndex={-1}
-      onFocus={handleClickInside}
-      onBlur={(e) => onFocusOut(e)}
-      onClick={handleClickInside}
-      ref={outsideRef}
     >
-      <div className={classNames(styles.main_header, focused && styles.show)}>
-        <div
-          ref={titleRef}
-          id="title"
-          className={styles.textarea}
-          contentEditable
-          suppressContentEditableWarning
-          aria-multiline
-          role="textbox"
-          spellCheck
-          onKeyDown={(e) => onKeyPressed(e)}
-        />
+      {isInputCollabaratorOpen ? (
+        <Collabarator isMainInput />
+      ) : (
+        <>
+          <div className={classNames(styles.main_header, styles.show)}>
+            <div
+              ref={titleRef}
+              id="title"
+              className={styles.textarea}
+              contentEditable
+              suppressContentEditableWarning
+              aria-multiline
+              role="textbox"
+              spellCheck
+              onKeyDown={(e) => onKeyPressed(e)}
+            />
 
-        <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
-          {!defaultPin ? (
-            <Icon name="pin" color="premium" size="xs" />
-          ) : (
-            <Icon name="pin-black" color="premium" size="xs" />
+            <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
+              {!defaultPin ? (
+                <Icon name="pin" color="premium" size="xs" />
+              ) : (
+                <Icon name="pin-black" color="premium" size="xs" />
+              )}
+            </button>
+          </div>
+
+          <div className={styles.main_row}>
+            <MainEditor
+              linkRef={linkRef}
+              isMainInput
+              defaultColor={defaultColor}
+              linkMode={linkMode}
+              createLinkToEditor={createLinkToEditor}
+              editorRef={editorRef}
+              initialState={text}
+            />
+          </div>
+
+          {selectedGaps && (
+            <div className={classNames(styles.main_tools, styles.gaps)}>
+              {selectedGaps.map((gap) => (
+                <Chip>{gap}</Chip>
+              ))}
+            </div>
           )}
-        </button>
-      </div>
 
-      <div className={styles.main_row}>
-        <MainEditor
-          linkRef={linkRef}
-          isMainInput
-          defaultColor={defaultColor}
-          linkMode={linkMode}
-          createLinkToEditor={createLinkToEditor}
-          editorRef={editorRef}
-          initialState={text}
-        />
-      </div>
-      {!focused ? (
-        <div className={classNames(styles.main_tools, styles.bottom_tools)}>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="edit-bordered" color="premium" size="xs" />
-          </button>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="pen" color="premium" size="xs" />
-          </button>
-          <button type="button" className={styles.icon_btn}>
-            <Icon name="img" color="premium" size="xs" />
-          </button>
-        </div>
-      ) : null}
+          {inputCollabaratorUsers && (
+            <div className={classNames(styles.main_tools, styles.gaps)}>
+              {inputCollabaratorUsers.map((user) => (
+                <div className={styles.user}>{user[0].toUpperCase()}</div>
+              ))}
+            </div>
+          )}
 
-      {focused && selectedGaps && (
-        <div className={classNames(styles.main_tools, styles.gaps)}>
-          {selectedGaps.map((gap) => (
-            <Chip>{gap} </Chip>
-          ))}
-        </div>
+          <InputNavbar
+            isMainInput
+            onSetArchive={onSetArchive}
+            onSetNode={() => onSetNodes()}
+            createLinkToEditor={onLinkEditor}
+            onDefaultColor={onDefaultColor}
+            defaultColor={defaultColor}
+            toggleGaps={toggleGaps}
+            selectedGaps={selectedGaps}
+          />
+        </>
       )}
-
-      {focused ? (
-        <InputNavbar
-          isMainInput
-          focused={focused}
-          onSetArchive={onSetArchive}
-          onSetNode={() => onSetNodes()}
-          createLinkToEditor={onLinkEditor}
-          onDefaultColor={onDefaultColor}
-          defaultColor={defaultColor}
-          toggleGaps={toggleGaps}
-          selectedGaps={selectedGaps}
-        />
-      ) : null}
     </div>
   );
 };

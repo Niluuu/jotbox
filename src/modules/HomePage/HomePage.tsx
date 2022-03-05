@@ -28,13 +28,14 @@ interface CartProps {
   _version: number;
   _deleted: boolean;
   color: string;
+  collabarotors: string[];
 }
 
 interface HomeProps {
   /**
    * Is archived page or not
    */
-  archive?: boolean;
+  archive: boolean;
 }
 
 const HomePage: FC<HomeProps> = ({ archive }) => {
@@ -46,6 +47,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
       updateNodes: state.nodesReducer.updateNodes,
       inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
+      cartCollabaratorUsers: state.collabaratorReducer.cartCollabaratorUsers,
+      refresh: state.refreshReducer.refresh,
     };
   });
 
@@ -56,6 +59,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     filterByTitleLetter,
     updateNodes,
     inputCollabaratorUsers,
+    cartCollabaratorUsers,
+    refresh,
   } = mapStateToProps;
   const dispatch = useDispatch();
 
@@ -212,13 +217,33 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     [nodes],
   );
 
-  const onChangeCollabarators = useCallback(async (id, _version) => {
-    try {
-      alert('onChangeCollabarators run');
-    } catch (err) {
-      throw new Error('Update node error');
-    }
-  }, []);
+  const onChangeCollabarators = useCallback(
+    async (id, _version) => {
+      const oldCart = nodes.find((elm) => elm.id === id);
+      try {
+        const newCollabarators = [...oldCart.collabarotors, ...cartCollabaratorUsers];
+        const updatedNode = {
+          id,
+          _version,
+          collabarotors: newCollabarators,
+        };
+
+        const data = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [cartCollabaratorUsers, nodes],
+  );
 
   const onChangeArchived = useCallback(
     async (id, archiveAttr, _version, title, description) => {
@@ -284,6 +309,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   const onSetNodes = useCallback(async () => {
     try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
       const node = {
         title: titleRef.current.innerText,
         description: text,
@@ -304,10 +330,20 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, nodes]);
+  }, [
+    inputCollabaratorUsers,
+    userEmail,
+    text,
+    selectedGaps,
+    defaultPin,
+    defaultColor,
+    nodes,
+    cleanUp,
+  ]);
 
   const onSetArchive = useCallback(async () => {
     try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
       const node = {
         title: titleRef.current.innerText.toLowerCase(),
         description: text,
@@ -323,11 +359,15 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor]);
+  }, [userEmail, inputCollabaratorUsers, text, selectedGaps, defaultPin, defaultColor, cleanUp]);
 
   useEffect(() => {
     getAllNodes();
   }, [getAllNodes]);
+
+  useEffect(() => {
+    getAllNodes();
+  }, [refresh, getAllNodes]);
 
   useEffect(() => {
     getAllNodes();

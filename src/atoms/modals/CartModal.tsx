@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback, useRef } from 'react';
 import { API } from 'aws-amplify';
 import { useSelector, useDispatch } from 'react-redux';
@@ -162,6 +163,13 @@ const CartModal: FC<CartModalType> = ({
     [node, onColorChange],
   );
 
+  const modalChangeCollabarators = useCallback(async () => {
+    const { id, _version } = node[0];
+    const data = await onChangeCollabarators(id, _version);
+
+    setNode([data]);
+  }, [node, onChangeCollabarators]);
+
   const modalToggleGapsCart = useCallback(
     async (gap) => {
       const { id, _version } = node[0];
@@ -200,12 +208,10 @@ const CartModal: FC<CartModalType> = ({
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
-      toggleModal={() => toggleModal(node[0].id)}
+      toggleModal={() => node[0] !== undefined && toggleModal(node[0].id)}
     >
       {isCartCollabaratorOpen ? (
-        <Collabarator
-          onChangeCollabarators={() => onChangeCollabarators(node[0].id, node[0]._version)}
-        />
+        <Collabarator onChangeCollabarators={modalChangeCollabarators} />
       ) : (
         <>
           {node[0] !== undefined && (

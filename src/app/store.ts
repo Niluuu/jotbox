@@ -6,6 +6,7 @@ import gapsReducer from '../reducers/gaps';
 import nodesReducer from '../reducers/nodes';
 import filterByTitleReducer from '../reducers/filterByTitle';
 import collabaratorReducer from '../reducers/collabarator';
+import refreshReducer from '../reducers/refresh';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     nodesReducer,
     filterByTitleReducer,
     collabaratorReducer,
+    refreshReducer,
   },
 });
 

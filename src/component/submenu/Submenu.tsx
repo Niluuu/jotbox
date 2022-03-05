@@ -1,9 +1,10 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-alert */
 import { FC, useCallback, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../Icon/Icon';
 import { SubmenuModal } from '../../atoms/modals/SubmenuModal';
@@ -13,6 +14,7 @@ import { createGaps, updateGaps, deleteGaps, updateNode } from '../../graphql/mu
 import OnErrorMessage from '../message/message';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
+import { RootState } from '../../app/store';
 
 export interface SubmenuProps {
   /**
@@ -39,6 +41,13 @@ export const Submenu: FC<SubmenuProps> = () => {
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
   const dispatch = useDispatch();
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      refresh: state.refreshReducer.refresh,
+    };
+  });
+
+  const { refresh } = mapStateToProps;
 
   const getGapsRequest = useCallback(async () => {
     try {
@@ -175,6 +184,10 @@ export const Submenu: FC<SubmenuProps> = () => {
   }, [getGapsRequest]);
 
   useEffect(() => {
+    getGapsRequest();
+  }, [refresh, getGapsRequest]);
+
+  useEffect(() => {
     if (!isOpenLabel) setHasError(false);
   }, [isOpenLabel]);
 
@@ -221,7 +234,7 @@ interface SubmenuItemProps {
   isOpenLabel?: boolean;
 }
 
-const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal }) => {
+const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal, isOpenLabel }) => {
   return (
     <li className={styles.sider_submenu}>
       {modal ? (

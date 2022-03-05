@@ -12,20 +12,15 @@
 }
 
 .editor.cart {
-  max-height: 50px;
+  height: 1300px;
   overflow: hidden;
   padding: 3px 0;
   font-size: 12px;
 }
 
-.editor.large {
-  max-height: 190px;
-  height: 190px;
-}
-
 .editor.modal {
   overflow-y: scroll;
-  min-height: 300px;
+  height: 300px;
   padding: 50px 10px 0 !important;
 }
 
@@ -97,35 +92,20 @@
 
 @include desktop {
   .editor {
-    padding: 13px 11px;
+    padding: 13px 15px;
   }
 
   .editor.cart {
-    max-height: 140px;
-    height: 140px;
     padding: 1px;
-    
-  }
-
-  .editor.large {
-    max-height: 180px;
-    height: 180px;
   }
 }
 
 @include desktop-large {
   .editor {
-    padding: 16px 7px;
+    padding: 16px 1   8px;
   }
 
   .editor.cart {
-    max-height: 155px;
-    height: 155px;
     padding: 16px 1px;
-  }
-
-  .editor.large {
-    max-height: 220px;
-    height: 220px;
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +12,7 @@ import {
   toggleIsCartCollabaratorOpen,
 } from '../../reducers/collabarator';
 import { RootState } from '../../app/store';
+import emailVerify from '../../utils/hooks/emailVerify';
 
 interface CollabaratorProps {
   isMainInput?: boolean;
@@ -36,6 +38,7 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
     isMainInput ? inputCollabaratorUsers : cartCollabaratorUsers,
   );
   const [value, setValue] = useState('');
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
   const save = () => {
@@ -52,6 +55,15 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
   const cancel = () => {
     if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
     else dispatch(toggleIsCartCollabaratorOpen());
+  };
+
+  const onConfirm = () => {
+    const valid = emailVerify(value);
+    if (valid) {
+      setUsers([...users, value]);
+      setValue('');
+      setError(false);
+    } else setError(true);
   };
 
   return (
@@ -75,7 +87,7 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
         <div className={classNames(styles.user_img, styles.icon)}>
           <Icon name="add-accaunt" />
         </div>
-        <div className={styles.user_text}>
+        <div className={classNames(styles.user_text)}>
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -83,17 +95,9 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
             placeholder="Person or Email to share with"
           />
         </div>
-        {value && (
-          <Icon
-            onClick={() => {
-              setUsers([...users, value]);
-              setValue('');
-            }}
-            className={styles.user_confirm}
-            name="done"
-          />
-        )}
+        {value && <Icon onClick={onConfirm} className={styles.user_confirm} name="done" />}
       </div>
+      {error && <div className={styles.message}>Please, Enter valid email address</div>}
       <div className={styles.collabarator_footer}>
         <div>
           <button type="button" onClick={cancel}>

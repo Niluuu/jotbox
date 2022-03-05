@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable react/require-default-props */
 import { FC, useCallback, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
@@ -127,7 +129,11 @@ const MainInput: FC<MainInputProps> = ({
               onKeyDown={(e) => onKeyPressed(e)}
             />
 
-            <button onClick={onDefaultPin} type="button" className={styles.icon_btn}>
+            <button
+              onClick={onDefaultPin}
+              type="button"
+              className={classNames(styles.defaultPin, styles.icon_btn)}
+            >
               {!defaultPin ? (
                 <Icon name="pin" color="premium" size="xs" />
               ) : (

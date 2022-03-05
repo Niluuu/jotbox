@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './CartLayout.module.scss';
@@ -12,6 +13,7 @@ interface CartProps {
   archived: boolean;
   gaps: string[];
   color: string;
+  collabarotors: string[];
 }
 interface CartLayoutProps {
   /**
@@ -67,6 +69,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 description={cart.description}
                 pined={cart.pined}
                 color={cart.color}
+                collabarotors={cart.collabarotors}
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
                 archived={cart.archived}
@@ -98,6 +101,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 description={cart.description}
                 pined={cart.pined}
                 color={cart.color}
+                collabarotors={cart.collabarotors}
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
                 archived={cart.archived}

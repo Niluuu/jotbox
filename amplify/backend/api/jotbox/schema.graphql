@@ -1,4 +1,4 @@
-type Node @model @auth(rules: [{ allow: public }]) {
+type Node @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String
   description: String
@@ -8,18 +8,20 @@ type Node @model @auth(rules: [{ allow: public }]) {
   trashed: Boolean
   pined: Boolean
   collabarator: AWSEmail
+  collabarotors: [AWSEmail]!
 }
 
-type Users @model @auth(rules: [{ allow: public }]) {
+type Users @model @auth(rules: [{allow: public}]) {
   id: ID!
   email: AWSEmail
   name: String
   password: String
 }
 
-type Gaps @model @auth(rules: [{ allow: public }]) {
+type Gaps @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   collabarator: AWSEmail
+  collabarators: [AWSEmail]
 }
  

@@ -14,6 +14,7 @@ export const onCreateNode = /* GraphQL */ `
       trashed
       pined
       collabarator
+      collabarotors
       _version
       _deleted
       _lastChangedAt
@@ -34,6 +35,7 @@ export const onUpdateNode = /* GraphQL */ `
       trashed
       pined
       collabarator
+      collabarotors
       _version
       _deleted
       _lastChangedAt
@@ -54,6 +56,7 @@ export const onDeleteNode = /* GraphQL */ `
       trashed
       pined
       collabarator
+      collabarotors
       _version
       _deleted
       _lastChangedAt
@@ -113,6 +116,7 @@ export const onCreateGaps = /* GraphQL */ `
       id
       title
       collabarator
+      collabarators
       _version
       _deleted
       _lastChangedAt
@@ -127,6 +131,7 @@ export const onUpdateGaps = /* GraphQL */ `
       id
       title
       collabarator
+      collabarators
       _version
       _deleted
       _lastChangedAt
@@ -141,6 +146,7 @@ export const onDeleteGaps = /* GraphQL */ `
       id
       title
       collabarator
+      collabarators
       _version
       _deleted
       _lastChangedAt

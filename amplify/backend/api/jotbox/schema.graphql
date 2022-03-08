@@ -7,7 +7,7 @@ type Node @model @auth(rules: [{allow: public}]) {
   archived: Boolean
   trashed: Boolean
   pined: Boolean
-  collabarator: AWSEmail
+  collabarator: AWSEmail!
   collabarotors: [AWSEmail]!
 }
 
@@ -21,7 +21,7 @@ type Users @model @auth(rules: [{allow: public}]) {
 type Gaps @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
-  collabarator: AWSEmail
+  collabarator: AWSEmail!
   collabarators: [AWSEmail]
 }
  

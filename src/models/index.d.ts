@@ -25,7 +25,7 @@ export declare class Node {
   readonly archived?: boolean;
   readonly trashed?: boolean;
   readonly pined?: boolean;
-  readonly collabarator?: string;
+  readonly collabarator: string;
   readonly collabarotors: (string | null)[];
   readonly createdAt?: string;
   readonly updatedAt?: string;
@@ -47,7 +47,7 @@ export declare class Users {
 export declare class Gaps {
   readonly id: string;
   readonly title: string;
-  readonly collabarator?: string;
+  readonly collabarator: string;
   readonly collabarators?: (string | null)[];
   readonly createdAt?: string;
   readonly updatedAt?: string;

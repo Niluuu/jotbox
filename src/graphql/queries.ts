@@ -14,7 +14,7 @@ export const getNode = /* GraphQL */ `
       trashed
       pined
       collabarator
-      collabarotors
+      collabarators
       _version
       _deleted
       _lastChangedAt
@@ -40,7 +40,7 @@ export const listNodes = /* GraphQL */ `
         trashed
         pined
         collabarator
-        collabarotors
+        collabarators
         _version
         _deleted
         _lastChangedAt
@@ -75,7 +75,7 @@ export const syncNodes = /* GraphQL */ `
         trashed
         pined
         collabarator
-        collabarotors
+        collabarators
         _version
         _deleted
         _lastChangedAt

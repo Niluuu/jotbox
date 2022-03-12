@@ -67,8 +67,8 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "collabarotors": {
-                    "name": "collabarotors",
+                "collabarators": {
+                    "name": "collabarators",
                     "isArray": true,
                     "type": "AWSEmail",
                     "isRequired": false,
@@ -267,5 +267,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "3ba9f3ecfe78c0e0367cb9a03908cf87"
+    "version": "e1a8968db3f79514418449408fd53c66"
 };

@@ -26,7 +26,7 @@ export declare class Node {
   readonly trashed?: boolean;
   readonly pined?: boolean;
   readonly collabarator: string;
-  readonly collabarotors: (string | null)[];
+  readonly collabarators: (string | null)[];
   readonly createdAt?: string;
   readonly updatedAt?: string;
   constructor(init: ModelInit<Node, NodeMetaData>);

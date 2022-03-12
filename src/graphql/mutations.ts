@@ -17,7 +17,7 @@ export const createNode = /* GraphQL */ `
       trashed
       pined
       collabarator
-      collabarotors
+      collabarators
       _version
       _deleted
       _lastChangedAt
@@ -41,7 +41,7 @@ export const updateNode = /* GraphQL */ `
       trashed
       pined
       collabarator
-      collabarotors
+      collabarators
       _version
       _deleted
       _lastChangedAt
@@ -65,7 +65,7 @@ export const deleteNode = /* GraphQL */ `
       trashed
       pined
       collabarator
-      collabarotors
+      collabarators
       _version
       _deleted
       _lastChangedAt

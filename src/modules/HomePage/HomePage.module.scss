@@ -58,6 +58,20 @@
       border-bottom: 1px solid $gray-color2;
     }
   }
+  
+  .user {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgb(125, 125, 125);
+    color: #fff;
+    border: 1px solid #fff;
+    box-shadow: 0 0 3px rgb(125, 125, 125);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+  }
 }
 
 .main_chips {

@@ -1,9 +1,11 @@
+/* eslint-disable react/require-default-props */
 import { FC, useCallback, useState, useRef } from 'react';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
+import inputStyles from '../input/MainInput.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/getNodeId';
@@ -76,6 +78,10 @@ interface CartProps {
    * Toggle gaps of Node function
    */
   toggleGapsCart?: (id: string, _version: number, gap: any) => void;
+  /**
+   * Collobarators of the Node Cart
+   */
+  collabarators: string[];
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -95,6 +101,7 @@ const Cart: FC<CartProps> = (props) => {
     onColorChange,
     toggleGapsCart,
     archived,
+    collabarators,
   } = props;
   const [isMain] = useState(false);
   const dispatch = useDispatch();
@@ -131,9 +138,11 @@ const Cart: FC<CartProps> = (props) => {
         )}
       </button>
       <div className={styles.cart_content} onClick={() => !popupCart && onOpenModal(id)}>
-        <div className={classNames(styles.cart_title, isLarge && styles.empty)}>
-          <p>{title}</p>
-        </div>
+        {title && (
+          <div className={classNames(styles.cart_title)}>
+            <p>{title}</p>
+          </div>
+        )}
         {description && (
           <MainEditor
             isLarge={isLarge}
@@ -145,9 +154,9 @@ const Cart: FC<CartProps> = (props) => {
         )}
       </div>
       <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
-      <div className={styles.main_chips}>
-        {gaps &&
-          (gaps.length > 2 ? (
+      {gaps.length !== 0 && (
+        <div className={styles.main_chips}>
+          {gaps.length > 2 ? (
             <>
               <Chip onDelate={() => toggleGapsCart(id, _version, gaps[0])}> {gaps[0]} </Chip>
               <Chip onDelate={() => toggleGapsCart(id, _version, gaps[1])}> {gaps[1]} </Chip>
@@ -157,8 +166,25 @@ const Cart: FC<CartProps> = (props) => {
             gaps.map((gap) => (
               <Chip onDelate={() => toggleGapsCart(id, _version, gap)}> {gap} </Chip>
             ))
-          ))}
-      </div>
+          )}
+        </div>
+      )}
+      {collabarators && (
+        <div className={classNames(styles.main_chips, inputStyles.gaps)}>
+          {collabarators.length > 5 ? (
+            <>
+              {collabarators.slice(0, 5).map((user) => (
+                <div className={inputStyles.user}>{user[0].toLowerCase()}</div>
+              ))}
+              <div className={inputStyles.user}>{collabarators.length - 5}+</div>
+            </>
+          ) : (
+            collabarators
+              .slice(0, 10)
+              .map((user) => <div className={inputStyles.user}>{user[0].toLowerCase()}</div>)
+          )}
+        </div>
+      )}
       <div className={styles.input_navbar}>
         <InputNavbar
           onOpenModal={() => onOpenModal(id)}

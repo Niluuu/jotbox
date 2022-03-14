@@ -28,13 +28,14 @@ interface CartProps {
   _version: number;
   _deleted: boolean;
   color: string;
+  collabarators: string[];
 }
 
 interface HomeProps {
   /**
    * Is archived page or not
    */
-  archive?: boolean;
+  archive: boolean;
 }
 
 const HomePage: FC<HomeProps> = ({ archive }) => {
@@ -46,6 +47,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       filterByTitleLetter: state.filterByTitleReducer.filterByTitleLetter,
       updateNodes: state.nodesReducer.updateNodes,
       inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
+      refreshPage: state.refreshPageReducer.refreshPage,
     };
   });
 
@@ -56,12 +58,13 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     filterByTitleLetter,
     updateNodes,
     inputCollabaratorUsers,
+    refreshPage,
   } = mapStateToProps;
   const dispatch = useDispatch();
 
   const { label } = useParams();
   const userEmail = localStorage.getItem('userEmail');
-  const collabarator = { eq: userEmail };
+  const collabarators = { contains: userEmail };
   const archived = archive ? { eq: true } : { eq: false };
 
   const titleRef = useRef<HTMLDivElement>();
@@ -70,7 +73,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
   const [selectedGaps, setSelectedGaps] = useState([]);
-  const [filter, setFilter] = useState({ collabarator, archived });
+  const [filter, setFilter] = useState({ collabarators, archived });
 
   const toggleGaps = useCallback(
     (gap) => {
@@ -212,13 +215,31 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     [nodes],
   );
 
-  const onChangeCollabarators = useCallback(async (id, _version) => {
-    try {
-      alert('onChangeCollabarators run');
-    } catch (err) {
-      throw new Error('Update node error');
-    }
-  }, []);
+  const onChangeCollabarators = useCallback(
+    async (id, _version, cartCollabarators) => {
+      try {
+        const updatedNode = {
+          id,
+          _version,
+          collabarators: cartCollabarators,
+        };
+
+        const data = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        return item;
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [nodes],
+  );
 
   const onChangeArchived = useCallback(
     async (id, archiveAttr, _version, title, description) => {
@@ -284,6 +305,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
   const onSetNodes = useCallback(async () => {
     try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
       const node = {
         title: titleRef.current.innerText,
         description: text,
@@ -292,6 +314,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         color: defaultColor,
         archived: false,
         collabarator: userEmail,
+        collabarators: newCollabarators,
       };
 
       const data = await API.graphql({ query: createNode, variables: { input: node } });
@@ -304,10 +327,20 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor, nodes]);
+  }, [
+    inputCollabaratorUsers,
+    userEmail,
+    text,
+    selectedGaps,
+    defaultPin,
+    defaultColor,
+    nodes,
+    cleanUp,
+  ]);
 
   const onSetArchive = useCallback(async () => {
     try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
       const node = {
         title: titleRef.current.innerText.toLowerCase(),
         description: text,
@@ -316,6 +349,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         color: defaultColor,
         archived: true,
         collabarator: userEmail,
+        collabarators: newCollabarators,
       };
 
       await API.graphql({ query: createNode, variables: { input: node } });
@@ -323,11 +357,15 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [cleanUp, defaultPin, text, userEmail, selectedGaps, defaultColor]);
+  }, [userEmail, inputCollabaratorUsers, text, selectedGaps, defaultPin, defaultColor, cleanUp]);
 
   useEffect(() => {
     getAllNodes();
   }, [getAllNodes]);
+
+  useEffect(() => {
+    getAllNodes();
+  }, [refreshPage, getAllNodes]);
 
   useEffect(() => {
     getAllNodes();
@@ -343,7 +381,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     const gaps = { contains: label };
 
     const newFiler =
-      label !== undefined ? { collabarator, archived, gaps } : { collabarator, archived };
+      label !== undefined ? { collabarators, archived, gaps } : { collabarators, archived };
     setFilter(newFiler);
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);

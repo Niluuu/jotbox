@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC, useState, useCallback, useEffect } from 'react';
 import {
   EditorState,

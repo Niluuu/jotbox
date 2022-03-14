@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,36 +7,39 @@ import { Icon } from '../Icon/Icon';
 import avatar from '../../assets/images/avatar.png';
 import {
   setInputCollabaratorUsers,
-  setCartCollabaratorUsers,
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,
 } from '../../reducers/collabarator';
 import { RootState } from '../../app/store';
+import emailVerify from '../../utils/hooks/emailVerify';
 
 interface CollabaratorProps {
   isMainInput?: boolean;
   /**
    * Node collabarators change func
    */
-  onChangeCollabarators?: () => void;
+  onChangeCollabarators?: (collabarators: any) => void;
+  cartCollabarators?: string[];
 }
 /**
  * Main Collabarator component for user interaction
  */
-const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarators }) => {
+const Collabarator: FC<CollabaratorProps> = ({
+  isMainInput,
+  onChangeCollabarators,
+  cartCollabarators,
+}) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
-      cartCollabaratorUsers: state.collabaratorReducer.cartCollabaratorUsers,
     };
   });
 
-  const { inputCollabaratorUsers, cartCollabaratorUsers } = mapStateToProps;
+  const { inputCollabaratorUsers } = mapStateToProps;
 
-  const [users, setUsers] = useState<any>(
-    isMainInput ? inputCollabaratorUsers : cartCollabaratorUsers,
-  );
+  const [users, setUsers] = useState<any>(isMainInput ? inputCollabaratorUsers : cartCollabarators);
   const [value, setValue] = useState('');
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
   const save = () => {
@@ -43,9 +47,8 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
       dispatch(setInputCollabaratorUsers(users));
       dispatch(toggleIsInputCollabaratorOpen());
     } else {
-      dispatch(setCartCollabaratorUsers(users));
+      onChangeCollabarators(users);
       dispatch(toggleIsCartCollabaratorOpen());
-      onChangeCollabarators();
     }
   };
 
@@ -54,28 +57,46 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
     else dispatch(toggleIsCartCollabaratorOpen());
   };
 
+  const onConfirm = () => {
+    const valid = emailVerify(value);
+    if (valid) {
+      setUsers([...users, value]);
+      setValue('');
+      setError(false);
+    } else setError(true);
+  };
+
+  const onRemove = (user) => {
+    setUsers(users.filter((elm) => elm !== user));
+  };
+
+  const userEmail = localStorage.getItem('userEmail');
   return (
     <div className={styles.collabarator}>
       <div className={styles.collabarator_header}>Collabarators</div>
       <div className={styles.user}>
         <img className={styles.user_img} src={avatar} />
         <div className={styles.user_text}>
-          <span className={styles.user_title}> {localStorage.getItem('userEmail')} (Owner) </span>
+          <span className={styles.user_title}> {userEmail} (Owner) </span>
         </div>
       </div>
-      {users.map((user) => (
-        <div className={styles.user}>
-          <img className={styles.user_img} src={avatar} />
-          <div className={styles.user_text}>
-            <span className={styles.user_title}> {user} </span>
-          </div>
-        </div>
-      ))}
+      {users.map(
+        (user) =>
+          userEmail !== user && (
+            <div className={styles.user}>
+              <img className={styles.user_img} src={avatar} />
+              <div className={styles.user_text}>
+                <span className={styles.user_title}> {user} </span>
+              </div>
+              <Icon onClick={() => onRemove(user)} className={styles.user_confirm} name="exit" />
+            </div>
+          ),
+      )}
       <div className={styles.user}>
         <div className={classNames(styles.user_img, styles.icon)}>
           <Icon name="add-accaunt" />
         </div>
-        <div className={styles.user_text}>
+        <div className={classNames(styles.user_text)}>
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -83,17 +104,9 @@ const Collabarator: FC<CollabaratorProps> = ({ isMainInput, onChangeCollabarator
             placeholder="Person or Email to share with"
           />
         </div>
-        {value && (
-          <Icon
-            onClick={() => {
-              setUsers([...users, value]);
-              setValue('');
-            }}
-            className={styles.user_confirm}
-            name="done"
-          />
-        )}
+        {value && <Icon onClick={onConfirm} className={styles.user_confirm} name="done" />}
       </div>
+      {error && <div className={styles.message}>Please, Enter valid email address</div>}
       <div className={styles.collabarator_footer}>
         <div>
           <button type="button" onClick={cancel}>

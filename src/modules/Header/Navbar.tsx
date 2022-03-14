@@ -9,6 +9,7 @@ import Popover from '../../component/popover/Popover';
 import { Icon } from '../../component/Icon/Icon';
 import { Avatar } from '../../component/avatar/Avatar';
 import { toggleGrid } from '../../reducers/layout';
+import { setRefreshPage } from '../../reducers/refreshPage';
 
 /**
  * Main Header component for user interaction
@@ -38,6 +39,7 @@ export const Navbar: FC = () => {
     const completeUpdate = (val) =>
       setTimeout(() => {
         setUpdated(val);
+        dispatch(setRefreshPage());
       }, 2000);
 
     new Promise((resolve) => {

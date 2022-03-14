@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -104,6 +106,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     shadow,
     noAddLink,
     onOpenModal,
+    initialGaps,
   } = props;
   const [listGaps, setListGaps] = useState([]);
   const [filter] = useState({ title: { contains: '' } });

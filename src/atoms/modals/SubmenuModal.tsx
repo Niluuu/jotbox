@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import { FC, useCallback, useState } from 'react';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';

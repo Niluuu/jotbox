@@ -1,7 +1,9 @@
+/* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback, useRef } from 'react';
 import { API } from 'aws-amplify';
 import { useSelector, useDispatch } from 'react-redux';
 import Editor from '@draft-js-plugins/editor';
+import classNames from 'classnames';
 import { RootState } from '../../app/store';
 import { closeUpdateModalIsOpen, getIdNode } from '../../reducers/getNodeId';
 import styles from '../../modules/HomePage/HomePage.module.scss';
@@ -42,7 +44,7 @@ interface CartModalType {
   /**
    * Change collabarator of Node function
    */
-  onChangeCollabarators: (id: string, _version: number) => void;
+  onChangeCollabarators: (id: string, _version: number, onChangeCollabarators: any) => void;
   /**
    * Toggleselected gaps when creating Node function
    */
@@ -162,6 +164,16 @@ const CartModal: FC<CartModalType> = ({
     [node, onColorChange],
   );
 
+  const modalChangeCollabarators = useCallback(
+    async (collabarators) => {
+      const { id, _version } = node[0];
+      const data = await onChangeCollabarators(id, _version, collabarators);
+
+      setNode([data]);
+    },
+    [node, onChangeCollabarators],
+  );
+
   const modalToggleGapsCart = useCallback(
     async (gap) => {
       const { id, _version } = node[0];
@@ -200,11 +212,12 @@ const CartModal: FC<CartModalType> = ({
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
-      toggleModal={() => toggleModal(node[0].id)}
+      toggleModal={() => node[0] !== undefined && toggleModal(node[0].id)}
     >
-      {isCartCollabaratorOpen ? (
+      {node[0] !== undefined && isCartCollabaratorOpen ? (
         <Collabarator
-          onChangeCollabarators={() => onChangeCollabarators(node[0].id, node[0]._version)}
+          cartCollabarators={node[0].collabarators}
+          onChangeCollabarators={modalChangeCollabarators}
         />
       ) : (
         <>
@@ -273,6 +286,13 @@ const CartModal: FC<CartModalType> = ({
                     ))
                   )}
                 </div>
+                {node[0].collabarators && (
+                  <div className={classNames(styles.main_chips, styles.gaps)}>
+                    {node[0].collabarators.map((user) => (
+                      <div className={styles.user}>{user[0].toLowerCase()}</div>
+                    ))}
+                  </div>
+                )}
               </div>
               <InputNavbar
                 toggleGapsCart={(gap) => modalToggleGapsCart(gap)}

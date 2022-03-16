@@ -203,8 +203,9 @@ const CartModal: FC<CartModalType> = ({
     onChangeArchived(id, !archived, _version, title, description);
 
     dispatch(closeUpdateModalIsOpen());
-  }, [node, onChangeArchived, dispatch]);
+  }, [dispatch, node, onChangeArchived]);
 
+  const userEmail = localStorage.getItem('userEmail');
   return (
     <Modal
       removeIcon={updatedColor === undefined && true}
@@ -288,9 +289,11 @@ const CartModal: FC<CartModalType> = ({
                 </div>
                 {node[0].collabarators && (
                   <div className={classNames(styles.main_chips, styles.gaps)}>
-                    {node[0].collabarators.map((user) => (
-                      <div className={styles.user}>{user[0].toLowerCase()}</div>
-                    ))}
+                    {node[0].collabarators
+                      .filter((e) => e !== userEmail)
+                      .map((user) => (
+                        <div className={styles.user}>{user[0].toLowerCase()}</div>
+                      ))}
                   </div>
                 )}
               </div>
@@ -306,6 +309,7 @@ const CartModal: FC<CartModalType> = ({
                 initialGaps={node[0] && node[0].gaps}
                 selectedGaps={node[0].gaps}
                 shadow
+                updateModalIsOpen={updateModalIsOpen}
               />
             </div>
           )}

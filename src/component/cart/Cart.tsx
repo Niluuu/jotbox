@@ -116,6 +116,7 @@ const Cart: FC<CartProps> = (props) => {
 
   const isLarge = !title;
 
+  const userEmail = localStorage.getItem('userEmail');
   return (
     <div
       id={id}
@@ -171,16 +172,19 @@ const Cart: FC<CartProps> = (props) => {
       )}
       {collabarators && (
         <div className={classNames(styles.main_chips, inputStyles.gaps)}>
-          {collabarators.length > 5 ? (
+          {collabarators.length > 6 ? (
             <>
-              {collabarators.slice(0, 5).map((user) => (
-                <div className={inputStyles.user}>{user[0].toLowerCase()}</div>
-              ))}
+              {collabarators
+                .filter((e) => e !== userEmail)
+                .slice(0, 5)
+                .map((user) => (
+                  <div className={inputStyles.user}>{user[0].toLowerCase()}</div>
+                ))}
               <div className={inputStyles.user}>{collabarators.length - 5}+</div>
             </>
           ) : (
             collabarators
-              .slice(0, 10)
+              .filter((e) => e !== userEmail)
               .map((user) => <div className={inputStyles.user}>{user[0].toLowerCase()}</div>)
           )}
         </div>

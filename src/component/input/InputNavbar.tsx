@@ -86,6 +86,7 @@ interface InputNavbarProps {
    * Open Cart Modal function
    */
   onOpenModal?: () => void;
+  updateModalIsOpen?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -107,9 +108,13 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     noAddLink,
     onOpenModal,
     initialGaps,
+    updateModalIsOpen,
   } = props;
+  const userEmail = localStorage.getItem('userEmail');
+  const collabarator = { eq: userEmail };
+
   const [listGaps, setListGaps] = useState([]);
-  const [filter] = useState({ title: { contains: '' } });
+  const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
 
   const toggleArchive = () => {
@@ -167,6 +172,39 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       dispatch(toggleIsCartCollabaratorOpen());
       if (noAddLink) onOpenModal();
     }
+  };
+
+  const OthersPopover = () => {
+    return (
+      <Popover
+        content={
+          <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
+            <ul className={styles.popover_content}>
+              {onRemoveCart && (
+                <li key={uniqid()} onClick={onRemoveCart}>
+                  <span>Удалить карточку</span>
+                </li>
+              )}
+              {!noAddLink && (
+                <li
+                  key={uniqid()}
+                  onClick={() => {
+                    createLinkToEditor();
+                  }}
+                >
+                  <span>Добавить линк</span>
+                </li>
+              )}
+            </ul>
+          </div>
+        }
+        placement="bottom-start"
+      >
+        <button type="button" className={styles.icon_btn}>
+          <Icon name="other" color="premium" size="xs" />
+        </button>
+      </Popover>
+    );
   };
 
   return (
@@ -253,37 +291,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <Icon name="gaps" color="premium" size="xs" />
             </button>
           </Popover>
-          <Popover
-            content={
-              <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
-                <ul className={styles.popover_content}>
-                  {onRemoveCart && (
-                    <li
-                      key={uniqid()}
-                      onClick={onRemoveCart}
-                    >
-                      <span>Удалить карточку</span>
-                    </li>
-                  )}
-                  {!noAddLink && (
-                    <li
-                      key={uniqid()}
-                      onClick={() => {
-                        createLinkToEditor();
-                      }}
-                    >
-                      <span>Добавить линк</span>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            }
-            placement="bottom-start"
-          >
-            <button type="button" className={styles.icon_btn}>
-              <Icon name="other" color="premium" size="xs" />
-            </button>
-          </Popover>
+          {updateModalIsOpen || <OthersPopover />}
+          {!shadow || <OthersPopover />}
         </div>
         {(isMainInput || shadow) && (
           <button onClick={onSetNode} type="button" className={styles.btn}>

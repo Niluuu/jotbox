@@ -41,7 +41,7 @@ export const Submenu: FC<SubmenuProps> = () => {
   const [listGaps, setListGaps] = useState([]);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
-  const [filter, setFilter] = useState({ collabarator });
+  const [filter] = useState({ collabarator });
 
   const dispatch = useDispatch();
   const mapStateToProps = useSelector((state: RootState) => {

@@ -66,6 +66,10 @@ const Collabarator: FC<CollabaratorProps> = ({
     } else setError(true);
   };
 
+  const onConfirmKeyup = (key) => {
+    if (key === 'Enter') onConfirm();
+  };
+
   const onRemove = (user) => {
     setUsers(users.filter((elm) => elm !== user));
   };
@@ -100,6 +104,7 @@ const Collabarator: FC<CollabaratorProps> = ({
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            onKeyUp={(e) => onConfirmKeyup(e.key)}
             type="text"
             placeholder="Person or Email to share with"
           />

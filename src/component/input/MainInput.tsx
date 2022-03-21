@@ -81,6 +81,11 @@ const MainInput: FC<MainInputProps> = ({
   const [linkMode, setlinkMode] = useState(false);
   const editorRef = useRef<Editor>(null);
 
+  const outsideRef = useRef(null);
+  const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
+  const handleClickInside = () => setTimeout(() => setFocused(true), 200);
+  useOnClickOutside(outsideRef, handleClickOutside);
+
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
@@ -109,14 +114,22 @@ const MainInput: FC<MainInputProps> = ({
 
   return (
     <div
-      className={classNames(styles.main_input, grid && styles.column, defaultColor)}
+      className={classNames(
+        styles.main_input,
+        grid && styles.column,
+        defaultColor,
+        isInputCollabaratorOpen && styles.collabarator,
+      )}
       tabIndex={-1}
+      onFocus={handleClickInside}
+      onClick={handleClickInside}
+      ref={outsideRef}
     >
       {isInputCollabaratorOpen ? (
         <Collabarator isMainInput />
       ) : (
         <>
-          <div className={classNames(styles.main_header, styles.show)}>
+          <div className={classNames(styles.main_header, focused && styles.show)}>
             <div
               ref={titleRef}
               id="title"
@@ -153,33 +166,49 @@ const MainInput: FC<MainInputProps> = ({
               initialState={text}
             />
           </div>
-
-          {selectedGaps && (
-            <div className={classNames(styles.main_tools, styles.gaps)}>
-              {selectedGaps.map((gap) => (
-                <Chip>{gap}</Chip>
-              ))}
+          {!focused ? (
+            <div className={classNames(styles.bottom_tools)}>
+              <button type="button" className={styles.icon_btn}>
+                <Icon name="edit-bordered" color="premium" size="xs" />
+              </button>
+              <button type="button" className={styles.icon_btn}>
+                <Icon name="pen" color="premium" size="xs" />
+              </button>
+              <button type="button" className={styles.icon_btn}>
+                <Icon name="img" color="premium" size="xs" />
+              </button>
             </div>
-          )}
+          ) : null}
+          {focused ? (
+            <>
+              {selectedGaps && (
+                <div className={classNames(styles.main_tools, styles.gaps)}>
+                  {selectedGaps.map((gap) => (
+                    <Chip>{gap}</Chip>
+                  ))}
+                </div>
+              )}
 
-          {inputCollabaratorUsers && (
-            <div className={classNames(styles.main_tools, styles.gaps)}>
-              {inputCollabaratorUsers.map((user) => (
-                <div className={styles.user}>{user[0].toLowerCase()}</div>
-              ))}
-            </div>
-          )}
+              {inputCollabaratorUsers && (
+                <div className={classNames(styles.main_tools, styles.gaps)}>
+                  {inputCollabaratorUsers.map((user) => (
+                    <div className={styles.user}>{user[0].toLowerCase()}</div>
+                  ))}
+                </div>
+              )}
 
-          <InputNavbar
-            isMainInput
-            onSetArchive={onSetArchive}
-            onSetNode={() => onSetNodes()}
-            createLinkToEditor={onLinkEditor}
-            onDefaultColor={onDefaultColor}
-            defaultColor={defaultColor}
-            toggleGaps={toggleGaps}
-            selectedGaps={selectedGaps}
-          />
+              <InputNavbar
+                isMainInput
+                onSetArchive={onSetArchive}
+                onSetNode={() => onSetNodes()}
+                createLinkToEditor={onLinkEditor}
+                onDefaultColor={onDefaultColor}
+                defaultColor={defaultColor}
+                toggleGaps={toggleGaps}
+                selectedGaps={selectedGaps}
+              />
+            </>
+          ) : null}
         </>
       )}
     </div>

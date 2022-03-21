@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import classNames from 'classnames';
 import styles from './Modal.module.scss';
 import '../cart/Color.scss';
+import { closeUpdateModalIsOpen } from '../../reducers/getNodeId';
 
 export interface ModalProps {
   /**
@@ -49,6 +50,15 @@ const Modal: FC<ModalProps> = ({
   color,
   cartmodal,
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      const body = document.querySelector('body');
+      body.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape') toggleModal();
+      });
+    }
+  });
+
   return (
     <>
       <div

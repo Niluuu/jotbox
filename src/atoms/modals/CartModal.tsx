@@ -44,11 +44,11 @@ interface CartModalType {
   /**
    * Change collabarator of Node function
    */
-  onChangeCollabarators: (id: string, _version: number, onChangeCollabarators: any) => void;
+  onChangeCollabarators: (id: string, _version: number, cartCollabarators: string[]) => void;
   /**
    * Toggleselected gaps when creating Node function
    */
-  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
+  toggleGapsCart?: (id: string, _version: number, gap: string) => void;
 }
 
 const CartModal: FC<CartModalType> = ({
@@ -59,11 +59,11 @@ const CartModal: FC<CartModalType> = ({
   toggleGapsCart,
   onChangeCollabarators,
 }) => {
-  const [node, setNode] = useState<any>([]);
+  const [node, setNode] = useState([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
-  const [updatedArchive, setUpdatedArchive] = useState(undefined);
+  const [setUpdatedArchive] = useState(undefined);
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
   const linkRef = useRef(null);
@@ -77,7 +77,7 @@ const CartModal: FC<CartModalType> = ({
 
   const onKeyPressed = (e) => {
     if (e.keyCode === 13) {
-      editorRef.current!.focus();
+      editorRef.current?.focus();
     }
   };
 
@@ -213,7 +213,7 @@ const CartModal: FC<CartModalType> = ({
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
-      toggleModal={() => node[0] !== undefined && toggleModal(node[0].id)}
+      toggleModal={() => dispatch(closeUpdateModalIsOpen())}
     >
       {node[0] !== undefined && isCartCollabaratorOpen ? (
         <Collabarator

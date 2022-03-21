@@ -10,6 +10,7 @@ import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/getNodeId';
 import './Color.scss';
+import Popover from '../popover/Popover';
 
 interface CartProps {
   /**
@@ -104,6 +105,7 @@ const Cart: FC<CartProps> = (props) => {
     collabarators,
   } = props;
   const [isMain] = useState(false);
+  const [isHover, setHover] = useState(false);
   const dispatch = useDispatch();
   const editorRef = useRef(null);
 
@@ -119,89 +121,100 @@ const Cart: FC<CartProps> = (props) => {
   const userEmail = localStorage.getItem('userEmail');
   return (
     <div
-      id={id}
-      className={classNames(
-        styles.cart,
-        color,
-        gridType && styles.column,
-        popupCart && styles.popupCart,
-      )}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className={styles.cart_wrapper}
     >
-      <button
-        type="button"
-        className={classNames(styles.icon_btn, styles.pin)}
-        onClick={() => onChangePin(id, !pined, _version)}
-      >
-        {pined ? (
-          <Icon name="pin-black" color="premium" size="xs" />
-        ) : (
-          <Icon name="pin" color="premium" size="xs" />
+      <div
+        id={id}
+        className={classNames(
+          styles.cart,
+          color,
+          gridType && styles.column,
+          popupCart && styles.popupCart,
         )}
-      </button>
-      <div className={styles.cart_content} onClick={() => !popupCart && onOpenModal(id)}>
-        {title && (
-          <div className={classNames(styles.cart_title)}>
-            <p>{title}</p>
+      >
+        <button
+          type="button"
+          className={classNames(styles.icon_btn, styles.pin)}
+          onClick={() => onChangePin(id, !pined, _version)}
+        >
+          {pined ? (
+            <Icon name="pin-black" color="premium" size="xs" />
+          ) : (
+            <Icon name="pin" color="premium" size="xs" />
+          )}
+        </button>
+        <div className={styles.cart_content}>
+          {title && (
+            <div className={classNames(styles.cart_title)}>
+              <p>{title}</p>
+            </div>
+          )}
+          {description && (
+            <MainEditor
+              isLarge={isLarge}
+              color={color}
+              initialState={description}
+              editorRef={editorRef}
+              readOnly
+            />
+          )}
+        </div>
+        <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
+        {gaps.length !== 0 && (
+          <div className={styles.main_chips}>
+            {gaps.length > 2 ? (
+              <>
+                <Chip onDelate={() => toggleGapsCart(id, _version, gaps[0])}> {gaps[0]} </Chip>
+                <Chip onDelate={() => toggleGapsCart(id, _version, gaps[1])}> {gaps[1]} </Chip>
+                <div className={styles.extraGap}> +{gaps.length - 2} </div>
+              </>
+            ) : (
+              gaps.map((gap) => (
+                <Chip onDelate={() => toggleGapsCart(id, _version, gap)}> {gap} </Chip>
+              ))
+            )}
           </div>
         )}
-        {description && (
-          <MainEditor
-            isLarge={isLarge}
-            color={color}
-            initialState={description}
-            editorRef={editorRef}
-            readOnly
-          />
-        )}
-      </div>
-      <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
-      {gaps.length !== 0 && (
-        <div className={styles.main_chips}>
-          {gaps.length > 2 ? (
-            <>
-              <Chip onDelate={() => toggleGapsCart(id, _version, gaps[0])}> {gaps[0]} </Chip>
-              <Chip onDelate={() => toggleGapsCart(id, _version, gaps[1])}> {gaps[1]} </Chip>
-              <div className={styles.extraGap}> +{gaps.length - 2} </div>
-            </>
-          ) : (
-            gaps.map((gap) => (
-              <Chip onDelate={() => toggleGapsCart(id, _version, gap)}> {gap} </Chip>
-            ))
-          )}
-        </div>
-      )}
-      {collabarators && (
-        <div className={classNames(styles.main_chips, inputStyles.gaps)}>
-          {collabarators.length > 6 ? (
-            <>
-              {collabarators
+        {collabarators && (
+          <div className={classNames(styles.main_chips, inputStyles.gaps)}>
+            {collabarators.length > 6 ? (
+              <>
+                {collabarators
+                  .filter((e) => e !== userEmail)
+                  .slice(0, 5)
+                  .map((user) => (
+                    <div className={inputStyles.user}>{user[0].toLowerCase()}</div>
+                  ))}
+                <div className={inputStyles.user}>{collabarators.length - 5}+</div>
+              </>
+            ) : (
+              collabarators
                 .filter((e) => e !== userEmail)
-                .slice(0, 5)
-                .map((user) => (
-                  <div className={inputStyles.user}>{user[0].toLowerCase()}</div>
-                ))}
-              <div className={inputStyles.user}>{collabarators.length - 5}+</div>
-            </>
-          ) : (
-            collabarators
-              .filter((e) => e !== userEmail)
-              .map((user) => <div className={inputStyles.user}>{user[0].toLowerCase()}</div>)
-          )}
+                .map((user) => <div className={inputStyles.user}>{user[0].toLowerCase()}</div>)
+            )}
+          </div>
+        )}
+        <div className={styles.input_navbar}>
+          <InputNavbar
+            onOpenModal={() => onOpenModal(id)}
+            noAddLink
+            isMainInput={isMain}
+            currentColor={color}
+            selectedGaps={gaps}
+            onRemoveCart={() => onRemoveCart(id, _version)}
+            onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
+            toggleGapsCart={(gap) => toggleGapsCart(id, _version, gap)}
+            onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
+          />
+        </div>
+      </div>
+      {isHover && (
+        <div onClick={() => !popupCart && onOpenModal(id)} className={styles.open}>
+          Open
         </div>
       )}
-      <div className={styles.input_navbar}>
-        <InputNavbar
-          onOpenModal={() => onOpenModal(id)}
-          noAddLink
-          isMainInput={isMain}
-          currentColor={color}
-          selectedGaps={gaps}
-          onRemoveCart={() => onRemoveCart(id, _version)}
-          onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
-          toggleGapsCart={(gap) => toggleGapsCart(id, _version, gap)}
-          onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
-        />
-      </div>
     </div>
   );
 };

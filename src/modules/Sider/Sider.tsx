@@ -33,3 +33,4 @@ export const Sider: FC<SiderProps> = ({ isSidebarOpen, onClick }) => {
     </>
   );
 };
+   

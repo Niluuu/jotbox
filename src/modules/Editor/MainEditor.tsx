@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useCallback, useEffect } from 'react';
 import {
@@ -94,16 +95,33 @@ const MainEditor: FC<MainEditorProps> = ({
     return {
       nodes: state.nodesReducer.nodes,
       onCreateFuncCall: state.editorReducer.onCreateFuncCall,
+      shouldUndo: state.editorReducer.shouldUndo,
+      shouldRedo: state.editorReducer.shouldRedo,
     };
   });
 
-  const { nodes, onCreateFuncCall } = mapStateToProps;
+  const { nodes, onCreateFuncCall, shouldUndo, shouldRedo } = mapStateToProps;
 
   useEffect(() => {
     if (isMainInput && onCreateFuncCall) {
       setEditorState(EditorState.push(editorState, ContentState.createFromText('')));
     }
   }, [editorState, isMainInput, onCreateFuncCall]);
+
+  useEffect(() => {
+    if (shouldUndo) {
+      setEditorState(EditorState.undo(editorState));
+    }
+    if (shouldRedo) {
+      setEditorState(EditorState.redo(editorState));
+    }
+  }, [shouldUndo, shouldRedo, editorState, isMainInput]);
+
+  useEffect(() => {
+    if (shouldUndo) {
+      setEditorState(EditorState.undo(editorState));
+    }
+  }, [shouldUndo, editorState, isMainInput]);
 
   useEffect(() => {
     const selectionState = editorState.getSelection();
@@ -277,6 +295,10 @@ const MainEditor: FC<MainEditorProps> = ({
     setTextLink(e.target.value);
   };
 
+  const undo = (e) => {
+    alert('undo');
+  };
+
   return (
     <div>
       <div
@@ -309,8 +331,19 @@ const MainEditor: FC<MainEditorProps> = ({
       <Modal title="Add Link" toggleModal={createLinkToEditor} isOpen={linkMode}>
         <div className={styles.linkWrapper}>
           <div className={styles.inputs}>
+            <div>Text</div>
+            <div className={styles.inputs_item}>
+              <input
+                type="text"
+                value={textLink}
+                readOnly={textLink.length > 1 && !true}
+                onChange={(e) => handleChange(e)}
+              />
+            </div>
+            <div>Link</div>
             <div className={styles.inputs_item}>
               <button
+                className={styles.left}
                 type="button"
                 onMouseDown={removeLink}
                 onClick={() => {
@@ -319,26 +352,22 @@ const MainEditor: FC<MainEditorProps> = ({
               >
                 <Icon name={focus ? 'delete' : 'filled-label'} color="premium" size="xs" />
               </button>
-
-              <div>
-                <input
-                  type="text"
-                  value={textLink}
-                  readOnly={textLink.length > 1 && !true}
-                  onChange={(e) => handleChange(e)}
-                />
-                <input
-                  ref={linkRef}
-                  onChange={onURLChange}
-                  type="text"
-                  placeholder="Put your Link..."
-                  value={urlValue}
-                  onFocus={() => setfocus(true)}
-                  onBlur={() => setfocus(false)}
-                  onKeyUp={(e) => confirmLinkKeyUp(e)}
-                />
-              </div>
-              <button onMouseDown={confirmLink} onClick={createLinkToEditor} type="button">
+              <input
+                ref={linkRef}
+                onChange={onURLChange}
+                type="text"
+                placeholder="Put your Link..."
+                value={urlValue}
+                onFocus={() => setfocus(true)}
+                onBlur={() => setfocus(false)}
+                onKeyUp={(e) => confirmLinkKeyUp(e)}
+              />
+              <button
+                className={styles.right}
+                onMouseDown={confirmLink}
+                onClick={createLinkToEditor}
+                type="button"
+              >
                 <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" />
               </button>
             </div>

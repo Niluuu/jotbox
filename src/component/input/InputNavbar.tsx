@@ -16,6 +16,7 @@ import {
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,
 } from '../../reducers/collabarator';
+import { setUndo, setRedo } from '../../reducers/editor';
 
 interface InputNavbarProps {
   /**
@@ -116,6 +117,20 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const [listGaps, setListGaps] = useState([]);
   const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
+
+  const handleEditorUndo = () => {
+    dispatch(setUndo());
+    setTimeout(() => {
+      dispatch(setUndo());
+    });
+  };
+
+  const handleEditorRedo = () => {
+    dispatch(setRedo());
+    setTimeout(() => {
+      dispatch(setRedo());
+    });
+  };
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
@@ -293,9 +308,27 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
           </Popover>
           {updateModalIsOpen || <OthersPopover />}
           {!shadow || <OthersPopover />}
+          {isMainInput && (
+            <button onClick={handleEditorUndo} type="button" className={styles.icon_btn}>
+              <Icon name="back" color="premium" size="xs" />
+            </button>
+          )}
+          {isMainInput && (
+            <button
+              onClick={handleEditorRedo}
+              type="button"
+              className={classNames(styles.icon_btn, styles.icon_rotate)}
+            >
+              <Icon name="back" color="premium" size="xs" />
+            </button>
+          )}
         </div>
         {(isMainInput || shadow) && (
-          <button onClick={onSetNode} type="button" className={styles.btn}>
+          <button
+            onClick={onSetNode}
+            type="button"
+            className={classNames(styles.btn, styles.close)}
+          >
             Закрыть
           </button>
         )}

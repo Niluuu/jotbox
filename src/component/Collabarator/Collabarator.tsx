@@ -167,6 +167,7 @@ const Collabarator: FC<CollabaratorProps> = ({
                 (elm) =>
                   userEmail !== elm && (
                     <div
+                      className={styles.suggest_item}
                       onClick={() => {
                         setValue(`${elm}@gmail.com`);
                         setSuggest([]);

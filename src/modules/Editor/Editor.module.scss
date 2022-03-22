@@ -12,20 +12,15 @@
 }
 
 .editor.cart {
-  max-height: 50px;
+  height: 1300px;
   overflow: hidden;
   padding: 3px 0;
   font-size: 12px;
 }
 
-.editor.large {
-  max-height: 190px;
-  height: 190px;
-}
-
 .editor.modal {
   overflow-y: scroll;
-  min-height: 300px;
+  height: 300px;
   padding: 50px 10px 0 !important;
 }
 
@@ -60,72 +55,85 @@
 }
 
 .linkWrapper {
-  padding: 15px;
+  font-family: 'Roboto';
+  padding: 14px;
   min-width: 400px;
+  font-weight: 600;
 
   button {
     padding: 5px 0;
     border-radius: 0;
-    font-size: 14px;
   }
 
   .inputs {
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding-bottom: 10px;
 
     &_item {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       width: 100%;
-      margin: 15px 0 10px;
+      margin: 0 0 20px;
 
-      input {
-        width: fit-content;
-        margin: 0 15px;
+      &.buttons {
+        margin: 0;
+
+        div {
+          display: flex;
+          justify-content: end;
+
+          button {
+            border: 1px solid rgb(220, 220, 220);
+            padding: 8px 16px;
+            border-radius: 5px;
+            letter-spacing: 1px;
+
+            &:hover {
+              background: rgb(240, 240, 240);
+            }
+          }
+
+          .gray {
+            background: rgb(220, 220, 220);
+            color: rgb(75, 75, 75);
+            margin-left: 10px;
+
+            &:hover {
+              background: rgb(175, 175, 175);
+            }
+          }
+        }
       }
     }
 
     input {
+      margin-top: 5px;
       width: 100%;
-      border: 2px solid rgba(150, 150, 150, 0.25);
-      padding: 5px;
+      border: 1px solid rgba(150, 150, 175, 0.5);
+      padding: 8px 12px;
+      border-radius: 4px;
+      
+      &:focus {
+        border: 1px solid rgb(0, 125, 250);
+        box-shadow: 0 0 0 0.3rem rgba(0, 125, 250, 0.25);
+      }
     }
   }
 }
 
 @include desktop {
   .editor {
-    padding: 13px 11px;
+    padding: 13px 0;
   }
 
   .editor.cart {
-    max-height: 140px;
-    height: 140px;
     padding: 1px;
-    
-  }
-
-  .editor.large {
-    max-height: 180px;
-    height: 180px;
   }
 }
 
 @include desktop-large {
-  .editor {
-    padding: 16px 7px;
-  }
-
   .editor.cart {
-    max-height: 155px;
-    height: 155px;
     padding: 16px 1px;
-  }
-
-  .editor.large {
-    max-height: 220px;
-    height: 220px;
   }
 }

@@ -1,8 +1,10 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import classNames from 'classnames';
 import styles from './Modal.module.scss';
 import '../cart/Color.scss';
+import { closeUpdateModalIsOpen } from '../../reducers/getNodeId';
+import { Icon } from '../Icon/Icon';
 
 export interface ModalProps {
   /**
@@ -34,6 +36,7 @@ export interface ModalProps {
    * Color of Modal (Cart)
    */
   color?: string;
+  left?: boolean;
 }
 
 // TODO: implement pure function with testable storybook
@@ -48,7 +51,17 @@ const Modal: FC<ModalProps> = ({
   title,
   color,
   cartmodal,
+  left,
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      const body = document.querySelector('body');
+      body.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape') toggleModal();
+      });
+    }
+  });
+
   return (
     <>
       <div
@@ -67,7 +80,18 @@ const Modal: FC<ModalProps> = ({
           )}
           id="popup-login"
         >
-          <div className={styles.popup__title}>{title}</div>
+          <div className={classNames(styles.popup__title, left && styles.left)}>
+            <span>{title}</span>
+            {left && (
+              <Icon
+                onClick={toggleModal}
+                className={styles.popup_exit_icon}
+                name="remove"
+                color="premium"
+                size="xs"
+              />
+            )}
+          </div>
           {children}
         </div>
       </div>

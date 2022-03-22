@@ -5,8 +5,8 @@
   padding: auto;
 
   &_input {
+    padding: 0 12.5px;
     box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
-    position: unset;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -16,6 +16,7 @@
     margin: 7px;
     width: 100%;
     max-width: 100%;
+    position: relative;
 
     .textarea[contenteditable]:empty::before {
       content: 'Заметка…';
@@ -23,6 +24,10 @@
 
     &:focus {
       outline: none;
+    }
+    
+    &.collabarator {
+      padding: 0 !important;
     }
   }
 
@@ -60,9 +65,9 @@
 }
 
 .textarea {
-  width: 95%;
+  width: 100%;
   font-size: inherit;
-  padding: 1px 12px;
+  padding: 1px 0;
   outline: none;
   margin: 10px 0;
   display: block;
@@ -128,7 +133,7 @@
     box-shadow: 0 -10px 5px -10px rgba(100, 100, 100, 0.5);
 
     margin-top: 3px;
-    padding-left: 10px !important;
+    padding: 2.5px 20px 3px 10px !important;
   }
 
   .main_tools {
@@ -192,11 +197,11 @@
 .gaps {
   width: 100%;
   position: relative;
-  padding: 0 9px;
+  padding: 5px 0 0;
 
   .user {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: rgb(125, 125, 125);
     color: #fff;
@@ -205,7 +210,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 8px;
+    margin-right: 5px;
   }
 }
 
@@ -349,7 +354,7 @@
   }
 
   .input_navbar {
-    padding: 4px;
+    padding: 4px 0;
 
     .icon_btn {
       padding: 7px;
@@ -387,6 +392,10 @@
 }
 
 @include desktop-large {
+  .textarea {
+    padding: 1px 16px;
+  }
+
   .main {
     &_input {
       width: 750px;
@@ -419,6 +428,40 @@
 
     .icon_btn {
       padding: 8px;
+    }
+  }
+}
+
+.defaultPin {
+  transform: translate(15%, -15%);
+  padding: 0;
+}
+
+.close {
+  padding: 0;
+}
+
+.bottom_tools {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .icon_btn {
+    width: 33px;
+    height: 33px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    padding: 0;
+    margin: 0 10px;
+    position: relative;
+
+    svg {
+      width: 18px;
     }
   }
 }

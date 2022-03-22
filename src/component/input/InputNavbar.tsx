@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,6 +16,7 @@ import {
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,
 } from '../../reducers/collabarator';
+import { setUndo, setRedo } from '../../reducers/editor';
 
 interface InputNavbarProps {
   /**
@@ -77,13 +80,14 @@ interface InputNavbarProps {
    */
   shadow?: boolean;
   /**
-   * Add Link should not bee in carts
+   * Attr Link should not bee in carts
    */
-  noAddLink?: boolean;
+  isCart?: boolean;
   /**
    * Open Cart Modal function
    */
   onOpenModal?: () => void;
+  updateModalIsOpen?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -102,12 +106,30 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     selectedGaps,
     toggleGapsCart,
     shadow,
-    noAddLink,
+    isCart,
     onOpenModal,
+    updateModalIsOpen,
   } = props;
+  const userEmail = localStorage.getItem('userEmail');
+  const collabarator = { eq: userEmail };
+
   const [listGaps, setListGaps] = useState([]);
-  const [filter] = useState({ title: { contains: '' } });
+  const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
+
+  const handleEditorUndo = () => {
+    dispatch(setUndo());
+    setTimeout(() => {
+      dispatch(setUndo());
+    });
+  };
+
+  const handleEditorRedo = () => {
+    dispatch(setRedo());
+    setTimeout(() => {
+      dispatch(setRedo());
+    });
+  };
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
@@ -162,7 +184,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
     else {
       dispatch(toggleIsCartCollabaratorOpen());
-      if (noAddLink) onOpenModal();
+      if (isCart) onOpenModal();
     }
   };
 
@@ -250,40 +272,37 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <Icon name="gaps" color="premium" size="xs" />
             </button>
           </Popover>
-          <Popover
-            content={
-              <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
-                <ul className={styles.popover_content}>
-                  {onRemoveCart && (
-                    <li
-                      key={uniqid()}
-                      onClick={onRemoveCart}
-                    >
-                      <span>Удалить карточку</span>
-                    </li>
-                  )}
-                  {!noAddLink && (
-                    <li
-                      key={uniqid()}
-                      onClick={() => {
-                        createLinkToEditor();
-                      }}
-                    >
-                      <span>Добавить линк</span>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            }
-            placement="bottom-start"
-          >
-            <button type="button" className={styles.icon_btn}>
-              <Icon name="other" color="premium" size="xs" />
+          {!isCart && (
+            <button onClick={createLinkToEditor} type="button" className={styles.icon_btn}>
+              <Icon name="addlink" color="premium" size="xs" />
             </button>
-          </Popover>
+          )}
+          {isMainInput && (
+            <>
+              <button onClick={handleEditorUndo} type="button" className={styles.icon_btn}>
+                <Icon name="back" color="premium" size="xs" />
+              </button>
+              <button
+                className={classNames(styles.icon_btn, styles.icon_rotate)}
+                onClick={handleEditorRedo}
+                type="button"
+              >
+                <Icon name="back" color="premium" size="xs" />
+              </button>
+            </>
+          )}
+          {!isMainInput && (
+            <button onClick={onRemoveCart} type="button" className={classNames(styles.icon_btn)}>
+              <Icon name="delete" color="premium" size="xs" />
+            </button>
+          )}
         </div>
         {(isMainInput || shadow) && (
-          <button onClick={onSetNode} type="button" className={styles.btn}>
+          <button
+            onClick={onSetNode}
+            type="button"
+            className={classNames(styles.btn, styles.close)}
+          >
             Закрыть
           </button>
         )}

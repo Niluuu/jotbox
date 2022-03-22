@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import { FC, useCallback, useState } from 'react';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';
@@ -27,7 +28,16 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   const [focus, setFocus] = useState(false);
   const [val, setVal] = useState('');
 
-  const changeValName = useCallback((e) => setVal(e.target.value), []);
+  const changeValName = useCallback((e) => {
+    setVal(e.target.value);
+  }, []);
+
+  const onCreateKeyup = (key: string) => {
+    if (key === 'Enter') {
+      onCreateGap(val);
+      setVal('');
+    }
+  };
 
   return (
     <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
@@ -43,6 +53,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           type="text"
           value={val}
           onChange={changeValName}
+          onKeyUp={(e) => onCreateKeyup(e.key)}
           placeholder="Create new label"
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}

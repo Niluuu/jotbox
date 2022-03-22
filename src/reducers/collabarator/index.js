@@ -6,7 +6,6 @@ export const collabarator = createSlice({
     inputCollabaratorUsers: [],
     isInputCollabaratorOpen: false,
 
-    cartCollabaratorUsers: [],
     isCartCollabaratorOpen: false,
   },
   reducers: {
@@ -19,9 +18,6 @@ export const collabarator = createSlice({
     toggleIsCartCollabaratorOpen: (state) => {
       state.isCartCollabaratorOpen = !state.isCartCollabaratorOpen;
     },
-    setCartCollabaratorUsers: (state, action) => {
-      state.cartCollabaratorUsers = action.payload;
-    },
   },
 });
 
@@ -30,7 +26,6 @@ export const {
   setInputCollabaratorUsers,
 
   toggleIsCartCollabaratorOpen,
-  setCartCollabaratorUsers,
 } = collabarator.actions;
 
 export default collabarator.reducer;

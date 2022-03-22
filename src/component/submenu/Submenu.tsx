@@ -1,9 +1,10 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable no-alert */
 import { FC, useCallback, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API } from 'aws-amplify';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../Icon/Icon';
 import { SubmenuModal } from '../../atoms/modals/SubmenuModal';
@@ -13,6 +14,7 @@ import { createGaps, updateGaps, deleteGaps, updateNode } from '../../graphql/mu
 import OnErrorMessage from '../message/message';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
+import { RootState } from '../../app/store';
 
 export interface SubmenuProps {
   /**
@@ -33,16 +35,26 @@ export const Submenu: FC<SubmenuProps> = () => {
   const location = useLocation();
   const { pathname } = location;
   const userEmail = localStorage.getItem('userEmail');
+  const collabarator = { eq: userEmail };
 
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const [listGaps, setListGaps] = useState([]);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
+  const [filter] = useState({ collabarator });
+
   const dispatch = useDispatch();
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      refreshPage: state.refreshPageReducer.refreshPage,
+    };
+  });
+
+  const { refreshPage } = mapStateToProps;
 
   const getGapsRequest = useCallback(async () => {
     try {
-      const res = await API.graphql(graphqlOperation(listGapss));
+      const res = await API.graphql({ query: listGapss, variables: { filter } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = res.data.listGapss;
@@ -56,14 +68,17 @@ export const Submenu: FC<SubmenuProps> = () => {
     } catch (err) {
       throw new Error('Get gaps route');
     }
-  }, []);
+  }, [filter]);
 
   const onCreateGap = useCallback(
     async (title) => {
       try {
+        const newCollabarators = [userEmail];
         const items = await getGapsRequest();
         const newLabel = {
           title,
+          collabarator: userEmail,
+          collabarators: newCollabarators,
         };
         const duplicate = items.map((gap) => gap.title);
 
@@ -81,7 +96,7 @@ export const Submenu: FC<SubmenuProps> = () => {
         throw new Error('Create gaps route');
       }
     },
-    [getGapsRequest, listGaps],
+    [getGapsRequest, listGaps, userEmail],
   );
 
   const onDeleteGap = useCallback(
@@ -114,8 +129,6 @@ export const Submenu: FC<SubmenuProps> = () => {
       };
 
       try {
-        const collabarator = { eq: userEmail };
-
         const currentGapData = await API.graphql({ query: getGaps, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
@@ -124,7 +137,7 @@ export const Submenu: FC<SubmenuProps> = () => {
 
         const nodeData = await API.graphql({
           query: listNodes,
-          variables: { filter: { collabarator } },
+          variables: { filter },
         });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -167,12 +180,16 @@ export const Submenu: FC<SubmenuProps> = () => {
         throw new Error('Update gaps route');
       }
     },
-    [getGapsRequest, userEmail, listGaps, dispatch],
+    [filter, getGapsRequest, listGaps, dispatch],
   );
 
   useEffect(() => {
     getGapsRequest();
   }, [getGapsRequest]);
+
+  useEffect(() => {
+    getGapsRequest();
+  }, [refreshPage, getGapsRequest]);
 
   useEffect(() => {
     if (!isOpenLabel) setHasError(false);
@@ -221,7 +238,7 @@ interface SubmenuItemProps {
   isOpenLabel?: boolean;
 }
 
-const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal }) => {
+const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal, isOpenLabel }) => {
   return (
     <li className={styles.sider_submenu}>
       {modal ? (

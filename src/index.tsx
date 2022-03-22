@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from '@apollo/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import Amplify from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
 import awsConfig from './aws-exports';
 import { apollo } from './apollo';
 import { store } from './app/store';

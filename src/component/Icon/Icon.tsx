@@ -76,6 +76,7 @@ export interface IconProps {
    * Optional click handler
    */
   onClick?: () => void;
+  onMouseDown?: () => void;
   /**
    * Pass addintional classnames
    */
@@ -86,11 +87,12 @@ export interface IconProps {
  * Main Icon component
  */
 
-export const Icon: FC<IconProps> = ({ size = 'small', name, color = '', onClick, className }) => {
+export const Icon: FC<IconProps> = ({ size = 'small', name, color = '', onClick, onMouseDown, className }) => {
   return (
     <svg
       className={classNames(styles.icon, styles[size], className)}
       onClick={onClick}
+      onMouseDown={onMouseDown}
       fill={color === 'premium' ? '#5f6368' : '#333'}
     >
       <use href={`${sprite}#${name}`} aria-hidden />

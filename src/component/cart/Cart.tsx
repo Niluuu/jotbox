@@ -198,8 +198,8 @@ const Cart: FC<CartProps> = (props) => {
         )}
         <div className={styles.input_navbar}>
           <InputNavbar
+            isCart
             onOpenModal={() => onOpenModal(id)}
-            noAddLink
             isMainInput={isMain}
             currentColor={color}
             selectedGaps={gaps}

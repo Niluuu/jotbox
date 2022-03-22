@@ -80,9 +80,9 @@ interface InputNavbarProps {
    */
   shadow?: boolean;
   /**
-   * Add Link should not bee in carts
+   * Attr Link should not bee in carts
    */
-  noAddLink?: boolean;
+  isCart?: boolean;
   /**
    * Open Cart Modal function
    */
@@ -106,9 +106,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     selectedGaps,
     toggleGapsCart,
     shadow,
-    noAddLink,
+    isCart,
     onOpenModal,
-    initialGaps,
     updateModalIsOpen,
   } = props;
   const userEmail = localStorage.getItem('userEmail');
@@ -185,41 +184,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
     else {
       dispatch(toggleIsCartCollabaratorOpen());
-      if (noAddLink) onOpenModal();
+      if (isCart) onOpenModal();
     }
-  };
-
-  const OthersPopover = () => {
-    return (
-      <Popover
-        content={
-          <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
-            <ul className={styles.popover_content}>
-              {onRemoveCart && (
-                <li key={uniqid()} onClick={onRemoveCart}>
-                  <span>Удалить карточку</span>
-                </li>
-              )}
-              {!noAddLink && (
-                <li
-                  key={uniqid()}
-                  onClick={() => {
-                    createLinkToEditor();
-                  }}
-                >
-                  <span>Добавить линк</span>
-                </li>
-              )}
-            </ul>
-          </div>
-        }
-        placement="bottom-start"
-      >
-        <button type="button" className={styles.icon_btn}>
-          <Icon name="other" color="premium" size="xs" />
-        </button>
-      </Popover>
-    );
   };
 
   return (
@@ -306,20 +272,28 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <Icon name="gaps" color="premium" size="xs" />
             </button>
           </Popover>
-          {updateModalIsOpen || <OthersPopover />}
-          {!shadow || <OthersPopover />}
-          {isMainInput && (
-            <button onClick={handleEditorUndo} type="button" className={styles.icon_btn}>
-              <Icon name="back" color="premium" size="xs" />
+          {!isCart && (
+            <button onClick={createLinkToEditor} type="button" className={styles.icon_btn}>
+              <Icon name="addlink" color="premium" size="xs" />
             </button>
           )}
           {isMainInput && (
-            <button
-              onClick={handleEditorRedo}
-              type="button"
-              className={classNames(styles.icon_btn, styles.icon_rotate)}
-            >
-              <Icon name="back" color="premium" size="xs" />
+            <>
+              <button onClick={handleEditorUndo} type="button" className={styles.icon_btn}>
+                <Icon name="back" color="premium" size="xs" />
+              </button>
+              <button
+                className={classNames(styles.icon_btn, styles.icon_rotate)}
+                onClick={handleEditorRedo}
+                type="button"
+              >
+                <Icon name="back" color="premium" size="xs" />
+              </button>
+            </>
+          )}
+          {!isMainInput && (
+            <button onClick={onRemoveCart} type="button" className={classNames(styles.icon_btn)}>
+              <Icon name="delete" color="premium" size="xs" />
             </button>
           )}
         </div>

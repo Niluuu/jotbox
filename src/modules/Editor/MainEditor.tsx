@@ -295,10 +295,6 @@ const MainEditor: FC<MainEditorProps> = ({
     setTextLink(e.target.value);
   };
 
-  const undo = (e) => {
-    alert('undo');
-  };
-
   return (
     <div>
       <div
@@ -328,30 +324,20 @@ const MainEditor: FC<MainEditorProps> = ({
           onSearchChange={onSearchChange}
         />
       </div>
-      <Modal title="Add Link" toggleModal={createLinkToEditor} isOpen={linkMode}>
+      <Modal left title="Add Link" toggleModal={createLinkToEditor} isOpen={linkMode}>
         <div className={styles.linkWrapper}>
           <div className={styles.inputs}>
-            <div>Text</div>
-            <div className={styles.inputs_item}>
+            <label className={styles.inputs_item}>
+              Text
               <input
                 type="text"
                 value={textLink}
                 readOnly={textLink.length > 1 && !true}
                 onChange={(e) => handleChange(e)}
               />
-            </div>
-            <div>Link</div>
+            </label>
             <div className={styles.inputs_item}>
-              <button
-                className={styles.left}
-                type="button"
-                onMouseDown={removeLink}
-                onClick={() => {
-                  if (focus) seturlValue('');
-                }}
-              >
-                <Icon name={focus ? 'delete' : 'filled-label'} color="premium" size="xs" />
-              </button>
+              Link
               <input
                 ref={linkRef}
                 onChange={onURLChange}
@@ -362,14 +348,27 @@ const MainEditor: FC<MainEditorProps> = ({
                 onBlur={() => setfocus(false)}
                 onKeyUp={(e) => confirmLinkKeyUp(e)}
               />
-              <button
-                className={styles.right}
-                onMouseDown={confirmLink}
-                onClick={createLinkToEditor}
-                type="button"
-              >
-                <Icon name={focus ? 'done' : 'edit'} color="premium" size="xs" />
-              </button>
+            </div>
+            <div className={classNames(styles.inputs_item, styles.buttons)}>
+              <div>
+                <button
+                  type="button"
+                  onMouseDown={removeLink}
+                  onClick={() => {
+                    if (focus) seturlValue('');
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={styles.gray}
+                  onClick={createLinkToEditor}
+                  onMouseDown={confirmLink}
+                  type="button"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>

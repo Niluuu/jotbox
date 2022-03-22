@@ -114,6 +114,9 @@ const MainInput: FC<MainInputProps> = ({
 
   return (
     <div
+      onKeyUp={(e) => {
+        if (e.key === 'Escape') handleClickOutside();
+      }}
       className={classNames(
         styles.main_input,
         grid && styles.column,

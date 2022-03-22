@@ -119,6 +119,11 @@
   padding: 10px;
   display: flex;
   width: 100%;
+  
+  svg {
+    cursor: pointer;
+    width: 17px !important;
+  }
 
   &_icons_row {
     padding: auto;
@@ -138,7 +143,7 @@
   display: flex;
   justify-content: flex-end;
   border-top: 1px solid $gray-color2;
-  padding-top: 20px;
+  padding: 5px 0 25px;
   width: 100%;
 
   button {

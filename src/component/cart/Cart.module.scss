@@ -13,6 +13,7 @@
   margin: 5px;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &:hover {
     box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
@@ -310,4 +311,20 @@
       }
     }
   }
+}
+
+.cart_wrapper {
+  position: relative;
+}
+
+.open {
+  position: absolute;
+  background: #000;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 10px;
+  text-decoration: underline;
+  bottom: -20px;
+  left: 5px;
+  cursor: pointer;
 }

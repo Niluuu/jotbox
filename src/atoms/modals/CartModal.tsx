@@ -59,7 +59,7 @@ const CartModal: FC<CartModalType> = ({
   toggleGapsCart,
   onChangeCollabarators,
 }) => {
-  const [node, setNode] = useState<any>([]);
+  const [node, setNode] = useState<any[]>([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
@@ -110,7 +110,7 @@ const CartModal: FC<CartModalType> = ({
       setUpdatedArchive(archived);
       setUpdatedColor(color);
     }
-  }, [node]);
+  }, [node, setUpdatedArchive]);
 
   useEffect(() => {
     if (nodeID.length > 0) {
@@ -213,7 +213,7 @@ const CartModal: FC<CartModalType> = ({
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
-      toggleModal={() => node[0] !== undefined && toggleModal(node[0].id)}
+      toggleModal={() => dispatch(closeUpdateModalIsOpen())}
     >
       {node[0] !== undefined && isCartCollabaratorOpen ? (
         <Collabarator

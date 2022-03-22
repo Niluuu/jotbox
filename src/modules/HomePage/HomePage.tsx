@@ -316,14 +316,19 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         collabarator: userEmail,
         collabarators: newCollabarators,
       };
-
-      const data = await API.graphql({ query: createNode, variables: { input: node } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      const item = data.data.createNode;
+      const parsedText = JSON.parse(text);
 
-      setNodes([item, ...nodes]);
-      cleanUp();
+      if (parsedText.blocks[0].text) {
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        setNodes([item, ...nodes]);
+        cleanUp();
+      }
     } catch (err) {
       throw new Error('Create node error');
     }
@@ -342,7 +347,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     try {
       const newCollabarators = [userEmail, ...inputCollabaratorUsers];
       const node = {
-        title: titleRef.current.innerText.toLowerCase(),
+        title: titleRef.current.innerText,
         description: text,
         gaps: selectedGaps,
         pined: defaultPin,
@@ -352,8 +357,14 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         collabarators: newCollabarators,
       };
 
-      await API.graphql({ query: createNode, variables: { input: node } });
-      cleanUp();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const parsedText = JSON.parse(text);
+
+      if (parsedText.blocks[0].text) {
+        await API.graphql({ query: createNode, variables: { input: node } });
+        cleanUp();
+      }
     } catch (err) {
       throw new Error('Create node error');
     }
@@ -366,16 +377,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   useEffect(() => {
     getAllNodes();
   }, [refreshPage, getAllNodes]);
-
-  useEffect(() => {
-    getAllNodes();
-
-    if (updateModalIsOpen) {
-      return () => {
-        setNodes([]);
-      };
-    }
-  }, [updateModalIsOpen, getAllNodes]);
 
   useEffect(() => {
     const gaps = { contains: label };

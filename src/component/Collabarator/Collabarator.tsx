@@ -1,7 +1,8 @@
 /* eslint-disable react/require-default-props */
-import { FC, useState } from 'react';
+import { FC, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { API } from 'aws-amplify';
 import styles from './Collabarator.module.scss';
 import { Icon } from '../Icon/Icon';
 import avatar from '../../assets/images/avatar.png';
@@ -12,13 +13,14 @@ import {
 } from '../../reducers/collabarator';
 import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
+import { listNodes } from '../../graphql/queries';
 
 interface CollabaratorProps {
   isMainInput?: boolean;
   /**
    * Node collabarators change func
    */
-  onChangeCollabarators?: (collabarators: any) => void;
+  onChangeCollabarators?: (collabarators: string[]) => void;
   cartCollabarators?: string[];
 }
 /**
@@ -37,10 +39,57 @@ const Collabarator: FC<CollabaratorProps> = ({
 
   const { inputCollabaratorUsers } = mapStateToProps;
 
-  const [users, setUsers] = useState<any>(isMainInput ? inputCollabaratorUsers : cartCollabarators);
+  const userEmail = localStorage.getItem('userEmail');
+  const collabarators = { contains: userEmail };
+  const [filter] = useState({ collabarators });
+
+  const [users, setUsers] = useState(isMainInput ? inputCollabaratorUsers : cartCollabarators);
   const [value, setValue] = useState('');
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
+
+  const [suggest, setSuggest] = useState([]);
+
+  const getAllNodes = useCallback(async () => {
+    try {
+      const data = await API.graphql({ query: listNodes, variables: { filter } });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const { items } = data.data.listNodes;
+      // eslint-disable-next-line no-underscore-dangle
+      const undeletedItems = items.filter((elm) => elm._deleted === null);
+
+      const collabaratorItems = undeletedItems.map((elm) => elm.collabarators);
+      const flatenItems = collabaratorItems.flat();
+      const simple = flatenItems.map((elm) => elm.replace('@gmail.com', ''));
+
+      const emptyArray = new Set();
+      const restricted = simple.filter((item) => {
+        const duplicate = emptyArray.has(item);
+        emptyArray.add(item);
+        return !duplicate;
+      });
+
+      return restricted;
+    } catch (err) {
+      throw new Error('Error filter by Letter');
+    }
+  }, [filter]);
+
+  const onFilterByTitle = useCallback(
+    async (word) => {
+      try {
+        setValue(word);
+        const data = await getAllNodes();
+        const newNodes = data.filter((elm) => elm.toLowerCase().includes(word.toLowerCase()));
+
+        setSuggest(newNodes);
+      } catch (err) {
+        throw new Error('Error filter by Letter');
+      }
+    },
+    [getAllNodes],
+  );
 
   const save = () => {
     if (isMainInput) {
@@ -74,7 +123,6 @@ const Collabarator: FC<CollabaratorProps> = ({
     setUsers(users.filter((elm) => elm !== user));
   };
 
-  const userEmail = localStorage.getItem('userEmail');
   return (
     <div className={styles.collabarator}>
       <div className={styles.collabarator_header}>Collabarators</div>
@@ -103,7 +151,7 @@ const Collabarator: FC<CollabaratorProps> = ({
         <div className={classNames(styles.user_text)}>
           <input
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => onFilterByTitle(e.target.value)}
             onKeyUp={(e) => onConfirmKeyup(e.key)}
             type="text"
             placeholder="Person or Email to share with"
@@ -111,6 +159,28 @@ const Collabarator: FC<CollabaratorProps> = ({
         </div>
         {value && <Icon onClick={onConfirm} className={styles.user_confirm} name="done" />}
       </div>
+      {value && (
+        <>
+          {suggest.length !== 0 && (
+            <div className={styles.suggest}>
+              {suggest.map(
+                (elm) =>
+                  userEmail !== elm && (
+                    <div
+                      className={styles.suggest_item}
+                      onClick={() => {
+                        setValue(`${elm}@gmail.com`);
+                        setSuggest([]);
+                      }}
+                    >
+                      {elm}@gmail.com
+                    </div>
+                  ),
+              )}
+            </div>
+          )}
+        </>
+      )}
       {error && <div className={styles.message}>Please, Enter valid email address</div>}
       <div className={styles.collabarator_footer}>
         <div>

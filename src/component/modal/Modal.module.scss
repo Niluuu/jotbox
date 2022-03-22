@@ -23,9 +23,7 @@ $base-nav-z-index: 5;
 .popup {
   pointer-events: initial;
   background: $color-white;
-  border-radius: 15px !important;
-    
-
+  
   margin: 0 auto;
   padding: 12.5px 0 0 !important;
   z-index: $base-nav-z-index + 5 !important;
@@ -34,6 +32,7 @@ $base-nav-z-index: 5;
   
   &.cartmodal {
     width: 95%;
+    border-radius: 15px;
   }
   
   &.top {
@@ -43,7 +42,6 @@ $base-nav-z-index: 5;
   &.large {
     @include media($sm) {
       min-width: 628px;
-      border-radius: 20px;
       max-width: 628px;
       margin: 30px auto;
       padding: 65px 73px;
@@ -75,7 +73,14 @@ $base-nav-z-index: 5;
   &__title {
     line-height: 1.2;
     font-weight: $font-weight-bold;
+    font-family: 'Roboto';
     text-align: center;
+    margin-left: 16px;
+    
+    &.left {
+      text-align: left !important;
+      font-size: 18px;
+    }
   }
 
   &__input {
@@ -124,5 +129,7 @@ $base-nav-z-index: 5;
     position: relative;
     float: right;
     cursor: pointer;
+    margin-right: 10px;
+    width: 20px !important;
   }
 }

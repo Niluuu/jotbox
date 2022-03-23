@@ -117,19 +117,14 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
 
-  const handleEditorUndo = () => {
-    dispatch(setUndo());
-    setTimeout(() => {
-      dispatch(setUndo());
-    });
+  const undoRedo = (callBack: () => void) => {
+    dispatch(callBack());
+    setTimeout(() => dispatch(callBack()));
   };
 
-  const handleEditorRedo = () => {
-    dispatch(setRedo());
-    setTimeout(() => {
-      dispatch(setRedo());
-    });
-  };
+  const handleEditorUndo = () => undoRedo(setUndo);
+
+  const handleEditorRedo = () => undoRedo(setRedo);
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();

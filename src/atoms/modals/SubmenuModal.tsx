@@ -6,6 +6,7 @@ import Modal from '../../component/modal/Modal';
 
 export interface SubmenuModalProps {
   isOpenLabel: boolean;
+  hasError: boolean;
   toggleModal: () => void;
   onCreateGap: (title: string) => void;
   onUpdateGap: (title: string, id: string, version: number) => void;
@@ -22,15 +23,12 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   onUpdateGap,
   onDeleteGap,
   listGaps,
-  close = 'Ok',
+  close = 'Done',
   modalTitle = 'Изменение ярлыков',
+  hasError,
 }) => {
   const [focus, setFocus] = useState(false);
   const [val, setVal] = useState('');
-
-  const changeValName = (e) => {
-    setVal(e.target.value);
-  };
 
   const onCreateKeyup = (key: string) => {
     if (key === 'Enter') {
@@ -65,30 +63,19 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           ref={mainRef}
           type="text"
           value={val}
-          onChange={changeValName}
+          onChange={(e) => setVal(e.currentTarget.value)}
           onKeyUp={(e) => onCreateKeyup(e.key)}
           placeholder="Create new label"
           onFocus={() => setFocus(true)}
-          onBlur={() =>
-            setTimeout(() => {
-              setFocus(false);
-            }, 100)
-          }
+          onBlur={() => setTimeout(() => setFocus(false), 100)}
         />
 
         {focus || val.length > 0 ? (
-          <Icon
-            name="done"
-            color="premium"
-            size="xs"
-            onClick={() => {
-              onCreateGap(val);
-              changeValName('');
-            }}
-          />
+          <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
         ) : null}
       </li>
-      <div style={{ overflowY: 'scroll', height: '50vh' }}>
+      {hasError && <div className={styles.errorLabel}>This gap already exists. Rename it!</div>}
+      <div style={{ overflowY: 'scroll', height: '350px' }}>
         {listGaps &&
           listGaps.map(({ id, title, _version }) => {
             return (

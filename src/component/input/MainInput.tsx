@@ -78,6 +78,7 @@ const MainInput: FC<MainInputProps> = ({
   toggleGaps,
 }) => {
   const linkRef = useRef(null);
+  const textRef = useRef(null);
   const [linkMode, setlinkMode] = useState(false);
   const editorRef = useRef<Editor>(null);
 
@@ -108,7 +109,8 @@ const MainInput: FC<MainInputProps> = ({
   };
 
   const onLinkEditor = () => {
-    linkRef.current.focus();
+    if (textRef.current.value.length === 0) textRef.current.focus();
+    else linkRef.current.focus();
     createLinkToEditor();
   };
 
@@ -161,6 +163,7 @@ const MainInput: FC<MainInputProps> = ({
           <div className={styles.main_row}>
             <MainEditor
               linkRef={linkRef}
+              textRef={textRef}
               isMainInput
               defaultColor={defaultColor}
               linkMode={linkMode}

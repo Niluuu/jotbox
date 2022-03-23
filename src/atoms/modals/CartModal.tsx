@@ -67,8 +67,10 @@ const CartModal: FC<CartModalType> = ({
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
   const linkRef = useRef(null);
+  const textRef = useRef(null);
   const onLinkEditor = () => {
-    linkRef.current.focus();
+    if (textRef.current.value.length === 0) textRef.current.focus();
+    else linkRef.current.focus();
     createLinkToEditor();
   };
 
@@ -264,6 +266,7 @@ const CartModal: FC<CartModalType> = ({
                   <MentionContext.Provider value={() => toggleModal(node[0].id)}>
                     <MainEditor
                       linkRef={linkRef}
+                      textRef={textRef}
                       linkMode={linkMode}
                       createLinkToEditor={createLinkToEditor}
                       editorRef={editorRef}
@@ -301,15 +304,15 @@ const CartModal: FC<CartModalType> = ({
                 toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
                 onColorChange={(color) => modalColorChange(color)}
                 onSetNode={() => toggleModal(node[0].id)}
-                createLinkToEditor={onLinkEditor}
                 onChangeArchived={modalChangeArchived}
+                updateModalIsOpen={updateModalIsOpen}
+                initialGaps={node[0] && node[0].gaps}
+                createLinkToEditor={onLinkEditor}
                 onRemoveCart={modalRemoveCart}
                 onSetArchive={toggleArchived}
                 currentColor={node[0].color}
-                initialGaps={node[0] && node[0].gaps}
                 selectedGaps={node[0].gaps}
                 shadow
-                updateModalIsOpen={updateModalIsOpen}
               />
             </div>
           )}

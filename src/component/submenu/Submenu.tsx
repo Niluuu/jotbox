@@ -37,8 +37,8 @@ export const Submenu: FC<SubmenuProps> = () => {
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [isOpenLabel, setIsOpenLabel] = useState(false);
   const [listGaps, setListGaps] = useState([]);
+  const [isOpenLabel, setIsOpenLabel] = useState(false);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
   const [filter] = useState({ collabarator });
@@ -191,9 +191,9 @@ export const Submenu: FC<SubmenuProps> = () => {
     getGapsRequest();
   }, [refreshPage, getGapsRequest]);
 
-  useEffect(() => {
-    if (!isOpenLabel) setHasError(false);
-  }, [isOpenLabel]);
+  // useEffect(() => {
+  //   if (!isOpenLabel) setHasError(false);
+  // }, [isOpenLabel]);
 
   const arraySubmenu = routes(listGaps);
 
@@ -214,17 +214,13 @@ export const Submenu: FC<SubmenuProps> = () => {
           ),
         )}
       <SubmenuModal
+        hasError={hasError}
         isOpenLabel={isOpenLabel}
         toggleModal={toggleModal}
         onCreateGap={onCreateGap}
         onUpdateGap={onUpdateGap}
         onDeleteGap={onDeleteGap}
         listGaps={listGaps}
-      />
-      <OnErrorMessage
-        active={hasError}
-        success={false}
-        message="This Gap Already exists. Rename it"
       />
     </ul>
   );

@@ -105,7 +105,6 @@ const Cart: FC<CartProps> = (props) => {
     collabarators,
   } = props;
   const [isMain] = useState(false);
-  const [isHover, setHover] = useState(false);
   const dispatch = useDispatch();
   const editorRef = useRef(null);
 
@@ -120,11 +119,7 @@ const Cart: FC<CartProps> = (props) => {
 
   const userEmail = localStorage.getItem('userEmail');
   return (
-    <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className={styles.cart_wrapper}
-    >
+    <div className={styles.cart_wrapper}>
       <div
         id={id}
         className={classNames(
@@ -134,18 +129,15 @@ const Cart: FC<CartProps> = (props) => {
           popupCart && styles.popupCart,
         )}
       >
-        <button
-          type="button"
-          className={classNames(styles.icon_btn, styles.pin)}
-          onClick={() => onChangePin(id, !pined, _version)}
-        >
-          {pined ? (
-            <Icon name="pin-black" color="premium" size="xs" />
-          ) : (
-            <Icon name="pin" color="premium" size="xs" />
-          )}
+        <button type="button" className={classNames(styles.icon_btn, styles.pin)}>
+          <Icon
+            onClick={() => onChangePin(id, !pined, _version)}
+            name={pined ? 'pin-black' : 'pin'}
+            color="premium"
+            size="xs"
+          />
         </button>
-        <div className={styles.cart_content}>
+        <div onClick={() => !popupCart && onOpenModal(id)} className={styles.cart_content}>
           {title && (
             <div className={classNames(styles.cart_title)}>
               <p>{title}</p>
@@ -210,11 +202,6 @@ const Cart: FC<CartProps> = (props) => {
           />
         </div>
       </div>
-      {isHover && (
-        <div onClick={() => !popupCart && onOpenModal(id)} className={styles.open}>
-          Open
-        </div>
-      )}
     </div>
   );
 };

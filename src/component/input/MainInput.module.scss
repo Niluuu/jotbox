@@ -392,10 +392,6 @@
 }
 
 @include desktop-large {
-  .textarea {
-    padding: 1px 16px;
-  }
-
   .main {
     &_input {
       width: 750px;
@@ -424,8 +420,6 @@
   }
 
   .input_navbar {
-    padding: 4px 5px;
-
     .icon_btn {
       padding: 8px;
     }

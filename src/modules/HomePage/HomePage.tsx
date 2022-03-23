@@ -29,6 +29,7 @@ interface CartProps {
   _deleted: boolean;
   color: string;
   collabarators: string[];
+  collabarator: string;
 }
 
 interface HomeProps {
@@ -54,7 +55,6 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const {
     grid,
     text,
-    updateModalIsOpen,
     filterByTitleLetter,
     updateNodes,
     inputCollabaratorUsers,

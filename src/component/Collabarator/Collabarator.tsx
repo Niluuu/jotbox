@@ -61,7 +61,8 @@ const Collabarator: FC<CollabaratorProps> = ({
 
       const collabaratorItems = undeletedItems.map((elm) => elm.collabarators);
       const flatenItems = collabaratorItems.flat();
-      const simple = flatenItems.map((elm) => elm.replace('@gmail.com', ''));
+      const removeOwner = flatenItems.filter((elm) => elm !== userEmail);
+      const simple = removeOwner.map((elm) => elm.replace('@gmail.com', ''));
 
       const emptyArray = new Set();
       const restricted = simple.filter((item) => {
@@ -163,20 +164,17 @@ const Collabarator: FC<CollabaratorProps> = ({
         <>
           {suggest.length !== 0 && (
             <div className={styles.suggest}>
-              {suggest.map(
-                (elm) =>
-                  userEmail !== elm && (
-                    <div
-                      className={styles.suggest_item}
-                      onClick={() => {
-                        setValue(`${elm}@gmail.com`);
-                        setSuggest([]);
-                      }}
-                    >
-                      {elm}@gmail.com
-                    </div>
-                  ),
-              )}
+              {suggest.map((elm) => (
+                <div
+                  className={styles.suggest_item}
+                  onClick={() => {
+                    setValue(`${elm}@gmail.com`);
+                    setSuggest([]);
+                  }}
+                >
+                  {elm}@gmail.com
+                </div>
+              ))}
             </div>
           )}
         </>

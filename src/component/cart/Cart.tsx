@@ -78,7 +78,7 @@ interface CartProps {
   /**
    * Toggle gaps of Node function
    */
-  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
+  toggleGapsCart?: (id: string, _version: number, gap: string) => void;
   /**
    * Collobarators of the Node Cart
    */

@@ -16,6 +16,12 @@ import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
 
+type LabelType = {
+  id: string;
+  _version: number;
+  title: string;
+};
+
 export interface SubmenuProps {
   /**
    * ClassName
@@ -37,7 +43,7 @@ export const Submenu: FC<SubmenuProps> = () => {
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [listGaps, setListGaps] = useState([]);
+  const [listGaps, setListGaps] = useState<LabelType[]>([]);
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
@@ -191,9 +197,9 @@ export const Submenu: FC<SubmenuProps> = () => {
     getGapsRequest();
   }, [refreshPage, getGapsRequest]);
 
-  // useEffect(() => {
-  //   if (!isOpenLabel) setHasError(false);
-  // }, [isOpenLabel]);
+  useEffect(() => {
+    if (!isOpenLabel) setHasError(false);
+  }, [isOpenLabel]);
 
   const arraySubmenu = routes(listGaps);
 

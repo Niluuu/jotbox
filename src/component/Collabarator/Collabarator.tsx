@@ -15,6 +15,20 @@ import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
 
+interface CartProps {
+  id: string;
+  title: string;
+  description: string;
+  pined: boolean;
+  archived: boolean;
+  gaps: string[];
+  _version: number;
+  _deleted: boolean;
+  color: string;
+  collabarators: string[];
+  collabarator: string;
+}
+
 interface CollabaratorProps {
   isMainInput?: boolean;
   /**
@@ -48,7 +62,7 @@ const Collabarator: FC<CollabaratorProps> = ({
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
 
-  const [suggest, setSuggest] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
   const getAllNodes = useCallback(async () => {
     try {
@@ -56,18 +70,24 @@ const Collabarator: FC<CollabaratorProps> = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
       const { items } = data.data.listNodes;
-      // eslint-disable-next-line no-underscore-dangle
-      const undeletedItems = items.filter((elm) => elm._deleted === null);
+      const undeletedItems = items.filter(
+        // eslint-disable-next-line no-underscore-dangle
+        (collabarator: CartProps) => collabarator._deleted === null,
+      );
 
-      const collabaratorItems = undeletedItems.map((elm) => elm.collabarators);
+      const collabaratorItems = undeletedItems.map(
+        (collabarator: CartProps) => collabarator.collabarators,
+      );
       const flatenItems = collabaratorItems.flat();
-      const removeOwner = flatenItems.filter((elm) => elm !== userEmail);
-      const simple = removeOwner.map((elm) => elm.replace('@gmail.com', ''));
+      const removeOwner = flatenItems.filter((collabarator: string) => collabarator !== userEmail);
+      const simple = removeOwner.map((collabarator: string) =>
+        collabarator.replace('@gmail.com', ''),
+      );
 
       const emptyArray = new Set();
-      const restricted = simple.filter((item) => {
-        const duplicate = emptyArray.has(item);
-        emptyArray.add(item);
+      const restricted = simple.filter((collabarator: string) => {
+        const duplicate = emptyArray.has(collabarator);
+        emptyArray.add(collabarator);
         return !duplicate;
       });
 
@@ -75,16 +95,18 @@ const Collabarator: FC<CollabaratorProps> = ({
     } catch (err) {
       throw new Error('Error filter by Letter');
     }
-  }, [filter]);
+  }, [filter, userEmail]);
 
   const onFilterByTitle = useCallback(
     async (word) => {
       try {
         setValue(word);
         const data = await getAllNodes();
-        const newNodes = data.filter((elm) => elm.toLowerCase().includes(word.toLowerCase()));
+        const newNodes = data.filter((collabarator) =>
+          collabarator.toLowerCase().includes(word.toLowerCase()),
+        );
 
-        setSuggest(newNodes);
+        setSuggestions(newNodes);
       } catch (err) {
         throw new Error('Error filter by Letter');
       }
@@ -121,7 +143,7 @@ const Collabarator: FC<CollabaratorProps> = ({
   };
 
   const onRemove = (user) => {
-    setUsers(users.filter((elm) => elm !== user));
+    setUsers(users.filter((collabarator) => collabarator !== user));
   };
 
   return (
@@ -162,17 +184,17 @@ const Collabarator: FC<CollabaratorProps> = ({
       </div>
       {value && (
         <>
-          {suggest.length !== 0 && (
-            <div className={styles.suggest}>
-              {suggest.map((elm) => (
+          {suggestions.length !== 0 && (
+            <div className={styles.suggestions}>
+              {suggestions.map((suggestedUser) => (
                 <div
                   className={styles.suggest_item}
                   onClick={() => {
-                    setValue(`${elm}@gmail.com`);
-                    setSuggest([]);
+                    setValue(`${suggestedUser}@gmail.com`);
+                    setSuggestions([]);
                   }}
                 >
-                  {elm}@gmail.com
+                  {suggestedUser}@gmail.com
                 </div>
               ))}
             </div>

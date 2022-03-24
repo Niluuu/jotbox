@@ -15,6 +15,7 @@ interface CartProps {
   color: string;
   collabarators: string[];
 }
+
 interface CartLayoutProps {
   /**
    * Grid type layout

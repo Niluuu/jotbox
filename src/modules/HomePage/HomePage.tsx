@@ -129,8 +129,8 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
   const onFilterByTitle = useCallback(async () => {
     try {
       const data = await getAllNodes();
-      const newNodes = data.filter((elm: CartProps) =>
-        elm.title.toLowerCase().includes(filterByTitleLetter.toLowerCase()),
+      const newNodes = data.filter((newCart: CartProps) =>
+        newCart.title.toLowerCase().includes(filterByTitleLetter.toLowerCase()),
       );
 
       setNodes(newNodes);
@@ -160,7 +160,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Color update error');
@@ -182,7 +182,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
 
         // eslint-disable-next-line no-underscore-dangle
         if (item._deleted) {
-          setNodes(nodes.filter((elm) => elm.id !== id));
+          setNodes(nodes.filter((newCart) => newCart.id !== id));
         }
         return item;
       } catch (err) {
@@ -210,7 +210,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Update node error');
@@ -236,7 +236,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Update node error');
@@ -271,7 +271,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         const item = data.data.updateNode;
 
         if (item.archived === archiveAttr) {
-          setNodes(nodes.filter((elm) => elm.id !== id));
+          setNodes(nodes.filter((newCart) => newCart.id !== id));
         }
         return item;
       } catch (err) {
@@ -291,7 +291,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         const cartGaps = cart.gaps;
 
         const updatedGaps = cartGaps.includes(gap)
-          ? cartGaps.filter((el) => el !== gap)
+          ? cartGaps.filter((cartGap: string) => cartGap !== gap)
           : [...cartGaps, gap];
 
         const updatedNode = { id, _version, gaps: updatedGaps };
@@ -304,7 +304,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         //  @ts-ignore
         const item = newData.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Toggle Update Label for Carts Error');

@@ -186,15 +186,15 @@ const Collabarator: FC<CollabaratorProps> = ({
         <>
           {suggestions.length !== 0 && (
             <div className={styles.suggestions}>
-              {suggestions.map((suggestedUser) => (
+              {suggestions.map((suggestion) => (
                 <div
                   className={styles.suggest_item}
                   onClick={() => {
-                    setValue(`${suggestedUser}@gmail.com`);
+                    setValue(`${suggestion}@gmail.com`);
                     setSuggestions([]);
                   }}
                 >
-                  {suggestedUser}@gmail.com
+                  {suggestion}@gmail.com
                 </div>
               ))}
             </div>

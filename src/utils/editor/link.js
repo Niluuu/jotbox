@@ -14,7 +14,9 @@ const Link = (props) => {
   return (
     <div className={styles.linkfy}>
       <div className={styles.tooltip}>
-        <span onClick={() => window.open(url)}>open</span>
+        <span contentEditable="false" onClick={() => window.open(url)}>
+          Open
+        </span>
         <br />
       </div>
       <a href={url} className={styles.link}>

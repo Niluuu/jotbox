@@ -15,6 +15,7 @@ interface CartProps {
   color: string;
   collabarators: string[];
 }
+
 interface CartLayoutProps {
   /**
    * Grid type layout
@@ -37,7 +38,7 @@ interface CartLayoutProps {
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onColorChange?: (id: string, color: string, _version: number) => void;
-  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
+  toggleGapsCart?: (id: string, _version: number, gap: string) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({

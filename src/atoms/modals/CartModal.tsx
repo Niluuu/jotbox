@@ -18,11 +18,25 @@ import { Chip } from '../../component/chip/Chip';
 import MentionContext from '../../utils/hooks/useCreatContext';
 import Collabarator from '../../component/Collabarator/Collabarator';
 
+interface CartProps {
+  id: string;
+  title: string;
+  description: string;
+  pined: boolean;
+  archived: boolean;
+  gaps: string[];
+  _version: number;
+  _deleted: boolean;
+  color: string;
+  collabarators: string[];
+  collabarator: string;
+}
+
 interface CartModalType {
   /**
    * Deleted Node
    */
-  onRemoveCart?: (id: string, _version: number) => void;
+  onRemoveCart?: (id: string, _version: number) => Promise<CartProps>;
   /**
    * Change archived attribute of Node function
    */
@@ -32,23 +46,27 @@ interface CartModalType {
     _version: number,
     title: string,
     description: string,
-  ) => void;
+  ) => Promise<CartProps>;
   /**
    * Change pined attribute of Node function
    */
-  onChangePin?: (id: string, pined: boolean, _version: number) => void;
+  onChangePin?: (id: string, pined: boolean, _version: number) => Promise<CartProps>;
   /**
    * Change color of Node function
    */
-  onColorChange: (id: string, color: string, _version: number) => void;
+  onColorChange: (id: string, color: string, _version: number) => Promise<CartProps>;
   /**
    * Change collabarator of Node function
    */
-  onChangeCollabarators: (id: string, _version: number, onChangeCollabarators: any) => void;
+  onChangeCollabarators: (
+    id: string,
+    _version: number,
+    cartCollabarators: string[],
+  ) => Promise<CartProps>;
   /**
    * Toggleselected gaps when creating Node function
    */
-  toggleGapsCart?: (id: string, _version: number, gap: any) => void;
+  toggleGapsCart?: (id: string, _version: number, gap: string) => Promise<CartProps>;
 }
 
 const CartModal: FC<CartModalType> = ({
@@ -59,7 +77,7 @@ const CartModal: FC<CartModalType> = ({
   toggleGapsCart,
   onChangeCollabarators,
 }) => {
-  const [node, setNode] = useState<any[]>([]);
+  const [node, setNode] = useState<CartProps[]>([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);

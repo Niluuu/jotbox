@@ -9,8 +9,8 @@ export const linkifyPlugin = createLinkifyPlugin({
     return (
       <div className={styles.linkfy}>
         <div className={styles.tooltip}>
-          <span onClick={() => window.open(href)}>
-            <span>open</span>
+          <span contentEditable="false" onClick={() => window.open(href)}>
+            <span contentEditable="false">Open</span>
           </span>
         </div>
         <a href={href} {...props} className={styles.link} />

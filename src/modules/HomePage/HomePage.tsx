@@ -34,12 +34,16 @@ interface CartProps {
 
 interface HomeProps {
   /**
+   * Is sidebard opened or not
+   */
+  isSidebarOpen?: boolean;
+  /**
    * Is archived page or not
    */
-  archive: boolean;
+  archive?: boolean;
 }
 
-const HomePage: FC<HomeProps> = ({ archive }) => {
+const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
@@ -112,7 +116,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
       //  @ts-ignore
       const { items } = data.data.listNodes;
       // eslint-disable-next-line no-underscore-dangle
-      const filteredItems = items.filter((elm) => elm._deleted === null);
+      const filteredItems = items.filter((elm: CartProps) => elm._deleted === null);
 
       setNodes(filteredItems);
       dispatch(setNodesToProps(filteredItems));
@@ -125,8 +129,8 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   const onFilterByTitle = useCallback(async () => {
     try {
       const data = await getAllNodes();
-      const newNodes = data.filter((elm) =>
-        elm.title.toLowerCase().includes(filterByTitleLetter.toLowerCase()),
+      const newNodes = data.filter((newCart: CartProps) =>
+        newCart.title.toLowerCase().includes(filterByTitleLetter.toLowerCase()),
       );
 
       setNodes(newNodes);
@@ -140,7 +144,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   }, [updateNodes, filterByTitleLetter, onFilterByTitle]);
 
   const onColorChange = useCallback(
-    async (id, color, _version) => {
+    async (id: string, color: string, _version: number): Promise<CartProps> => {
       try {
         const updatedNode = {
           id,
@@ -156,7 +160,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Color update error');
@@ -166,7 +170,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   );
 
   const onRemoveCart = useCallback(
-    async (id, _version) => {
+    async (id: string, _version: number): Promise<CartProps> => {
       try {
         const data = await API.graphql({
           query: deleteNode,
@@ -178,7 +182,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
 
         // eslint-disable-next-line no-underscore-dangle
         if (item._deleted) {
-          setNodes(nodes.filter((elm) => elm.id !== id));
+          setNodes(nodes.filter((newCart) => newCart.id !== id));
         }
         return item;
       } catch (err) {
@@ -189,7 +193,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   );
 
   const onChangePin = useCallback(
-    async (id, pined, _version) => {
+    async (id: string, pined: boolean, _version: number): Promise<CartProps> => {
       try {
         const updatedNode = {
           id,
@@ -206,7 +210,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Update node error');
@@ -216,7 +220,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   );
 
   const onChangeCollabarators = useCallback(
-    async (id, _version, cartCollabarators) => {
+    async (id: string, _version: number, cartCollabarators: string[]): Promise<CartProps> => {
       try {
         const updatedNode = {
           id,
@@ -232,7 +236,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Update node error');
@@ -242,7 +246,13 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   );
 
   const onChangeArchived = useCallback(
-    async (id, archiveAttr, _version, title, description) => {
+    async (
+      id: string,
+      archiveAttr: boolean,
+      _version: number,
+      title: string,
+      description: string,
+    ): Promise<CartProps> => {
       try {
         const updatedNode = {
           id,
@@ -261,7 +271,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         const item = data.data.updateNode;
 
         if (item.archived === archiveAttr) {
-          setNodes(nodes.filter((elm) => elm.id !== id));
+          setNodes(nodes.filter((newCart) => newCart.id !== id));
         }
         return item;
       } catch (err) {
@@ -272,7 +282,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
   );
 
   const toggleGapsCart = useCallback(
-    async (id, _version, gaps) => {
+    async (id: string, _version: number, gap: string): Promise<CartProps> => {
       try {
         const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -280,9 +290,9 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         const cart = data.data.getNode;
         const cartGaps = cart.gaps;
 
-        const updatedGaps = cartGaps.includes(gaps)
-          ? cartGaps.filter((el) => el !== gaps)
-          : [...cartGaps, gaps];
+        const updatedGaps = cartGaps.includes(gap)
+          ? cartGaps.filter((cartGap: string) => cartGap !== gap)
+          : [...cartGaps, gap];
 
         const updatedNode = { id, _version, gaps: updatedGaps };
 
@@ -294,7 +304,7 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
         //  @ts-ignore
         const item = newData.data.updateNode;
 
-        setNodes(nodes.map((elm) => (elm.id === id ? item : elm)));
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Toggle Update Label for Carts Error');
@@ -387,55 +397,46 @@ const HomePage: FC<HomeProps> = ({ archive }) => {
     setSelectedGaps(label !== undefined ? [label] : []);
   }, [label]);
 
-  const [isSidebarOpen, setisSidebarOpen] = useState(true);
-  const toggleSider = () => setisSidebarOpen((pre) => !pre);
-
   return (
-    <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
-      <div
-        className={classNames(
-          styles.home_page,
-          grid && styles.column,
-          isSidebarOpen && styles.open,
-        )}
-      >
-        {!archive && (
-          <div className={styles.home_page__main_input}>
-            <MainInput
-              focused={focused}
-              setFocused={setFocused}
-              onSetArchive={onSetArchive}
-              onSetNodes={onSetNodes}
-              defaultPin={defaultPin}
-              onDefaultPin={onDefaultPin}
-              titleRef={titleRef}
-              defaultColor={defaultColor}
-              onDefaultColor={onDefaultColor}
-              selectedGaps={selectedGaps}
-              toggleGaps={toggleGaps}
-            />
-          </div>
-        )}
-        <CartLayout
-          gridType={grid}
-          carts={nodes}
-          onChangePin={onChangePin}
-          onChangeArchived={onChangeArchived}
-          onRemoveCart={onRemoveCart}
-          onColorChange={onColorChange}
-          toggleGapsCart={toggleGapsCart}
-        />
-        <AddLinkModal />
-        <CartModal
-          onChangeCollabarators={onChangeCollabarators}
-          onChangePin={onChangePin}
-          onRemoveCart={onRemoveCart}
-          onChangeArchived={onChangeArchived}
-          toggleGapsCart={toggleGapsCart}
-          onColorChange={onColorChange}
-        />
-      </div>
-    </Layout>
+    <div
+      className={classNames(styles.home_page, grid && styles.column, isSidebarOpen && styles.open)}
+    >
+      {!archive && (
+        <div className={styles.home_page__main_input}>
+          <MainInput
+            focused={focused}
+            setFocused={setFocused}
+            onSetArchive={onSetArchive}
+            onSetNodes={onSetNodes}
+            defaultPin={defaultPin}
+            onDefaultPin={onDefaultPin}
+            titleRef={titleRef}
+            defaultColor={defaultColor}
+            onDefaultColor={onDefaultColor}
+            selectedGaps={selectedGaps}
+            toggleGaps={toggleGaps}
+          />
+        </div>
+      )}
+      <CartLayout
+        gridType={grid}
+        carts={nodes}
+        onChangePin={onChangePin}
+        onChangeArchived={onChangeArchived}
+        onRemoveCart={onRemoveCart}
+        onColorChange={onColorChange}
+        toggleGapsCart={toggleGapsCart}
+      />
+      <AddLinkModal />
+      <CartModal
+        onChangeCollabarators={onChangeCollabarators}
+        onChangePin={onChangePin}
+        onRemoveCart={onRemoveCart}
+        onChangeArchived={onChangeArchived}
+        toggleGapsCart={toggleGapsCart}
+        onColorChange={onColorChange}
+      />
+    </div>
   );
 };
 

@@ -4,6 +4,13 @@ import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';
 import Modal from '../../component/modal/Modal';
 
+
+type LabelType = {
+  id: string;
+  _version: number;
+  title: string;
+};
+
 export interface SubmenuModalProps {
   isOpenLabel: boolean;
   hasError: boolean;
@@ -13,7 +20,7 @@ export interface SubmenuModalProps {
   onDeleteGap: (id: string, version: number) => void;
   close?: string;
   modalTitle?: string;
-  listGaps: any;
+  listGaps: LabelType[];
 }
 
 export const SubmenuModal: FC<SubmenuModalProps> = ({
@@ -74,7 +81,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
         ) : null}
       </li>
-      {hasError && <div className={styles.errorLabel}>This gap already exists. Rename it!</div>}
+      {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}
       <div style={{ overflowY: 'scroll', height: '350px' }}>
         {listGaps &&
           listGaps.map(({ id, title, _version }) => {

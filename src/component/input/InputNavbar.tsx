@@ -74,7 +74,7 @@ interface InputNavbarProps {
   /**
    * Toggle gaps of Node function
    */
-  toggleGapsCart?: (gap: any) => void;
+  toggleGapsCart?: (gap: string) => void;
   /**
    * Is Modal? Should navbar has shadow in Modal?
    */
@@ -108,7 +108,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     shadow,
     isCart,
     onOpenModal,
-    updateModalIsOpen,
   } = props;
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };

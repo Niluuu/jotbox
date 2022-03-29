@@ -2,6 +2,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateLabel = /* GraphQL */ `
+  subscription OnCreateLabel {
+    onCreateLabel {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateLabel = /* GraphQL */ `
+  subscription OnUpdateLabel {
+    onUpdateLabel {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteLabel = /* GraphQL */ `
+  subscription OnDeleteLabel {
+    onDeleteLabel {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateNode = /* GraphQL */ `
   subscription OnCreateNode {
     onCreateNode {
@@ -9,12 +54,12 @@ export const onCreateNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -30,12 +75,12 @@ export const onUpdateNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -51,12 +96,12 @@ export const onDeleteNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -102,51 +147,6 @@ export const onDeleteUsers = /* GraphQL */ `
       email
       name
       password
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onCreateGaps = /* GraphQL */ `
-  subscription OnCreateGaps {
-    onCreateGaps {
-      id
-      title
-      collabarator
-      collabarators
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateGaps = /* GraphQL */ `
-  subscription OnUpdateGaps {
-    onUpdateGaps {
-      id
-      title
-      collabarator
-      collabarators
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteGaps = /* GraphQL */ `
-  subscription OnDeleteGaps {
-    onDeleteGaps {
-      id
-      title
-      collabarator
-      collabarators
       _version
       _deleted
       _lastChangedAt

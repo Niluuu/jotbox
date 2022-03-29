@@ -2,6 +2,60 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createLabel = /* GraphQL */ `
+  mutation CreateLabel(
+    $input: CreateLabelInput!
+    $condition: ModelLabelConditionInput
+  ) {
+    createLabel(input: $input, condition: $condition) {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateLabel = /* GraphQL */ `
+  mutation UpdateLabel(
+    $input: UpdateLabelInput!
+    $condition: ModelLabelConditionInput
+  ) {
+    updateLabel(input: $input, condition: $condition) {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteLabel = /* GraphQL */ `
+  mutation DeleteLabel(
+    $input: DeleteLabelInput!
+    $condition: ModelLabelConditionInput
+  ) {
+    deleteLabel(input: $input, condition: $condition) {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createNode = /* GraphQL */ `
   mutation CreateNode(
     $input: CreateNodeInput!
@@ -12,12 +66,12 @@ export const createNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -36,12 +90,12 @@ export const updateNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -60,12 +114,12 @@ export const deleteNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -120,60 +174,6 @@ export const deleteUsers = /* GraphQL */ `
       email
       name
       password
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createGaps = /* GraphQL */ `
-  mutation CreateGaps(
-    $input: CreateGapsInput!
-    $condition: ModelGapsConditionInput
-  ) {
-    createGaps(input: $input, condition: $condition) {
-      id
-      title
-      collabarator
-      collabarators
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateGaps = /* GraphQL */ `
-  mutation UpdateGaps(
-    $input: UpdateGapsInput!
-    $condition: ModelGapsConditionInput
-  ) {
-    updateGaps(input: $input, condition: $condition) {
-      id
-      title
-      collabarator
-      collabarators
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteGaps = /* GraphQL */ `
-  mutation DeleteGaps(
-    $input: DeleteGapsInput!
-    $condition: ModelGapsConditionInput
-  ) {
-    deleteGaps(input: $input, condition: $condition) {
-      id
-      title
-      collabarator
-      collabarators
       _version
       _deleted
       _lastChangedAt

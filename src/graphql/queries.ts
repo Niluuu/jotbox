@@ -2,6 +2,73 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getLabel = /* GraphQL */ `
+  query GetLabel($id: ID!) {
+    getLabel(id: $id) {
+      id
+      title
+      collabarator
+      collabarators
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listLabels = /* GraphQL */ `
+  query ListLabels(
+    $filter: ModelLabelFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLabels(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        collabarator
+        collabarators
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncLabels = /* GraphQL */ `
+  query SyncLabels(
+    $filter: ModelLabelFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncLabels(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        title
+        collabarator
+        collabarators
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getNode = /* GraphQL */ `
   query GetNode($id: ID!) {
     getNode(id: $id) {
@@ -9,12 +76,12 @@ export const getNode = /* GraphQL */ `
       title
       description
       color
-      gaps
       archived
       trashed
       pined
       collabarator
       collabarators
+      labels
       _version
       _deleted
       _lastChangedAt
@@ -35,12 +102,12 @@ export const listNodes = /* GraphQL */ `
         title
         description
         color
-        gaps
         archived
         trashed
         pined
         collabarator
         collabarators
+        labels
         _version
         _deleted
         _lastChangedAt
@@ -70,12 +137,12 @@ export const syncNodes = /* GraphQL */ `
         title
         description
         color
-        gaps
         archived
         trashed
         pined
         collabarator
         collabarators
+        labels
         _version
         _deleted
         _lastChangedAt
@@ -143,73 +210,6 @@ export const syncUsers = /* GraphQL */ `
         email
         name
         password
-        _version
-        _deleted
-        _lastChangedAt
-        createdAt
-        updatedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const getGaps = /* GraphQL */ `
-  query GetGaps($id: ID!) {
-    getGaps(id: $id) {
-      id
-      title
-      collabarator
-      collabarators
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listGapss = /* GraphQL */ `
-  query ListGapss(
-    $filter: ModelGapsFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listGapss(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        title
-        collabarator
-        collabarators
-        _version
-        _deleted
-        _lastChangedAt
-        createdAt
-        updatedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const syncGaps = /* GraphQL */ `
-  query SyncGaps(
-    $filter: ModelGapsFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncGaps(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        title
-        collabarator
-        collabarators
         _version
         _deleted
         _lastChangedAt

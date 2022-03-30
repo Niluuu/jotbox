@@ -18,6 +18,6 @@
       }
     },
     "apiName": "jotbox",
-    "gqlSchemaPath": "/tmp/amplify-a2196087-eff3-4df4-a825-71d1a6c06c48/amplify/backend/api/jotbox/schema.graphql"
+    "gqlSchemaPath": "/tmp/amplify-81908ba7-5eb1-4eaa-a79c-2f2937b5125f/amplify/backend/api/jotbox/schema.graphql"
   }
 }

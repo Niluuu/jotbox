@@ -1,6 +1,7 @@
 /* eslint-disable react/require-default-props */
 import { FC } from 'react';
 import classNames from 'classnames';
+import { useParams } from 'react-router';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
@@ -50,16 +51,19 @@ const CartLayout: FC<CartLayoutProps> = ({
   onColorChange,
   toggleGapsCart,
 }) => {
+  const { label } = useParams();
+  const labeledCarts =
+    label !== undefined ? carts.filter((cart) => cart.gaps.includes(label)) : carts;
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      {carts.some((cart) => cart.pined) && (
+      {labeledCarts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
       )}
-      {carts && (
+      {labeledCarts && (
         <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-          {carts
+          {labeledCarts
             .filter((cart) => cart.pined)
             .map((cart) => (
               <Cart
@@ -84,14 +88,14 @@ const CartLayout: FC<CartLayoutProps> = ({
             ))}
         </div>
       )}
-      {carts.some((cart) => !cart.pined) && (
+      {labeledCarts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>
       )}
-      {carts && (
+      {labeledCarts && (
         <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-          {carts
+          {labeledCarts
             .filter((cart) => !cart.pined)
             .map((cart) => (
               <Cart

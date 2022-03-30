@@ -113,7 +113,7 @@ ol {
     margin: 0;
   }
 }
- 
+
 // img {
 //   height: auto;
 //   width: auto;
@@ -194,7 +194,7 @@ textarea {
       transform: translateY(35%);
     }
   }
-  
+
   &.active {
     top: 1%;
     transition: all 0.3s ease;
@@ -213,14 +213,26 @@ textarea {
   ::-webkit-scrollbar {
     width: 8px;
   }
-  
+
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
   }
-  
+
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #888;
+  }
+}
+
+@include desktop {
+  .open {
+    padding-left: 225px !important;
+  }
+}
+
+@include desktop-large {
+  .open {
+    padding-left: 125px !important;
   }
 }

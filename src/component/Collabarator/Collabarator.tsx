@@ -14,6 +14,7 @@ import {
 import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
+import { NodeLink } from '../../utils/editor/NodeLink'
 
 interface CartProps {
   id: string;
@@ -138,11 +139,11 @@ const Collabarator: FC<CollabaratorProps> = ({
     } else setError(true);
   };
 
-  const onConfirmKeyup = (key) => {
+  const onConfirmKeyup = (key: string) => {
     if (key === 'Enter') onConfirm();
   };
 
-  const onRemove = (user) => {
+  const onRemove = (user: string) => {
     setUsers(users.filter((collabarator) => collabarator !== user));
   };
 

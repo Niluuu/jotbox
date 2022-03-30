@@ -43,7 +43,18 @@ export const Submenu: FC<SubmenuProps> = () => {
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [listGaps, setListGaps] = useState<LabelType[]>([]);
+  const [listGaps, setListGaps] = useState<LabelType[]>([
+    {
+      id: '1',
+      _version: 1,
+      title: '1',
+    },
+    {
+      id: '2',
+      _version: 1,
+      title: '2',
+    },
+  ]);
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
@@ -241,6 +252,7 @@ interface SubmenuItemProps {
 }
 
 const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal, isOpenLabel }) => {
+  const dispatch = useDispatch();
   return (
     <li className={styles.sider_submenu}>
       {modal ? (

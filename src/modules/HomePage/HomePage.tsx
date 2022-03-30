@@ -1,10 +1,10 @@
 /* eslint-disable max-lines */
-import { FC, useState, useCallback, useRef, useEffect } from 'react';
+import { FC, useState, useCallback, useRef, useEffect, useMemo, Component } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { API } from 'aws-amplify';
-import { EditorState, ContentState } from 'draft-js';
+import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -34,16 +34,12 @@ interface CartProps {
 
 interface HomeProps {
   /**
-   * Is sidebard opened or not
-   */
-  isSidebarOpen?: boolean;
-  /**
    * Is archived page or not
    */
   archive?: boolean;
 }
 
-const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
+const HomePage: FC<HomeProps> = () => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
@@ -66,18 +62,56 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
   } = mapStateToProps;
   const dispatch = useDispatch();
 
-  const { label } = useParams();
   const userEmail = localStorage.getItem('userEmail');
   const collabarators = { contains: userEmail };
-  const archived = archive ? { eq: true } : { eq: false };
 
   const titleRef = useRef<HTMLDivElement>();
-  const [nodes, setNodes] = useState<CartProps[]>([]);
+  const [nodes, setNodes] = useState<CartProps[]>([
+    {
+      id: '1',
+      title: 'ok',
+      description: text,
+      pined: true,
+      archived: false,
+      gaps: ['2'],
+      _version: 1,
+      _deleted: null,
+      color: 'red',
+      collabarators: [userEmail],
+      collabarator: userEmail,
+    },
+    {
+      id: '2',
+      title: 'ok',
+      description: text,
+      pined: true,
+      archived: false,
+      gaps: ['1'],
+      _version: 1,
+      _deleted: null,
+      color: 'red',
+      collabarators: [userEmail],
+      collabarator: userEmail,
+    },
+    {
+      id: '3',
+      title: 'okey',
+      description: text,
+      pined: true,
+      archived: true,
+      gaps: ['1'],
+      _version: 1,
+      _deleted: null,
+      color: 'blue',
+      collabarators: [userEmail],
+      collabarator: userEmail,
+    },
+  ]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
   const [selectedGaps, setSelectedGaps] = useState([]);
-  const [filter, setFilter] = useState({ collabarators, archived });
+  const [filter] = useState({ collabarators });
 
   const toggleGaps = useCallback(
     (gap) => {
@@ -271,7 +305,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         const item = data.data.updateNode;
 
         if (item.archived === archiveAttr) {
-          setNodes(nodes.filter((newCart) => newCart.id !== id));
+          setNodes(nodes.map((newCart) => (newCart.id !== id ? item : newCart)));
         }
         return item;
       } catch (err) {
@@ -372,13 +406,27 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
       const parsedText = JSON.parse(text);
 
       if (parsedText.blocks[0].text) {
-        await API.graphql({ query: createNode, variables: { input: node } });
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        setNodes([item, ...nodes]);
         cleanUp();
       }
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [userEmail, inputCollabaratorUsers, text, selectedGaps, defaultPin, defaultColor, cleanUp]);
+  }, [
+    userEmail,
+    inputCollabaratorUsers,
+    text,
+    selectedGaps,
+    defaultPin,
+    defaultColor,
+    nodes,
+    cleanUp,
+  ]);
 
   useEffect(() => {
     getAllNodes();
@@ -388,55 +436,92 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
     getAllNodes();
   }, [refreshPage, getAllNodes]);
 
-  useEffect(() => {
-    const gaps = { contains: label };
+  const [isSidebarOpen, setisSidebarOpen] = useState(true);
+  const toggleSider = useCallback(() => setisSidebarOpen((pre) => !pre), []);
 
-    const newFiler =
-      label !== undefined ? { collabarators, archived, gaps } : { collabarators, archived };
-    setFilter(newFiler);
-    setSelectedGaps(label !== undefined ? [label] : []);
-  }, [label]);
-
-  return (
-    <div
-      className={classNames(styles.home_page, grid && styles.column, isSidebarOpen && styles.open)}
-    >
-      {!archive && (
-        <div className={styles.home_page__main_input}>
-          <MainInput
-            focused={focused}
-            setFocused={setFocused}
-            onSetArchive={onSetArchive}
-            onSetNodes={onSetNodes}
-            defaultPin={defaultPin}
-            onDefaultPin={onDefaultPin}
-            titleRef={titleRef}
-            defaultColor={defaultColor}
-            onDefaultColor={onDefaultColor}
-            selectedGaps={selectedGaps}
-            toggleGaps={toggleGaps}
+  const HomePageSub = useCallback(
+    (archivePage: boolean) => {
+      const notes = archivePage
+        ? nodes.filter((cart) => cart.archived)
+        : nodes.filter((cart) => !cart.archived);
+      return (
+        <div className={classNames(styles.home_page, grid && styles.column)}>
+          {!archivePage && (
+            <div className={styles.home_page__main_input}>
+              <MainInput
+                focused={focused}
+                setFocused={setFocused}
+                onSetArchive={onSetArchive}
+                onSetNodes={onSetNodes}
+                defaultPin={defaultPin}
+                onDefaultPin={onDefaultPin}
+                titleRef={titleRef}
+                defaultColor={defaultColor}
+                onDefaultColor={onDefaultColor}
+                selectedGaps={selectedGaps}
+                toggleGaps={toggleGaps}
+              />
+            </div>
+          )}
+          <CartLayout
+            gridType={grid}
+            carts={notes}
+            onChangePin={onChangePin}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            onColorChange={onColorChange}
+            toggleGapsCart={toggleGapsCart}
+          />
+          <AddLinkModal />
+          <CartModal
+            onChangeCollabarators={onChangeCollabarators}
+            onChangePin={onChangePin}
+            onRemoveCart={onRemoveCart}
+            onChangeArchived={onChangeArchived}
+            toggleGapsCart={toggleGapsCart}
+            onColorChange={onColorChange}
           />
         </div>
-      )}
-      <CartLayout
-        gridType={grid}
-        carts={nodes}
-        onChangePin={onChangePin}
-        onChangeArchived={onChangeArchived}
-        onRemoveCart={onRemoveCart}
-        onColorChange={onColorChange}
-        toggleGapsCart={toggleGapsCart}
+      );
+    },
+    [
+      defaultColor,
+      defaultPin,
+      focused,
+      grid,
+      nodes,
+      onChangeArchived,
+      onChangeCollabarators,
+      onChangePin,
+      onColorChange,
+      onDefaultColor,
+      onDefaultPin,
+      onRemoveCart,
+      onSetArchive,
+      onSetNodes,
+      selectedGaps,
+      toggleGaps,
+      toggleGapsCart,
+    ],
+  );
+
+  return (
+    <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
+      <ProtectedRoute
+        exact
+        path="/notes"
+        component={useCallback(() => HomePageSub(false), [HomePageSub])}
       />
-      <AddLinkModal />
-      <CartModal
-        onChangeCollabarators={onChangeCollabarators}
-        onChangePin={onChangePin}
-        onRemoveCart={onRemoveCart}
-        onChangeArchived={onChangeArchived}
-        toggleGapsCart={toggleGapsCart}
-        onColorChange={onColorChange}
+      <ProtectedRoute
+        path="/notes/gaps/:label"
+        component={useCallback(() => HomePageSub(false), [HomePageSub])}
       />
-    </div>
+      <ProtectedRoute
+        exact
+        path="/notes/archive"
+        component={useCallback(() => HomePageSub(true), [HomePageSub])}
+      />
+    </Layout>
   );
 };
 

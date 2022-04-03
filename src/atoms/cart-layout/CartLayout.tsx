@@ -12,7 +12,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: string[];
+  labels: string[];
   color: string;
   collabarators: string[];
 }
@@ -39,7 +39,7 @@ interface CartLayoutProps {
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onColorChange?: (id: string, color: string, _version: number) => void;
-  toggleGapsCart?: (id: string, _version: number, gap: string) => void;
+  togglelabelsCart?: (id: string, _version: number, label: string) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -49,11 +49,11 @@ const CartLayout: FC<CartLayoutProps> = ({
   onChangePin,
   onRemoveCart,
   onColorChange,
-  toggleGapsCart,
+  togglelabelsCart,
 }) => {
   const { label } = useParams();
   const labeledCarts =
-    label !== undefined ? carts.filter((cart) => cart.gaps.includes(label)) : carts;
+    label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
       {labeledCarts.some((cart) => cart.pined) && (
@@ -69,7 +69,7 @@ const CartLayout: FC<CartLayoutProps> = ({
               <Cart
                 key={`key-${cart.id}`}
                 id={cart.id}
-                gaps={cart.gaps}
+                labels={cart.labels}
                 title={cart.title}
                 description={cart.description}
                 pined={cart.pined}
@@ -83,7 +83,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 gridType={gridType}
                 onColorChange={onColorChange}
-                toggleGapsCart={toggleGapsCart}
+                togglelabelsCart={togglelabelsCart}
               />
             ))}
         </div>
@@ -102,7 +102,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 key={`key-${cart.id}`}
                 id={cart.id}
                 title={cart.title}
-                gaps={cart.gaps}
+                labels={cart.labels}
                 description={cart.description}
                 pined={cart.pined}
                 color={cart.color}
@@ -115,7 +115,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 gridType={gridType}
                 onColorChange={onColorChange}
-                toggleGapsCart={toggleGapsCart}
+                togglelabelsCart={togglelabelsCart}
               />
             ))}
         </div>

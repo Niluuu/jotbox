@@ -24,7 +24,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: string[];
+  labels: string[];
   _version: number;
   _deleted: boolean;
   color: string;
@@ -73,7 +73,7 @@ const HomePage: FC<HomeProps> = () => {
       description: text,
       pined: true,
       archived: false,
-      gaps: ['2'],
+      labels: ['2'],
       _version: 1,
       _deleted: null,
       color: 'red',
@@ -86,10 +86,10 @@ const HomePage: FC<HomeProps> = () => {
       description: text,
       pined: true,
       archived: false,
-      gaps: ['1'],
+      labels: ['1'],
       _version: 1,
       _deleted: null,
-      color: 'red',
+      color: 'default',
       collabarators: [userEmail],
       collabarator: userEmail,
     },
@@ -99,7 +99,7 @@ const HomePage: FC<HomeProps> = () => {
       description: text,
       pined: true,
       archived: true,
-      gaps: ['1'],
+      labels: ['1'],
       _version: 1,
       _deleted: null,
       color: 'blue',
@@ -110,16 +110,18 @@ const HomePage: FC<HomeProps> = () => {
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
-  const [selectedGaps, setSelectedGaps] = useState([]);
+  const [selectedlabels, setSelectedlabels] = useState([]);
   const [filter] = useState({ collabarators });
 
-  const toggleGaps = useCallback(
-    (gap) => {
-      setSelectedGaps((pre) =>
-        !pre.includes(gap) ? [...selectedGaps, gap] : selectedGaps.filter((elm) => elm !== gap),
+  const togglelabels = useCallback(
+    (label) => {
+      setSelectedlabels((pre) =>
+        !pre.includes(label)
+          ? [...selectedlabels, label]
+          : selectedlabels.filter((elm) => elm !== label),
       );
     },
-    [selectedGaps],
+    [selectedlabels],
   );
 
   const cleanUp = useCallback(() => {
@@ -127,7 +129,7 @@ const HomePage: FC<HomeProps> = () => {
     setDefaultPin(false);
     setDefaultColor('default');
     dispatch(setInputCollabaratorUsers([]));
-    setSelectedGaps([]);
+    setSelectedlabels([]);
     dispatch(toggleOnCreateFunctionCall(true));
 
     setTimeout(() => {
@@ -315,20 +317,20 @@ const HomePage: FC<HomeProps> = () => {
     [nodes],
   );
 
-  const toggleGapsCart = useCallback(
-    async (id: string, _version: number, gap: string): Promise<CartProps> => {
+  const togglelabelsCart = useCallback(
+    async (id: string, _version: number, label: string): Promise<CartProps> => {
       try {
         const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
         const cart = data.data.getNode;
-        const cartGaps = cart.gaps;
+        const cartlabels = cart.labels;
 
-        const updatedGaps = cartGaps.includes(gap)
-          ? cartGaps.filter((cartGap: string) => cartGap !== gap)
-          : [...cartGaps, gap];
+        const updatedlabels = cartlabels.includes(label)
+          ? cartlabels.filter((cartlabel: string) => cartlabel !== label)
+          : [...cartlabels, label];
 
-        const updatedNode = { id, _version, gaps: updatedGaps };
+        const updatedNode = { id, _version, labels: updatedlabels };
 
         const newData = await API.graphql({
           query: updateNode,
@@ -353,7 +355,7 @@ const HomePage: FC<HomeProps> = () => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps: selectedGaps,
+        labels: selectedlabels,
         pined: defaultPin,
         color: defaultColor,
         archived: false,
@@ -380,7 +382,7 @@ const HomePage: FC<HomeProps> = () => {
     inputCollabaratorUsers,
     userEmail,
     text,
-    selectedGaps,
+    selectedlabels,
     defaultPin,
     defaultColor,
     nodes,
@@ -393,7 +395,7 @@ const HomePage: FC<HomeProps> = () => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps: selectedGaps,
+        labels: selectedlabels,
         pined: defaultPin,
         color: defaultColor,
         archived: true,
@@ -421,7 +423,7 @@ const HomePage: FC<HomeProps> = () => {
     userEmail,
     inputCollabaratorUsers,
     text,
-    selectedGaps,
+    selectedlabels,
     defaultPin,
     defaultColor,
     nodes,
@@ -458,8 +460,8 @@ const HomePage: FC<HomeProps> = () => {
                 titleRef={titleRef}
                 defaultColor={defaultColor}
                 onDefaultColor={onDefaultColor}
-                selectedGaps={selectedGaps}
-                toggleGaps={toggleGaps}
+                selectedlabels={selectedlabels}
+                togglelabels={togglelabels}
               />
             </div>
           )}
@@ -470,7 +472,7 @@ const HomePage: FC<HomeProps> = () => {
             onChangeArchived={onChangeArchived}
             onRemoveCart={onRemoveCart}
             onColorChange={onColorChange}
-            toggleGapsCart={toggleGapsCart}
+            togglelabelsCart={togglelabelsCart}
           />
           <AddLinkModal />
           <CartModal
@@ -478,7 +480,7 @@ const HomePage: FC<HomeProps> = () => {
             onChangePin={onChangePin}
             onRemoveCart={onRemoveCart}
             onChangeArchived={onChangeArchived}
-            toggleGapsCart={toggleGapsCart}
+            togglelabelsCart={togglelabelsCart}
             onColorChange={onColorChange}
           />
         </div>
@@ -499,9 +501,9 @@ const HomePage: FC<HomeProps> = () => {
       onRemoveCart,
       onSetArchive,
       onSetNodes,
-      selectedGaps,
-      toggleGaps,
-      toggleGapsCart,
+      selectedlabels,
+      togglelabels,
+      togglelabelsCart,
     ],
   );
 
@@ -513,7 +515,7 @@ const HomePage: FC<HomeProps> = () => {
         component={useCallback(() => HomePageSub(false), [HomePageSub])}
       />
       <ProtectedRoute
-        path="/notes/gaps/:label"
+        path="/notes/labels/:label"
         component={useCallback(() => HomePageSub(false), [HomePageSub])}
       />
       <ProtectedRoute

@@ -24,7 +24,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: string[];
+  labels: string[];
   _version: number;
   _deleted: boolean;
   color: string;
@@ -64,9 +64,9 @@ interface CartModalType {
     cartCollabarators: string[],
   ) => Promise<CartProps>;
   /**
-   * Toggleselected gaps when creating Node function
+   * Toggleselected labels when creating Node function
    */
-  toggleGapsCart?: (id: string, _version: number, gap: string) => Promise<CartProps>;
+  togglelabelsCart?: (id: string, _version: number, label: string) => Promise<CartProps>;
 }
 
 const CartModal: FC<CartModalType> = ({
@@ -74,7 +74,7 @@ const CartModal: FC<CartModalType> = ({
   onChangeArchived,
   onChangePin,
   onColorChange,
-  toggleGapsCart,
+  togglelabelsCart,
   onChangeCollabarators,
 }) => {
   const [node, setNode] = useState<CartProps[]>([]);
@@ -194,14 +194,14 @@ const CartModal: FC<CartModalType> = ({
     [node, onChangeCollabarators],
   );
 
-  const modalToggleGapsCart = useCallback(
-    async (gap) => {
+  const modalTogglelabelsCart = useCallback(
+    async (label) => {
       const { id, _version } = node[0];
-      const data = await toggleGapsCart(id, _version, gap);
+      const data = await togglelabelsCart(id, _version, label);
 
       setNode([data]);
     },
-    [node, toggleGapsCart],
+    [node, togglelabelsCart],
   );
 
   const modalChangePin = useCallback(async () => {
@@ -295,21 +295,21 @@ const CartModal: FC<CartModalType> = ({
                   </MentionContext.Provider>
                 )}
                 <div className={styles.main_chips}>
-                  {node[0].gaps && node[0].gaps.length > 10 ? (
+                  {node[0].labels && node[0].labels.length > 10 ? (
                     <>
-                      {node[0].gaps.slice(0, 10).map((gap) => (
-                        <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
+                      {node[0].labels.slice(0, 10).map((label) => (
+                        <Chip onDelate={() => modalTogglelabelsCart(label)}>{label}</Chip>
                       ))}
-                      <div className={styles.extraGap}> +{node[0].gaps.length - 10} </div>
+                      <div className={styles.extralabel}> +{node[0].labels.length - 10} </div>
                     </>
                   ) : (
-                    node[0].gaps.map((gap) => (
-                      <Chip onDelate={() => modalToggleGapsCart(gap)}>{gap}</Chip>
+                    node[0].labels.map((label) => (
+                      <Chip onDelate={() => modalTogglelabelsCart(label)}>{label}</Chip>
                     ))
                   )}
                 </div>
                 {node[0].collabarators && (
-                  <div className={classNames(styles.main_chips, styles.gaps)}>
+                  <div className={classNames(styles.main_chips, styles.labels)}>
                     {node[0].collabarators
                       .filter((e) => e !== userEmail)
                       .map((user) => (
@@ -319,17 +319,17 @@ const CartModal: FC<CartModalType> = ({
                 )}
               </div>
               <InputNavbar
-                toggleGapsCart={(gap) => modalToggleGapsCart(gap)}
+                togglelabelsCart={(label) => modalTogglelabelsCart(label)}
                 onColorChange={(color) => modalColorChange(color)}
                 onSetNode={() => toggleModal(node[0].id)}
                 onChangeArchived={modalChangeArchived}
                 updateModalIsOpen={updateModalIsOpen}
-                initialGaps={node[0] && node[0].gaps}
+                initiallabels={node[0] && node[0].labels}
                 createLinkToEditor={onLinkEditor}
                 onRemoveCart={modalRemoveCart}
                 onSetArchive={toggleArchived}
                 currentColor={node[0].color}
-                selectedGaps={node[0].gaps}
+                selectedlabels={node[0].labels}
                 shadow
               />
             </div>

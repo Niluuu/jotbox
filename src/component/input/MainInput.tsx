@@ -57,11 +57,11 @@ interface MainInputProps {
   /**
    * Default node labels
    */
-  selectedGaps?: string[];
+  selectedlabels?: string[];
   /**
    * Node labels handler
    */
-  toggleGaps: (gap: string) => void;
+  togglelabels: (label: string) => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -74,8 +74,8 @@ const MainInput: FC<MainInputProps> = ({
   titleRef,
   defaultColor,
   onDefaultColor,
-  selectedGaps,
-  toggleGaps,
+  selectedlabels,
+  togglelabels,
 }) => {
   const linkRef = useRef(null);
   const textRef = useRef(null);
@@ -187,16 +187,16 @@ const MainInput: FC<MainInputProps> = ({
           ) : null}
           {focused ? (
             <>
-              {selectedGaps && (
-                <div className={classNames(styles.main_tools, styles.gaps)}>
-                  {selectedGaps.map((gap) => (
-                    <Chip>{gap}</Chip>
+              {selectedlabels && (
+                <div className={classNames(styles.main_tools, styles.labels)}>
+                  {selectedlabels.map((label) => (
+                    <Chip>{label}</Chip>
                   ))}
                 </div>
               )}
 
               {inputCollabaratorUsers && (
-                <div className={classNames(styles.main_tools, styles.gaps)}>
+                <div className={classNames(styles.main_tools, styles.labels)}>
                   {inputCollabaratorUsers.map((user) => (
                     <div className={styles.user}>{user[0].toLowerCase()}</div>
                   ))}
@@ -210,8 +210,8 @@ const MainInput: FC<MainInputProps> = ({
                 createLinkToEditor={onLinkEditor}
                 onDefaultColor={onDefaultColor}
                 defaultColor={defaultColor}
-                toggleGaps={toggleGaps}
-                selectedGaps={selectedGaps}
+                togglelabels={togglelabels}
+                selectedlabels={selectedlabels}
               />
             </>
           ) : null}

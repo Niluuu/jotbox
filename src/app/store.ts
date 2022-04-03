@@ -2,7 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import layoutGrid from '../reducers/layout';
 import editorReducer from '../reducers/editor';
 import nodeIdReducer from '../reducers/getNodeId';
-import gapsReducer from '../reducers/gaps';
+import labelReducer from '../reducers/labels';
 import nodesReducer from '../reducers/nodes';
 import filterByTitleReducer from '../reducers/filterByTitle';
 import collabaratorReducer from '../reducers/collabarator';
@@ -13,7 +13,7 @@ export const store = configureStore({
     layoutGrid,
     editorReducer,
     nodeIdReducer,
-    gapsReducer,
+    labelReducer,
     nodesReducer,
     filterByTitleReducer,
     collabaratorReducer,

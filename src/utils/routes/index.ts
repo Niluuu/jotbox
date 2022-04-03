@@ -3,8 +3,8 @@ export const getLabels = (labels: any[]) => {
     ? labels.map((label) => ({
         id: label.id,
         name: label.title,
-        url: `/notes/gaps/${label.title}`,
-        icon: 'gaps',
+        url: `/notes/labels/${label.title}`,
+        icon: 'labels',
       }))
     : [];
 
@@ -14,19 +14,19 @@ export const getLabels = (labels: any[]) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const routes = (labels: any[]) => {
   const result = [
-    { name: 'Заметки', gaps: null, icon: 'notes', active: true, url: '/notes/', modal: false },
-    { name: 'Изменение ярлыков', gaps: null, icon: 'labels', url: '/notes/*', modal: true },
+    { name: 'Заметки', labels: null, icon: 'notes', active: true, url: '/notes', modal: false },
+    { name: 'Изменение ярлыков', labels: null, icon: 'labels', url: '/notes/*', modal: true },
     {
-      name: 'gaps',
+      name: 'labels',
       icon: null,
       active: false,
       url: '',
       modal: null,
-      gaps: getLabels(labels),
+      labels: getLabels(labels),
     },
     {
       name: 'Архив',
-      gaps: null,
+      labels: null,
       icon: 'archive',
       active: false,
       url: '/notes/archive',

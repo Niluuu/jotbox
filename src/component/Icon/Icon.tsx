@@ -29,7 +29,7 @@ export type iconNames =
   | 'picture'
   | 'add-accaunt'
   | 'notes'
-  | 'gaps'
+  | 'label'
   | 'archive'
   | 'notification'
   | 'edit'

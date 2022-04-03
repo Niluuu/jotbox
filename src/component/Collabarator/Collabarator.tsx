@@ -14,7 +14,7 @@ import {
 import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
-import { NodeLink } from '../../utils/editor/NodeLink'
+import { NodeLink } from '../../utils/editor/NodeLink';
 
 interface CartProps {
   id: string;
@@ -22,7 +22,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: string[];
+  labels: string[];
   _version: number;
   _deleted: boolean;
   color: string;

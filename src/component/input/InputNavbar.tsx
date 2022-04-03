@@ -70,11 +70,11 @@ interface InputNavbarProps {
   /**
    * Oncreate selected labels
    */
-  selectedlabels: string[];
+  selectedLabels: string[];
   /**
    * Toggle labels of Node function
    */
-  togglelabelsCart?: (label: string) => void;
+  toggleCartLabels?: (label: string) => void;
   /**
    * Is Modal? Should navbar has shadow in Modal?
    */
@@ -103,8 +103,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     defaultColor,
     onDefaultColor,
     togglelabels,
-    selectedlabels,
-    togglelabelsCart,
+    selectedLabels,
+    toggleCartLabels,
     shadow,
     isCart,
     onOpenModal,
@@ -112,7 +112,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [listlabels, setListlabels] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
 
@@ -141,7 +141,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
 
       const filteredLabels = restrictDouble(noneDeletedItems);
 
-      setListlabels(filteredLabels);
+      setLabels(filteredLabels);
       return filteredLabels;
     } catch (err) {
       throw new Error('Get labels route');
@@ -156,7 +156,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
           elm.title.toLowerCase().includes(value.toLowerCase()),
         );
 
-        setListlabels(newlabels);
+        setLabels(newlabels);
       } catch (err) {
         throw new Error('Error filter by Letter');
       }
@@ -171,9 +171,9 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const toggleSelectedlabel = useCallback(
     (e) => {
       if (isMainInput) togglelabels(e.target.value);
-      else togglelabelsCart(e.target.value);
+      else toggleCartLabels(e.target.value);
     },
-    [isMainInput, togglelabels, togglelabelsCart],
+    [isMainInput, togglelabels, toggleCartLabels],
   );
 
   const toggleCollabarator = () => {
@@ -239,16 +239,16 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                       <Icon size="min" name="search" />
                     </div>
                     <div className={styles.item}>
-                      {listlabels.map((label) => (
+                      {labels.map((label) => (
                         <li key={label.id} className={styles.labelItems}>
                           <label>
                             <input
                               type="checkbox"
                               value={label.title}
                               onClick={(e) => toggleSelectedlabel(e)}
-                              checked={selectedlabels.includes(label.title)}
+                              checked={selectedLabels.includes(label.title)}
                             />
-                            {selectedlabels.includes(label.title) ? (
+                            {selectedLabels.includes(label.title) ? (
                               <Icon name="edit-bordered" color="premium" size="xs" />
                             ) : (
                               <Icon name="box" color="premium" size="xs" />

@@ -11,7 +11,6 @@ import { SubmenuModal } from '../../atoms/modals/SubmenuModal';
 import { routes } from '../../utils/routes/index';
 import { getLabel, listLabels, listNodes } from '../../graphql/queries';
 import { createLabel, updateLabel, deleteLabel, updateNode } from '../../graphql/mutations';
-import OnErrorMessage from '../message/message';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
@@ -43,7 +42,7 @@ export const Submenu: FC<SubmenuProps> = () => {
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [listlabels, setListlabels] = useState<LabelType[]>([]);
+  const [labels, setLabels] = useState<LabelType[]>([]);
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
@@ -69,14 +68,14 @@ export const Submenu: FC<SubmenuProps> = () => {
 
       const filteredLabels = restrictDouble(noneDeletedItems);
 
-      setListlabels(filteredLabels);
+      setLabels(filteredLabels);
       return filteredLabels;
     } catch (err) {
       throw new Error('Get labels route');
     }
   }, [filter]);
 
-  const onCreatelabel = useCallback(
+  const onCreateLabel = useCallback(
     async (title) => {
       try {
         const newCollabarators = [userEmail];
@@ -96,16 +95,16 @@ export const Submenu: FC<SubmenuProps> = () => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //  @ts-ignore
           const item = data.data.createLabel;
-          setListlabels([item, ...listlabels]);
+          setLabels([item, ...labels]);
         }
       } catch (err) {
         throw new Error('Create labels route');
       }
     },
-    [getLabelRequest, listlabels, userEmail],
+    [getLabelRequest, labels, userEmail],
   );
 
-  const onDeletelabel = useCallback(
+  const onDeleteLabel = useCallback(
     async (id, _version) => {
       try {
         const data = await API.graphql({
@@ -117,16 +116,16 @@ export const Submenu: FC<SubmenuProps> = () => {
         const item = data.data.deleteLabel;
         // eslint-disable-next-line no-underscore-dangle
         if (item._deleted) {
-          setListlabels(listlabels.filter((elm) => elm.id !== id));
+          setLabels(labels.filter((elm) => elm.id !== id));
         }
       } catch (err) {
         throw new Error('label DELETE route');
       }
     },
-    [listlabels],
+    [labels],
   );
 
-  const onUpdatelabel = useCallback(
+  const onUpdateLabel = useCallback(
     async (title, id, _version) => {
       const updatedLabel = {
         title,
@@ -162,7 +161,7 @@ export const Submenu: FC<SubmenuProps> = () => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //  @ts-ignore
           const item = newData.data.updateLabel;
-          setListlabels(listlabels.map((elm) => (elm.id === id ? item : elm)));
+          setLabels(labels.map((elm) => (elm.id === id ? item : elm)));
 
           filteredNodes.forEach(async (element) => {
             const updatedlabels = element.labels.map((elm) => (elm === currentlabel ? title : elm));
@@ -190,7 +189,7 @@ export const Submenu: FC<SubmenuProps> = () => {
         throw new Error('Update labels route');
       }
     },
-    [filter, getLabelRequest, listlabels, dispatch],
+    [filter, getLabelRequest, labels, dispatch],
   );
 
   useEffect(() => {
@@ -205,7 +204,7 @@ export const Submenu: FC<SubmenuProps> = () => {
     if (!isOpenLabel) setHasError(false);
   }, [isOpenLabel]);
 
-  const arraySubmenu = routes(listlabels);
+  const arraySubmenu = routes(labels);
 
   return (
     <ul className={styles.sider_menu}>
@@ -227,10 +226,10 @@ export const Submenu: FC<SubmenuProps> = () => {
         hasError={hasError}
         isOpenLabel={isOpenLabel}
         toggleModal={toggleModal}
-        onCreatelabel={onCreatelabel}
-        onUpdatelabel={onUpdatelabel}
-        onDeletelabel={onDeletelabel}
-        listlabels={listlabels}
+        onCreateLabel={onCreateLabel}
+        onUpdateLabel={onUpdateLabel}
+        onDeleteLabel={onDeleteLabel}
+        listLabels={labels}
       />
     </ul>
   );

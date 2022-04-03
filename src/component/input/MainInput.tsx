@@ -57,7 +57,7 @@ interface MainInputProps {
   /**
    * Default node labels
    */
-  selectedlabels?: string[];
+  selectedLabels?: string[];
   /**
    * Node labels handler
    */
@@ -74,7 +74,7 @@ const MainInput: FC<MainInputProps> = ({
   titleRef,
   defaultColor,
   onDefaultColor,
-  selectedlabels,
+  selectedLabels,
   togglelabels,
 }) => {
   const linkRef = useRef(null);
@@ -187,9 +187,9 @@ const MainInput: FC<MainInputProps> = ({
           ) : null}
           {focused ? (
             <>
-              {selectedlabels && (
+              {selectedLabels && (
                 <div className={classNames(styles.main_tools, styles.labels)}>
-                  {selectedlabels.map((label) => (
+                  {selectedLabels.map((label) => (
                     <Chip>{label}</Chip>
                   ))}
                 </div>
@@ -211,7 +211,7 @@ const MainInput: FC<MainInputProps> = ({
                 onDefaultColor={onDefaultColor}
                 defaultColor={defaultColor}
                 togglelabels={togglelabels}
-                selectedlabels={selectedlabels}
+                selectedLabels={selectedLabels}
               />
             </>
           ) : null}

@@ -10,13 +10,10 @@ import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 const App: FC = () => {
   return (
     <Switch>
-      <Route exact path="/">
-        <Redirect to="/notes" />
-      </Route>
-      <ProtectedRoute path="/notes" component={HomePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/confirmCode" component={ConfirmPage} />
+      <ProtectedRoute path="/" component={HomePage} />
       <Route path="*" component={() => <div>Page Not Found</div>} />
     </Switch>
   );

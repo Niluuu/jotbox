@@ -14,21 +14,21 @@ export interface SubmenuModalProps {
   isOpenLabel: boolean;
   hasError: boolean;
   toggleModal: () => void;
-  onCreatelabel: (title: string) => void;
-  onUpdatelabel: (title: string, id: string, version: number) => void;
-  onDeletelabel: (id: string, version: number) => void;
+  onCreateLabel: (title: string) => void;
+  onUpdateLabel: (title: string, id: string, version: number) => void;
+  onDeleteLabel: (id: string, version: number) => void;
   close?: string;
   modalTitle?: string;
-  listlabels: LabelType[];
+  listLabels: LabelType[];
 }
 
 export const SubmenuModal: FC<SubmenuModalProps> = ({
   isOpenLabel,
   toggleModal,
-  onCreatelabel,
-  onUpdatelabel,
-  onDeletelabel,
-  listlabels,
+  onCreateLabel,
+  onUpdateLabel,
+  onDeleteLabel,
+  listLabels,
   close = 'Done',
   modalTitle = 'Изменение ярлыков',
   hasError,
@@ -38,7 +38,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
 
   const onCreateKeyup = (key: string) => {
     if (key === 'Enter') {
-      onCreatelabel(val);
+      onCreateLabel(val);
       setVal('');
     }
   };
@@ -77,21 +77,21 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
         />
 
         {focus || val.length > 0 ? (
-          <Icon name="done" color="premium" size="xs" onClick={() => onCreatelabel(val)} />
+          <Icon name="done" color="premium" size="xs" onClick={() => onCreateLabel(val)} />
         ) : null}
       </li>
       {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}
       <div style={{ overflowY: 'scroll', height: '350px' }}>
-        {listlabels &&
-          listlabels.map(({ id, title, _version }) => {
+        {listLabels &&
+          listLabels.map(({ id, title, _version }) => {
             return (
               <Labels
                 key={id}
                 title={title}
                 id={id}
                 version={_version}
-                onDeletelabel={onDeletelabel}
-                onUpdatelabel={onUpdatelabel}
+                onDeleteLabel={onDeleteLabel}
+                onUpdateLabel={onUpdateLabel}
               />
             );
           })}
@@ -111,11 +111,11 @@ interface labelsProps {
   id: string;
   title: string;
   version: number;
-  onUpdatelabel: (title: string, id: string, version: number) => void;
-  onDeletelabel: (id: string, version: number) => void;
+  onUpdateLabel: (title: string, id: string, version: number) => void;
+  onDeleteLabel: (id: string, version: number) => void;
 }
 
-const Labels: FC<labelsProps> = ({ title, id, onUpdatelabel, onDeletelabel, version }) => {
+const Labels: FC<labelsProps> = ({ title, id, onUpdateLabel, onDeleteLabel, version }) => {
   const [val, setVal] = useState(title);
   const [focus, setFocus] = useState(false);
   const [hover, setHover] = useState(false);
@@ -131,7 +131,7 @@ const Labels: FC<labelsProps> = ({ title, id, onUpdatelabel, onDeletelabel, vers
         color="premium"
         size="xs"
         className={styles.labels_icon}
-        onClick={() => onDeletelabel(id, version)}
+        onClick={() => onDeleteLabel(id, version)}
       />
       <input
         ref={localRef}
@@ -144,7 +144,7 @@ const Labels: FC<labelsProps> = ({ title, id, onUpdatelabel, onDeletelabel, vers
       {focus ? (
         <Icon
           onMouseDown={() => {
-            onUpdatelabel(val, id, version);
+            onUpdateLabel(val, id, version);
           }}
           name="done"
           color="premium"

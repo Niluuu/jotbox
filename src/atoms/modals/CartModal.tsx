@@ -66,7 +66,7 @@ interface CartModalType {
   /**
    * Toggleselected labels when creating Node function
    */
-  togglelabelsCart?: (id: string, _version: number, label: string) => Promise<CartProps>;
+  toggleCartLabels?: (id: string, _version: number, label: string) => Promise<CartProps>;
 }
 
 const CartModal: FC<CartModalType> = ({
@@ -74,7 +74,7 @@ const CartModal: FC<CartModalType> = ({
   onChangeArchived,
   onChangePin,
   onColorChange,
-  togglelabelsCart,
+  toggleCartLabels,
   onChangeCollabarators,
 }) => {
   const [node, setNode] = useState<CartProps[]>([]);
@@ -194,14 +194,14 @@ const CartModal: FC<CartModalType> = ({
     [node, onChangeCollabarators],
   );
 
-  const modalTogglelabelsCart = useCallback(
+  const modalToggleCartLabels = useCallback(
     async (label) => {
       const { id, _version } = node[0];
-      const data = await togglelabelsCart(id, _version, label);
+      const data = await toggleCartLabels(id, _version, label);
 
       setNode([data]);
     },
-    [node, togglelabelsCart],
+    [node, toggleCartLabels],
   );
 
   const modalChangePin = useCallback(async () => {
@@ -298,13 +298,13 @@ const CartModal: FC<CartModalType> = ({
                   {node[0].labels && node[0].labels.length > 10 ? (
                     <>
                       {node[0].labels.slice(0, 10).map((label) => (
-                        <Chip onDelate={() => modalTogglelabelsCart(label)}>{label}</Chip>
+                        <Chip onDelate={() => modalToggleCartLabels(label)}>{label}</Chip>
                       ))}
                       <div className={styles.extralabel}> +{node[0].labels.length - 10} </div>
                     </>
                   ) : (
                     node[0].labels.map((label) => (
-                      <Chip onDelate={() => modalTogglelabelsCart(label)}>{label}</Chip>
+                      <Chip onDelate={() => modalToggleCartLabels(label)}>{label}</Chip>
                     ))
                   )}
                 </div>
@@ -319,7 +319,7 @@ const CartModal: FC<CartModalType> = ({
                 )}
               </div>
               <InputNavbar
-                togglelabelsCart={(label) => modalTogglelabelsCart(label)}
+                toggleCartLabels={(label) => modalToggleCartLabels(label)}
                 onColorChange={(color) => modalColorChange(color)}
                 onSetNode={() => toggleModal(node[0].id)}
                 onChangeArchived={modalChangeArchived}
@@ -329,7 +329,7 @@ const CartModal: FC<CartModalType> = ({
                 onRemoveCart={modalRemoveCart}
                 onSetArchive={toggleArchived}
                 currentColor={node[0].color}
-                selectedlabels={node[0].labels}
+                selectedLabels={node[0].labels}
                 shadow
               />
             </div>

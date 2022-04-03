@@ -78,7 +78,7 @@ interface CartProps {
   /**
    * Toggle labels of Node function
    */
-  togglelabelsCart?: (id: string, _version: number, label: string) => void;
+  toggleCartLabels?: (id: string, _version: number, label: string) => void;
   /**
    * Collobarators of the Node Cart
    */
@@ -100,7 +100,7 @@ const Cart: FC<CartProps> = (props) => {
     popupCart,
     color,
     onColorChange,
-    togglelabelsCart,
+    toggleCartLabels,
     archived,
     collabarators,
   } = props;
@@ -158,11 +158,11 @@ const Cart: FC<CartProps> = (props) => {
           <div className={styles.main_chips}>
             {labels.length > 2 ? (
               <>
-                <Chip onDelate={() => togglelabelsCart(id, _version, labels[0])}>
+                <Chip onDelate={() => toggleCartLabels(id, _version, labels[0])}>
                   {' '}
                   {labels[0]}{' '}
                 </Chip>
-                <Chip onDelate={() => togglelabelsCart(id, _version, labels[1])}>
+                <Chip onDelate={() => toggleCartLabels(id, _version, labels[1])}>
                   {' '}
                   {labels[1]}{' '}
                 </Chip>
@@ -170,7 +170,7 @@ const Cart: FC<CartProps> = (props) => {
               </>
             ) : (
               labels.map((label) => (
-                <Chip onDelate={() => togglelabelsCart(id, _version, label)}> {label} </Chip>
+                <Chip onDelate={() => toggleCartLabels(id, _version, label)}> {label} </Chip>
               ))
             )}
           </div>
@@ -200,10 +200,10 @@ const Cart: FC<CartProps> = (props) => {
             onOpenModal={() => onOpenModal(id)}
             isMainInput={isMain}
             currentColor={color}
-            selectedlabels={labels}
+            selectedLabels={labels}
             onRemoveCart={() => onRemoveCart(id, _version)}
             onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
-            togglelabelsCart={(label) => togglelabelsCart(id, _version, label)}
+            toggleCartLabels={(label) => toggleCartLabels(id, _version, label)}
             onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
           />
         </div>

@@ -69,18 +69,18 @@ const HomePage: FC<HomeProps> = () => {
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
-  const [selectedlabels, setSelectedlabels] = useState([]);
+  const [selectedLabels, setselectedLabels] = useState([]);
   const [filter] = useState({ collabarators });
 
   const togglelabels = useCallback(
     (label) => {
-      setSelectedlabels((pre) =>
+      setselectedLabels((pre) =>
         !pre.includes(label)
-          ? [...selectedlabels, label]
-          : selectedlabels.filter((elm) => elm !== label),
+          ? [...selectedLabels, label]
+          : selectedLabels.filter((elm) => elm !== label),
       );
     },
-    [selectedlabels],
+    [selectedLabels],
   );
 
   const cleanUp = useCallback(() => {
@@ -88,7 +88,7 @@ const HomePage: FC<HomeProps> = () => {
     setDefaultPin(false);
     setDefaultColor('default');
     dispatch(setInputCollabaratorUsers([]));
-    setSelectedlabels([]);
+    setselectedLabels([]);
     dispatch(toggleOnCreateFunctionCall(true));
 
     setTimeout(() => {
@@ -276,7 +276,7 @@ const HomePage: FC<HomeProps> = () => {
     [nodes],
   );
 
-  const togglelabelsCart = useCallback(
+  const toggleCartLabels = useCallback(
     async (id: string, _version: number, label: string): Promise<CartProps> => {
       try {
         const data = await API.graphql({ query: getNode, variables: { id } });
@@ -314,7 +314,7 @@ const HomePage: FC<HomeProps> = () => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        labels: selectedlabels,
+        labels: selectedLabels,
         pined: defaultPin,
         color: defaultColor,
         archived: false,
@@ -341,7 +341,7 @@ const HomePage: FC<HomeProps> = () => {
     inputCollabaratorUsers,
     userEmail,
     text,
-    selectedlabels,
+    selectedLabels,
     defaultPin,
     defaultColor,
     nodes,
@@ -354,7 +354,7 @@ const HomePage: FC<HomeProps> = () => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        labels: selectedlabels,
+        labels: selectedLabels,
         pined: defaultPin,
         color: defaultColor,
         archived: true,
@@ -382,7 +382,7 @@ const HomePage: FC<HomeProps> = () => {
     userEmail,
     inputCollabaratorUsers,
     text,
-    selectedlabels,
+    selectedLabels,
     defaultPin,
     defaultColor,
     nodes,
@@ -419,7 +419,7 @@ const HomePage: FC<HomeProps> = () => {
                 titleRef={titleRef}
                 defaultColor={defaultColor}
                 onDefaultColor={onDefaultColor}
-                selectedlabels={selectedlabels}
+                selectedLabels={selectedLabels}
                 togglelabels={togglelabels}
               />
             </div>
@@ -431,7 +431,7 @@ const HomePage: FC<HomeProps> = () => {
             onChangeArchived={onChangeArchived}
             onRemoveCart={onRemoveCart}
             onColorChange={onColorChange}
-            togglelabelsCart={togglelabelsCart}
+            toggleCartLabels={toggleCartLabels}
           />
           <AddLinkModal />
           <CartModal
@@ -439,7 +439,7 @@ const HomePage: FC<HomeProps> = () => {
             onChangePin={onChangePin}
             onRemoveCart={onRemoveCart}
             onChangeArchived={onChangeArchived}
-            togglelabelsCart={togglelabelsCart}
+            toggleCartLabels={toggleCartLabels}
             onColorChange={onColorChange}
           />
         </div>
@@ -460,24 +460,17 @@ const HomePage: FC<HomeProps> = () => {
       onRemoveCart,
       onSetArchive,
       onSetNodes,
-      selectedlabels,
+      selectedLabels,
       togglelabels,
-      togglelabelsCart,
+      toggleCartLabels,
     ],
   );
 
   return (
     <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
-      <Route exact path="/notes" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
-      <Route
-        path="/notes/labels/:label"
-        render={useCallback(() => HomePageSub(false), [HomePageSub])}
-      />
-      <Route
-        exact
-        path="/notes/archive"
-        render={useCallback(() => HomePageSub(true), [HomePageSub])}
-      />
+      <Route exact path="/" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
+      <Route path="/labels/:label" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
+      <Route exact path="/archived" render={useCallback(() => HomePageSub(true), [HomePageSub])} />
     </Layout>
   );
 };

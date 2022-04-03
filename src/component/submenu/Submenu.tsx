@@ -43,18 +43,7 @@ export const Submenu: FC<SubmenuProps> = () => {
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [listlabels, setListlabels] = useState<LabelType[]>([
-    {
-      id: '1',
-      _version: 1,
-      title: '1',
-    },
-    {
-      id: '2',
-      _version: 1,
-      title: '2',
-    },
-  ]);
+  const [listlabels, setListlabels] = useState<LabelType[]>([]);
   const [isOpenLabel, setIsOpenLabel] = useState(false);
   const toggleModal = useCallback(() => setIsOpenLabel(!isOpenLabel), [isOpenLabel]);
   const [hasError, setHasError] = useState(false);
@@ -162,8 +151,8 @@ export const Submenu: FC<SubmenuProps> = () => {
         // eslint-disable-next-line no-underscore-dangle
         const filteredNodes = items.filter((elm) => elm._deleted === null);
 
-        const labelItems = await getLabelRequest();
-        const duplicate = labelItems.map((label) => label.title);
+        const localLabels = await getLabelRequest();
+        const duplicate = localLabels.map((label) => label.title);
 
         const complete = async () => {
           const newData = await API.graphql({

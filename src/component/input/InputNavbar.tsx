@@ -240,7 +240,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                     </div>
                     <div className={styles.item}>
                       {listlabels.map((label) => (
-                        <li key={label.id} className={styles.labellabel}>
+                        <li key={label.id} className={styles.labelItems}>
                           <label>
                             <input
                               type="checkbox"

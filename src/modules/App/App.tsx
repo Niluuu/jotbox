@@ -5,6 +5,7 @@ import HomePage from '../HomePage/HomePage';
 import SignUpPage from '../SignUpPage/SignUpPage';
 import SignInPage from '../SignInPage/SignInPage';
 import ConfirmPage from '../SignUpPage/Confirm';
+import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 
 const App: FC = () => {
   return (
@@ -12,7 +13,7 @@ const App: FC = () => {
       <Route exact path="/">
         <Redirect to="/notes" />
       </Route>
-      <Route path="/notes" component={HomePage} />
+      <ProtectedRoute path="/notes" component={HomePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/confirmCode" component={ConfirmPage} />

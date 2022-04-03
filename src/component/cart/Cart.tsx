@@ -32,7 +32,7 @@ interface CartProps {
   /**
    * Node labels
    */
-  labels?: string[];
+  labels?: string[] | null;
   /**
    * Node version of node
    */
@@ -154,7 +154,7 @@ const Cart: FC<CartProps> = (props) => {
           )}
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
-        {labels.length !== 0 && (
+        {labels.length !== 0 && labels !== null && (
           <div className={styles.main_chips}>
             {labels.length > 2 ? (
               <>

@@ -2,9 +2,8 @@
 import { FC, useState, useCallback, useRef, useEffect, useMemo, Component } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { Route } from 'react-router-dom';
 import { API } from 'aws-amplify';
-import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -66,47 +65,7 @@ const HomePage: FC<HomeProps> = () => {
   const collabarators = { contains: userEmail };
 
   const titleRef = useRef<HTMLDivElement>();
-  const [nodes, setNodes] = useState<CartProps[]>([
-    {
-      id: '1',
-      title: 'ok',
-      description: text,
-      pined: true,
-      archived: false,
-      labels: ['2'],
-      _version: 1,
-      _deleted: null,
-      color: 'red',
-      collabarators: [userEmail],
-      collabarator: userEmail,
-    },
-    {
-      id: '2',
-      title: 'ok',
-      description: text,
-      pined: true,
-      archived: false,
-      labels: ['1'],
-      _version: 1,
-      _deleted: null,
-      color: 'default',
-      collabarators: [userEmail],
-      collabarator: userEmail,
-    },
-    {
-      id: '3',
-      title: 'okey',
-      description: text,
-      pined: true,
-      archived: true,
-      labels: ['1'],
-      _version: 1,
-      _deleted: null,
-      color: 'blue',
-      collabarators: [userEmail],
-      collabarator: userEmail,
-    },
-  ]);
+  const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
@@ -509,19 +468,15 @@ const HomePage: FC<HomeProps> = () => {
 
   return (
     <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
-      <ProtectedRoute
-        exact
-        path="/notes"
-        component={useCallback(() => HomePageSub(false), [HomePageSub])}
-      />
-      <ProtectedRoute
+      <Route exact path="/notes" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
+      <Route
         path="/notes/labels/:label"
-        component={useCallback(() => HomePageSub(false), [HomePageSub])}
+        render={useCallback(() => HomePageSub(false), [HomePageSub])}
       />
-      <ProtectedRoute
+      <Route
         exact
         path="/notes/archive"
-        component={useCallback(() => HomePageSub(true), [HomePageSub])}
+        render={useCallback(() => HomePageSub(true), [HomePageSub])}
       />
     </Layout>
   );

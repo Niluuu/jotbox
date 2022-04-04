@@ -194,7 +194,7 @@
   }
 }
 
-.gaps {
+.labels {
   width: 100%;
   position: relative;
   padding: 5px 0 0;
@@ -268,7 +268,7 @@
   }
 }
 
-.labelGap {
+.labelItems {
   padding: 0 !important;
 
   label {
@@ -278,7 +278,7 @@
     cursor: pointer;
 
     input {
-      width: 0 !important;
+      display: none;
     }
 
     span {

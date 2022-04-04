@@ -15,17 +15,17 @@ export const editor = createSlice({
     setText: (state, action) => {
       state.text = action.payload;
     },
-    setUndo: (state) => {
-      state.shouldUndo = !state.shouldUndo;
-    },
-    setRedo: (state) => {
-      state.shouldRedo = !state.shouldRedo;
-    },
     setUpdatedText: (state, action) => {
       state.updatedText = action.payload;
     },
     toggleOnCreateFunctionCall: (state, action) => {
       state.onCreateFuncCall = action.payload;
+    },
+    setUndo: (state) => {
+      state.shouldUndo = !state.shouldUndo;
+    },
+    setRedo: (state) => {
+      state.shouldRedo = !state.shouldRedo;
     },
   },
 });

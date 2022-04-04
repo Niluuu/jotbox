@@ -1,10 +1,9 @@
 /* eslint-disable max-lines */
-import { FC, useState, useCallback, useRef, useEffect } from 'react';
+import { FC, useState, useCallback, useRef, useEffect, useMemo, Component } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { Route } from 'react-router-dom';
 import { API } from 'aws-amplify';
-import { EditorState, ContentState } from 'draft-js';
 import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
@@ -24,7 +23,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: string[];
+  labels: string[];
   _version: number;
   _deleted: boolean;
   color: string;
@@ -34,16 +33,12 @@ interface CartProps {
 
 interface HomeProps {
   /**
-   * Is sidebard opened or not
-   */
-  isSidebarOpen?: boolean;
-  /**
    * Is archived page or not
    */
   archive?: boolean;
 }
 
-const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
+const HomePage: FC<HomeProps> = () => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       grid: state.layoutGrid.grid,
@@ -66,26 +61,26 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
   } = mapStateToProps;
   const dispatch = useDispatch();
 
-  const { label } = useParams();
   const userEmail = localStorage.getItem('userEmail');
   const collabarators = { contains: userEmail };
-  const archived = archive ? { eq: true } : { eq: false };
 
   const titleRef = useRef<HTMLDivElement>();
   const [nodes, setNodes] = useState<CartProps[]>([]);
   const [focused, setFocused] = useState(false);
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
-  const [selectedGaps, setSelectedGaps] = useState([]);
-  const [filter, setFilter] = useState({ collabarators, archived });
+  const [selectedLabels, setselectedLabels] = useState([]);
+  const [filter] = useState({ collabarators });
 
-  const toggleGaps = useCallback(
-    (gap) => {
-      setSelectedGaps((pre) =>
-        !pre.includes(gap) ? [...selectedGaps, gap] : selectedGaps.filter((elm) => elm !== gap),
+  const togglelabels = useCallback(
+    (label) => {
+      setselectedLabels((pre) =>
+        !pre.includes(label)
+          ? [...selectedLabels, label]
+          : selectedLabels.filter((elm) => elm !== label),
       );
     },
-    [selectedGaps],
+    [selectedLabels],
   );
 
   const cleanUp = useCallback(() => {
@@ -93,7 +88,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
     setDefaultPin(false);
     setDefaultColor('default');
     dispatch(setInputCollabaratorUsers([]));
-    setSelectedGaps([]);
+    setselectedLabels([]);
     dispatch(toggleOnCreateFunctionCall(true));
 
     setTimeout(() => {
@@ -271,7 +266,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
         const item = data.data.updateNode;
 
         if (item.archived === archiveAttr) {
-          setNodes(nodes.filter((newCart) => newCart.id !== id));
+          setNodes(nodes.map((newCart) => (newCart.id !== id ? item : newCart)));
         }
         return item;
       } catch (err) {
@@ -281,20 +276,20 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
     [nodes],
   );
 
-  const toggleGapsCart = useCallback(
-    async (id: string, _version: number, gap: string): Promise<CartProps> => {
+  const toggleCartLabels = useCallback(
+    async (id: string, _version: number, label: string): Promise<CartProps> => {
       try {
         const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
         const cart = data.data.getNode;
-        const cartGaps = cart.gaps;
+        const cartlabels = cart.labels;
 
-        const updatedGaps = cartGaps.includes(gap)
-          ? cartGaps.filter((cartGap: string) => cartGap !== gap)
-          : [...cartGaps, gap];
+        const updatedlabels = cartlabels.includes(label)
+          ? cartlabels.filter((cartlabel: string) => cartlabel !== label)
+          : [...cartlabels, label];
 
-        const updatedNode = { id, _version, gaps: updatedGaps };
+        const updatedNode = { id, _version, labels: updatedlabels };
 
         const newData = await API.graphql({
           query: updateNode,
@@ -319,7 +314,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps: selectedGaps,
+        labels: selectedLabels,
         pined: defaultPin,
         color: defaultColor,
         archived: false,
@@ -346,7 +341,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
     inputCollabaratorUsers,
     userEmail,
     text,
-    selectedGaps,
+    selectedLabels,
     defaultPin,
     defaultColor,
     nodes,
@@ -359,7 +354,7 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
       const node = {
         title: titleRef.current.innerText,
         description: text,
-        gaps: selectedGaps,
+        labels: selectedLabels,
         pined: defaultPin,
         color: defaultColor,
         archived: true,
@@ -372,13 +367,27 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
       const parsedText = JSON.parse(text);
 
       if (parsedText.blocks[0].text) {
-        await API.graphql({ query: createNode, variables: { input: node } });
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        setNodes([item, ...nodes]);
         cleanUp();
       }
     } catch (err) {
       throw new Error('Create node error');
     }
-  }, [userEmail, inputCollabaratorUsers, text, selectedGaps, defaultPin, defaultColor, cleanUp]);
+  }, [
+    userEmail,
+    inputCollabaratorUsers,
+    text,
+    selectedLabels,
+    defaultPin,
+    defaultColor,
+    nodes,
+    cleanUp,
+  ]);
 
   useEffect(() => {
     getAllNodes();
@@ -388,55 +397,81 @@ const HomePage: FC<HomeProps> = ({ archive, isSidebarOpen }) => {
     getAllNodes();
   }, [refreshPage, getAllNodes]);
 
-  useEffect(() => {
-    const gaps = { contains: label };
+  const [isSidebarOpen, setisSidebarOpen] = useState(true);
+  const toggleSider = useCallback(() => setisSidebarOpen((pre) => !pre), []);
 
-    const newFiler =
-      label !== undefined ? { collabarators, archived, gaps } : { collabarators, archived };
-    setFilter(newFiler);
-    setSelectedGaps(label !== undefined ? [label] : []);
-  }, [label]);
-
-  return (
-    <div
-      className={classNames(styles.home_page, grid && styles.column, isSidebarOpen && styles.open)}
-    >
-      {!archive && (
-        <div className={styles.home_page__main_input}>
-          <MainInput
-            focused={focused}
-            setFocused={setFocused}
-            onSetArchive={onSetArchive}
-            onSetNodes={onSetNodes}
-            defaultPin={defaultPin}
-            onDefaultPin={onDefaultPin}
-            titleRef={titleRef}
-            defaultColor={defaultColor}
-            onDefaultColor={onDefaultColor}
-            selectedGaps={selectedGaps}
-            toggleGaps={toggleGaps}
+  const HomePageSub = useCallback(
+    (archivePage: boolean) => {
+      const notes = archivePage
+        ? nodes.filter((cart) => cart.archived)
+        : nodes.filter((cart) => !cart.archived);
+      return (
+        <div className={classNames(styles.home_page, grid && styles.column)}>
+          {!archivePage && (
+            <div className={styles.home_page__main_input}>
+              <MainInput
+                focused={focused}
+                setFocused={setFocused}
+                onSetArchive={onSetArchive}
+                onSetNodes={onSetNodes}
+                defaultPin={defaultPin}
+                onDefaultPin={onDefaultPin}
+                titleRef={titleRef}
+                defaultColor={defaultColor}
+                onDefaultColor={onDefaultColor}
+                selectedLabels={selectedLabels}
+                togglelabels={togglelabels}
+              />
+            </div>
+          )}
+          <CartLayout
+            gridType={grid}
+            carts={notes}
+            onChangePin={onChangePin}
+            onChangeArchived={onChangeArchived}
+            onRemoveCart={onRemoveCart}
+            onColorChange={onColorChange}
+            toggleCartLabels={toggleCartLabels}
+          />
+          <AddLinkModal />
+          <CartModal
+            onChangeCollabarators={onChangeCollabarators}
+            onChangePin={onChangePin}
+            onRemoveCart={onRemoveCart}
+            onChangeArchived={onChangeArchived}
+            toggleCartLabels={toggleCartLabels}
+            onColorChange={onColorChange}
           />
         </div>
-      )}
-      <CartLayout
-        gridType={grid}
-        carts={nodes}
-        onChangePin={onChangePin}
-        onChangeArchived={onChangeArchived}
-        onRemoveCart={onRemoveCart}
-        onColorChange={onColorChange}
-        toggleGapsCart={toggleGapsCart}
-      />
-      <AddLinkModal />
-      <CartModal
-        onChangeCollabarators={onChangeCollabarators}
-        onChangePin={onChangePin}
-        onRemoveCart={onRemoveCart}
-        onChangeArchived={onChangeArchived}
-        toggleGapsCart={toggleGapsCart}
-        onColorChange={onColorChange}
-      />
-    </div>
+      );
+    },
+    [
+      defaultColor,
+      defaultPin,
+      focused,
+      grid,
+      nodes,
+      onChangeArchived,
+      onChangeCollabarators,
+      onChangePin,
+      onColorChange,
+      onDefaultColor,
+      onDefaultPin,
+      onRemoveCart,
+      onSetArchive,
+      onSetNodes,
+      selectedLabels,
+      togglelabels,
+      toggleCartLabels,
+    ],
+  );
+
+  return (
+    <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
+      <Route exact path="/" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
+      <Route path="/labels/:label" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
+      <Route exact path="/archived" render={useCallback(() => HomePageSub(true), [HomePageSub])} />
+    </Layout>
   );
 };
 

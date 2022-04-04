@@ -1,6 +1,7 @@
 /* eslint-disable react/require-default-props */
 import { FC } from 'react';
 import classNames from 'classnames';
+import { useParams } from 'react-router';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 
@@ -11,7 +12,7 @@ interface CartProps {
   description: string;
   pined: boolean;
   archived: boolean;
-  gaps: string[];
+  labels: string[];
   color: string;
   collabarators: string[];
 }
@@ -38,7 +39,7 @@ interface CartLayoutProps {
   ) => void;
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onColorChange?: (id: string, color: string, _version: number) => void;
-  toggleGapsCart?: (id: string, _version: number, gap: string) => void;
+  toggleCartLabels?: (id: string, _version: number, label: string) => void;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -48,24 +49,27 @@ const CartLayout: FC<CartLayoutProps> = ({
   onChangePin,
   onRemoveCart,
   onColorChange,
-  toggleGapsCart,
+  toggleCartLabels,
 }) => {
+  const { label } = useParams();
+  const labeledCarts =
+    label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      {carts.some((cart) => cart.pined) && (
+      {labeledCarts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
       )}
-      {carts && (
+      {labeledCarts && (
         <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-          {carts
+          {labeledCarts
             .filter((cart) => cart.pined)
             .map((cart) => (
               <Cart
                 key={`key-${cart.id}`}
                 id={cart.id}
-                gaps={cart.gaps}
+                labels={cart.labels}
                 title={cart.title}
                 description={cart.description}
                 pined={cart.pined}
@@ -79,26 +83,26 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 gridType={gridType}
                 onColorChange={onColorChange}
-                toggleGapsCart={toggleGapsCart}
+                toggleCartLabels={toggleCartLabels}
               />
             ))}
         </div>
       )}
-      {carts.some((cart) => !cart.pined) && (
+      {labeledCarts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>
       )}
-      {carts && (
+      {labeledCarts && (
         <div className={classNames(styles.carts_layout, gridType && styles.column)}>
-          {carts
+          {labeledCarts
             .filter((cart) => !cart.pined)
             .map((cart) => (
               <Cart
                 key={`key-${cart.id}`}
                 id={cart.id}
                 title={cart.title}
-                gaps={cart.gaps}
+                labels={cart.labels}
                 description={cart.description}
                 pined={cart.pined}
                 color={cart.color}
@@ -111,7 +115,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 onRemoveCart={onRemoveCart}
                 gridType={gridType}
                 onColorChange={onColorChange}
-                toggleGapsCart={toggleGapsCart}
+                toggleCartLabels={toggleCartLabels}
               />
             ))}
         </div>

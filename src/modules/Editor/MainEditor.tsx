@@ -21,10 +21,10 @@ import { List, Repeat } from 'immutable';
 import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import { RootState } from '../../app/store';
-import { Icon } from '../../component/Icon/Icon';
 import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
 import styles from './Editor.module.scss';
 import createMentions from '../../utils/editor/creteMention';
+import { initialStateStr } from '../../utils/editor/initialState';
 
 interface MainEditorProps {
   linkMode?: boolean;
@@ -85,17 +85,6 @@ const MainEditor: FC<MainEditorProps> = ({
   isLarge,
   readOnly = undefined,
 }) => {
-  const [editorState, setEditorState] = useState(
-    EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))),
-  );
-  const [urlValue, seturlValue] = useState('');
-  const [open, setOpen] = useState(false);
-  const [focus, setfocus] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [textLink, setTextLink] = useState('');
-
-  const dispatch = useDispatch();
-
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       nodes: state.nodesReducer.nodes,
@@ -106,6 +95,19 @@ const MainEditor: FC<MainEditorProps> = ({
   });
 
   const { nodes, onCreateFuncCall, shouldUndo, shouldRedo } = mapStateToProps;
+
+  const initialEditorState = isMainInput
+    ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialStateStr)))
+    : EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)));
+
+  const [editorState, setEditorState] = useState(initialEditorState);
+  const [urlValue, seturlValue] = useState('');
+  const [open, setOpen] = useState(false);
+  const [focus, setfocus] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [textLink, setTextLink] = useState('');
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isMainInput && onCreateFuncCall) {

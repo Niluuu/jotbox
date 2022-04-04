@@ -32,7 +32,7 @@ interface CartProps {
   /**
    * Node labels
    */
-  gaps?: string[];
+  labels?: string[] | null;
   /**
    * Node version of node
    */
@@ -76,9 +76,9 @@ interface CartProps {
    */
   popupCart?: boolean;
   /**
-   * Toggle gaps of Node function
+   * Toggle labels of Node function
    */
-  toggleGapsCart?: (id: string, _version: number, gap: string) => void;
+  toggleCartLabels?: (id: string, _version: number, label: string) => void;
   /**
    * Collobarators of the Node Cart
    */
@@ -91,7 +91,7 @@ const Cart: FC<CartProps> = (props) => {
     title,
     pined,
     description,
-    gaps,
+    labels,
     _version,
     onChangePin,
     onChangeArchived,
@@ -100,7 +100,7 @@ const Cart: FC<CartProps> = (props) => {
     popupCart,
     color,
     onColorChange,
-    toggleGapsCart,
+    toggleCartLabels,
     archived,
     collabarators,
   } = props;
@@ -154,23 +154,29 @@ const Cart: FC<CartProps> = (props) => {
           )}
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
-        {gaps.length !== 0 && (
+        {labels.length !== 0 && labels !== null && (
           <div className={styles.main_chips}>
-            {gaps.length > 2 ? (
+            {labels.length > 2 ? (
               <>
-                <Chip onDelate={() => toggleGapsCart(id, _version, gaps[0])}> {gaps[0]} </Chip>
-                <Chip onDelate={() => toggleGapsCart(id, _version, gaps[1])}> {gaps[1]} </Chip>
-                <div className={styles.extraGap}> +{gaps.length - 2} </div>
+                <Chip onDelate={() => toggleCartLabels(id, _version, labels[0])}>
+                  {' '}
+                  {labels[0]}{' '}
+                </Chip>
+                <Chip onDelate={() => toggleCartLabels(id, _version, labels[1])}>
+                  {' '}
+                  {labels[1]}{' '}
+                </Chip>
+                <div className={styles.extralabel}> +{labels.length - 2} </div>
               </>
             ) : (
-              gaps.map((gap) => (
-                <Chip onDelate={() => toggleGapsCart(id, _version, gap)}> {gap} </Chip>
+              labels.map((label) => (
+                <Chip onDelate={() => toggleCartLabels(id, _version, label)}> {label} </Chip>
               ))
             )}
           </div>
         )}
         {collabarators && (
-          <div className={classNames(styles.main_chips, inputStyles.gaps)}>
+          <div className={classNames(styles.main_chips, inputStyles.labels)}>
             {collabarators.length > 6 ? (
               <>
                 {collabarators
@@ -194,10 +200,10 @@ const Cart: FC<CartProps> = (props) => {
             onOpenModal={() => onOpenModal(id)}
             isMainInput={isMain}
             currentColor={color}
-            selectedGaps={gaps}
+            selectedLabels={labels}
             onRemoveCart={() => onRemoveCart(id, _version)}
             onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
-            toggleGapsCart={(gap) => toggleGapsCart(id, _version, gap)}
+            toggleCartLabels={(label) => toggleCartLabels(id, _version, label)}
             onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
           />
         </div>

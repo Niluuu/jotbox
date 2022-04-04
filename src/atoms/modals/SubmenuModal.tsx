@@ -4,7 +4,6 @@ import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';
 import Modal from '../../component/modal/Modal';
 
-
 type LabelType = {
   id: string;
   _version: number;
@@ -15,21 +14,21 @@ export interface SubmenuModalProps {
   isOpenLabel: boolean;
   hasError: boolean;
   toggleModal: () => void;
-  onCreateGap: (title: string) => void;
-  onUpdateGap: (title: string, id: string, version: number) => void;
-  onDeleteGap: (id: string, version: number) => void;
+  onCreateLabel: (title: string) => void;
+  onUpdateLabel: (title: string, id: string, version: number) => void;
+  onDeleteLabel: (id: string, version: number) => void;
   close?: string;
   modalTitle?: string;
-  listGaps: LabelType[];
+  listLabels: LabelType[];
 }
 
 export const SubmenuModal: FC<SubmenuModalProps> = ({
   isOpenLabel,
   toggleModal,
-  onCreateGap,
-  onUpdateGap,
-  onDeleteGap,
-  listGaps,
+  onCreateLabel,
+  onUpdateLabel,
+  onDeleteLabel,
+  listLabels,
   close = 'Done',
   modalTitle = 'Изменение ярлыков',
   hasError,
@@ -39,7 +38,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
 
   const onCreateKeyup = (key: string) => {
     if (key === 'Enter') {
-      onCreateGap(val);
+      onCreateLabel(val);
       setVal('');
     }
   };
@@ -47,7 +46,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   const mainRef = useRef(null);
   return (
     <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
-      <li className={styles.gaps}>
+      <li className={styles.labels}>
         {focus ? (
           <Icon
             name={focus ? 'exit' : 'add'}
@@ -78,21 +77,21 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
         />
 
         {focus || val.length > 0 ? (
-          <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
+          <Icon name="done" color="premium" size="xs" onClick={() => onCreateLabel(val)} />
         ) : null}
       </li>
       {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}
       <div style={{ overflowY: 'scroll', height: '350px' }}>
-        {listGaps &&
-          listGaps.map(({ id, title, _version }) => {
+        {listLabels &&
+          listLabels.map(({ id, title, _version }) => {
             return (
-              <Gaps
+              <Labels
                 key={id}
                 title={title}
                 id={id}
                 version={_version}
-                onDeleteGap={onDeleteGap}
-                onUpdateGap={onUpdateGap}
+                onDeleteLabel={onDeleteLabel}
+                onUpdateLabel={onUpdateLabel}
               />
             );
           })}
@@ -107,16 +106,16 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   );
 };
 
-interface GapsProps {
+interface labelsProps {
   key: string;
   id: string;
   title: string;
   version: number;
-  onUpdateGap: (title: string, id: string, version: number) => void;
-  onDeleteGap: (id: string, version: number) => void;
+  onUpdateLabel: (title: string, id: string, version: number) => void;
+  onDeleteLabel: (id: string, version: number) => void;
 }
 
-const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) => {
+const Labels: FC<labelsProps> = ({ title, id, onUpdateLabel, onDeleteLabel, version }) => {
   const [val, setVal] = useState(title);
   const [focus, setFocus] = useState(false);
   const [hover, setHover] = useState(false);
@@ -126,13 +125,13 @@ const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) =
   const toggleHover = () => setHover((previous) => !previous);
   const localRef = useRef(null);
   return (
-    <li onMouseEnter={toggleHover} onMouseLeave={toggleHover} className={styles.gaps}>
+    <li onMouseEnter={toggleHover} onMouseLeave={toggleHover} className={styles.labels}>
       <Icon
         name={hover ? 'delete' : 'filled-label'}
         color="premium"
         size="xs"
-        className={styles.gaps_icon}
-        onClick={() => onDeleteGap(id, version)}
+        className={styles.labels_icon}
+        onClick={() => onDeleteLabel(id, version)}
       />
       <input
         ref={localRef}
@@ -145,12 +144,12 @@ const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) =
       {focus ? (
         <Icon
           onMouseDown={() => {
-            onUpdateGap(val, id, version);
+            onUpdateLabel(val, id, version);
           }}
           name="done"
           color="premium"
           size="xs"
-          className={styles.gaps_icon}
+          className={styles.labels_icon}
         />
       ) : (
         <Icon
@@ -161,7 +160,7 @@ const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) =
           name="edit"
           color="premium"
           size="xs"
-          className={styles.gaps_icon}
+          className={styles.labels_icon}
         />
       )}
     </li>

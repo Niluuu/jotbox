@@ -77,7 +77,14 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
         />
 
         {focus || val.length > 0 ? (
-          <Icon name="done" color="premium" size="xs" onClick={() => onCreateLabel(val)} />
+          <Icon
+            name="done"
+            color="premium"
+            size="xs"
+            onClick={() => {
+              if (val) onCreateLabel(val);
+            }}
+          />
         ) : null}
       </li>
       {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}

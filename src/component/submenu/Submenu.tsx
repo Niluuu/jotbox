@@ -134,11 +134,10 @@ export const Submenu: FC<SubmenuProps> = () => {
       };
 
       try {
-        const currentlabelData = await API.graphql({ query: getLabel, variables: { id } });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const currentlabelRes = currentlabelData.data.getLabel;
-        const currentlabel = currentlabelRes.title;
+        const currentLabel = labels.find((elm) => elm.id === id);
+        const currentTitle = currentLabel.title;
+
+        const duplicate = labels.map((label) => label.title);
 
         const nodeData = await API.graphql({
           query: listNodes,
@@ -149,9 +148,6 @@ export const Submenu: FC<SubmenuProps> = () => {
         const { items } = nodeData.data.listNodes;
         // eslint-disable-next-line no-underscore-dangle
         const filteredNodes = items.filter((elm) => elm._deleted === null);
-
-        const localLabels = await getLabelRequest();
-        const duplicate = localLabels.map((label) => label.title);
 
         const complete = async () => {
           const newData = await API.graphql({
@@ -164,7 +160,7 @@ export const Submenu: FC<SubmenuProps> = () => {
           setLabels(labels.map((elm) => (elm.id === id ? item : elm)));
 
           filteredNodes.forEach(async (element) => {
-            const updatedlabels = element.labels.map((elm) => (elm === currentlabel ? title : elm));
+            const updatedlabels = element.labels.map((elm) => (elm === currentTitle ? title : elm));
             const updatedNode = {
               id: element.id,
               // eslint-disable-next-line no-underscore-dangle
@@ -181,15 +177,18 @@ export const Submenu: FC<SubmenuProps> = () => {
         };
 
         if (duplicate.includes(title)) {
-          const answer = `You want to this label merged to "${title}`;
+          const answer = `You want to merge this label to "${title}?`;
           // eslint-disable-next-line no-restricted-globals
-          if (confirm(answer)) complete();
+          if (confirm(answer)) {
+            onDeleteLabel(id, _version);
+            setLabels(labels.filter((elm) => elm.id !== id));
+          }
         } else complete();
       } catch (err) {
         throw new Error('Update labels route');
       }
     },
-    [filter, getLabelRequest, labels, dispatch],
+    [labels, filter, dispatch, onDeleteLabel],
   );
 
   useEffect(() => {

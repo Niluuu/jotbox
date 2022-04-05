@@ -32,6 +32,7 @@ interface CartProps {
 
 interface CollabaratorProps {
   isMainInput?: boolean;
+  isOpen?: boolean;
   /**
    * Node collabarators change func
    */
@@ -45,6 +46,7 @@ const Collabarator: FC<CollabaratorProps> = ({
   isMainInput,
   onChangeCollabarators,
   cartCollabarators,
+  isOpen,
 }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -148,7 +150,7 @@ const Collabarator: FC<CollabaratorProps> = ({
   };
 
   return (
-    <div className={styles.collabarator}>
+    <div className={styles.collabarator} style={{ display: isOpen && 'none' }}>
       <div className={styles.collabarator_header}>Collabarators</div>
       <div className={styles.user}>
         <img className={styles.user_img} src={avatar} />
@@ -174,6 +176,7 @@ const Collabarator: FC<CollabaratorProps> = ({
         </div>
         <div className={classNames(styles.user_text)}>
           <input
+            className="color-input"
             value={value}
             onChange={(e) => onFilterByTitle(e.target.value)}
             onKeyUp={(e) => onConfirmKeyup(e.key)}

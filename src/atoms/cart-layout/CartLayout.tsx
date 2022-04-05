@@ -40,6 +40,7 @@ interface CartLayoutProps {
   onChangePin?: (id: string, pined: boolean, _version: number) => void;
   onColorChange?: (id: string, color: string, _version: number) => void;
   toggleCartLabels?: (id: string, _version: number, label: string) => void;
+  archivePage?: boolean;
 }
 
 const CartLayout: FC<CartLayoutProps> = ({
@@ -50,13 +51,14 @@ const CartLayout: FC<CartLayoutProps> = ({
   onRemoveCart,
   onColorChange,
   toggleCartLabels,
+  archivePage,
 }) => {
   const { label } = useParams();
   const labeledCarts =
     label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
-      {labeledCarts.some((cart) => cart.pined) && (
+      {!archivePage && labeledCarts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Закрепленные </h1>
         </div>
@@ -88,7 +90,7 @@ const CartLayout: FC<CartLayoutProps> = ({
             ))}
         </div>
       )}
-      {labeledCarts.some((cart) => !cart.pined) && (
+      {!archivePage && labeledCarts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
           <h1 className={styles.layout_title}> Заметки </h1>
         </div>

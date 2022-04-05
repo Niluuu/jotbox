@@ -88,6 +88,8 @@ interface InputNavbarProps {
    */
   onOpenModal?: () => void;
   updateModalIsOpen?: boolean;
+  hide?: boolean;
+  label?: string;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -108,6 +110,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     shadow,
     isCart,
     onOpenModal,
+    hide,
+    label,
   } = props;
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
@@ -186,7 +190,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
 
   return (
     <>
-      <div className={classNames(styles.input_navbar, shadow && styles.shadow)}>
+      <div
+        style={{ display: hide && 'none' }}
+        className={classNames(styles.input_navbar, shadow && styles.shadow)}
+      >
         <div className={styles.main_tools}>
           <button onClick={toggleArchive} type="button" className={styles.icon_btn}>
             <Icon name="dowland" color="premium" size="xs" />
@@ -239,21 +246,23 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                       <Icon size="min" name="search" />
                     </div>
                     <div className={styles.item}>
-                      {labels.map((label) => (
-                        <li key={label.id} className={styles.labelItems}>
+                      {labels.map((localLabel) => (
+                        <li key={localLabel.id} className={styles.labelItems}>
                           <label>
                             <input
                               type="checkbox"
-                              value={label.title}
-                              onClick={(e) => toggleSelectedlabel(e)}
-                              checked={selectedLabels.includes(label.title)}
+                              value={localLabel.title}
+                              onClick={(e) => {
+                                if (label !== localLabel.title) toggleSelectedlabel(e);
+                              }}
+                              checked={selectedLabels.includes(localLabel.title)}
                             />
-                            {selectedLabels.includes(label.title) ? (
+                            {selectedLabels.includes(localLabel.title) ? (
                               <Icon name="edit-bordered" color="premium" size="xs" />
                             ) : (
                               <Icon name="box" color="premium" size="xs" />
                             )}
-                            <span> {label.title} </span>
+                            <span> {localLabel.title} </span>
                           </label>
                         </li>
                       ))}

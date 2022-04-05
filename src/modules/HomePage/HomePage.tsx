@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { FC, useState, useCallback, useRef, useEffect, useMemo, Component } from 'react';
+import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { Route } from 'react-router-dom';
@@ -255,6 +255,7 @@ const HomePage: FC<HomeProps> = () => {
           _version,
           title,
           description,
+          pined: false,
         };
 
         const data = await API.graphql({
@@ -265,9 +266,7 @@ const HomePage: FC<HomeProps> = () => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        if (item.archived === archiveAttr) {
-          setNodes(nodes.map((newCart) => (newCart.id !== id ? item : newCart)));
-        }
+        setNodes(nodes.map((newCart) => (newCart.id === id ? item : newCart)));
         return item;
       } catch (err) {
         throw new Error('Update node error');
@@ -400,6 +399,13 @@ const HomePage: FC<HomeProps> = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
   const toggleSider = useCallback(() => setisSidebarOpen((pre) => !pre), []);
 
+  const onSelectedLabels = useCallback(
+    (elm) => {
+      if (!selectedLabels.includes(elm)) setselectedLabels([elm, ...selectedLabels]);
+    },
+    [selectedLabels],
+  );
+
   const HomePageSub = useCallback(
     (archivePage: boolean) => {
       const notes = archivePage
@@ -421,10 +427,12 @@ const HomePage: FC<HomeProps> = () => {
                 onDefaultColor={onDefaultColor}
                 selectedLabels={selectedLabels}
                 togglelabels={togglelabels}
+                onSelectedLabels={onSelectedLabels}
               />
             </div>
           )}
           <CartLayout
+            archivePage={archivePage}
             gridType={grid}
             carts={notes}
             onChangePin={onChangePin}
@@ -446,23 +454,24 @@ const HomePage: FC<HomeProps> = () => {
       );
     },
     [
-      defaultColor,
-      defaultPin,
-      focused,
-      grid,
       nodes,
-      onChangeArchived,
-      onChangeCollabarators,
-      onChangePin,
-      onColorChange,
-      onDefaultColor,
-      onDefaultPin,
-      onRemoveCart,
+      grid,
+      focused,
       onSetArchive,
       onSetNodes,
+      defaultPin,
+      onDefaultPin,
+      defaultColor,
+      onDefaultColor,
       selectedLabels,
       togglelabels,
+      onSelectedLabels,
+      onChangePin,
+      onChangeArchived,
+      onRemoveCart,
+      onColorChange,
       toggleCartLabels,
+      onChangeCollabarators,
     ],
   );
 

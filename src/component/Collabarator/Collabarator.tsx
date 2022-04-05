@@ -14,7 +14,6 @@ import {
 import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
-import { NodeLink } from '../../utils/editor/NodeLink';
 
 interface CartProps {
   id: string;
@@ -176,7 +175,6 @@ const Collabarator: FC<CollabaratorProps> = ({
         </div>
         <div className={classNames(styles.user_text)}>
           <input
-            className="color-input"
             value={value}
             onChange={(e) => onFilterByTitle(e.target.value)}
             onKeyUp={(e) => onConfirmKeyup(e.key)}

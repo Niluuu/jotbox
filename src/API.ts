@@ -2,33 +2,21 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateNodeInput = {
+export type CreateLabelInput = {
   id?: string | null,
-  title?: string | null,
-  description?: string | null,
-  color?: string | null,
-  gaps?: Array< string | null > | null,
-  archived?: boolean | null,
-  trashed?: boolean | null,
-  pined?: boolean | null,
-  collabarator: string,
-  collabarators: Array< string | null >,
+  title: string,
+  collabarator?: string | null,
+  collabarators?: Array< string | null > | null,
   _version?: number | null,
 };
 
-export type ModelNodeConditionInput = {
+export type ModelLabelConditionInput = {
   title?: ModelStringInput | null,
-  description?: ModelStringInput | null,
-  color?: ModelStringInput | null,
-  gaps?: ModelStringInput | null,
-  archived?: ModelBooleanInput | null,
-  trashed?: ModelBooleanInput | null,
-  pined?: ModelBooleanInput | null,
   collabarator?: ModelStringInput | null,
   collabarators?: ModelStringInput | null,
-  and?: Array< ModelNodeConditionInput | null > | null,
-  or?: Array< ModelNodeConditionInput | null > | null,
-  not?: ModelNodeConditionInput | null,
+  and?: Array< ModelLabelConditionInput | null > | null,
+  or?: Array< ModelLabelConditionInput | null > | null,
+  not?: ModelLabelConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -71,6 +59,61 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type Label = {
+  __typename: "Label",
+  id: string,
+  title: string,
+  collabarator?: string | null,
+  collabarators?: Array< string | null > | null,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateLabelInput = {
+  id: string,
+  title?: string | null,
+  collabarator?: string | null,
+  collabarators?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type DeleteLabelInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateNodeInput = {
+  id?: string | null,
+  title?: string | null,
+  description?: string | null,
+  color?: string | null,
+  archived?: boolean | null,
+  trashed?: boolean | null,
+  pined?: boolean | null,
+  collabarator: string,
+  collabarators: Array< string | null >,
+  labels?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type ModelNodeConditionInput = {
+  title?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  color?: ModelStringInput | null,
+  archived?: ModelBooleanInput | null,
+  trashed?: ModelBooleanInput | null,
+  pined?: ModelBooleanInput | null,
+  collabarator?: ModelStringInput | null,
+  collabarators?: ModelStringInput | null,
+  labels?: ModelStringInput | null,
+  and?: Array< ModelNodeConditionInput | null > | null,
+  or?: Array< ModelNodeConditionInput | null > | null,
+  not?: ModelNodeConditionInput | null,
+};
+
 export type ModelBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
@@ -84,12 +127,12 @@ export type Node = {
   title?: string | null,
   description?: string | null,
   color?: string | null,
-  gaps?: Array< string | null > | null,
   archived?: boolean | null,
   trashed?: boolean | null,
   pined?: boolean | null,
   collabarator: string,
   collabarators: Array< string | null >,
+  labels?: Array< string | null > | null,
   _version: number,
   _deleted?: boolean | null,
   _lastChangedAt: number,
@@ -102,12 +145,12 @@ export type UpdateNodeInput = {
   title?: string | null,
   description?: string | null,
   color?: string | null,
-  gaps?: Array< string | null > | null,
   archived?: boolean | null,
   trashed?: boolean | null,
   pined?: boolean | null,
   collabarator?: string | null,
   collabarators?: Array< string | null > | null,
+  labels?: Array< string | null > | null,
   _version?: number | null,
 };
 
@@ -159,63 +202,14 @@ export type DeleteUsersInput = {
   _version?: number | null,
 };
 
-export type CreateGapsInput = {
-  id?: string | null,
-  title: string,
-  collabarator: string,
-  collabarators?: Array< string | null > | null,
-  _version?: number | null,
-};
-
-export type ModelGapsConditionInput = {
-  title?: ModelStringInput | null,
-  collabarator?: ModelStringInput | null,
-  collabarators?: ModelStringInput | null,
-  and?: Array< ModelGapsConditionInput | null > | null,
-  or?: Array< ModelGapsConditionInput | null > | null,
-  not?: ModelGapsConditionInput | null,
-};
-
-export type Gaps = {
-  __typename: "Gaps",
-  id: string,
-  title: string,
-  collabarator: string,
-  collabarators?: Array< string | null > | null,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type UpdateGapsInput = {
-  id: string,
-  title?: string | null,
-  collabarator?: string | null,
-  collabarators?: Array< string | null > | null,
-  _version?: number | null,
-};
-
-export type DeleteGapsInput = {
-  id: string,
-  _version?: number | null,
-};
-
-export type ModelNodeFilterInput = {
+export type ModelLabelFilterInput = {
   id?: ModelIDInput | null,
   title?: ModelStringInput | null,
-  description?: ModelStringInput | null,
-  color?: ModelStringInput | null,
-  gaps?: ModelStringInput | null,
-  archived?: ModelBooleanInput | null,
-  trashed?: ModelBooleanInput | null,
-  pined?: ModelBooleanInput | null,
   collabarator?: ModelStringInput | null,
   collabarators?: ModelStringInput | null,
-  and?: Array< ModelNodeFilterInput | null > | null,
-  or?: Array< ModelNodeFilterInput | null > | null,
-  not?: ModelNodeFilterInput | null,
+  and?: Array< ModelLabelFilterInput | null > | null,
+  or?: Array< ModelLabelFilterInput | null > | null,
+  not?: ModelLabelFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -232,6 +226,29 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
+};
+
+export type ModelLabelConnection = {
+  __typename: "ModelLabelConnection",
+  items:  Array<Label | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelNodeFilterInput = {
+  id?: ModelIDInput | null,
+  title?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  color?: ModelStringInput | null,
+  archived?: ModelBooleanInput | null,
+  trashed?: ModelBooleanInput | null,
+  pined?: ModelBooleanInput | null,
+  collabarator?: ModelStringInput | null,
+  collabarators?: ModelStringInput | null,
+  labels?: ModelStringInput | null,
+  and?: Array< ModelNodeFilterInput | null > | null,
+  or?: Array< ModelNodeFilterInput | null > | null,
+  not?: ModelNodeFilterInput | null,
 };
 
 export type ModelNodeConnection = {
@@ -258,21 +275,64 @@ export type ModelUsersConnection = {
   startedAt?: number | null,
 };
 
-export type ModelGapsFilterInput = {
-  id?: ModelIDInput | null,
-  title?: ModelStringInput | null,
-  collabarator?: ModelStringInput | null,
-  collabarators?: ModelStringInput | null,
-  and?: Array< ModelGapsFilterInput | null > | null,
-  or?: Array< ModelGapsFilterInput | null > | null,
-  not?: ModelGapsFilterInput | null,
+export type CreateLabelMutationVariables = {
+  input: CreateLabelInput,
+  condition?: ModelLabelConditionInput | null,
 };
 
-export type ModelGapsConnection = {
-  __typename: "ModelGapsConnection",
-  items:  Array<Gaps | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
+export type CreateLabelMutation = {
+  createLabel?:  {
+    __typename: "Label",
+    id: string,
+    title: string,
+    collabarator?: string | null,
+    collabarators?: Array< string | null > | null,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateLabelMutationVariables = {
+  input: UpdateLabelInput,
+  condition?: ModelLabelConditionInput | null,
+};
+
+export type UpdateLabelMutation = {
+  updateLabel?:  {
+    __typename: "Label",
+    id: string,
+    title: string,
+    collabarator?: string | null,
+    collabarators?: Array< string | null > | null,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteLabelMutationVariables = {
+  input: DeleteLabelInput,
+  condition?: ModelLabelConditionInput | null,
+};
+
+export type DeleteLabelMutation = {
+  deleteLabel?:  {
+    __typename: "Label",
+    id: string,
+    title: string,
+    collabarator?: string | null,
+    collabarators?: Array< string | null > | null,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateNodeMutationVariables = {
@@ -287,12 +347,12 @@ export type CreateNodeMutation = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -313,12 +373,12 @@ export type UpdateNodeMutation = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -339,12 +399,12 @@ export type DeleteNodeMutation = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -413,17 +473,16 @@ export type DeleteUsersMutation = {
   } | null,
 };
 
-export type CreateGapsMutationVariables = {
-  input: CreateGapsInput,
-  condition?: ModelGapsConditionInput | null,
+export type GetLabelQueryVariables = {
+  id: string,
 };
 
-export type CreateGapsMutation = {
-  createGaps?:  {
-    __typename: "Gaps",
+export type GetLabelQuery = {
+  getLabel?:  {
+    __typename: "Label",
     id: string,
     title: string,
-    collabarator: string,
+    collabarator?: string | null,
     collabarators?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
@@ -433,43 +492,56 @@ export type CreateGapsMutation = {
   } | null,
 };
 
-export type UpdateGapsMutationVariables = {
-  input: UpdateGapsInput,
-  condition?: ModelGapsConditionInput | null,
+export type ListLabelsQueryVariables = {
+  filter?: ModelLabelFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
 };
 
-export type UpdateGapsMutation = {
-  updateGaps?:  {
-    __typename: "Gaps",
-    id: string,
-    title: string,
-    collabarator: string,
-    collabarators?: Array< string | null > | null,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-    createdAt: string,
-    updatedAt: string,
+export type ListLabelsQuery = {
+  listLabels?:  {
+    __typename: "ModelLabelConnection",
+    items:  Array< {
+      __typename: "Label",
+      id: string,
+      title: string,
+      collabarator?: string | null,
+      collabarators?: Array< string | null > | null,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
-export type DeleteGapsMutationVariables = {
-  input: DeleteGapsInput,
-  condition?: ModelGapsConditionInput | null,
+export type SyncLabelsQueryVariables = {
+  filter?: ModelLabelFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
 };
 
-export type DeleteGapsMutation = {
-  deleteGaps?:  {
-    __typename: "Gaps",
-    id: string,
-    title: string,
-    collabarator: string,
-    collabarators?: Array< string | null > | null,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-    createdAt: string,
-    updatedAt: string,
+export type SyncLabelsQuery = {
+  syncLabels?:  {
+    __typename: "ModelLabelConnection",
+    items:  Array< {
+      __typename: "Label",
+      id: string,
+      title: string,
+      collabarator?: string | null,
+      collabarators?: Array< string | null > | null,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -484,12 +556,12 @@ export type GetNodeQuery = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -513,12 +585,12 @@ export type ListNodesQuery = {
       title?: string | null,
       description?: string | null,
       color?: string | null,
-      gaps?: Array< string | null > | null,
       archived?: boolean | null,
       trashed?: boolean | null,
       pined?: boolean | null,
       collabarator: string,
       collabarators: Array< string | null >,
+      labels?: Array< string | null > | null,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
@@ -546,12 +618,12 @@ export type SyncNodesQuery = {
       title?: string | null,
       description?: string | null,
       color?: string | null,
-      gaps?: Array< string | null > | null,
       archived?: boolean | null,
       trashed?: boolean | null,
       pined?: boolean | null,
       collabarator: string,
       collabarators: Array< string | null >,
+      labels?: Array< string | null > | null,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
@@ -635,16 +707,12 @@ export type SyncUsersQuery = {
   } | null,
 };
 
-export type GetGapsQueryVariables = {
-  id: string,
-};
-
-export type GetGapsQuery = {
-  getGaps?:  {
-    __typename: "Gaps",
+export type OnCreateLabelSubscription = {
+  onCreateLabel?:  {
+    __typename: "Label",
     id: string,
     title: string,
-    collabarator: string,
+    collabarator?: string | null,
     collabarators?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
@@ -654,56 +722,33 @@ export type GetGapsQuery = {
   } | null,
 };
 
-export type ListGapssQueryVariables = {
-  filter?: ModelGapsFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListGapssQuery = {
-  listGapss?:  {
-    __typename: "ModelGapsConnection",
-    items:  Array< {
-      __typename: "Gaps",
-      id: string,
-      title: string,
-      collabarator: string,
-      collabarators?: Array< string | null > | null,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      createdAt: string,
-      updatedAt: string,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
+export type OnUpdateLabelSubscription = {
+  onUpdateLabel?:  {
+    __typename: "Label",
+    id: string,
+    title: string,
+    collabarator?: string | null,
+    collabarators?: Array< string | null > | null,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
-export type SyncGapsQueryVariables = {
-  filter?: ModelGapsFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  lastSync?: number | null,
-};
-
-export type SyncGapsQuery = {
-  syncGaps?:  {
-    __typename: "ModelGapsConnection",
-    items:  Array< {
-      __typename: "Gaps",
-      id: string,
-      title: string,
-      collabarator: string,
-      collabarators?: Array< string | null > | null,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      createdAt: string,
-      updatedAt: string,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
+export type OnDeleteLabelSubscription = {
+  onDeleteLabel?:  {
+    __typename: "Label",
+    id: string,
+    title: string,
+    collabarator?: string | null,
+    collabarators?: Array< string | null > | null,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 
@@ -714,12 +759,12 @@ export type OnCreateNodeSubscription = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -735,12 +780,12 @@ export type OnUpdateNodeSubscription = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -756,12 +801,12 @@ export type OnDeleteNodeSubscription = {
     title?: string | null,
     description?: string | null,
     color?: string | null,
-    gaps?: Array< string | null > | null,
     archived?: boolean | null,
     trashed?: boolean | null,
     pined?: boolean | null,
     collabarator: string,
     collabarators: Array< string | null >,
+    labels?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -807,51 +852,6 @@ export type OnDeleteUsersSubscription = {
     email?: string | null,
     name?: string | null,
     password?: string | null,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnCreateGapsSubscription = {
-  onCreateGaps?:  {
-    __typename: "Gaps",
-    id: string,
-    title: string,
-    collabarator: string,
-    collabarators?: Array< string | null > | null,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnUpdateGapsSubscription = {
-  onUpdateGaps?:  {
-    __typename: "Gaps",
-    id: string,
-    title: string,
-    collabarator: string,
-    collabarators?: Array< string | null > | null,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnDeleteGapsSubscription = {
-  onDeleteGaps?:  {
-    __typename: "Gaps",
-    id: string,
-    title: string,
-    collabarator: string,
-    collabarators?: Array< string | null > | null,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,

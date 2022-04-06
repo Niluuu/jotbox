@@ -1,9 +1,10 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
-import { FC, useCallback, useState, useRef } from 'react';
+import { FC, useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
+import { useParams } from 'react-router';
 import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
@@ -57,11 +58,12 @@ interface MainInputProps {
   /**
    * Default node labels
    */
-  selectedGaps?: string[];
+  selectedLabels?: string[];
   /**
    * Node labels handler
    */
-  toggleGaps: (gap: string) => void;
+  togglelabels: (label: string) => void;
+  onSelectedLabels?: (label: string) => void;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -74,16 +76,27 @@ const MainInput: FC<MainInputProps> = ({
   titleRef,
   defaultColor,
   onDefaultColor,
-  selectedGaps,
-  toggleGaps,
+  selectedLabels,
+  togglelabels,
+  onSelectedLabels,
 }) => {
   const linkRef = useRef(null);
+  const textRef = useRef(null);
   const [linkMode, setlinkMode] = useState(false);
   const editorRef = useRef<Editor>(null);
+  const { label } = useParams();
 
   const outsideRef = useRef(null);
-  const handleClickOutside = () => setTimeout(() => setFocused(false), 350);
-  const handleClickInside = () => setTimeout(() => setFocused(true), 200);
+  const handleClickOutside = () =>
+    setTimeout(() => {
+      setFocused(false);
+    }, 350);
+
+  const handleClickInside = () =>
+    setTimeout(() => {
+      if (label) onSelectedLabels(label);
+      setFocused(true);
+    }, 200);
   useOnClickOutside(outsideRef, handleClickOutside);
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -108,7 +121,8 @@ const MainInput: FC<MainInputProps> = ({
   };
 
   const onLinkEditor = () => {
-    linkRef.current.focus();
+    if (textRef.current.value.length === 0) textRef.current.focus();
+    else linkRef.current.focus();
     createLinkToEditor();
   };
 
@@ -128,92 +142,110 @@ const MainInput: FC<MainInputProps> = ({
       onClick={handleClickInside}
       ref={outsideRef}
     >
-      {isInputCollabaratorOpen ? (
-        <Collabarator isMainInput />
-      ) : (
-        <>
-          <div className={classNames(styles.main_header, focused && styles.show)}>
-            <div
-              ref={titleRef}
-              id="title"
-              className={styles.textarea}
-              contentEditable
-              suppressContentEditableWarning
-              aria-multiline
-              role="textbox"
-              spellCheck
-              onKeyDown={(e) => onKeyPressed(e)}
-            />
+      <Collabarator isOpen={!isInputCollabaratorOpen} isMainInput />
+      <>
+        <div
+          className={classNames(styles.main_header, focused && styles.show)}
+          style={{ display: isInputCollabaratorOpen && 'none' }}
+        >
+          <div
+            ref={titleRef}
+            id="title"
+            className={styles.textarea}
+            contentEditable
+            suppressContentEditableWarning
+            aria-multiline
+            role="textbox"
+            spellCheck
+            onKeyDown={(e) => onKeyPressed(e)}
+          />
 
-            <button
-              onClick={onDefaultPin}
-              type="button"
-              className={classNames(styles.defaultPin, styles.icon_btn)}
-            >
-              {!defaultPin ? (
-                <Icon name="pin" color="premium" size="xs" />
-              ) : (
-                <Icon name="pin-black" color="premium" size="xs" />
-              )}
+          <button
+            onClick={onDefaultPin}
+            type="button"
+            className={classNames(styles.defaultPin, styles.icon_btn)}
+          >
+            {!defaultPin ? (
+              <Icon name="pin" color="premium" size="xs" />
+            ) : (
+              <Icon name="pin-black" color="premium" size="xs" />
+            )}
+          </button>
+        </div>
+
+        <div style={{ display: isInputCollabaratorOpen && 'none' }} className={styles.main_row}>
+          <MainEditor
+            linkRef={linkRef}
+            textRef={textRef}
+            isMainInput
+            defaultColor={defaultColor}
+            linkMode={linkMode}
+            createLinkToEditor={createLinkToEditor}
+            editorRef={editorRef}
+            initialState={text}
+          />
+        </div>
+        {!focused ? (
+          <div
+            style={{ display: isInputCollabaratorOpen && 'none' }}
+            className={classNames(styles.bottom_tools)}
+          >
+            <button type="button" className={styles.icon_btn}>
+              <Icon name="edit-bordered" color="premium" size="xs" />
+            </button>
+            <button type="button" className={styles.icon_btn}>
+              <Icon name="pen" color="premium" size="xs" />
+            </button>
+            <button type="button" className={styles.icon_btn}>
+              <Icon name="img" color="premium" size="xs" />
             </button>
           </div>
+        ) : null}
+        {focused ? (
+          <>
+            {selectedLabels && (
+              <div
+                style={{ display: isInputCollabaratorOpen && 'none' }}
+                className={classNames(styles.main_tools, styles.labels)}
+              >
+                {selectedLabels.map((labelChip) => (
+                  <Chip
+                    onDelate={() => {
+                      if (label !== labelChip) togglelabels(labelChip);
+                    }}
+                  >
+                    {labelChip}
+                  </Chip>
+                ))}
+              </div>
+            )}
 
-          <div className={styles.main_row}>
-            <MainEditor
-              linkRef={linkRef}
+            {inputCollabaratorUsers && (
+              <div
+                style={{ display: isInputCollabaratorOpen && 'none' }}
+                className={classNames(styles.main_tools, styles.labels)}
+              >
+                {inputCollabaratorUsers.map((user) => (
+                  <div className={styles.user}>{user[0].toLowerCase()}</div>
+                ))}
+              </div>
+            )}
+
+            <InputNavbar
+              hide={isInputCollabaratorOpen}
               isMainInput
+              onSetArchive={onSetArchive}
+              onSetNode={() => onSetNodes()}
+              createLinkToEditor={onLinkEditor}
+              onDefaultColor={onDefaultColor}
               defaultColor={defaultColor}
-              linkMode={linkMode}
-              createLinkToEditor={createLinkToEditor}
-              editorRef={editorRef}
-              initialState={text}
+              togglelabels={() => togglelabels}
+              selectedLabels={selectedLabels}
+              label={label}
             />
-          </div>
-          {!focused ? (
-            <div className={classNames(styles.bottom_tools)}>
-              <button type="button" className={styles.icon_btn}>
-                <Icon name="edit-bordered" color="premium" size="xs" />
-              </button>
-              <button type="button" className={styles.icon_btn}>
-                <Icon name="pen" color="premium" size="xs" />
-              </button>
-              <button type="button" className={styles.icon_btn}>
-                <Icon name="img" color="premium" size="xs" />
-              </button>
-            </div>
-          ) : null}
-          {focused ? (
-            <>
-              {selectedGaps && (
-                <div className={classNames(styles.main_tools, styles.gaps)}>
-                  {selectedGaps.map((gap) => (
-                    <Chip>{gap}</Chip>
-                  ))}
-                </div>
-              )}
-
-              {inputCollabaratorUsers && (
-                <div className={classNames(styles.main_tools, styles.gaps)}>
-                  {inputCollabaratorUsers.map((user) => (
-                    <div className={styles.user}>{user[0].toLowerCase()}</div>
-                  ))}
-                </div>
-              )}
-
-              <InputNavbar
-                isMainInput
-                onSetArchive={onSetArchive}
-                onSetNode={() => onSetNodes()}
-                createLinkToEditor={onLinkEditor}
-                onDefaultColor={onDefaultColor}
-                defaultColor={defaultColor}
-                toggleGaps={toggleGaps}
-                selectedGaps={selectedGaps}
-              />
-            </>
-          ) : null}
-        </>
-      )}
+          </>
+        ) : null}
+      </>
     </div>
   );
 };

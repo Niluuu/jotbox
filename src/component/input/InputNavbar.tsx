@@ -10,7 +10,7 @@ import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 import '../cart/Color.scss';
 import { colors } from '../../utils/editor/color';
-import { listGapss } from '../../graphql/queries';
+import { listLabels } from '../../graphql/queries';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import {
   toggleIsInputCollabaratorOpen,
@@ -60,21 +60,21 @@ interface InputNavbarProps {
    */
   onDefaultColor?: (optionalColor: string) => void;
   /**
-   * Node initial gaps
+   * Node initial labels
    */
-  initialGaps?: string[];
+  initiallabels?: string[];
   /**
-   * Oncreate node toggleselected gaps
+   * Oncreate node toggleselected labels
    */
-  toggleGaps?: (gap: string) => void;
+  togglelabels?: (label: string) => void;
   /**
-   * Oncreate selected gaps
+   * Oncreate selected labels
    */
-  selectedGaps: string[];
+  selectedLabels: string[];
   /**
-   * Toggle gaps of Node function
+   * Toggle labels of Node function
    */
-  toggleGapsCart?: (gap: any) => void;
+  toggleCartLabels?: (label: string) => void;
   /**
    * Is Modal? Should navbar has shadow in Modal?
    */
@@ -88,6 +88,8 @@ interface InputNavbarProps {
    */
   onOpenModal?: () => void;
   updateModalIsOpen?: boolean;
+  hide?: boolean;
+  label?: string;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -102,82 +104,80 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     currentColor,
     defaultColor,
     onDefaultColor,
-    toggleGaps,
-    selectedGaps,
-    toggleGapsCart,
+    togglelabels,
+    selectedLabels,
+    toggleCartLabels,
     shadow,
     isCart,
     onOpenModal,
-    updateModalIsOpen,
+    hide,
+    label,
   } = props;
   const userEmail = localStorage.getItem('userEmail');
   const collabarator = { eq: userEmail };
 
-  const [listGaps, setListGaps] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
 
-  const handleEditorUndo = () => {
-    dispatch(setUndo());
-    setTimeout(() => {
-      dispatch(setUndo());
-    });
+  const undoRedo = (callBack: () => void) => {
+    dispatch(callBack());
+    setTimeout(() => dispatch(callBack()));
   };
 
-  const handleEditorRedo = () => {
-    dispatch(setRedo());
-    setTimeout(() => {
-      dispatch(setRedo());
-    });
-  };
+  const handleEditorUndo = () => undoRedo(setUndo);
+
+  const handleEditorRedo = () => undoRedo(setRedo);
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
   };
 
-  const getGaps = useCallback(async () => {
+  const getlabels = useCallback(async () => {
     try {
-      const res = await API.graphql({ query: listGapss, variables: { filter } });
+      const res = await API.graphql({ query: listLabels, variables: { filter } });
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //  @ts-ignore
-      const { items } = res.data.listGapss;
+      const { items } = res.data.listLabels;
       // eslint-disable-next-line no-underscore-dangle
       const noneDeletedItems = items.filter((elm) => elm._deleted !== true);
 
       const filteredLabels = restrictDouble(noneDeletedItems);
 
-      setListGaps(filteredLabels);
+      setLabels(filteredLabels);
       return filteredLabels;
     } catch (err) {
-      throw new Error('Get gaps route');
+      throw new Error('Get labels route');
     }
   }, [filter]);
 
   const onLabelFilter = useCallback(
     async (value: string) => {
       try {
-        const data = await getGaps();
-        const newGaps = data.filter((elm) => elm.title.toLowerCase().includes(value.toLowerCase()));
+        const data = await getlabels();
+        const newlabels = data.filter((elm) =>
+          elm.title.toLowerCase().includes(value.toLowerCase()),
+        );
 
-        setListGaps(newGaps);
+        setLabels(newlabels);
       } catch (err) {
         throw new Error('Error filter by Letter');
       }
     },
-    [getGaps],
+    [getlabels],
   );
 
   useEffect(() => {
-    getGaps();
-  }, [getGaps, onLabelFilter]);
+    getlabels();
+  }, [getlabels, onLabelFilter]);
 
-  const toggleSelectedGap = useCallback(
+  const toggleSelectedlabel = useCallback(
     (e) => {
-      if (isMainInput) toggleGaps(e.target.value);
-      else toggleGapsCart(e.target.value);
+      if (isMainInput) togglelabels(e.target.value);
+      else toggleCartLabels(e.target.value);
     },
-    [isMainInput, toggleGaps, toggleGapsCart],
+    [isMainInput, togglelabels, toggleCartLabels],
   );
 
   const toggleCollabarator = () => {
@@ -190,7 +190,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
 
   return (
     <>
-      <div className={classNames(styles.input_navbar, shadow && styles.shadow)}>
+      <div
+        style={{ display: hide && 'none' }}
+        className={classNames(styles.input_navbar, shadow && styles.shadow)}
+      >
         <div className={styles.main_tools}>
           <button onClick={toggleArchive} type="button" className={styles.icon_btn}>
             <Icon name="dowland" color="premium" size="xs" />
@@ -243,21 +246,23 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                       <Icon size="min" name="search" />
                     </div>
                     <div className={styles.item}>
-                      {listGaps.map((gap) => (
-                        <li key={gap.id} className={styles.labelGap}>
+                      {labels.map((localLabel) => (
+                        <li key={localLabel.id} className={styles.labelItems}>
                           <label>
                             <input
                               type="checkbox"
-                              value={gap.title}
-                              onClick={(e) => toggleSelectedGap(e)}
-                              checked={selectedGaps.includes(gap.title)}
+                              value={localLabel.title}
+                              onClick={(e) => {
+                                if (label !== localLabel.title) toggleSelectedlabel(e);
+                              }}
+                              checked={selectedLabels.includes(localLabel.title)}
                             />
-                            {selectedGaps.includes(gap.title) ? (
+                            {selectedLabels.includes(localLabel.title) ? (
                               <Icon name="edit-bordered" color="premium" size="xs" />
                             ) : (
                               <Icon name="box" color="premium" size="xs" />
                             )}
-                            <span> {gap.title} </span>
+                            <span> {localLabel.title} </span>
                           </label>
                         </li>
                       ))}
@@ -269,7 +274,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             placement="bottom-start"
           >
             <button type="button" className={styles.icon_btn}>
-              <Icon name="gaps" color="premium" size="xs" />
+              <Icon name="label" color="premium" size="xs" />
             </button>
           </Popover>
           {!isCart && (

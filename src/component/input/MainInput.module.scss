@@ -5,7 +5,7 @@
   padding: auto;
 
   &_input {
-    padding: 0 12.5px;
+    padding: 0 10px 0 6px;
     box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
     display: flex;
     flex-direction: column;
@@ -25,7 +25,7 @@
     &:focus {
       outline: none;
     }
-    
+
     &.collabarator {
       padding: 0 !important;
     }
@@ -39,7 +39,7 @@
       display: flex;
       justify-content: flex-end;
       visibility: visible;
-      padding: 5px 0 0;
+      padding: 5px 0 0 10px;
     }
 
     .textarea {
@@ -194,10 +194,10 @@
   }
 }
 
-.gaps {
+.labels {
   width: 100%;
   position: relative;
-  padding: 5px 0 0;
+  padding: 5px 0 0 10px;
 
   .user {
     width: 26px;
@@ -268,7 +268,7 @@
   }
 }
 
-.labelGap {
+.labelItems {
   padding: 0 !important;
 
   label {
@@ -278,7 +278,7 @@
     cursor: pointer;
 
     input {
-      width: 0 !important;
+      display: none;
     }
 
     span {
@@ -326,6 +326,10 @@
 }
 
 @include desktop {
+  .labels {
+    padding: 10px 0 0 10px;
+  }
+
   .main {
     &_input {
       width: 550px;
@@ -334,7 +338,7 @@
 
     &_header {
       &.show {
-        padding: 10px 0 0;
+        padding: 10px 0 0 10px;
       }
     }
   }
@@ -392,8 +396,8 @@
 }
 
 @include desktop-large {
-  .textarea {
-    padding: 1px 16px;
+  .labels {
+    padding: 10px 0 0 12px;
   }
 
   .main {
@@ -404,7 +408,7 @@
 
     &_header {
       &.show {
-        padding: 10px 0 0;
+        padding: 10px 0 0 12px;
       }
     }
   }
@@ -424,8 +428,6 @@
   }
 
   .input_navbar {
-    padding: 4px 5px;
-
     .icon_btn {
       padding: 8px;
     }

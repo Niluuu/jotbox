@@ -1,79 +1,109 @@
 /* eslint-disable react/no-unused-prop-types */
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState, useRef } from 'react';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';
 import Modal from '../../component/modal/Modal';
 
+type LabelType = {
+  id: string;
+  _version: number;
+  title: string;
+};
+
 export interface SubmenuModalProps {
   isOpenLabel: boolean;
+  hasError: boolean;
   toggleModal: () => void;
-  onCreateGap: (title: string) => void;
-  onUpdateGap: (title: string, id: string, version: number) => void;
-  onDeleteGap: (id: string, version: number) => void;
+  onCreateLabel: (title: string) => void;
+  onUpdateLabel: (title: string, id: string, version: number) => void;
+  onDeleteLabel: (id: string, version: number) => void;
   close?: string;
   modalTitle?: string;
-  listGaps: any;
+  listLabels: LabelType[];
 }
 
 export const SubmenuModal: FC<SubmenuModalProps> = ({
   isOpenLabel,
   toggleModal,
-  onCreateGap,
-  onUpdateGap,
-  onDeleteGap,
-  listGaps,
-  close = 'Ok',
+  onCreateLabel,
+  onUpdateLabel,
+  onDeleteLabel,
+  listLabels,
+  close = 'Done',
   modalTitle = 'Изменение ярлыков',
+  hasError,
 }) => {
   const [focus, setFocus] = useState(false);
   const [val, setVal] = useState('');
 
-  const changeValName = useCallback((e) => {
-    setVal(e.target.value);
-  }, []);
-
   const onCreateKeyup = (key: string) => {
     if (key === 'Enter') {
-      onCreateGap(val);
+      onCreateLabel(val);
       setVal('');
     }
   };
 
+  const mainRef = useRef(null);
   return (
     <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
-      <li className={styles.gaps}>
+      <li className={styles.labels}>
         {focus ? (
-          // eslint-disable-next-line no-alert
-          <Icon name="exit" color="premium" size="xs" onClick={() => alert('delate')} />
+          <Icon
+            name={focus ? 'exit' : 'add'}
+            color="premium"
+            size="xs"
+            onMouseDown={() => setVal('')}
+          />
         ) : (
-          <Icon name="add" color="premium" size="xs" onClick={() => setVal('')} />
+          <Icon
+            name="add"
+            color="premium"
+            size="xs"
+            onClick={() => {
+              mainRef.current.focus();
+              setFocus(true);
+            }}
+          />
         )}
-
         <input
+          ref={mainRef}
           type="text"
           value={val}
-          onChange={changeValName}
+          onChange={(e) => setVal(e.currentTarget.value)}
           onKeyUp={(e) => onCreateKeyup(e.key)}
           placeholder="Create new label"
           onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
+          onBlur={() => setTimeout(() => setFocus(false), 100)}
         />
 
-        {focus || val.length > 0 ? (
-          <Icon name="done" color="premium" size="xs" onClick={() => onCreateGap(val)} />
+        {focus ? (
+          <>
+            {' '}
+            {val && (
+              <Icon
+                name="done"
+                color="premium"
+                size="xs"
+                onClick={() => {
+                  if (val) onCreateLabel(val);
+                }}
+              />
+            )}
+          </>
         ) : null}
       </li>
-      <div style={{ overflowY: 'scroll', height: '50vh' }}>
-        {listGaps &&
-          listGaps.map(({ id, title, _version }) => {
+      {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}
+      <div style={{ overflowY: 'scroll', height: '350px' }}>
+        {listLabels &&
+          listLabels.map(({ id, title, _version }) => {
             return (
-              <Gaps
+              <Labels
                 key={id}
                 title={title}
                 id={id}
                 version={_version}
-                onDeleteGap={onDeleteGap}
-                onUpdateGap={onUpdateGap}
+                onDeleteLabel={onDeleteLabel}
+                onUpdateLabel={onUpdateLabel}
               />
             );
           })}
@@ -88,50 +118,63 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   );
 };
 
-interface GapsProps {
+interface labelsProps {
   key: string;
   id: string;
   title: string;
   version: number;
-  onUpdateGap: (title: string, id: string, version: number) => void;
-  onDeleteGap: (id: string, version: number) => void;
+  onUpdateLabel: (title: string, id: string, version: number) => void;
+  onDeleteLabel: (id: string, version: number) => void;
 }
 
-const Gaps: FC<GapsProps> = ({ title, id, onUpdateGap, onDeleteGap, version }) => {
+const Labels: FC<labelsProps> = ({ title, id, onUpdateLabel, onDeleteLabel, version }) => {
   const [val, setVal] = useState(title);
   const [focus, setFocus] = useState(false);
+  const [hover, setHover] = useState(false);
 
-  const changeValName = useCallback(
-    (e) => {
-      setVal(e.target.value);
-    },
-    [val],
-  );
+  const changeValName = (e) => setVal(e.target.value);
 
+  const toggleHover = () => setHover((previous) => !previous);
+  const localRef = useRef(null);
   return (
-    <li className={styles.gaps}>
+    <li onMouseEnter={toggleHover} onMouseLeave={toggleHover} className={styles.labels}>
       <Icon
-        // name={focus ? 'delete' : 'filled-label'}
-        name="delete"
+        name={hover ? 'delete' : 'filled-label'}
         color="premium"
         size="xs"
-        className={styles.gaps_icon}
-        onClick={() => onDeleteGap(id, version)}
+        className={styles.labels_icon}
+        onClick={() => onDeleteLabel(id, version)}
       />
       <input
+        ref={localRef}
         type="text"
         value={val}
         onChange={changeValName}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
       />
-      <Icon
-        onClick={() => onUpdateGap(val, id, version)}
-        name={focus ? 'done' : 'edit'}
-        color="premium"
-        size="xs"
-        className={styles.gaps_icon}
-      />
+      {focus ? (
+        <Icon
+          onMouseDown={() => {
+            onUpdateLabel(val, id, version);
+          }}
+          name="done"
+          color="premium"
+          size="xs"
+          className={styles.labels_icon}
+        />
+      ) : (
+        <Icon
+          onClick={() => {
+            localRef.current.focus();
+            setFocus(true);
+          }}
+          name="edit"
+          color="premium"
+          size="xs"
+          className={styles.labels_icon}
+        />
+      )}
     </li>
   );
 };

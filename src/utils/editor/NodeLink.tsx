@@ -37,7 +37,13 @@ export const NodeLink: FC<NodeLinkProps> = ({ id, children }) => {
   );
 
   return (
-    <div className={classNames(styles.linkfy, styles.link)} onClick={() => handleClick(id)}>
+    <div className={classNames(styles.linkfy, styles.link)}>
+      <div className={styles.tooltip}>
+        <span contentEditable="false" onClick={() => handleClick(id)}>
+          Open
+        </span>
+        <br />
+      </div>
       <div>{children}</div>
     </div>
   );

@@ -115,10 +115,15 @@
   }
 }
 
-.gaps {
+.labels {
   padding: 10px;
   display: flex;
   width: 100%;
+  
+  svg {
+    cursor: pointer;
+    width: 17px !important;
+  }
 
   &_icons_row {
     padding: auto;
@@ -138,17 +143,18 @@
   display: flex;
   justify-content: flex-end;
   border-top: 1px solid $gray-color2;
-  padding-top: 20px;
+  padding: 5px 0 25px;
   width: 100%;
 
   button {
-    padding: 12px 15px;
+    padding: 10px 25px;
     background: $color-white;
-    border-radius: 0%;
-    border-bottom-right-radius: 25px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-family: 'Roboto';
 
     &:hover {
-      background: $color-white;
+      background: rgb(245, 245, 245);
     }
   }
 }
@@ -247,4 +253,12 @@
       }
     }
   }
+}
+
+.errorLabel {
+  color: rgb(200, 0, 0);
+  padding: 0 12px;
+  font-family: 'Roboto';
+  font-size: 13px;
+  width: 100%;
 }

@@ -1,21 +1,20 @@
+/* eslint-disable max-lines */
 import { FC } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import HomePage from '../HomePage/HomePage';
-import SignInPage from '../SignInPage/SignInPage';
 import SignUpPage from '../SignUpPage/SignUpPage';
-import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
+import SignInPage from '../SignInPage/SignInPage';
 import ConfirmPage from '../SignUpPage/Confirm';
+import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 
 const App: FC = () => {
   return (
     <Switch>
-      <ProtectedRoute exact path="/" component={HomePage} />
-      <ProtectedRoute exact path="/archive" component={() => <HomePage archive />} />
-      <ProtectedRoute path="/gaps/:label" component={HomePage} />
       <Route path="/signup" component={SignUpPage} />
       <Route path="/signin" component={SignInPage} />
       <Route path="/confirmCode" component={ConfirmPage} />
-      <Route path="*" component={<div>UNDEFINED PAGE</div>} />
+      <ProtectedRoute path="/" component={HomePage} />
+      <Route path="*" component={() => <div>Page Not Found</div>} />
     </Switch>
   );
 };

@@ -1,4 +1,4 @@
-const emailVerify = (email: string) => {
+const emailVerify = (email: string): boolean => {
   const isEmail = String(email)
     .toLowerCase()
     .match(

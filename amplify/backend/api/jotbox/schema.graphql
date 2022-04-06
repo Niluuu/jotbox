@@ -1,14 +1,21 @@
+type Label @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  collabarator: AWSEmail
+  collabarators: [AWSEmail]
+}
+
 type Node @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String
   description: String
   color: String
-  gaps: [String]
   archived: Boolean
   trashed: Boolean
   pined: Boolean
   collabarator: AWSEmail!
   collabarators: [AWSEmail]!
+  labels: [String]
 }
 
 type Users @model @auth(rules: [{allow: public}]) {
@@ -16,12 +23,5 @@ type Users @model @auth(rules: [{allow: public}]) {
   email: AWSEmail
   name: String
   password: String
-}
-
-type Gaps @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  title: String!
-  collabarator: AWSEmail!
-  collabarators: [AWSEmail]
 }
  

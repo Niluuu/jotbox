@@ -24,7 +24,7 @@ const AddLinkModal: FC = () => {
 
   return (
     <Modal title="Добавить линк" isTop isOpen={hyperLinkEditMode} toggleModal={onCloseModal}>
-      <div className={styles.gaps}>
+      <div className={styles.labels}>
         <Icon name={textFocus ? 'exit' : 'add'} color="premium" size="xs" />
         <input
           type="text"
@@ -36,7 +36,7 @@ const AddLinkModal: FC = () => {
         />
         {textFocus && <Icon name="done" color="premium" size="xs" />}
       </div>
-      <div className={styles.gaps}>
+      <div className={styles.labels}>
         <Icon name={linkFocus ? 'exit' : 'add'} color="premium" size="xs" />
         <input
           type="text"

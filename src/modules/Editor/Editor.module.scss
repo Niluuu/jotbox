@@ -4,7 +4,7 @@
 .editor {
   box-sizing: border-box;
   cursor: text;
-  padding: 5px;
+  padding: 5px 5px 5px 10px;
   border-radius: 2px;
   height: auto;
   min-height: 20px;
@@ -124,7 +124,7 @@
 
 @include desktop {
   .editor {
-    padding: 13px 0;
+    padding: 13px 13px 13px 10px;
   }
 
   .editor.cart {
@@ -133,6 +133,10 @@
 }
 
 @include desktop-large {
+  .editor {
+    padding: 13px 13px 13px 12px;
+  }
+
   .editor.cart {
     padding: 16px 1px;
   }

@@ -21,10 +21,10 @@ import { List, Repeat } from 'immutable';
 import { setText, setUpdatedText } from '../../reducers/editor';
 import Modal from '../../component/modal/Modal';
 import { RootState } from '../../app/store';
-import { Icon } from '../../component/Icon/Icon';
 import { MentionSuggestions, plugins } from '../../utils/editor/plugin';
 import styles from './Editor.module.scss';
 import createMentions from '../../utils/editor/creteMention';
+import { initialStateStr } from '../../utils/editor/initialState';
 
 interface MainEditorProps {
   linkMode?: boolean;
@@ -60,6 +60,10 @@ interface MainEditorProps {
   /**
    * Ref to autofocus add link
    */
+  textRef?: any;
+  /**
+   * Ref to autofocus text of add link
+   */
   isLarge?: boolean;
   /**
    * If editor readOnly mode
@@ -77,20 +81,10 @@ const MainEditor: FC<MainEditorProps> = ({
   isMainInput,
   isModal,
   linkRef,
+  textRef,
   isLarge,
   readOnly = undefined,
 }) => {
-  const [editorState, setEditorState] = useState(
-    EditorState.createWithContent(convertFromRaw(JSON.parse(initialState))),
-  );
-  const [urlValue, seturlValue] = useState('');
-  const [open, setOpen] = useState(false);
-  const [focus, setfocus] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [textLink, setTextLink] = useState('');
-
-  const dispatch = useDispatch();
-
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       nodes: state.nodesReducer.nodes,
@@ -102,6 +96,19 @@ const MainEditor: FC<MainEditorProps> = ({
 
   const { nodes, onCreateFuncCall, shouldUndo, shouldRedo } = mapStateToProps;
 
+  const initialEditorState = isMainInput
+    ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialStateStr)))
+    : EditorState.createWithContent(convertFromRaw(JSON.parse(initialState)));
+
+  const [editorState, setEditorState] = useState(initialEditorState);
+  const [urlValue, seturlValue] = useState('');
+  const [open, setOpen] = useState(false);
+  const [focus, setfocus] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [textLink, setTextLink] = useState('');
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (isMainInput && onCreateFuncCall) {
       setEditorState(EditorState.push(editorState, ContentState.createFromText('')));
@@ -109,19 +116,10 @@ const MainEditor: FC<MainEditorProps> = ({
   }, [editorState, isMainInput, onCreateFuncCall]);
 
   useEffect(() => {
-    if (shouldUndo) {
-      setEditorState(EditorState.undo(editorState));
-    }
-    if (shouldRedo) {
-      setEditorState(EditorState.redo(editorState));
-    }
-  }, [shouldUndo, shouldRedo, editorState, isMainInput]);
+    if (shouldUndo) setEditorState(EditorState.undo(editorState));
 
-  useEffect(() => {
-    if (shouldUndo) {
-      setEditorState(EditorState.undo(editorState));
-    }
-  }, [shouldUndo, editorState, isMainInput]);
+    if (shouldRedo) setEditorState(EditorState.redo(editorState));
+  }, [shouldUndo, shouldRedo, editorState, isMainInput]);
 
   useEffect(() => {
     const selectionState = editorState.getSelection();
@@ -324,12 +322,22 @@ const MainEditor: FC<MainEditorProps> = ({
           onSearchChange={onSearchChange}
         />
       </div>
-      <Modal left title="Add Link" toggleModal={createLinkToEditor} isOpen={linkMode}>
+      <Modal
+        left
+        title="Add Link"
+        toggleModal={() => {
+          setTextLink('');
+          seturlValue('');
+          createLinkToEditor();
+        }}
+        isOpen={linkMode}
+      >
         <div className={styles.linkWrapper}>
           <div className={styles.inputs}>
             <label className={styles.inputs_item}>
               Text
               <input
+                ref={textRef}
                 type="text"
                 value={textLink}
                 readOnly={textLink.length > 1 && !true}
@@ -351,13 +359,7 @@ const MainEditor: FC<MainEditorProps> = ({
             </div>
             <div className={classNames(styles.inputs_item, styles.buttons)}>
               <div>
-                <button
-                  type="button"
-                  onMouseDown={removeLink}
-                  onClick={() => {
-                    if (focus) seturlValue('');
-                  }}
-                >
+                <button type="button" onMouseDown={removeLink} onClick={() => seturlValue('')}>
                   Cancel
                 </button>
                 <button

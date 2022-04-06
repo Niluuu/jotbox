@@ -76,15 +76,20 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           onBlur={() => setTimeout(() => setFocus(false), 100)}
         />
 
-        {focus || val.length > 0 ? (
-          <Icon
-            name="done"
-            color="premium"
-            size="xs"
-            onClick={() => {
-              if (val) onCreateLabel(val);
-            }}
-          />
+        {focus ? (
+          <>
+            {' '}
+            {val && (
+              <Icon
+                name="done"
+                color="premium"
+                size="xs"
+                onClick={() => {
+                  if (val) onCreateLabel(val);
+                }}
+              />
+            )}
+          </>
         ) : null}
       </li>
       {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}

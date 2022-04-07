@@ -83,18 +83,19 @@ const Collabarator: FC<CollabaratorProps> = ({
       );
       const flatenItems = collabaratorItems.flat();
       const removeOwner = flatenItems.filter((collabarator: string) => collabarator !== userEmail);
-      const simple = removeOwner.map((collabarator: string) =>
-        collabarator.replace('@gmail.com', ''),
-      );
 
       const emptyArray = new Set();
-      const restricted = simple.filter((collabarator: string) => {
+      const restricted = removeOwner.filter((collabarator: string) => {
         const duplicate = emptyArray.has(collabarator);
         emptyArray.add(collabarator);
         return !duplicate;
       });
 
-      return restricted;
+      const simple = restricted.map((collabarator: string) => ({
+        userName: collabarator.split('@')[0],
+        type: collabarator.substring(collabarator.indexOf('@')),
+      }));
+      return simple;
     } catch (err) {
       throw new Error('Error filter by Letter');
     }
@@ -106,10 +107,12 @@ const Collabarator: FC<CollabaratorProps> = ({
         setValue(word);
         const data = await getAllNodes();
         const newNodes = data.filter((collabarator) =>
-          collabarator.toLowerCase().includes(word.toLowerCase()),
+          collabarator.userName.toLowerCase().includes(word.toLowerCase()),
         );
 
-        setSuggestions(newNodes);
+        setSuggestions(
+          newNodes.map((collabarator) => `${collabarator.userName}${collabarator.type}`),
+        );
       } catch (err) {
         throw new Error('Error filter by Letter');
       }
@@ -192,13 +195,13 @@ const Collabarator: FC<CollabaratorProps> = ({
             <div className={styles.suggestions}>
               {suggestions.map((suggestion) => (
                 <div
-                  className={styles.suggest_item}
+                  className={styles.suggestions_item}
                   onClick={() => {
-                    setValue(`${suggestion}@gmail.com`);
+                    setValue(suggestion);
                     setSuggestions([]);
                   }}
                 >
-                  {suggestion}@gmail.com
+                  {suggestion}
                 </div>
               ))}
             </div>

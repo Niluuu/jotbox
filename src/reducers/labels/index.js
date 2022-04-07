@@ -3,15 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 export const labels = createSlice({
   name: 'labels',
   initialState: {
-    labels: [],
+    storeLabels: [],
   },
   reducers: {
-    labelsToProps: (state, action) => {
-      state.labels = action.payload;
+    setStoreLabels: (state, action) => {
+      state.storeLabels = action.payload;
     },
   },
 });
 
-export const { labelsToProps } = labels.actions;
+export const { setStoreLabels } = labels.actions;
 
 export default labels.reducer;

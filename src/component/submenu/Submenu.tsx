@@ -14,6 +14,7 @@ import { createLabel, updateLabel, deleteLabel, updateNode } from '../../graphql
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
+import { setStoreLabels } from '../../reducers/labels';
 
 type LabelType = {
   id: string;
@@ -69,11 +70,12 @@ export const Submenu: FC<SubmenuProps> = () => {
       const filteredLabels = restrictDouble(noneDeletedItems);
 
       setLabels(filteredLabels);
+      dispatch(setStoreLabels(filteredLabels));
       return filteredLabels;
     } catch (err) {
       throw new Error('Get labels route');
     }
-  }, [filter]);
+  }, [dispatch, filter]);
 
   const onCreateLabel = useCallback(
     async (title) => {
@@ -96,12 +98,13 @@ export const Submenu: FC<SubmenuProps> = () => {
           //  @ts-ignore
           const item = data.data.createLabel;
           setLabels([item, ...labels]);
+          dispatch(setStoreLabels([item, ...labels]));
         }
       } catch (err) {
         throw new Error('Create labels route');
       }
     },
-    [getLabelRequest, labels, userEmail],
+    [dispatch, getLabelRequest, labels, userEmail],
   );
 
   const onDeleteLabel = useCallback(
@@ -117,12 +120,13 @@ export const Submenu: FC<SubmenuProps> = () => {
         // eslint-disable-next-line no-underscore-dangle
         if (item._deleted) {
           setLabels(labels.filter((elm) => elm.id !== id));
+          dispatch(setStoreLabels(labels.filter((elm) => elm.id !== id)));
         }
       } catch (err) {
         throw new Error('label DELETE route');
       }
     },
-    [labels],
+    [dispatch, labels],
   );
 
   const onUpdateLabel = useCallback(
@@ -158,6 +162,7 @@ export const Submenu: FC<SubmenuProps> = () => {
           //  @ts-ignore
           const item = newData.data.updateLabel;
           setLabels(labels.map((elm) => (elm.id === id ? item : elm)));
+          dispatch(setStoreLabels(labels.map((elm) => (elm.id === id ? item : elm))));
 
           filteredNodes.forEach(async (element) => {
             const updatedlabels = element.labels.map((elm) => (elm === currentTitle ? title : elm));

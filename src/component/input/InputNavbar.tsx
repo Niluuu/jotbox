@@ -17,6 +17,7 @@ import {
   toggleIsCartCollabaratorOpen,
 } from '../../reducers/collabarator';
 import { setUndo, setRedo } from '../../reducers/editor';
+import { RootState } from '../../app/store';
 
 interface InputNavbarProps {
   /**
@@ -113,12 +114,16 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     hide,
     label,
   } = props;
-  const userEmail = localStorage.getItem('userEmail');
-  const collabarator = { eq: userEmail };
-
   const [labels, setLabels] = useState([]);
-  const [filter] = useState({ title: { contains: '' }, collabarator });
   const dispatch = useDispatch();
+
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      storeLabels: state.labelReducer.storeLabels,
+    };
+  });
+
+  const { storeLabels } = mapStateToProps;
 
   const undoRedo = (callBack: () => void) => {
     dispatch(callBack());
@@ -134,29 +139,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     else onChangeArchived();
   };
 
-  const getlabels = useCallback(async () => {
-    try {
-      const res = await API.graphql({ query: listLabels, variables: { filter } });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      const { items } = res.data.listLabels;
-      // eslint-disable-next-line no-underscore-dangle
-      const noneDeletedItems = items.filter((elm) => elm._deleted !== true);
-
-      const filteredLabels = restrictDouble(noneDeletedItems);
-
-      setLabels(filteredLabels);
-      return filteredLabels;
-    } catch (err) {
-      throw new Error('Get labels route');
-    }
-  }, [filter]);
-
   const onLabelFilter = useCallback(
     async (value: string) => {
       try {
-        const data = await getlabels();
-        const newlabels = data.filter((elm) =>
+        const newlabels = storeLabels.filter((elm) =>
           elm.title.toLowerCase().includes(value.toLowerCase()),
         );
 
@@ -165,12 +151,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         throw new Error('Error filter by Letter');
       }
     },
-    [getlabels],
+    [storeLabels],
   );
-
-  useEffect(() => {
-    getlabels();
-  }, [getlabels, onLabelFilter]);
 
   const toggleSelectedlabel = useCallback(
     (e) => {
@@ -187,6 +169,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       if (isCart) onOpenModal();
     }
   };
+
+  useEffect(() => {
+    setLabels(storeLabels);
+  }, [storeLabels]);
 
   return (
     <>

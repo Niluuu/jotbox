@@ -9,7 +9,7 @@ import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../Icon/Icon';
 import { SubmenuModal } from '../../atoms/modals/SubmenuModal';
 import { routes } from '../../utils/routes/index';
-import { getLabel, listLabels, listNodes } from '../../graphql/queries';
+import { listLabels, listNodes } from '../../graphql/queries';
 import { createLabel, updateLabel, deleteLabel, updateNode } from '../../graphql/mutations';
 import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
@@ -204,15 +204,17 @@ export const Submenu: FC<SubmenuProps> = () => {
   }, [isOpenLabel]);
 
   const arraySubmenu = routes(labels);
-
   return (
     <ul className={styles.sider_menu}>
       {arraySubmenu !== undefined &&
         arraySubmenu.map((item) =>
           item.name === 'labels' ? (
-            item.labels.map((label) => <SubmenuItem item={label} location={pathname} />)
+            item.labels.map((label) => (
+              <SubmenuItem key={label.id} item={label} location={pathname} />
+            ))
           ) : (
             <SubmenuItem
+              key={item.name}
               location={pathname}
               modal={item.modal}
               item={item}
@@ -235,15 +237,18 @@ export const Submenu: FC<SubmenuProps> = () => {
 };
 
 interface SubmenuItemProps {
-  item: any;
-  location: any;
+  item: {
+    name: string;
+    url: string;
+    icon: string;
+  };
+  location: string;
   modal?: boolean;
   toggleModal?: () => void;
   isOpenLabel?: boolean;
 }
 
-const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal, isOpenLabel }) => {
-  const dispatch = useDispatch();
+const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal }) => {
   return (
     <li className={styles.sider_submenu}>
       {modal ? (

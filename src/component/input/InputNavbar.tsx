@@ -2,8 +2,7 @@
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
-import uniqid from 'uniqid';
+import { useDispatch } from 'react-redux';
 import { API } from 'aws-amplify';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';

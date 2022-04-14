@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
-import { FC, useState, useCallback, useEffect } from 'react';
+import React, { FC, useState, useCallback, useEffect } from 'react';
 import {
   EditorState,
   RichUtils,
@@ -56,11 +56,11 @@ interface MainEditorProps {
   /**
    * Ref to autofocus add link
    */
-  linkRef?: any;
+  linkRef?: React.LegacyRef<HTMLInputElement> | null;
   /**
    * Ref to autofocus add link
    */
-  textRef?: any;
+  textRef?: React.LegacyRef<HTMLInputElement> | null;
   /**
    * Ref to autofocus text of add link
    */
@@ -103,7 +103,6 @@ const MainEditor: FC<MainEditorProps> = ({
   const [editorState, setEditorState] = useState(initialEditorState);
   const [urlValue, seturlValue] = useState('');
   const [open, setOpen] = useState(false);
-  const [focus, setfocus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [textLink, setTextLink] = useState('');
 
@@ -154,6 +153,8 @@ const MainEditor: FC<MainEditorProps> = ({
   const onSearchChange = useCallback(
     ({ trigger, value }: { trigger: string; value: string }) => {
       setSuggestions(defaultSuggestionsFilter(value, createMentions(nodes), trigger));
+      // eslint-disable-next-line no-console
+      console.log(suggestions);
     },
     [suggestions, nodes],
   );
@@ -304,7 +305,7 @@ const MainEditor: FC<MainEditorProps> = ({
           isModal ? styles.modal : null,
         )}
         onClick={() => {
-          editorRef.current!.focus();
+          editorRef.current?.focus();
         }}
       >
         <Editor
@@ -352,8 +353,6 @@ const MainEditor: FC<MainEditorProps> = ({
                 type="text"
                 placeholder="Put your Link..."
                 value={urlValue}
-                onFocus={() => setfocus(true)}
-                onBlur={() => setfocus(false)}
                 onKeyUp={(e) => confirmLinkKeyUp(e)}
               />
             </div>

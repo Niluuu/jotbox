@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
-import { FC, useEffect, useState, useRef } from 'react';
+import { FC, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
@@ -80,8 +80,8 @@ const MainInput: FC<MainInputProps> = ({
   togglelabels,
   onSelectedLabels,
 }) => {
-  const linkRef = useRef(null);
-  const textRef = useRef(null);
+  const linkRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef<HTMLInputElement>(null);
   const [linkMode, setlinkMode] = useState(false);
   const editorRef = useRef<Editor>(null);
   const { label } = useParams();
@@ -116,7 +116,7 @@ const MainInput: FC<MainInputProps> = ({
 
   const onKeyPressed = (e) => {
     if (e.keyCode === 13) {
-      editorRef.current!.focus();
+      editorRef.current?.focus();
     }
   };
 

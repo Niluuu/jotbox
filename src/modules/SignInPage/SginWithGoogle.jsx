@@ -1,25 +1,26 @@
 /* eslint-disable default-case */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import { useHistory } from 'react-router-dom';
 import GoogleLogo from '../../assets/images/svg-icons/GoogleLogo';
 
-function SigninWithGoogle() {
+const SigninWithGoogle = () => {
   const [user, setUser] = useState(null);
   const history = useHistory();
 
-  function getUser() {
-    return Auth.currentAuthenticatedUser()
-      .then((userData) => userData)
-      .then((userData) => {
-        if (userData.attributes) {
-          localStorage.setItem('assessToken', userData.signInUserSession.accessToken.jwtToken);
-          localStorage.setItem('userEmail', userData.attributes.email);
-          history.push('/');
-        }
-      })
-      .catch(() => console.log('Not signed in'));
-  }
+  const getUser = useCallback(async () => {
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      if (userData.attributes) {
+        localStorage.setItem('assessToken', userData.signInUserSession.accessToken.jwtToken);
+        localStorage.setItem('userEmail', userData.attributes.email);
+        history.push('/');
+      }
+    } catch {
+      // eslint-disable-next-line no-console
+      return console.log('Not signed in');
+    }
+  }, [history]);
 
   useEffect(() => {
     Hub.listen('auth', ({ payload: { event, data } }) => {
@@ -33,13 +34,14 @@ function SigninWithGoogle() {
           break;
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
+          // eslint-disable-next-line no-console
           console.log('Sign in failure', data);
           break;
       }
     });
 
     getUser().then((userData) => setUser(userData));
-  }, []);
+  }, [getUser]);
 
   return (
     <>
@@ -55,5 +57,5 @@ function SigninWithGoogle() {
       )}
     </>
   );
-}
+};
 export default SigninWithGoogle;

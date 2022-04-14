@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { FC } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import HomePage from '../HomePage/HomePage';
 import SignUpPage from '../SignUpPage/SignUpPage';
 import SignInPage from '../SignInPage/SignInPage';

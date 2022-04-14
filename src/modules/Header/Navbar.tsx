@@ -36,7 +36,7 @@ export const Navbar: FC = () => {
   }
 
   const loadChanges = useCallback(() => {
-    const completeUpdate = (val) =>
+    const completeUpdate = (val: boolean) =>
       setTimeout(() => {
         setUpdated(val);
         dispatch(setRefreshPage());
@@ -51,10 +51,12 @@ export const Navbar: FC = () => {
         setTimeout(() => {
           setLoading(false);
           completeUpdate(false);
+          // eslint-disable-next-line no-console
+          console.log(loading);
         }, 4000);
       }
     });
-  }, [loading]);
+  }, [loading, dispatch]);
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {

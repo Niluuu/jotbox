@@ -10,7 +10,6 @@ import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { getIdNode } from '../../reducers/getNodeId';
 import './Color.scss';
-import Popover from '../popover/Popover';
 
 interface CartProps {
   /**

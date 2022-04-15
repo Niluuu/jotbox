@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
 import React, { FC, useState, useCallback, useEffect } from 'react';

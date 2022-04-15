@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable default-case */
 import { useState, useEffect, useCallback } from 'react';
 import { Auth, Hub } from 'aws-amplify';

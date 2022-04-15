@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import styles from '../../component/tooltip/Tooltip.module.scss';
 
 const findLinkEntities = (contentBlock, callback, contentState) => {

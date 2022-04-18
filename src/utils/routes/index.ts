@@ -1,4 +1,26 @@
-export const getLabels = (labels: any[]) => {
+type LabelType = {
+  id: string;
+  _version: number;
+  title: string;
+};
+
+type GetLabelType = {
+  id: string;
+  name: string;
+  url: string;
+  icon: string;
+};
+
+type RoutesType = {
+  name: string;
+  url: string;
+  icon: string;
+  active?: boolean;
+  modal: boolean | null;
+  labels: GetLabelType[] | null;
+};
+
+export const getLabels = (labels: LabelType[]): GetLabelType[] => {
   const result = labels
     ? labels.map((label) => ({
         id: label.id,
@@ -11,8 +33,7 @@ export const getLabels = (labels: any[]) => {
   return result;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const routes = (labels: any[]) => {
+export const routes = (labels: LabelType[]): RoutesType[] => {
   const result = [
     { name: 'Заметки', labels: null, icon: 'notes', active: true, url: '/', modal: false },
     { name: 'Изменение ярлыков', labels: null, icon: 'labels', url: '/*', modal: true },

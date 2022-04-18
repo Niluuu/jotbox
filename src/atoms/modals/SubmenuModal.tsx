@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-import { FC, useCallback, useState, useRef } from 'react';
+import { FC, useState, useRef } from 'react';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';
 import Modal from '../../component/modal/Modal';

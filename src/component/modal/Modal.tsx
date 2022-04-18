@@ -3,7 +3,6 @@ import { FC, useEffect } from 'react';
 import classNames from 'classnames';
 import styles from './Modal.module.scss';
 import '../cart/Color.scss';
-import { closeUpdateModalIsOpen } from '../../reducers/getNodeId';
 import { Icon } from '../Icon/Icon';
 
 export interface ModalProps {

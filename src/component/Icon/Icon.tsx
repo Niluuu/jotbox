@@ -87,7 +87,14 @@ export interface IconProps {
  * Main Icon component
  */
 
-export const Icon: FC<IconProps> = ({ size = 'small', name, color = '', onClick, onMouseDown, className }) => {
+export const Icon: FC<IconProps> = ({
+  size = 'small',
+  name,
+  color = '',
+  onClick,
+  onMouseDown,
+  className,
+}) => {
   return (
     <svg
       className={classNames(styles.icon, styles[size], className)}

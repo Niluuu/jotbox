@@ -14,7 +14,6 @@ import {
 import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
-import { NodeLink } from '../../utils/editor/NodeLink';
 
 interface CartProps {
   id: string;

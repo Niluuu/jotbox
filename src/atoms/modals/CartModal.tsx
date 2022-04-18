@@ -81,7 +81,6 @@ const CartModal: FC<CartModalType> = ({
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
   const titleRef = useRef(null);
-  const [updatedArchive, setUpdatedArchive] = useState(undefined);
   const [updatedColor, setUpdatedColor] = useState(undefined);
   const [linkMode, setlinkMode] = useState(false);
   const linkRef = useRef(null);
@@ -93,11 +92,10 @@ const CartModal: FC<CartModalType> = ({
   };
 
   const createLinkToEditor = () => setlinkMode((prev) => !prev);
-  const toggleArchived = () => setUpdatedArchive((prev) => !prev);
 
   const onKeyPressed = (e) => {
     if (e.keyCode === 13) {
-      editorRef.current!.focus();
+      editorRef.current?.focus();
     }
   };
 
@@ -125,12 +123,11 @@ const CartModal: FC<CartModalType> = ({
 
   useEffect(() => {
     if (node[0] !== undefined) {
-      const { archived, color } = node[0];
+      const { color } = node[0];
 
-      setUpdatedArchive(archived);
       setUpdatedColor(color);
     }
-  }, [node, setUpdatedArchive]);
+  }, [node]);
 
   useEffect(() => {
     if (nodeID.length > 0) {
@@ -328,7 +325,6 @@ const CartModal: FC<CartModalType> = ({
               initiallabels={node[0] && node[0].labels}
               createLinkToEditor={onLinkEditor}
               onRemoveCart={modalRemoveCart}
-              onSetArchive={toggleArchived}
               currentColor={node[0].color}
               selectedLabels={node[0].labels}
               shadow

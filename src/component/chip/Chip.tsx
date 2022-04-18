@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { Icon } from '../Icon/Icon';
 import styles from './Chip.module.scss';
 

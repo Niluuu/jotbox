@@ -169,7 +169,10 @@ const Cart: FC<CartProps> = (props) => {
               </>
             ) : (
               labels.map((label) => (
-                <Chip onDelate={() => toggleCartLabels(id, _version, label)}> {label} </Chip>
+                <Chip key={label} onDelate={() => toggleCartLabels(id, _version, label)}>
+                  {' '}
+                  {label}{' '}
+                </Chip>
               ))
             )}
           </div>
@@ -182,14 +185,20 @@ const Cart: FC<CartProps> = (props) => {
                   .filter((e) => e !== userEmail)
                   .slice(0, 5)
                   .map((user) => (
-                    <div className={inputStyles.user}>{user[0].toLowerCase()}</div>
+                    <div key={user} className={inputStyles.user}>
+                      {user[0].toLowerCase()}
+                    </div>
                   ))}
                 <div className={inputStyles.user}>{collabarators.length - 5}+</div>
               </>
             ) : (
               collabarators
                 .filter((e) => e !== userEmail)
-                .map((user) => <div className={inputStyles.user}>{user[0].toLowerCase()}</div>)
+                .map((user) => (
+                  <div key={user} className={inputStyles.user}>
+                    {user[0].toLowerCase()}
+                  </div>
+                ))
             )}
           </div>
         )}

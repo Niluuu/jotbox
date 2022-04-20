@@ -13,10 +13,10 @@ import { getNode } from '../../graphql/queries';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
-import '../../component/cart/Color.scss';
 import { Chip } from '../../component/chip/Chip';
 import MentionContext from '../../utils/hooks/useCreatContext';
 import Collabarator from '../../component/Collabarator/Collabarator';
+import '../../component/cart/Color.scss';
 
 interface CartProps {
   id: string;
@@ -226,7 +226,7 @@ const CartModal: FC<CartModalType> = ({
   return (
     <Modal
       removeIcon={updatedColor === undefined && true}
-      color={updatedColor}
+      color={!isCartCollabaratorOpen ? updatedColor : 'default'}
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
@@ -296,13 +296,17 @@ const CartModal: FC<CartModalType> = ({
                 {node[0].labels && node[0].labels.length > 10 ? (
                   <>
                     {node[0].labels.slice(0, 10).map((label) => (
-                      <Chip onDelate={() => modalToggleCartLabels(label)}>{label}</Chip>
+                      <Chip key={label} onDelate={() => modalToggleCartLabels(label)}>
+                        {label}
+                      </Chip>
                     ))}
                     <div className={styles.extralabel}> +{node[0].labels.length - 10} </div>
                   </>
                 ) : (
                   node[0].labels.map((label) => (
-                    <Chip onDelate={() => modalToggleCartLabels(label)}>{label}</Chip>
+                    <Chip key={label} onDelate={() => modalToggleCartLabels(label)}>
+                      {label}
+                    </Chip>
                   ))
                 )}
               </div>
@@ -311,7 +315,9 @@ const CartModal: FC<CartModalType> = ({
                   {node[0].collabarators
                     .filter((e) => e !== userEmail)
                     .map((user) => (
-                      <div className={styles.user}>{user[0].toLowerCase()}</div>
+                      <div key={user} className={styles.user}>
+                        {user[0].toLowerCase()}
+                      </div>
                     ))}
                 </div>
               )}

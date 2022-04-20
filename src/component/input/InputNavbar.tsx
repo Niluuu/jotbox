@@ -2,15 +2,12 @@
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
-import { API } from 'aws-amplify';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 import '../cart/Color.scss';
 import { colors } from '../../utils/editor/color';
-import { listLabels } from '../../graphql/queries';
-import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import {
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,
@@ -192,6 +189,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={styles.colorWrapper}>
                 {colors.map((color) => (
                   <button
+                    key={color.colorClass}
                     type="button"
                     onClick={() => {
                       if (isMainInput) onDefaultColor(color.colorClass);

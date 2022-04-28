@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback, useRef } from 'react';
 import { API } from 'aws-amplify';
@@ -11,7 +12,6 @@ import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
 import { getNode } from '../../graphql/queries';
 import MainEditor from '../../modules/Editor/MainEditor';
-import { updateNode } from '../../graphql/mutations';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import { Chip } from '../../component/chip/Chip';
 import MentionContext from '../../utils/hooks/useCreatContext';
@@ -67,6 +67,9 @@ interface CartModalType {
    * Toggleselected labels when creating Node function
    */
   toggleCartLabels?: (id: string, _version: number, label: string) => Promise<CartProps>;
+  /**
+   * Updating text of the Node   */
+  onChangeNodeContent?: (id: string, title: string, _version: number) => Promise<void>;
 }
 
 const CartModal: FC<CartModalType> = ({
@@ -76,6 +79,7 @@ const CartModal: FC<CartModalType> = ({
   onColorChange,
   toggleCartLabels,
   onChangeCollabarators,
+  onChangeNodeContent,
 }) => {
   const [node, setNode] = useState<CartProps[]>([]);
   const dispatch = useDispatch();
@@ -138,18 +142,8 @@ const CartModal: FC<CartModalType> = ({
   const onUpdate = useCallback(
     async (id) => {
       try {
-        const nodeDetails = {
-          id,
-          title: titleRef.current.innerText.toLowerCase(),
-          description: updatedText,
-          /* eslint no-underscore-dangle: 0 */
-          _version: node[0]._version,
-        };
-
-        await API.graphql({
-          query: updateNode,
-          variables: { input: nodeDetails },
-        });
+        // eslint-disable-next-line no-underscore-dangle
+        await onChangeNodeContent(id, titleRef.current.innerText, node[0]._version);
 
         dispatch(getIdNode(''));
         dispatch(closeUpdateModalIsOpen());
@@ -158,7 +152,7 @@ const CartModal: FC<CartModalType> = ({
         throw new Error('Update cart: Something went wrong');
       }
     },
-    [dispatch, node, updatedText],
+    [dispatch, node, onChangeNodeContent],
   );
 
   const toggleModal = useCallback(
@@ -230,11 +224,12 @@ const CartModal: FC<CartModalType> = ({
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
-      toggleModal={() => dispatch(closeUpdateModalIsOpen())}
+      toggleModal={() => node[0] !== undefined && toggleModal(node[0].id)}
     >
       {node[0] !== undefined && (
         <Collabarator
           isOpen={!isCartCollabaratorOpen}
+          owner={node[0].collabarator}
           cartCollabarators={node[0].collabarators}
           onChangeCollabarators={modalChangeCollabarators}
         />

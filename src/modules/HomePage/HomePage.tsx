@@ -48,6 +48,7 @@ const HomePage: FC<HomeProps> = () => {
       updateNodes: state.nodesReducer.updateNodes,
       inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
       refreshPage: state.refreshPageReducer.refreshPage,
+      updatedText: state.editorReducer.updatedText,
     };
   });
 
@@ -58,6 +59,8 @@ const HomePage: FC<HomeProps> = () => {
     updateNodes,
     inputCollabaratorUsers,
     refreshPage,
+    updatedText,
+    updateModalIsOpen,
   } = mapStateToProps;
   const dispatch = useDispatch();
 
@@ -388,6 +391,33 @@ const HomePage: FC<HomeProps> = () => {
     cleanUp,
   ]);
 
+  const onChangeNodeContent = useCallback(
+    async (id, title, _version): Promise<void> => {
+      try {
+        const updatedNode = {
+          id,
+          _version,
+          title,
+          description: updatedText,
+        };
+
+        await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+
+        const newNodes = nodes.map((newCart) =>
+          newCart.id === id ? { ...newCart, ...updatedNode } : newCart,
+        );
+        setNodes([]);
+        setNodes(newNodes);
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [nodes, updatedText],
+  );
+
   useEffect(() => {
     getAllNodes();
   }, [getAllNodes]);
@@ -443,6 +473,7 @@ const HomePage: FC<HomeProps> = () => {
           />
           <AddLinkModal />
           <CartModal
+            onChangeNodeContent={onChangeNodeContent}
             onChangeCollabarators={onChangeCollabarators}
             onChangePin={onChangePin}
             onRemoveCart={onRemoveCart}
@@ -454,6 +485,7 @@ const HomePage: FC<HomeProps> = () => {
       );
     },
     [
+      onChangeNodeContent,
       nodes,
       grid,
       focused,

@@ -30,6 +30,7 @@ interface CartProps {
 }
 
 interface CollabaratorProps {
+  owner?: string;
   isMainInput?: boolean;
   isOpen?: boolean;
   /**
@@ -46,6 +47,7 @@ const Collabarator: FC<CollabaratorProps> = ({
   onChangeCollabarators,
   cartCollabarators,
   isOpen,
+  owner,
 }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -151,18 +153,20 @@ const Collabarator: FC<CollabaratorProps> = ({
     setUsers(users.filter((collabarator) => collabarator !== user));
   };
 
+  const nodeOwner = isMainInput ? userEmail : owner;
+
   return (
     <div className={styles.collabarator} style={{ display: isOpen && 'none' }}>
       <div className={styles.collabarator_header}>Collabarators</div>
       <div className={styles.user}>
         <img className={styles.user_img} src={avatar} />
         <div className={styles.user_text}>
-          <span className={styles.user_title}> {userEmail} (Owner) </span>
+          <span className={styles.user_title}> {isMainInput ? userEmail : owner} (Owner) </span>
         </div>
       </div>
       {users.map(
         (user) =>
-          userEmail !== user && (
+          nodeOwner !== user && (
             <div className={styles.user}>
               <img className={styles.user_img} src={avatar} />
               <div className={styles.user_text}>

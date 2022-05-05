@@ -1,0 +1,89 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+h1,
+.h1 {
+  font-size: vw(52, 414);
+  line-height: 1em;
+  margin-bottom: vw(36, 414);
+
+  @include tablet-landscape() {
+    font-size: 72px;
+    line-height: 1em;
+    margin-bottom: 36px;
+  }
+}
+
+h2,
+.h2 {
+  font-size: vw(42, 414);
+  line-height: 1em;
+  margin-bottom: vw(36, 414);
+
+  @include tablet-landscape() {
+    font-size: 52px;
+    margin-bottom: 36px;
+  }
+}
+
+h3,
+.h3 {
+  color: $color-roof-terracotta;
+  font-size: vw(36, 414);
+  font-weight: $font-weight-medium;
+  line-height: 1.2em;
+  margin-bottom: vw(36, 414);
+
+  @include tablet-landscape() {
+    font-size: 42px;
+    line-height: em(52, 42);
+    margin-bottom: 36px;
+  }
+}
+
+h4,
+.h4 {
+  font-size: vw(32, 414);
+  font-weight: $font-weight-medium;
+  line-height: 1.2em;
+  margin-bottom: vw(36, 414);
+
+  @include tablet-landscape() {
+    font-size: 36px;
+    margin-bottom: 36px;
+  }
+}
+
+h5,
+.h5 {
+  font-size: vw(26, 414);
+  font-weight: $font-weight-medium;
+  line-height: 1.2em;
+  margin-bottom: vw(18, 414);
+
+  @include tablet-landscape() {
+    font-size: 32px;
+    margin-bottom: 18px;
+  }
+}
+
+h6,
+.h6 {
+  font-size: vw(22, 414);
+  font-weight: $font-weight-medium;
+  line-height: 1.2em;
+  margin-bottom: vw(18, 414);
+
+  @include tablet-landscape() {
+    font-size: 26px;
+    margin-bottom: 18px;
+  }
+}
+
+p {
+  margin: 0 0 18px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

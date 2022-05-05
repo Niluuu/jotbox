@@ -1,0 +1,98 @@
+$primary-black: #111;
+$light-black: #3c4043;
+$black1: #202124;
+
+$gray-color1: #5f6368;
+$gray-color2: #f1f3f4;
+$gray-color3: rgba(0, 0, 0, 0.08);
+$gray-color4: #3c4043;
+$gray-color5: #adadad;
+$light-gray-color1: #dadce0;
+$light-gray-color2: #f7f8f8;
+
+$color-white: #fff;
+$light-gray-hover: rgba(60, 64, 67, 0.08);
+
+$yellow: #feefc3;
+/**
+ * Screens
+ */
+
+$xs: 400px;
+$sm: 768px;
+$md: 992px;
+$lg: 1512px;
+// transition
+$transition: all 0.25s ease;
+
+/* fonts */
+$font-montserrat: 'Montserrat', sans-serif;
+$font-helvetica-neue: 'HelveticaNeue', sans-serif;
+$font-raleway: 'Raleway', sans-serif;
+$font-proxima-nova: 'Proxima Nova', sans-serif;
+$font-roboto: 'Roboto', Arial, sans-serif;
+
+$font-base: $font-montserrat;
+
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semi-bold: 600;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+
+// counter
+$counter-btn-size: 50px;
+
+/* colors from markup */
+$color-cod-gray: #111;
+$color-blue: #1a73e8;
+$color-red: rgb(234, 67, 53);
+$color-tundora: #404040;
+$color-alto: #d9d9d9;
+$color-seashell: #f1f1f1;
+$color-alizarin-crimson: #ea1c2d;
+$color-roof-terracotta: #b72621;
+
+$color-silver-chalice: #a1a1a1;
+$color-gray: #808080;
+$color-nobel: #b3b3b3;
+$color-black: #000;
+$color-mine-shaft: #252525;
+$color-mine-shaft2: #3c3c3c;
+$color-dusty-gray: #999;
+$color-silver: #ccc;
+$color-dove-gray: #666;
+$color-silver-chalice: #b2b2b2;
+$color-gallery: #ebebeb;
+$color-laser: #c8ab6f;
+$color-sorrell-brown: #cdab8f;
+$color-mercury: #e1e1e1;
+$color-concrete: #f2f2f2;
+// $theme-color: 'base';
+
+/* headings */
+$headings-margin-bottom: 0;
+$headings-font-family: $font-montserrat;
+$headings-font-weight: $font-weight-extra-bold;
+$headings-line-height: 1.2em;
+$headings-color: $color-cod-gray;
+
+/* grid */
+$grid-indent: 72px;
+$container: 1512px;
+
+// list
+$margin-bottom-list-base: 36px;
+$padding-left-list-base: 36px;
+$margin-top-list-item: 0;
+$bg-point-base: $color-cod-gray;
+$size-point: 6px;
+
+$grid-breakpoints: (
+  xs-small: 0,
+  xs: $xs,
+  sm: $sm,
+  md: $md,
+  lg: $lg,
+);

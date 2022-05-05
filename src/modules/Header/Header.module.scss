@@ -1,0 +1,45 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.header {
+  display: flex;
+  align-items: center;
+  border-width: 0 0 0 4px;
+  position: relative;
+  border-bottom: 1px solid $gray-color3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 2;
+  
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px;
+
+  &_row {
+    display: flex;
+    justify-content: center;
+    padding-right: 70px;
+  }
+}
+
+@include desktop {
+  .header {
+    flex-direction: row;
+    align-items: center;
+
+    padding: 10px 5px;
+  
+    &_row {
+      padding-right: 75px;
+    }
+  }
+}
+
+@include desktop-large {
+  .header {
+    padding: 15px 5px;
+  }
+}

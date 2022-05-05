@@ -1,0 +1,143 @@
+@import '../../styles/base/base';
+@import '../../styles/base/mixins';
+
+.editor {
+  box-sizing: border-box;
+  cursor: text;
+  padding: 5px 5px 5px 10px;
+  border-radius: 2px;
+  height: auto;
+  min-height: 20px;
+  position: unset;
+}
+
+.editor.cart {
+  height: 1300px;
+  overflow: hidden;
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.editor.modal {
+  overflow-y: scroll;
+  height: 300px;
+  padding: 50px 10px 0 !important;
+}
+
+.editor :global(.public-DraftEditor-content) {
+  min-height: 0;
+}
+
+.headlineButtonWrapper {
+  display: inline-block;
+}
+
+.headlineButton {
+  background: #fbfbfb;
+  color: #888;
+  font-size: 18px;
+  border: 0;
+  padding-top: 5px;
+  vertical-align: bottom;
+  height: 34px;
+  width: 36px;
+}
+
+.headlineButton:hover,
+.headlineButton:focus {
+  background: #f3f3f3;
+}
+
+.link {
+  color: #3b5998;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.linkWrapper {
+  font-family: 'Roboto';
+  padding: 14px;
+  min-width: 400px;
+  font-weight: 600;
+
+  button {
+    padding: 5px 0;
+    border-radius: 0;
+  }
+
+  .inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &_item {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin: 0 0 20px;
+
+      &.buttons {
+        margin: 0;
+
+        div {
+          display: flex;
+          justify-content: flex-end;
+
+          button {
+            border: 1px solid rgb(220, 220, 220);
+            padding: 8px 16px;
+            border-radius: 5px;
+            letter-spacing: 1px;
+
+            &:hover {
+              background: rgb(240, 240, 240);
+            }
+          }
+
+          .gray {
+            background: rgb(220, 220, 220);
+            color: rgb(75, 75, 75);
+            margin-left: 10px;
+
+            &:hover {
+              background: rgb(175, 175, 175);
+            }
+          }
+        }
+      }
+    }
+
+    input {
+      margin-top: 5px;
+      width: 100%;
+      border: 1px solid rgba(150, 150, 175, 0.5);
+      padding: 8px 12px;
+      border-radius: 4px;
+      
+      &:focus {
+        border: 1px solid rgb(0, 125, 250);
+        box-shadow: 0 0 0 0.3rem rgba(0, 125, 250, 0.25);
+      }
+    }
+  }
+}
+
+@include desktop {
+  .editor {
+    padding: 13px 13px 13px 10px;
+  }
+
+  .editor.cart {
+    padding: 1px;
+  }
+}
+
+@include desktop-large {
+  .editor {
+    padding: 13px 13px 13px 12px;
+  }
+
+  .editor.cart {
+    padding: 16px 1px;
+  }
+}

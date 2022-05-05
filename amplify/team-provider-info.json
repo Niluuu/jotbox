@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-jotbox-dev-160221-authRole",
+      "UnauthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-dev-160221-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-dev-160221-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-jotbox-dev-160221-deployment",
+      "UnauthRoleName": "amplify-jotbox-dev-160221-unauthRole",
+      "StackName": "amplify-jotbox-dev-160221",
+      "StackId": "arn:aws:cloudformation:eu-central-1:729271425433:stack/amplify-jotbox-dev-160221/b361a720-6d77-11ec-b730-0a7ff9c1ed8a",
+      "AmplifyAppId": "d17oh96r8b4gc1"
+    },
+    "categories": {
+      "auth": {
+        "jotbox": {}
+      }
+    }
+  }
+}

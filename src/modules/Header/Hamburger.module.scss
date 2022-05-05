@@ -1,0 +1,52 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.header_button {
+  border: 1px solid transparent;
+  display: inline-block;
+  border-radius: 50%;
+  cursor: pointer !important;
+  background-color: $color-white;
+
+  padding: 7.5px 10px;
+
+  &:hover {
+    background: $light-gray-hover !important;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+
+    path {
+      fill: $gray-color1;
+      opacity: 1;
+    }
+  }
+
+  input {
+    display: none;
+  }
+}
+
+@include desktop {
+  .header_button {
+    padding: 9px 10px;
+
+    svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+@include desktop-large {
+  .header_button {
+    padding: 10px 12.5px;
+
+    svg {
+      width: 27.5px;
+      height: 27.5px;
+    }
+  }
+}

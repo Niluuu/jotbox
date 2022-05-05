@@ -1,0 +1,126 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles/base/variables';
+
+.search__row {
+  width: 100%;
+  height: fit-content;
+  background: $gray-color2;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: 100ms ease-in, width 100ms ease-out;
+
+  margin-top: 10px;
+
+  .search__input {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    height: 35px;
+
+    input {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      
+      height: 100%;
+      margin-left: 42.5px;
+      font-size: 14px;
+    }
+
+    &:focus-within {
+      background: transparent;
+    }
+
+    input:focus-visible {
+      outline: none !important;
+    }
+  }
+
+  &:focus-within {
+    background: transparent;
+    box-shadow: 0 1px 1px 0 rgb(148, 150, 155), 0 1px 3px 1px rgb(208, 210, 211);
+    border: 1px solid transparent;
+  }
+
+  button {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 0 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      border-radius: 50%;
+      padding: 10px;
+      
+      width: 17.5px;
+      height: 17.5px;
+
+      use {
+        fill: $gray-color1;
+      }
+    }
+
+    &:hover svg {
+      background: rgba(60, 64, 67, 0.08);
+    }
+  }
+
+  .search_btn {
+    position: absolute;
+    float: left;
+    height: 100%;
+  }
+}
+
+@include desktop {
+  .search__row {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    margin-top: 0;
+
+    .search__input {
+      padding: 0;
+      height: 40px;
+
+      input {
+        margin-left: 50px;
+        font-size: 15px;
+      }
+    }
+
+    button {
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+@include desktop-large {
+  .search__row {
+    width: 60%;
+
+    .search__input {
+      height: 45px;
+
+      input {
+        margin-left: 50px;
+        font-size: 16px;
+      }
+    }
+
+    button {
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}

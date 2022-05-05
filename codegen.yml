@@ -1,0 +1,14 @@
+overwrite: true
+schema: 'https://hcu6bfp2xbfmvgo22qe7t3aj6i.appsync-api.us-east-1.amazonaws.com/graphql'
+documents: 'src/**/*.graphql'
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+  #     - "typescript-graphql-files-modules"
+  #     - "typescript-document-nodes"
+  ./graphql.schema.json:
+    plugins:
+      - 'introspection'

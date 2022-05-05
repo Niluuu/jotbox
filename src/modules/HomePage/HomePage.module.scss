@@ -1,0 +1,141 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles//base/variables';
+
+.home_page {
+  width: 100%;
+  min-height: 167px;
+  padding-top: 90px;
+  padding-left: 50px;
+
+  &__main_input {
+    padding: 10px 0 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    .other_options {
+      position: absolute;
+      bottom: -15%;
+      left: 40%;
+      background: rgb(212, 212, 212);
+    }
+  }
+
+  &.column {
+    width: 100%;
+    grid-template-columns: repeat(1, auto);
+
+    .home_page__main_input {
+      padding: 10px 0 0;
+    }
+  }
+}
+
+.bottom_btn {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0 0;
+
+  button {
+    padding: 7px 15px;
+    border-radius: 0;
+  }
+}
+
+.labels {
+  padding: 10px;
+  display: flex;
+
+  &_icons_row {
+    padding: auto;
+  }
+
+  input {
+    border: 1px solid transparent;
+    padding: 5px 10px;
+
+    &:focus {
+      border-bottom: 1px solid $gray-color2;
+    }
+  }
+  
+  .user {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgb(125, 125, 125);
+    color: #fff;
+    border: 1px solid #fff;
+    box-shadow: 0 0 3px rgb(125, 125, 125);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+  }
+}
+
+.main_chips {
+  padding: 3px 10px;
+  display: flex;
+  flex-wrap: wrap;
+
+  div {
+    width: fit-content;
+  }
+}
+
+.extralabel {
+  background: $gray-color2;
+  color: $primary-black;
+  margin-right: 8px;
+  padding: 1px 10px;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+}
+
+.textarea {
+  outline: none !important;
+  font-weight: $font-weight-normal;
+}
+
+.textarea[contenteditable]:empty::before {
+  content: 'Введите заголовок';
+}
+
+@include desktop {
+  .home_page {
+    padding-left: 75px;
+
+    &__main_input {
+      .other_options {
+        position: absolute;
+      }
+    }
+
+    &.column {
+      .home_page__main_input {
+        padding: 10px 0 0;
+      }
+    }
+  }
+}
+
+@include desktop-large {
+  .home_page {
+    padding-left: 200px;
+    padding-top: 100px;
+
+    &__main_input {
+      .other_options {
+        position: absolute;
+      }
+    }
+
+    &.column {
+      .home_page__main_input {
+        padding: 10px 0 0;
+      }
+    }
+  }
+}

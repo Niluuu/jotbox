@@ -1,0 +1,265 @@
+@import '/src/styles/base/mixins';
+@import '/src/styles/base/variables';
+
+.background {
+  background: rgba(50, 50, 50, 0.5);
+  z-index: 2 !important;
+  position: fixed;
+  top: 98px;
+  left: 260px;
+  height: 100vh;
+  width: 100%;
+  transform: translateX(100%);
+  transition: all 0.2s ease-out;
+  
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+.sider {
+  height: 100vh;
+  width: 40px;
+  background: #fff;
+  z-index: 2 !important;
+  border-right: 0;
+  overflow-y: auto;
+  position: fixed;
+  top: 98px;
+  left: 0;
+  height: 100vh;
+  padding-left: 1px;
+  padding-bottom: 125px;
+  transition: width 0.1s ease-out;
+  
+  .menu_item__title {
+    display: none;
+
+    padding-left: 55px;
+    color: $gray-color1;
+    white-space: nowrap;
+  }
+  
+  &_children {
+    width: 100%;
+    padding: 0;
+  }
+  
+  &_menu {
+    width: 100%;
+    padding: auto;
+  }
+  
+  &_submenu {
+    width: 100%;
+    padding: auto;
+    cursor: pointer;
+    padding: 1px 0;
+
+    &__menu_item {
+      box-sizing: border-box;
+      border: 1px solid transparent;
+      border-radius: 0 25px 25px 0;
+      border-radius: 50%;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.01785714em;
+      font-weight: 500;
+      line-height: 1.25rem;
+      height: 35px;
+      width: 35px;
+      position: relative;
+      transition: width 0.3s ease-out;
+      overflow: hidden;
+
+      &:hover {
+        background: rgb(235, 235, 235);
+      }
+
+      svg {
+        position: absolute;
+        padding-left: 8px;
+        width: 17.5px !important;
+      }
+    }
+  }
+
+  &.open {
+    width: 260px;
+    border-right: 1px solid rgb(240, 240, 240) !important;
+
+    .menu_item__title {
+      display: block !important;
+    }
+
+    .sider_submenu__menu_item {
+      border-radius: 0 25px 25px 0;
+      width: 100%;
+    }
+  }
+}
+
+.popup_row {
+  max-height: 90%;
+  min-height: 150px;
+  overflow-y: scroll;
+  height: 300px;
+}
+
+.active {
+  background: $yellow;
+  
+  &:hover {
+    background: $yellow;
+  }
+}
+
+.labels {
+  padding: 8px 10px;
+  margin-bottom: 2px;
+  display: flex;
+  width: 100%;
+  
+  svg {
+    cursor: pointer;
+    width: 17px !important;
+  }
+
+  &_icons_row {
+    padding: auto;
+  }
+
+  input {
+    border: 1px solid transparent;
+    padding: 5px 10px;
+
+    &:focus {
+      border-bottom: 1px solid $gray-color2;
+    }
+  }
+}
+
+.bottom_btn {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid $gray-color2;
+  padding: 5px 0 25px;
+  width: 100%;
+
+  button {
+    padding: 10px 25px;
+    background: $color-white;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-family: 'Roboto';
+
+    &:hover {
+      background: rgb(245, 245, 245);
+    }
+  }
+}
+
+@include tablet-portrait {
+  .background {
+    left: 275px;
+  }
+  
+  .sider {
+    width: 50px;
+    top: 98px;
+    padding-bottom: 100px;
+  
+    &_submenu {
+      &__menu_item {
+        height: 37.5px;
+        width: 37.5px;
+  
+        svg {
+          padding-left: 8px;
+          width: 19px !important;
+        }
+      }
+    }
+  
+    &.open {
+      width: 275px;
+    }
+  }
+}
+
+@include tablet-landscape {
+  .background {
+    left: 300px;
+  }
+
+  .sider {
+    width: 55px;
+  
+    &_submenu {
+      &__menu_item {
+        height: 42.5px;
+        width: 42.5px;
+  
+        svg {
+          padding-left: 8px;
+          width: 22px !important;
+        }
+      }
+    }
+  
+    &.open {
+      width: 300px;
+    }
+  }
+}
+
+@include desktop {
+  .background {
+    display: none;
+  }
+
+  .sider {
+    width: 56px;
+    top: 70px;
+
+    &_submenu {
+      &__menu_item {
+        height: 45px;
+        width: 45px;
+  
+        svg {
+          padding-left: 10px;
+          width: 25px !important;
+        }
+      }
+    }
+  }
+}
+
+@include desktop-large {
+  .sider {
+    width: 72px;
+    top: 83px;
+  
+    &_submenu {
+      &__menu_item {
+        height: 60px;
+        width: 60px;
+  
+        svg {
+          padding-left: 11.5px;
+          width: 35px !important;
+        }
+      }
+    }
+  }
+}
+
+.errorLabel {
+  color: rgb(200, 0, 0);
+  padding: 0 12px;
+  font-family: 'Roboto';
+  font-size: 13px;
+  width: 100%;
+}

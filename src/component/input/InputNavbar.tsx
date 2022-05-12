@@ -7,7 +7,7 @@ import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 import '../cart/Color.scss';
-import COLORS from '../../utils/editor/color';
+import { COLORS } from '../../utils/editor/color';
 import {
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,

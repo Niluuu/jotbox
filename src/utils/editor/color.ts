@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-shadow
-enum COLORS {
+export enum COLORS {
   DEFAULT = 'default',
   RED = 'red',
   ORANGE = 'orange',
@@ -13,5 +13,3 @@ enum COLORS {
   BROWN = 'brown',
   GREY = 'grey',
 }
-
-export default COLORS;

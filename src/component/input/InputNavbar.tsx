@@ -7,7 +7,7 @@ import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
 import Popover from '../popover/Popover';
 import '../cart/Color.scss';
-import { colors } from '../../utils/editor/color';
+import COLORS from '../../utils/editor/color';
 import {
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,
@@ -41,7 +41,7 @@ interface InputNavbarProps {
    */
   createLinkToEditor?: () => void;
   /**
-   * Node colors change func
+   * Node COLORS change func
    */
   onColorChange?: (color: string) => void;
   /**
@@ -187,24 +187,22 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             placement="bottom-start"
             content={
               <div className={styles.colorWrapper}>
-                {colors.map((color) => (
+                {Object.values(COLORS).map((color) => (
                   <button
-                    key={color.colorClass}
+                    key={color}
                     type="button"
                     onClick={() => {
-                      if (isMainInput) onDefaultColor(color.colorClass);
-                      else onColorChange(color.colorClass);
+                      if (isMainInput) onDefaultColor(color);
+                      else onColorChange(color);
                     }}
                     className={classNames(
-                      color.colorClass,
+                      color,
                       isMainInput
-                        ? color.colorClass === defaultColor && styles.activeColor
-                        : color.colorClass === currentColor && styles.activeColor,
+                        ? color === defaultColor && styles.activeColor
+                        : color === currentColor && styles.activeColor,
                     )}
                   >
-                    {color.colorClass === 'default' && (
-                      <Icon name="default-color" color="premium" size="xs" />
-                    )}
+                    {color === 'default' && <Icon name="default-color" color="premium" size="xs" />}
                   </button>
                 ))}
               </div>

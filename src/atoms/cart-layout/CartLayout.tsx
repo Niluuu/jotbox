@@ -1,9 +1,11 @@
 /* eslint-disable react/require-default-props */
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
+import { getModalNode } from '../../reducers/getNodeId';
 
 interface CartProps {
   _version: number;
@@ -15,6 +17,8 @@ interface CartProps {
   labels: string[];
   color: string;
   collabarators: string[];
+  collabarator: string;
+  _deleted: boolean;
 }
 
 interface CartLayoutProps {
@@ -54,8 +58,17 @@ const CartLayout: FC<CartLayoutProps> = ({
   archivePage,
 }) => {
   const { label } = useParams();
+  const dispatch = useDispatch();
   const labeledCarts =
     label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
+
+  const onOpenModal = useCallback(
+    (cart: CartProps) => {
+      dispatch(getModalNode(cart));
+    },
+    [dispatch],
+  );
+
   return (
     <div className={classNames(styles.layout, gridType && styles.column)}>
       {!archivePage && labeledCarts.some((cart) => cart.pined) && (
@@ -86,6 +99,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gridType={gridType}
                 onColorChange={onColorChange}
                 toggleCartLabels={toggleCartLabels}
+                onOpenModal={() => onOpenModal(cart)}
               />
             ))}
         </div>
@@ -118,6 +132,7 @@ const CartLayout: FC<CartLayoutProps> = ({
                 gridType={gridType}
                 onColorChange={onColorChange}
                 toggleCartLabels={toggleCartLabels}
+                onOpenModal={() => onOpenModal(cart)}
               />
             ))}
         </div>

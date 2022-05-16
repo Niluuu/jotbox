@@ -4,12 +4,14 @@ import { ApolloProvider } from '@apollo/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Amplify } from 'aws-amplify';
+import { I18nextProvider } from 'react-i18next';
 import awsConfig from './aws-exports';
 import { apollo } from './apollo';
 import { store } from './app/store';
 import App from './modules/App/App';
 import './styles/index.scss';
-import 'es6-shim';
+import i18n from './i18n';
+
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -42,7 +44,9 @@ ReactDOM.render(
     <ApolloProvider client={apollo}>
       <Provider store={store}>
         <Router>
-          <App />
+          <I18nextProvider i18n={i18n}>
+            <App />
+          </I18nextProvider>
         </Router>
       </Provider>
     </ApolloProvider>

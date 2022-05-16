@@ -1,16 +1,14 @@
 /* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback, useRef } from 'react';
-import { API } from 'aws-amplify';
 import { useSelector, useDispatch } from 'react-redux';
 import Editor from '@draft-js-plugins/editor';
 import classNames from 'classnames';
 import { RootState } from '../../app/store';
-import { closeUpdateModalIsOpen, getIdNode } from '../../reducers/getNodeId';
+import { closeUpdateModalIsOpen } from '../../reducers/getNodeId';
 import styles from '../../modules/HomePage/HomePage.module.scss';
 import Modal from '../../component/modal/Modal';
 import { Icon } from '../../component/Icon/Icon';
-import { getNode } from '../../graphql/queries';
 import MainEditor from '../../modules/Editor/MainEditor';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import { Chip } from '../../component/chip/Chip';
@@ -81,6 +79,16 @@ const CartModal: FC<CartModalType> = ({
   onChangeCollabarators,
   onChangeNodeContent,
 }) => {
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      nodeIdReducer: state.nodeIdReducer,
+      editorReducer: state.editorReducer,
+      isCartCollabaratorOpen: state.collabaratorReducer.isCartCollabaratorOpen,
+    };
+  });
+  const { isCartCollabaratorOpen } = mapStateToProps;
+  const { modalNode, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
+
   const [node, setNode] = useState<CartProps[]>([]);
   const dispatch = useDispatch();
   const editorRef = useRef<Editor>(null);
@@ -103,27 +111,13 @@ const CartModal: FC<CartModalType> = ({
     }
   };
 
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      nodeIdReducer: state.nodeIdReducer,
-      editorReducer: state.editorReducer,
-      isCartCollabaratorOpen: state.collabaratorReducer.isCartCollabaratorOpen,
-    };
-  });
-  const { isCartCollabaratorOpen } = mapStateToProps;
-  const { nodeID, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
-  const { updatedText } = mapStateToProps.editorReducer;
-
-  const nodeGet = useCallback(async (id) => {
+  const nodeGet = useCallback(async () => {
     try {
-      const data = await API.graphql({ query: getNode, variables: { id } });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      setNode([data.data.getNode]);
+      setNode([modalNode]);
     } catch (err) {
       throw new Error('Node get error ');
     }
-  }, []);
+  }, [modalNode]);
 
   useEffect(() => {
     if (node[0] !== undefined) {
@@ -134,20 +128,18 @@ const CartModal: FC<CartModalType> = ({
   }, [node]);
 
   useEffect(() => {
-    if (nodeID.length > 0) {
-      nodeGet(nodeID);
+    if (modalNode !== undefined) {
+      nodeGet();
     }
-  }, [nodeGet, nodeID]);
+  }, [nodeGet, modalNode]);
 
   const onUpdate = useCallback(
     async (id) => {
       try {
-        // eslint-disable-next-line no-underscore-dangle
-        await onChangeNodeContent(id, titleRef.current.innerText, node[0]._version);
-
-        dispatch(getIdNode(''));
         dispatch(closeUpdateModalIsOpen());
         setNode([]);
+        // eslint-disable-next-line no-underscore-dangle
+        await onChangeNodeContent(id, titleRef.current.innerText, node[0]._version);
       } catch (err) {
         throw new Error('Update cart: Something went wrong');
       }
@@ -273,7 +265,7 @@ const CartModal: FC<CartModalType> = ({
             </div>
 
             <div className={styles.main_row}>
-              {nodeID && (
+              {modalNode && (
                 <MentionContext.Provider value={() => toggleModal(node[0].id)}>
                   <MainEditor
                     linkRef={linkRef}

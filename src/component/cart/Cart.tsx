@@ -1,14 +1,12 @@
 /* eslint-disable react/require-default-props */
-import { FC, useCallback, useState, useRef } from 'react';
+import { FC, useState, useRef } from 'react';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
 import inputStyles from '../input/MainInput.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
-import { getIdNode } from '../../reducers/getNodeId';
 import './Color.scss';
 
 interface CartProps {
@@ -82,6 +80,7 @@ interface CartProps {
    * Collobarators of the Node Cart
    */
   collabarators: string[];
+  onOpenModal: () => void;
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -102,17 +101,10 @@ const Cart: FC<CartProps> = (props) => {
     toggleCartLabels,
     archived,
     collabarators,
+    onOpenModal,
   } = props;
   const [isMain] = useState(false);
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
-
-  const onOpenModal = useCallback(
-    (nodeId) => {
-      dispatch(getIdNode(nodeId));
-    },
-    [dispatch],
-  );
 
   const isLarge = !title;
 
@@ -136,7 +128,7 @@ const Cart: FC<CartProps> = (props) => {
             size="xs"
           />
         </button>
-        <div onClick={() => !popupCart && onOpenModal(id)} className={styles.cart_content}>
+        <div onClick={() => !popupCart && onOpenModal()} className={styles.cart_content}>
           {title && (
             <div className={classNames(styles.cart_title)}>
               <p>{title}</p>
@@ -205,7 +197,7 @@ const Cart: FC<CartProps> = (props) => {
         <div className={styles.input_navbar}>
           <InputNavbar
             isCart
-            onOpenModal={() => onOpenModal(id)}
+            onOpenModal={() => onOpenModal()}
             isMainInput={isMain}
             currentColor={color}
             selectedLabels={labels}

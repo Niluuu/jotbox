@@ -3,6 +3,7 @@ import { FC, useCallback } from 'react';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 import { getModalNode } from '../../reducers/getNodeId';
@@ -58,6 +59,7 @@ const CartLayout: FC<CartLayoutProps> = ({
   archivePage,
 }) => {
   const { label } = useParams();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const labeledCarts =
     label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
@@ -73,7 +75,7 @@ const CartLayout: FC<CartLayoutProps> = ({
     <div className={classNames(styles.layout, gridType && styles.column)}>
       {!archivePage && labeledCarts.some((cart) => cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
-          <h1 className={styles.layout_title}> Закрепленные </h1>
+          <h1 className={styles.layout_title}>{t('pined')}</h1>
         </div>
       )}
       {labeledCarts && (

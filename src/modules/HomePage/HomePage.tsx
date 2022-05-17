@@ -75,6 +75,14 @@ const HomePage: FC<HomeProps> = () => {
   const [selectedLabels, setselectedLabels] = useState([]);
   const [filter] = useState({ collabarators });
 
+  const onAddDefaultImage = useCallback(async (image: any): Promise<void> => {
+    try {
+      console.log(image);
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, []);
+
   const togglelabels = useCallback(
     (label) => {
       setselectedLabels((pre) =>
@@ -392,7 +400,7 @@ const HomePage: FC<HomeProps> = () => {
   ]);
 
   const onChangeNodeContent = useCallback(
-    async (id, title, _version): Promise<void> => {
+    async (id: string, title: string, _version: number): Promise<void> => {
       try {
         const updatedNode = {
           id,
@@ -458,6 +466,7 @@ const HomePage: FC<HomeProps> = () => {
                 selectedLabels={selectedLabels}
                 togglelabels={togglelabels}
                 onSelectedLabels={onSelectedLabels}
+                onAddDefaultImage={onAddDefaultImage}
               />
             </div>
           )}
@@ -485,6 +494,7 @@ const HomePage: FC<HomeProps> = () => {
       );
     },
     [
+      onAddDefaultImage,
       onChangeNodeContent,
       nodes,
       grid,

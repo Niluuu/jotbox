@@ -64,6 +64,9 @@ interface MainInputProps {
    */
   togglelabels: (label: string) => void;
   onSelectedLabels?: (label: string) => void;
+  /**
+   * adding image to cart */
+  onAddDefaultImage: (image: any) => Promise<void>;
 }
 
 const MainInput: FC<MainInputProps> = ({
@@ -79,10 +82,12 @@ const MainInput: FC<MainInputProps> = ({
   selectedLabels,
   togglelabels,
   onSelectedLabels,
+  onAddDefaultImage,
 }) => {
   const linkRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLInputElement>(null);
   const [linkMode, setlinkMode] = useState(false);
+  const [img, setImg] = useState(undefined);
   const editorRef = useRef<Editor>(null);
   const { label } = useParams();
 
@@ -97,6 +102,7 @@ const MainInput: FC<MainInputProps> = ({
       if (label) onSelectedLabels(label);
       setFocused(true);
     }, 200);
+
   useOnClickOutside(outsideRef, handleClickOutside);
 
   const mapStateToProps = useSelector((state: RootState) => {
@@ -126,6 +132,18 @@ const MainInput: FC<MainInputProps> = ({
     createLinkToEditor();
   };
 
+  const onAddDefaultImageInput = (e) => {
+    if (e.target.files.length > 0) {
+      const image = e.target.files[0];
+      onAddDefaultImage(image);
+
+      const url = URL.createObjectURL(image);
+      setImg(url);
+
+      setFocused(true);
+    }
+  };
+
   return (
     <div
       onKeyUp={(e) => {
@@ -138,12 +156,15 @@ const MainInput: FC<MainInputProps> = ({
         isInputCollabaratorOpen && styles.collabarator,
       )}
       tabIndex={-1}
-      onFocus={handleClickInside}
-      onClick={handleClickInside}
       ref={outsideRef}
     >
       <Collabarator isOpen={!isInputCollabaratorOpen} isMainInput />
       <>
+        {focused && img && (
+          <div>
+            <img style={{ height: '100%', width: '100%' }} src={img} />
+          </div>
+        )}
         <div
           className={classNames(styles.main_header, focused && styles.show)}
           style={{ display: isInputCollabaratorOpen && 'none' }}
@@ -173,7 +194,12 @@ const MainInput: FC<MainInputProps> = ({
           </button>
         </div>
 
-        <div style={{ display: isInputCollabaratorOpen && 'none' }} className={styles.main_row}>
+        <div
+          style={{ display: isInputCollabaratorOpen && 'none' }}
+          className={styles.main_row}
+          onFocus={handleClickInside}
+          onClick={handleClickInside}
+        >
           <MainEditor
             linkRef={linkRef}
             textRef={textRef}
@@ -196,9 +222,14 @@ const MainInput: FC<MainInputProps> = ({
             <button type="button" className={styles.icon_btn}>
               <Icon name="pen" color="premium" size="xs" />
             </button>
-            <button type="button" className={styles.icon_btn}>
+            <label style={{ cursor: 'pointer' }} className={styles.icon_btn}>
+              <input
+                style={{ display: 'none', cursor: 'pointer' }}
+                type="file"
+                onChange={(e) => onAddDefaultImageInput(e)}
+              />
               <Icon name="img" color="premium" size="xs" />
-            </button>
+            </label>
           </div>
         ) : null}
         {focused ? (

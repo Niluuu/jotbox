@@ -5,7 +5,7 @@
   padding: auto;
 
   &_input {
-    padding: 0 10px 0 6px;
+    padding: 0;
     box-shadow: 0 1px 1px 0 #94969b, 0 1px 3px 1px #d0d2d3;
     display: flex;
     flex-direction: column;
@@ -67,7 +67,7 @@
 .textarea {
   width: 100%;
   font-size: inherit;
-  padding: 1px 0;
+  padding: 1px 5px;
   outline: none;
   margin: 10px 0;
   display: block;
@@ -104,6 +104,7 @@
     padding: 0;
     margin: 0 10px;
     position: relative;
+    cursor: pointer;
 
     svg {
       width: 16px;
@@ -123,7 +124,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 2.5px 0;
+  padding: 2.5px 15px 2.5px 5px;
 
   &.hide {
     display: none;
@@ -316,7 +317,7 @@
   }
 
   .input_navbar {
-    padding: 4px 0;
+    padding: 4px 15px 4px 5px;
 
     .icon_btn {
       padding: 8px;
@@ -358,7 +359,7 @@
   }
 
   .input_navbar {
-    padding: 4px 0;
+    padding: 4px 15px 4px 5px;
 
     .icon_btn {
       padding: 7px;
@@ -435,7 +436,8 @@
 }
 
 .defaultPin {
-  transform: translate(15%, -15%);
+  position: absolute;
+  transform: translate(-36%, 40%);
   padding: 0;
 }
 

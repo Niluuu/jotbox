@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
 import { useHistory } from 'react-router-dom';
@@ -21,6 +22,7 @@ export const Navbar: FC = () => {
   const [updated, setUpdated] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { t } = useTranslation();
 
   async function signOut() {
     setRedirect(true);
@@ -31,7 +33,7 @@ export const Navbar: FC = () => {
       localStorage.removeItem('userEmail');
       history.push('/signIn');
     } catch (error) {
-      throw new Error('Sign out error');
+      throw new Error('sign out error');
     }
   }
 
@@ -83,10 +85,10 @@ export const Navbar: FC = () => {
           <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
             <ul>
               <li key="2">
-                <a href="#">Использовать тёмную тему</a>
+                <a href="#">{t('use dark theme')}</a>
               </li>
               <li key="3">
-                <a href="#">Отключить тёмную тему</a>
+                <a href="#">{t('turn off dark theme')}</a>
               </li>
             </ul>
           </div>
@@ -109,13 +111,15 @@ export const Navbar: FC = () => {
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
               <a className={redirect && styles.disable} onClick={signOut}>
-                {redirect ? 'Loading' : 'Sign out'}
+                {redirect ? t('loading') : t('sign out')}
                 {redirect && <Icon name="loading" />}
               </a>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>
               <a href="#">
-                <span>Privacy Policy • Term of Service</span>
+                <span>
+                  {t('privacy policy')} • {t('term of services')}
+                </span>
               </a>
             </div>
           </div>

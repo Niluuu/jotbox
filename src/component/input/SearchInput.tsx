@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import styles from './SearchInput.module.scss';
 import { Icon } from '../Icon/Icon';
@@ -11,6 +12,7 @@ import { setFilterByTitle } from '../../reducers/filterByTitle';
 const SearchInput: FC = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState('');
+  const { t } = useTranslation();
 
   const handleChange = useCallback(
     (e) => {
@@ -28,7 +30,7 @@ const SearchInput: FC = () => {
   return (
     <div className={styles.search__row}>
       <div className={styles.search__input}>
-        <input value={value} placeholder="Поиск" onChange={(e) => handleChange(e)} />
+        <input value={value} placeholder={t('search')} onChange={(e) => handleChange(e)} />
         <button type="button" className={styles.remove_btn} onClick={() => clearValue()}>
           <Icon name="remove" />
         </button>

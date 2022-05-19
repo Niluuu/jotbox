@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC } from 'react';
 import styles from './Avatar.module.scss';
 import avatar from '../../assets/images/avatar.png';

@@ -108,7 +108,7 @@ const CartLayout: FC<CartLayoutProps> = ({
       )}
       {!archivePage && labeledCarts.some((cart) => !cart.pined) && (
         <div className={classNames(styles.layout_div, gridType && styles.column)}>
-          <h1 className={styles.layout_title}> Заметки </h1>
+          <h1 className={styles.layout_title}>{t('notes')}</h1>
         </div>
       )}
       {labeledCarts && (

@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import styles from './SignUpPage.module.scss';
@@ -6,6 +7,8 @@ import OnErrorMessage from '../../component/message/message';
 
 const SignUpPage: FC = () => {
   const history = useHistory();
+  const { t } = useTranslation();
+
   const [typePassword, settypePassword] = useState(false);
   const [hasError, setHasError] = useState({
     active: false,
@@ -32,7 +35,7 @@ const SignUpPage: FC = () => {
         setHasError({
           active: true,
           success: true,
-          message: 'Confirm your account. We sended code to your account.',
+          message: t('confirm your account. we sended code to your account.'),
         });
 
         setTimeout(() => {
@@ -67,11 +70,11 @@ const SignUpPage: FC = () => {
     <div className={styles.sign}>
       <div className={styles.sign__wrapper}>
         <form className={styles.sign__form} onSubmit={(e) => signUp(e)}>
-          <h1 className={styles.sign__title}> Create your Google account </h1>
+          <h1 className={styles.sign__title}> {t('create your google account')} </h1>
           <div className={styles.sign__inputDiv}>
             <input
               type="text"
-              placeholder="Name"
+              placeholder={t('name')}
               name="userName"
               onChange={(e) => handleChange(e)}
             />
@@ -80,13 +83,13 @@ const SignUpPage: FC = () => {
           <div className={styles.sign__inputDiv}>
             <input
               type={typePassword ? 'text' : 'password'}
-              placeholder="Password"
+              placeholder={t('password')}
               name="password"
               onChange={(e) => handleChange(e)}
             />
           </div>
           <div className={styles.sign__link}>
-            <p> Use 8 or more characters with a mix of letters, numbers & symbols. </p>
+            <p> {t('use 8 or more characters with a mix of letters, numbers & symbols.')} </p>
             <div>
               <input
                 type="checkbox"
@@ -95,14 +98,14 @@ const SignUpPage: FC = () => {
                 onClick={toggle}
                 defaultChecked={false}
               />
-              <label htmlFor="showPassword"> Show Password </label>
+              <label htmlFor="showPassword">{t('show password')} </label>
             </div>
           </div>
           <div className={styles.sign__buttonDiv}>
-            <Link to="/signIn">Sign in instead</Link>
+            <Link to="/signIn">{t('sign in instead')}</Link>
             <button type="submit" onClick={(e) => signUp(e)}>
               {' '}
-              submit{' '}
+              {t('submit')}{' '}
             </button>
           </div>
         </form>

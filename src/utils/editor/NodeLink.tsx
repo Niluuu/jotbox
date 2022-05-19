@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { FC, useCallback, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { getIdNode, closeUpdateModalIsOpen } from '../../reducers/getNodeId';
 import styles from '../../component/tooltip/Tooltip.module.scss';
@@ -19,6 +20,7 @@ export interface NodeLinkProps {
 export const NodeLink: FC<NodeLinkProps> = ({ id, children }) => {
   const dispatch = useDispatch();
   const toggleModal = useContext(MentionContext);
+  const { t } = useTranslation();
 
   const handleClick = useCallback(
     (nodeId) => {
@@ -40,7 +42,7 @@ export const NodeLink: FC<NodeLinkProps> = ({ id, children }) => {
     <div className={classNames(styles.linkfy, styles.link)}>
       <div className={styles.tooltip}>
         <span contentEditable="false" onClick={() => handleClick(id)}>
-          Open
+          {t('open')}
         </span>
         <br />
       </div>

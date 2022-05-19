@@ -1,11 +1,14 @@
 import { FC, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Auth } from 'aws-amplify';
 import styles from '../SignInPage/SignInPage.module.scss';
 import OnErrorMessage from '../../component/message/message';
 
 const ConfirmPage: FC = () => {
   const history = useHistory();
+  const { t } = useTranslation();
+
   const [confirmCode, setConfirmCode] = useState('');
   const [hasError, setHasError] = useState({
     active: false,
@@ -48,13 +51,18 @@ const ConfirmPage: FC = () => {
   return (
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={(e) => confirmSignUp(e)}>
-        <h1 className={styles.sign__title}> Confirm code </h1>
+        <h1 className={styles.sign__title}> {t('confirm code')} </h1>
         <div className={styles.sign__inputDiv}>
-          <input type="text" placeholder="Code" name="code" onChange={(e) => handleChange(e)} />
+          <input
+            type="text"
+            placeholder={t('code')}
+            name="code"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
         <div className={styles.sign__buttonDiv}>
-          <Link to="/signin">Sign in instead</Link>
-          <button type="submit"> Confirm </button>
+          <Link to="/signin">{t('sign in instead')}</Link>
+          <button type="submit"> {t('confirm')} </button>
         </div>
       </form>
       <OnErrorMessage

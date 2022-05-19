@@ -1,5 +1,7 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
 import { FC, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from '../../modules/Sider/Sider.module.scss';
 import { Icon } from '../../component/Icon/Icon';
 import Modal from '../../component/modal/Modal';
@@ -29,10 +31,13 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
   onUpdateLabel,
   onDeleteLabel,
   listLabels,
-  close = 'Done',
-  modalTitle = 'Изменение ярлыков',
+  close,
+  modalTitle,
   hasError,
 }) => {
+  const defaultModalTitle = modalTitle || 'edit labels';
+  const defaultClose = close || 'done';
+  const { t } = useTranslation();
   const [focus, setFocus] = useState(false);
   const [val, setVal] = useState('');
 
@@ -45,7 +50,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
 
   const mainRef = useRef(null);
   return (
-    <Modal title={modalTitle} isOpen={isOpenLabel} toggleModal={toggleModal}>
+    <Modal title={t(defaultModalTitle)} isOpen={isOpenLabel} toggleModal={toggleModal}>
       <li className={styles.labels}>
         {focus ? (
           <Icon
@@ -71,7 +76,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           value={val}
           onChange={(e) => setVal(e.currentTarget.value)}
           onKeyUp={(e) => onCreateKeyup(e.key)}
-          placeholder="Create new label"
+          placeholder={t('create new label')}
           onFocus={() => setFocus(true)}
           onBlur={() => setTimeout(() => setFocus(false), 100)}
         />
@@ -87,7 +92,9 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           />
         ) : null}
       </li>
-      {hasError && <div className={styles.errorLabel}>This label already exists. Rename it!</div>}
+      {hasError && (
+        <div className={styles.errorLabel}>{t('this label already exists. rename it!')}</div>
+      )}
       <div style={{ overflowY: 'scroll', height: '350px' }}>
         {listLabels &&
           listLabels.map(({ id, title, _version }) => {
@@ -106,7 +113,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
 
       <div className={styles.bottom_btn}>
         <button type="button" onClick={toggleModal}>
-          {close}
+          {defaultClose}
         </button>
       </div>
     </Modal>

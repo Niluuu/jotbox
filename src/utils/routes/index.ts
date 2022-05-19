@@ -35,8 +35,8 @@ export const getLabels = (labels: LabelType[]): GetLabelType[] => {
 
 export const routes = (labels: LabelType[]): RoutesType[] => {
   const result = [
-    { name: 'Заметки', labels: null, icon: 'notes', active: true, url: '/', modal: false },
-    { name: 'Изменение ярлыков', labels: null, icon: 'labels', url: '/*', modal: true },
+    { name: 'notes', labels: null, icon: 'notes', active: true, url: '/', modal: false },
+    { name: 'edit labels', labels: null, icon: 'labels', url: '/*', modal: true },
     {
       name: 'labels',
       icon: null,
@@ -46,7 +46,7 @@ export const routes = (labels: LabelType[]): RoutesType[] => {
       labels: getLabels(labels),
     },
     {
-      name: 'Архив',
+      name: 'archive',
       labels: null,
       icon: 'archive',
       active: false,

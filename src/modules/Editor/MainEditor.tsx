@@ -2,6 +2,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
 import React, { FC, useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   EditorState,
   RichUtils,
@@ -106,6 +107,7 @@ const MainEditor: FC<MainEditorProps> = ({
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [textLink, setTextLink] = useState('');
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
@@ -314,7 +316,7 @@ const MainEditor: FC<MainEditorProps> = ({
           onChange={onChange}
           plugins={plugins}
           ref={editorRef}
-          placeholder={readOnly ? 'Пустая заметка' : 'Заметка...'}
+          placeholder={readOnly ? t('empty note') : t('note')}
           readOnly={readOnly}
         />
         <MentionSuggestions
@@ -326,7 +328,7 @@ const MainEditor: FC<MainEditorProps> = ({
       </div>
       <Modal
         left
-        title="Add Link"
+        title={t('add link')}
         toggleModal={() => {
           setTextLink('');
           seturlValue('');
@@ -337,7 +339,7 @@ const MainEditor: FC<MainEditorProps> = ({
         <div className={styles.linkWrapper}>
           <div className={styles.inputs}>
             <label className={styles.inputs_item}>
-              Text
+              {t('text')}
               <input
                 ref={textRef}
                 type="text"
@@ -347,12 +349,12 @@ const MainEditor: FC<MainEditorProps> = ({
               />
             </label>
             <div className={styles.inputs_item}>
-              Link
+              {t('link')}
               <input
                 ref={linkRef}
                 onChange={onURLChange}
                 type="text"
-                placeholder="Put your Link..."
+                placeholder={`${t('put your link')}...`}
                 value={urlValue}
                 onKeyUp={(e) => confirmLinkKeyUp(e)}
               />
@@ -360,7 +362,7 @@ const MainEditor: FC<MainEditorProps> = ({
             <div className={classNames(styles.inputs_item, styles.buttons)}>
               <div>
                 <button type="button" onMouseDown={removeLink} onClick={() => seturlValue('')}>
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   className={styles.gray}
@@ -368,7 +370,7 @@ const MainEditor: FC<MainEditorProps> = ({
                   onMouseDown={confirmLink}
                   type="button"
                 >
-                  Save
+                  {t('save')}
                 </button>
               </div>
             </div>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable default-case */
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Auth, Hub } from 'aws-amplify';
 import { useHistory } from 'react-router-dom';
 import GoogleLogo from '../../assets/images/svg-icons/GoogleLogo';
@@ -8,6 +9,7 @@ import GoogleLogo from '../../assets/images/svg-icons/GoogleLogo';
 const SigninWithGoogle = () => {
   const [user, setUser] = useState(null);
   const history = useHistory();
+  const { t } = useTranslation();
 
   const getUser = useCallback(async () => {
     try {
@@ -36,7 +38,7 @@ const SigninWithGoogle = () => {
         case 'signIn_failure':
         case 'cognitoHostedUI_failure':
           // eslint-disable-next-line no-console
-          console.log('Sign in failure', data);
+          console.log('sign in failure', data);
           break;
       }
     });
@@ -48,12 +50,12 @@ const SigninWithGoogle = () => {
     <>
       {user ? (
         <button type="button" onClick={() => Auth.signOut()}>
-          Sign Out
+          {t('sign out')}
         </button>
       ) : (
         <button type="button" onClick={() => Auth.federatedSignIn({ provider: 'Google' })}>
           <GoogleLogo />
-          Sign in with google
+          {t('sign in with google')}
         </button>
       )}
     </>

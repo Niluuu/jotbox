@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
 /* eslint-disable no-alert */
 import { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 import { API } from 'aws-amplify';
 import classNames from 'classnames';
@@ -254,12 +256,13 @@ interface SubmenuItemProps {
 }
 
 const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal }) => {
+  const { t } = useTranslation();
   return (
     <li className={styles.sider_submenu}>
       {modal ? (
         <div className={styles.sider_submenu__menu_item} onClick={toggleModal}>
           <Icon name={`${item.icon}`} color="premium" size="xs" />
-          <span className={styles.menu_item__title}>{item.name}</span>
+          <span className={styles.menu_item__title}>{t(item.name)}</span>
         </div>
       ) : (
         <NavLink to={item.url} activeClassName="active" key={item.name}>
@@ -270,7 +273,7 @@ const SubmenuItem: FC<SubmenuItemProps> = ({ item, location, modal, toggleModal 
             )}
           >
             <Icon name={`${item.icon}`} color="premium" size="xs" />
-            <span className={styles.menu_item__title}> {item.name}</span>
+            <span className={styles.menu_item__title}> {t(item.name)}</span>
           </div>
         </NavLink>
       )}

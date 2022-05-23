@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './MainInput.module.scss';
@@ -113,6 +114,8 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const [labels, setLabels] = useState([]);
   const dispatch = useDispatch();
 
+  const { t } = useTranslation();
+
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       storeLabels: state.labelReducer.storeLabels,
@@ -217,12 +220,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   <div className={styles.labelWrapper}>
-                    <h5> Добавить Ярлык </h5>
+                    <h5> {t('add label')} </h5>
                     <div className={styles.labelSearch}>
                       <input
                         type="text"
                         onChange={(e) => onLabelFilter(e.currentTarget.value)}
-                        placeholder="Введите Названия Ярлыка..."
+                        placeholder={`${t('enter a label name')}...`}
                       />
                       <Icon size="min" name="search" />
                     </div>
@@ -289,7 +292,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             type="button"
             className={classNames(styles.btn, styles.close)}
           >
-            Закрыть
+            {t('close')}
           </button>
         )}
       </div>

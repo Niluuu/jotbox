@@ -1,5 +1,5 @@
+/* eslint-disable react/require-default-props */
 import { FC, useEffect } from 'react';
-
 import classNames from 'classnames';
 import styles from './Modal.module.scss';
 import '../cart/Color.scss';

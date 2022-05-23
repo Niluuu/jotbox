@@ -10,7 +10,6 @@ import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../atoms/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
-import AddLinkModal from '../../atoms/modals/AddLinkModal';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { toggleOnCreateFunctionCall } from '../../reducers/editor';
@@ -60,7 +59,6 @@ const HomePage: FC<HomeProps> = () => {
     inputCollabaratorUsers,
     refreshPage,
     updatedText,
-    updateModalIsOpen,
   } = mapStateToProps;
   const dispatch = useDispatch();
 
@@ -480,7 +478,6 @@ const HomePage: FC<HomeProps> = () => {
             onColorChange={onColorChange}
             toggleCartLabels={toggleCartLabels}
           />
-          <AddLinkModal />
           <CartModal
             onChangeNodeContent={onChangeNodeContent}
             onChangeCollabarators={onChangeCollabarators}

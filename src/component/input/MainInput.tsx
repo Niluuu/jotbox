@@ -2,6 +2,7 @@
 /* eslint-disable react/require-default-props */
 import { FC, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
 import { useParams } from 'react-router';
@@ -90,6 +91,7 @@ const MainInput: FC<MainInputProps> = ({
   const [img, setImg] = useState(undefined);
   const editorRef = useRef<Editor>(null);
   const { label } = useParams();
+  const { t } = useTranslation();
 
   const outsideRef = useRef(null);
   const handleClickOutside = () =>

@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable react/require-default-props */
 import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './Logo.module.scss';

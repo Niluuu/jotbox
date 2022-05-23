@@ -1,5 +1,6 @@
 /* eslint-disable react/require-default-props */
 import { FC, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { API } from 'aws-amplify';
@@ -65,6 +66,8 @@ const Collabarator: FC<CollabaratorProps> = ({
   const [value, setValue] = useState('');
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
+
+  const { t } = useTranslation();
 
   const [suggestions, setSuggestions] = useState([]);
 
@@ -157,11 +160,14 @@ const Collabarator: FC<CollabaratorProps> = ({
 
   return (
     <div className={styles.collabarator} style={{ display: isOpen && 'none' }}>
-      <div className={styles.collabarator_header}>Collabarators</div>
+      <div className={styles.collabarator_header}>{t('collabarators')}</div>
       <div className={styles.user}>
         <img className={styles.user_img} src={avatar} />
         <div className={styles.user_text}>
-          <span className={styles.user_title}> {isMainInput ? userEmail : owner} (Owner) </span>
+          <span className={styles.user_title}>
+            {' '}
+            {isMainInput ? userEmail : owner} ({t('owner')}){' '}
+          </span>
         </div>
       </div>
       {users.map(
@@ -187,7 +193,7 @@ const Collabarator: FC<CollabaratorProps> = ({
             onChange={(e) => onFilterByTitle(e.target.value)}
             onKeyUp={(e) => onConfirmKeyup(e.key)}
             type="text"
-            placeholder="Person or Email to share with"
+            placeholder={t('person or email to share with')}
           />
         </div>
         {value && <Icon onClick={onConfirm} className={styles.user_confirm} name="done" />}
@@ -211,14 +217,14 @@ const Collabarator: FC<CollabaratorProps> = ({
           )}
         </>
       )}
-      {error && <div className={styles.message}>Please, Enter valid email address</div>}
+      {error && <div className={styles.message}>{t('please, enter valid email address')}</div>}
       <div className={styles.collabarator_footer}>
         <div>
           <button type="button" onClick={cancel}>
-            Cancel
+            {t('cancel')}
           </button>
           <button type="button" onClick={save}>
-            Save
+            {t('save')}
           </button>
         </div>
       </div>

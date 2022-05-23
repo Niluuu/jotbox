@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // import { Example, handleBooleanChange, IExampleProps } from '@blueprintjs/docs-theme';
 import { Popover2 } from '@blueprintjs/popover2';
 import classNames from 'classnames';

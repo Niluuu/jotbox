@@ -1,19 +1,18 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import en from '../public/locales/en/translation.json';
+import ru from '../public/locales/ru/translation.json';
 
 // the translations
 // (tip move them in a JSON file and import them,
 // or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
+
 const resources = {
   en: {
-    translation: {
-      pined: 'Pined',
-    },
+    translation: en,
   },
   ru: {
-    translation: {
-      pined: 'Закрепленные',
-    },
+    translation: ru,
   },
 };
 

@@ -99,10 +99,6 @@
   font-weight: $font-weight-normal;
 }
 
-.textarea[contenteditable]:empty::before {
-  content: 'Введите заголовок';
-}
-
 @include desktop {
   .home_page {
     padding-left: 75px;

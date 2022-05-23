@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import classNames from 'classnames';
@@ -9,6 +10,8 @@ import SigninWithGoogle from './SginWithGoogle';
 
 const SignInPage: FC = () => {
   const history = useHistory();
+  const { t } = useTranslation();
+
   const [userState, setUserState] = useState({
     userName: '',
     password: '',
@@ -17,7 +20,7 @@ const SignInPage: FC = () => {
   const [hasError, setHasError] = useState({
     active: false,
     success: false,
-    message: 'You Signed Up Successfully',
+    message: t('you Signed Up Successfully'),
   });
 
   const signIn = async (e) => {
@@ -32,7 +35,7 @@ const SignInPage: FC = () => {
         localStorage.setItem('assessToken', data.signInUserSession.accessToken.jwtToken);
         localStorage.setItem('userEmail', data.attributes.email);
 
-        setHasError({ active: true, success: true, message: 'You Signed In Successfully' });
+        setHasError({ active: true, success: true, message: t('you signed in successfully') });
 
         setTimeout(() => {
           setHasError((prev) => ({ ...prev, active: false }));
@@ -63,22 +66,22 @@ const SignInPage: FC = () => {
   return (
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={signIn}>
-        <h1 className={styles.sign__title}> Sign In </h1>
-        <h1 className={styles.sign__subTitle}> Use your Google Account </h1>
+        <h1 className={styles.sign__title}> {t('sign in')} </h1>
+        <h1 className={styles.sign__subTitle}> {t('use your google account')} </h1>
         <div className={styles.google_page}>
           <SigninWithGoogle />
         </div>
         <input
           type="text"
           name="userName"
-          placeholder="User name"
+          placeholder={t('user name')}
           value={userState.userName}
           onChange={handleChange}
         />
         <input
           type={typePassword ? 'text' : 'password'}
           name="password"
-          placeholder="Password"
+          placeholder={t('password')}
           value={userState.password}
           onChange={handleChange}
         />
@@ -90,13 +93,13 @@ const SignInPage: FC = () => {
             checked={typePassword}
             onChange={toggle}
           />
-          <p>Show password</p>
+          <p>{t('show password')}</p>
         </div>
 
         <div className={styles.sign__buttonDiv}>
-          <Link to="/signUp">Create account</Link>
+          <Link to="/signUp">{t('create account')}</Link>
           <button type="submit" onClick={signIn}>
-            Next
+            {t('next')}
           </button>
         </div>
       </form>

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { useTranslation } from 'react-i18next';
 import styles from '../../component/tooltip/Tooltip.module.scss';
 
 const findLinkEntities = (contentBlock, callback, contentState) => {
@@ -11,12 +12,13 @@ const findLinkEntities = (contentBlock, callback, contentState) => {
 const Link = (props) => {
   const { contentState, entityKey, children } = props;
   const { url, linkText } = contentState.getEntity(entityKey).getData();
+  const { t } = useTranslation();
 
   return (
     <div className={styles.linkfy}>
       <div className={styles.tooltip}>
         <span contentEditable="false" onClick={() => window.open(url)}>
-          Open
+          {t('open')}
         </span>
         <br />
       </div>

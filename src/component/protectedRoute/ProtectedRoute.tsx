@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { FC } from 'react';
 import { Route } from 'react-router-dom';
 import SignInPage from '../../modules/SignInPage/SignInPage';

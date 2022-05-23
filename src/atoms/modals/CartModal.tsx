@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import Editor from '@draft-js-plugins/editor';
 import classNames from 'classnames';
@@ -97,6 +98,8 @@ const CartModal: FC<CartModalType> = ({
   const [linkMode, setlinkMode] = useState(false);
   const linkRef = useRef(null);
   const textRef = useRef(null);
+  const { t } = useTranslation();
+
   const onLinkEditor = () => {
     if (textRef.current.value.length === 0) textRef.current.focus();
     else linkRef.current.focus();

@@ -48,5 +48,12 @@
         ]
       }
     }
+  },
+  "storage": {
+    "s3jotboxstorage27261fdb": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
   }
 }

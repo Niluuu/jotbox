@@ -19,7 +19,7 @@
     position: relative;
 
     .textarea[contenteditable]:empty::before {
-      content: 'Note…';
+      content: 'note…';
     }
 
     &:focus {

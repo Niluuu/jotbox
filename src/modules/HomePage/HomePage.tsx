@@ -2,7 +2,7 @@
 import { FC, useState, useCallback, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { API } from 'aws-amplify';
 import { getNode, listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
@@ -15,6 +15,7 @@ import CartModal from '../../atoms/modals/CartModal';
 import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
 import { setInputCollabaratorUsers } from '../../reducers/collabarator';
+import NotFound from '../../component/NotFound/NotFound';
 
 interface CartProps {
   id: string;
@@ -435,6 +436,9 @@ const HomePage: FC<HomeProps> = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
   const toggleSider = useCallback(() => setisSidebarOpen((pre) => !pre), []);
 
+  const [isPage, setIsPage] = useState(false);
+  const toggleIsPage = useCallback(() => setIsPage(true), []);
+
   const onSelectedLabels = useCallback(
     (elm) => {
       if (!selectedLabels.includes(elm)) setselectedLabels([elm, ...selectedLabels]);
@@ -515,11 +519,15 @@ const HomePage: FC<HomeProps> = () => {
   );
 
   return (
-    <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen}>
-      <Route exact path="/" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
-      <Route path="/labels/:label" render={useCallback(() => HomePageSub(false), [HomePageSub])} />
-      <Route exact path="/archived" render={useCallback(() => HomePageSub(true), [HomePageSub])} />
-    </Layout>
+    <div className="layout">
+      {!isPage && <Layout toggleSider={toggleSider} isSidebarOpen={isSidebarOpen} />}
+      <Switch>
+        <Route exact path="/" render={() => HomePageSub(false)} />
+        <Route exact path="/labels/:label" render={() => HomePageSub(false)} />
+        <Route exact path="/archived" render={() => HomePageSub(true)} />
+        <Route path="*" component={() => <NotFound toggleIsPage={toggleIsPage} />} />
+      </Switch>
+    </div>
   );
 };
 

@@ -91,7 +91,6 @@ const MainInput: FC<MainInputProps> = ({
   const [img, setImg] = useState(undefined);
   const editorRef = useRef<Editor>(null);
   const { label } = useParams();
-  const { t } = useTranslation();
 
   const outsideRef = useRef(null);
   const handleClickOutside = () =>

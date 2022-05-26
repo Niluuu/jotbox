@@ -99,6 +99,10 @@
   font-weight: $font-weight-normal;
 }
 
+.textarea[contenteditable]:empty::before {
+  content: 'enter a title';
+}
+
 @include desktop {
   .home_page {
     padding-left: 75px;

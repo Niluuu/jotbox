@@ -9,7 +9,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### Admin
 1. Ask permission from senior developers 
-2. GO to the (https://eu-central-1.admin.amplifyapp.com/admin/login?appId=d17oh96r8b4gc1&backendEnvironmentName=dev&redirectPath=/admin/d17oh96r8b4gc1/dev/home)
+2. Go to the (https://eu-central-1.admin.amplifyapp.com/admin/login?appId=d17oh96r8b4gc1&backendEnvironmentName=dev&redirectPath=/admin/d17oh96r8b4gc1/dev/home)
 
 ### Update Backend 
 Note: There have 2 ways to do that:
@@ -38,7 +38,7 @@ Editor tools:
 
 ## To create new Beckend envoriment
 1. Read (https://docs.amplify.aws/start/getting-started/installation/q/integration/js/#option-2-follow-the-instructions)
-2. In this step (https://docs.amplify.aws/start/getting-started/data-model/q/integration/js/#create-graphql-api-and-database)
+2. In this step see(https://docs.amplify.aws/start/getting-started/data-model/q/integration/js/#create-graphql-api-and-database)
 
 Create amplify/backend/api/amplify/jotbox/schema.graphql
 

@@ -35,3 +35,11 @@ Editor tools:
 8. Share your node with your friends.
 9. Filter nodes by `Labels`.
 8. Archive the nodes 
+
+## To create new Beckend envoriment
+1. Read (https://docs.amplify.aws/start/getting-started/installation/q/integration/js/#option-2-follow-the-instructions)
+2. In this step (https://docs.amplify.aws/start/getting-started/data-model/q/integration/js/#create-graphql-api-and-database)
+
+Create amplify/backend/api/amplify/jotbox/schema.graphql
+
+Run in terminal  `amplify codegen` will create other files for beckend

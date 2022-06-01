@@ -193,7 +193,7 @@ const Collabarator: FC<CollabaratorProps> = ({
             onChange={(e) => onFilterByTitle(e.target.value)}
             onKeyUp={(e) => onConfirmKeyup(e.key)}
             type="text"
-            placeholder={t('person or email to share with')}
+            placeholder={t('person-or-email')}
           />
         </div>
         {value && <Icon onClick={onConfirm} className={styles.user_confirm} name="done" />}
@@ -217,7 +217,7 @@ const Collabarator: FC<CollabaratorProps> = ({
           )}
         </>
       )}
-      {error && <div className={styles.message}>{t('please, enter valid email address')}</div>}
+      {error && <div className={styles.message}>{t('please-enter-valid-email-adress')}</div>}
       <div className={styles.collabarator_footer}>
         <div>
           <button type="button" onClick={cancel}>

@@ -50,15 +50,16 @@ const SigninWithGoogle = () => {
     <>
       {user ? (
         <button type="button" onClick={() => Auth.signOut()}>
-          {t('sign out')}
+          {t('sign-out')}
         </button>
       ) : (
         <button type="button" onClick={() => Auth.federatedSignIn({ provider: 'Google' })}>
           <GoogleLogo />
-          {t('sign in with google')}
+          {t('sign-in-with-google')}
         </button>
       )}
     </>
   );
 };
+
 export default SigninWithGoogle;

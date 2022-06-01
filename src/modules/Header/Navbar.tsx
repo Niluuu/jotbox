@@ -22,7 +22,11 @@ export const Navbar: FC = () => {
   const [updated, setUpdated] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   async function signOut() {
     setRedirect(true);
@@ -85,10 +89,16 @@ export const Navbar: FC = () => {
           <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
             <ul>
               <li key="2">
-                <a href="#">{t('use dark theme')}</a>
+                <a href="#">{t('use-dark-theme')}</a>
               </li>
               <li key="3">
-                <a href="#">{t('turn off dark theme')}</a>
+                <a href="#">{t('turn-off-dark-theme')}</a>
+              </li>
+              <li onClick={() => changeLanguage('en')}>
+                <a href="#">english</a>
+              </li>
+              <li onClick={() => changeLanguage('ru')}>
+                <a href="#">русский</a>
               </li>
             </ul>
           </div>
@@ -111,14 +121,14 @@ export const Navbar: FC = () => {
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.signOut)}>
               <a className={redirect && styles.disable} onClick={signOut}>
-                {redirect ? t('loading') : t('sign out')}
+                {redirect ? t('loading') : t('sign-out')}
                 {redirect && <Icon name="loading" />}
               </a>
             </div>
             <div className={classNames(styles.navbar_popover__profile_row, styles.privacy)}>
               <a href="#">
                 <span>
-                  {t('privacy policy')} • {t('term of services')}
+                  {t('privacy-policy')} • {t('terms-of-services')}
                 </span>
               </a>
             </div>

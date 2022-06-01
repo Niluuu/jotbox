@@ -15,7 +15,7 @@ const NotFound: FC<NotFoundProps> = ({ toggleIsPage }) => {
     toggleIsPage();
   });
 
-  return <div> {t('page not found')} </div>;
+  return <div> {t('page-not-found')} </div>;
 };
 
 export default NotFound;

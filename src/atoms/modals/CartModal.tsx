@@ -14,7 +14,7 @@ import MainEditor from '../../modules/Editor/MainEditor';
 import { InputNavbar } from '../../component/input/InputNavbar';
 import { Chip } from '../../component/chip/Chip';
 import MentionContext from '../../utils/hooks/useCreatContext';
-import Collabarator from '../../component/Collabarator/Collabarator';
+import Collabarator from '../../component/collabarator/Collabarator';
 import '../../component/cart/Color.scss';
 
 interface CartProps {

@@ -59,10 +59,11 @@ const CartLayout: FC<CartLayoutProps> = ({
   archivePage,
 }) => {
   const { label } = useParams();
-  const { t } = useTranslation();
   const dispatch = useDispatch();
   const labeledCarts =
     label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
+
+  const { t } = useTranslation();
 
   const onOpenModal = useCallback(
     (cart: CartProps) => {

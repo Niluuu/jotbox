@@ -13,7 +13,7 @@ const SignUpPage: FC = () => {
   const [hasError, setHasError] = useState({
     active: false,
     success: false,
-    message: 'You signed up successfully',
+    message: 'you-signed-up-succesfully',
   });
 
   const [userState, setUserState] = useState({
@@ -35,7 +35,7 @@ const SignUpPage: FC = () => {
         setHasError({
           active: true,
           success: true,
-          message: t('confirm your account. we sended code to your account.'),
+          message: t('confirm-your-account-we-sended-code'),
         });
 
         setTimeout(() => {
@@ -70,7 +70,7 @@ const SignUpPage: FC = () => {
     <div className={styles.sign}>
       <div className={styles.sign__wrapper}>
         <form className={styles.sign__form} onSubmit={(e) => signUp(e)}>
-          <h1 className={styles.sign__title}> {t('create your google account')} </h1>
+          <h1 className={styles.sign__title}> {t('create-your-google-account')} </h1>
           <div className={styles.sign__inputDiv}>
             <input
               type="text"
@@ -89,7 +89,7 @@ const SignUpPage: FC = () => {
             />
           </div>
           <div className={styles.sign__link}>
-            <p> {t('use 8 or more characters with a mix of letters, numbers & symbols.')} </p>
+            <p> {t('use-8-or-more-characters')} </p>
             <div>
               <input
                 type="checkbox"
@@ -98,11 +98,11 @@ const SignUpPage: FC = () => {
                 onClick={toggle}
                 defaultChecked={false}
               />
-              <label htmlFor="showPassword">{t('show password')} </label>
+              <label htmlFor="showPassword">{t('show-password')} </label>
             </div>
           </div>
           <div className={styles.sign__buttonDiv}>
-            <Link to="/signIn">{t('sign in instead')}</Link>
+            <Link to="/signIn">{t('sign-in-instead')}</Link>
             <button type="submit" onClick={(e) => signUp(e)}>
               {' '}
               {t('submit')}{' '}

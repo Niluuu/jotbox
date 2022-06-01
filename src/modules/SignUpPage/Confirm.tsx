@@ -13,7 +13,7 @@ const ConfirmPage: FC = () => {
   const [hasError, setHasError] = useState({
     active: false,
     success: false,
-    message: 'You signed up successfully',
+    message: 'you-signed-up-succesfully',
   });
 
   const confirmSignUp = async (e) => {
@@ -51,7 +51,7 @@ const ConfirmPage: FC = () => {
   return (
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={(e) => confirmSignUp(e)}>
-        <h1 className={styles.sign__title}> {t('confirm code')} </h1>
+        <h1 className={styles.sign__title}> {t('confirm-code')} </h1>
         <div className={styles.sign__inputDiv}>
           <input
             type="text"
@@ -61,7 +61,7 @@ const ConfirmPage: FC = () => {
           />
         </div>
         <div className={styles.sign__buttonDiv}>
-          <Link to="/signin">{t('sign in instead')}</Link>
+          <Link to="/signin">{t('sign-in-instead')}</Link>
           <button type="submit"> {t('confirm')} </button>
         </div>
       </form>

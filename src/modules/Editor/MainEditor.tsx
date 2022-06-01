@@ -316,7 +316,7 @@ const MainEditor: FC<MainEditorProps> = ({
           onChange={onChange}
           plugins={plugins}
           ref={editorRef}
-          placeholder={readOnly ? t('empty note') : t('note')}
+          placeholder={readOnly ? t('empty-note') : t('note')}
           readOnly={readOnly}
         />
         <MentionSuggestions
@@ -328,7 +328,7 @@ const MainEditor: FC<MainEditorProps> = ({
       </div>
       <Modal
         left
-        title={t('add link')}
+        title={t('add-link')}
         toggleModal={() => {
           setTextLink('');
           seturlValue('');
@@ -354,7 +354,7 @@ const MainEditor: FC<MainEditorProps> = ({
                 ref={linkRef}
                 onChange={onURLChange}
                 type="text"
-                placeholder={`${t('put your link')}...`}
+                placeholder={`${t('put-your-link')}...`}
                 value={urlValue}
                 onKeyUp={(e) => confirmLinkKeyUp(e)}
               />

@@ -2,7 +2,6 @@
 /* eslint-disable react/require-default-props */
 import { FC, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
 import { useParams } from 'react-router';
@@ -13,7 +12,7 @@ import { InputNavbar } from './InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
-import Collabarator from '../Collabarator/Collabarator';
+import Collabarator from '../collabarator/Collabarator';
 
 interface MainInputProps {
   /**

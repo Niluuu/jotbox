@@ -20,7 +20,7 @@ const SignInPage: FC = () => {
   const [hasError, setHasError] = useState({
     active: false,
     success: false,
-    message: t('you Signed Up Successfully'),
+    message: t('you-signed-in-succesfully'),
   });
 
   const signIn = async (e) => {
@@ -35,7 +35,7 @@ const SignInPage: FC = () => {
         localStorage.setItem('assessToken', data.signInUserSession.accessToken.jwtToken);
         localStorage.setItem('userEmail', data.attributes.email);
 
-        setHasError({ active: true, success: true, message: t('you signed in successfully') });
+        setHasError({ active: true, success: true, message: t('you-signed-in-succesfully') });
 
         setTimeout(() => {
           setHasError((prev) => ({ ...prev, active: false }));
@@ -66,15 +66,15 @@ const SignInPage: FC = () => {
   return (
     <div className={styles.sign}>
       <form className={styles.sign__form} onSubmit={signIn}>
-        <h1 className={styles.sign__title}> {t('sign in')} </h1>
-        <h1 className={styles.sign__subTitle}> {t('use your google account')} </h1>
+        <h1 className={styles.sign__title}> {t('sign-in')} </h1>
+        <h1 className={styles.sign__subTitle}> {t('use-your-google-account')} </h1>
         <div className={styles.google_page}>
           <SigninWithGoogle />
         </div>
         <input
           type="text"
           name="userName"
-          placeholder={t('user name')}
+          placeholder={t('user-name')}
           value={userState.userName}
           onChange={handleChange}
         />
@@ -93,11 +93,11 @@ const SignInPage: FC = () => {
             checked={typePassword}
             onChange={toggle}
           />
-          <p>{t('show password')}</p>
+          <p>{t('show-password')}</p>
         </div>
 
         <div className={styles.sign__buttonDiv}>
-          <Link to="/signUp">{t('create account')}</Link>
+          <Link to="/signUp">{t('create-account')}</Link>
           <button type="submit" onClick={signIn}>
             {t('next')}
           </button>

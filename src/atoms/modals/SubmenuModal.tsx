@@ -76,7 +76,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           value={val}
           onChange={(e) => setVal(e.currentTarget.value)}
           onKeyUp={(e) => onCreateKeyup(e.key)}
-          placeholder={t('create new label')}
+          placeholder={t('create-new-label')}
           onFocus={() => setFocus(true)}
           onBlur={() => setTimeout(() => setFocus(false), 100)}
         />
@@ -92,9 +92,7 @@ export const SubmenuModal: FC<SubmenuModalProps> = ({
           />
         ) : null}
       </li>
-      {hasError && (
-        <div className={styles.errorLabel}>{t('this label already exists. rename it!')}</div>
-      )}
+      {hasError && <div className={styles.errorLabel}>{t('this-label-already-exists')}</div>}
       <div style={{ overflowY: 'scroll', height: '350px' }}>
         {listLabels &&
           listLabels.map(({ id, title, _version }) => {

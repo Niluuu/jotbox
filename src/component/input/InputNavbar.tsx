@@ -220,12 +220,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
               <div className={classNames(styles.navbar_popover, styles.navbar_popover_settings)}>
                 <ul className={styles.popover_content}>
                   <div className={styles.labelWrapper}>
-                    <h5> {t('add label')} </h5>
+                    <h5> {t('add-label')} </h5>
                     <div className={styles.labelSearch}>
                       <input
                         type="text"
                         onChange={(e) => onLabelFilter(e.currentTarget.value)}
-                        placeholder={`${t('enter a label name')}...`}
+                        placeholder={`${t('enter-label-name')}...`}
                       />
                       <Icon size="min" name="search" />
                     </div>

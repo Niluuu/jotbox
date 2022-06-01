@@ -15,7 +15,7 @@ import CartModal from '../../atoms/modals/CartModal';
 import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
 import { setInputCollabaratorUsers } from '../../reducers/collabarator';
-import NotFound from '../../component/NotFound/NotFound';
+import NotFound from '../../component/not-found/NotFound';
 
 interface CartProps {
   id: string;

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
-import { FC, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { FC, useState, useRef, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
 import { useParams } from 'react-router';
@@ -13,83 +13,51 @@ import MainEditor from '../../modules/Editor/MainEditor';
 import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
 import Collabarator from '../collabarator/Collabarator';
+import Images from '../../atoms/modals/Images';
+import { setEditorFocus } from '../../reducers/editor';
 
-interface MainInputProps {
-  /**
-   * Is main input focused
-   */
-  focused: boolean;
-  /**
-   * Is main input creates pined node
-   */
-  defaultPin: boolean;
-  /**
-   * Outside ref
-   */
-  outsideRef?: React.LegacyRef<HTMLDivElement> | null;
-  /**
-   * Node title
-   */
-  titleRef: React.LegacyRef<HTMLDivElement> | null;
-  /**
-   * Default node color
-   */
-  defaultColor?: string;
-  /**
-   * Set default pined attribut when creating Node
-   */
-  onDefaultPin: () => void;
-  /**
-   * Creating Node
-   */
-  onSetNodes: () => void;
-  /**
-   * Create default archived Node
-   */
-  onSetArchive: () => void;
-  /**
-   * Set default color when creating Node
-   */
-  onDefaultColor?: (optionalColor: string) => void;
-  /**
-   * Outside click handler
-   */
-  setFocused: (e: boolean) => void;
-  /**
-   * Default node labels
-   */
-  selectedLabels?: string[];
-  /**
-   * Node labels handler
-   */
-  togglelabels: (label: string) => void;
-  onSelectedLabels?: (label: string) => void;
-  /**
-   * adding image to cart */
-  onAddDefaultImage: (image: any) => Promise<void>;
-}
-
-const MainInput: FC<MainInputProps> = ({
-  onSetArchive,
-  defaultPin,
-  onDefaultPin,
-  setFocused,
-  focused,
-  onSetNodes,
-  titleRef,
-  defaultColor,
-  onDefaultColor,
-  selectedLabels,
-  togglelabels,
-  onSelectedLabels,
-  onAddDefaultImage,
-}) => {
+const MainInput: FC = () => {
   const linkRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLInputElement>(null);
   const [linkMode, setlinkMode] = useState(false);
-  const [img, setImg] = useState(undefined);
   const editorRef = useRef<Editor>(null);
+  const titleRef = useRef<HTMLDivElement>();
+  const [defaultPin, setDefaultPin] = useState(false);
+  const [defaultColor, setDefaultColor] = useState('default');
+  const [selectedLabels, setselectedLabels] = useState([]);
+
+  const togglelabels = useCallback(
+    (toggledLabel) => {
+      setselectedLabels((pre) =>
+        !pre.includes(toggledLabel)
+          ? [...selectedLabels, toggledLabel]
+          : selectedLabels.filter((elm) => elm !== toggledLabel),
+      );
+    },
+    [selectedLabels],
+  );
+
+  const onSelectedLabels = useCallback(
+    (elm) => {
+      if (!selectedLabels.includes(elm)) setselectedLabels([elm, ...selectedLabels]);
+    },
+    [selectedLabels],
+  );
+
+  const onDefaultColor = useCallback((optionalColor) => {
+    setDefaultColor(optionalColor);
+  }, []);
+
+  const [focused, setFocused] = useState(false);
+
+  const onDefaultPin = useCallback(() => {
+    setDefaultPin((pre) => !pre);
+  }, []);
+
   const { label } = useParams();
+  const dispatch = useDispatch();
+
+  const [imgUrl, setImgUrl] = useState([]);
 
   const outsideRef = useRef(null);
   const handleClickOutside = () =>
@@ -114,10 +82,11 @@ const MainInput: FC<MainInputProps> = ({
     };
   });
 
-  const { grid, text, isInputCollabaratorOpen, inputCollabaratorUsers } = mapStateToProps;
+  const { grid, text, isInputCollabaratorOpen , inputCollabaratorUsers } = mapStateToProps;
 
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
+    dispatch(setEditorFocus());
   };
 
   const onKeyPressed = (e) => {
@@ -132,17 +101,42 @@ const MainInput: FC<MainInputProps> = ({
     createLinkToEditor();
   };
 
-  const onAddDefaultImageInput = (e) => {
-    if (e.target.files.length > 0) {
-      const image = e.target.files[0];
-      onAddDefaultImage(image);
+  const cleanUpParent = useCallback(() => {
+    titleRef.current.innerHTML = '';
+    setDefaultPin(false);
+    setDefaultColor('default');
+    setselectedLabels([]);
+    setsImg([]);
+  }, []);
 
-      const url = URL.createObjectURL(image);
-      setImg(url);
+  const [img, setsImg] = useState([]);
 
-      setFocused(true);
-    }
-  };
+  const onAddDefaultImage = useCallback(
+    async (image: any): Promise<void> => {
+      try {
+        setsImg([...img, image]);
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [img],
+  );
+
+  const onAddDefaultImageInput = useCallback(
+    (e) => {
+      if (e.target.files.length > 0) {
+        const image = e.target.files[0];
+
+        onAddDefaultImage(image);
+
+        const url = URL.createObjectURL(image);
+        setImgUrl([...imgUrl, url]);
+
+        setFocused(true);
+      }
+    },
+    [imgUrl, onAddDefaultImage, setFocused],
+  );
 
   return (
     <div
@@ -160,11 +154,7 @@ const MainInput: FC<MainInputProps> = ({
     >
       <Collabarator isOpen={!isInputCollabaratorOpen} isMainInput />
       <>
-        {focused && img && (
-          <div>
-            <img style={{ height: '100%', width: '100%' }} src={img} />
-          </div>
-        )}
+        {focused && imgUrl.length !== 0 && <Images images={imgUrl} />}
         <div
           className={classNames(styles.main_header, focused && styles.show)}
           style={{ display: isInputCollabaratorOpen && 'none' }}
@@ -265,14 +255,16 @@ const MainInput: FC<MainInputProps> = ({
             <InputNavbar
               hide={isInputCollabaratorOpen}
               isMainInput
-              onSetArchive={onSetArchive}
-              onSetNode={() => onSetNodes()}
               createLinkToEditor={onLinkEditor}
               onDefaultColor={onDefaultColor}
               defaultColor={defaultColor}
               togglelabels={() => togglelabels}
               selectedLabels={selectedLabels}
               label={label}
+              img={img}
+              cleanUpParent={cleanUpParent}
+              titleInnerText={titleRef.current.innerText}
+              defaultPin={defaultPin}
             />
           </>
         ) : null}

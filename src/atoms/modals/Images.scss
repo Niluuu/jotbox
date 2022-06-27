@@ -1,0 +1,118 @@
+
+img {
+  object-fit: cover !important;
+}
+
+.images {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+
+  &_div {
+    width: 100% !important;
+    height: 215px !important;
+    z-index: -5 !important;
+    position: relative !important;
+    margin-bottom: 2px !important;
+
+    svg {
+      position: absolute !important;
+      z-index: 5 !important;
+      bottom: 4px !important;
+      right: 8px !important;
+    }
+
+    img {
+      width: 100% !important;
+      height: 215px !important;
+      position: absolute !important;
+    }
+
+    &_half {
+      width: 49.9% !important;
+      height: 140px !important;
+      z-index: -5 !important;
+      position: relative !important;
+      margin-bottom: 2px !important;
+
+      svg {
+        position: absolute !important;
+        z-index: 5 !important;
+        bottom: 4px !important;
+        right: 8px !important;
+      }
+
+      img {
+        width: 100% !important;
+
+        height: 140px !important;
+        position: absolute !important;
+      }
+    }
+
+    &_three {
+      width: 33.1% !important;
+      height: 110px !important;
+      z-index: -5 !important;
+      position: relative !important;
+      margin-bottom: 2px !important;
+
+      svg {
+        position: absolute !important;
+        z-index: 5 !important;
+        bottom: 4px !important;
+        right: 8px !important;
+      }
+
+      img {
+        width: 100% !important;
+        height: 110px !important;
+        position: absolute !important;
+      }
+    }
+
+    &_four {
+      width: 24.8% !important;
+      height: 90px !important;
+      z-index: -5 !important;
+      position: relative !important;
+      margin-bottom: 2px !important;
+
+      svg {
+        position: absolute !important;
+        z-index: 5 !important;
+        bottom: 4px !important;
+        right: 8px !important;
+      }
+
+      img {
+        width: 100% !important;
+
+        height: 90px !important;
+        position: absolute !important;
+      }
+    }
+
+    &_five {
+      width: 19.8% !important;
+      height: 70px !important;
+      z-index: -5 !important;
+      position: relative !important;
+      margin-bottom: 2px !important;
+
+      svg {
+        position: absolute !important;
+        z-index: 5 !important;
+        bottom: 4px !important;
+        right: 8px !important;
+      }
+
+      img {
+        width: 100% !important;
+
+        height: 70px !important;
+        position: absolute !important;
+      }
+    }
+  }
+}

@@ -1,7 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable max-lines */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { API, Storage } from 'aws-amplify';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './MainInput.module.scss';
@@ -12,9 +15,29 @@ import { COLORS } from '../../utils/editor/color';
 import {
   toggleIsInputCollabaratorOpen,
   toggleIsCartCollabaratorOpen,
+  setInputCollabaratorUsers,
 } from '../../reducers/collabarator';
-import { setUndo, setRedo } from '../../reducers/editor';
+import { setUndo, setRedo, toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { RootState } from '../../app/store';
+import { setNodesToProps } from '../../reducers/nodes';
+import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
+import { getNode } from '../../graphql/queries';
+import { closeUpdateModalIsOpen, getModalNode } from '../../reducers/getNodeId';
+
+interface CartProps {
+  id: string;
+  title: string;
+  description: string;
+  pined: boolean;
+  archived: boolean;
+  labels: string[];
+  _version: number;
+  _deleted: boolean;
+  color: string;
+  collabarators: string[];
+  collabarator: string;
+  img: string[];
+}
 
 interface InputNavbarProps {
   /**
@@ -25,10 +48,6 @@ interface InputNavbarProps {
    * Create node func
    */
   onSetNode?: () => void;
-  /**
-   * Node remove func
-   */
-  onRemoveCart?: () => void;
   /**
    * Archived node func
    */
@@ -41,10 +60,6 @@ interface InputNavbarProps {
    * Create link text to editor
    */
   createLinkToEditor?: () => void;
-  /**
-   * Node COLORS change func
-   */
-  onColorChange?: (color: string) => void;
   /**
    * Node current color
    */
@@ -70,10 +85,6 @@ interface InputNavbarProps {
    */
   selectedLabels: string[];
   /**
-   * Toggle labels of Node function
-   */
-  toggleCartLabels?: (label: string) => void;
-  /**
    * Is Modal? Should navbar has shadow in Modal?
    */
   shadow?: boolean;
@@ -88,41 +99,81 @@ interface InputNavbarProps {
   updateModalIsOpen?: boolean;
   hide?: boolean;
   label?: string;
+  /**
+   * Node Id
+   */
+  id?: string;
+  /**
+   * Node version of node
+   */
+  _version?: number;
+  /**
+   * Node archived or not?
+   */
+  archived?: boolean;
+  /**
+   * Node title
+   */
+  title?: string;
+  /**
+   * Node description
+   */
+  description?: string;
+  /**
+   * Node labels
+   */
+  labels?: string[] | null;
+  img?: any[];
+  cleanUpParent?: () => void;
+  /**
+   * Node title
+   */
+  titleInnerText?: string | null;
+  defaultPin?: boolean;
+  isModal?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const {
     isMainInput,
-    onChangeArchived,
-    onSetArchive,
-    onSetNode,
-    onRemoveCart,
     createLinkToEditor,
-    onColorChange,
     currentColor,
-    defaultColor,
-    onDefaultColor,
-    togglelabels,
-    selectedLabels,
-    toggleCartLabels,
     shadow,
     isCart,
     onOpenModal,
     hide,
     label,
+    id,
+    _version,
+    archived,
+    title,
+    description,
+    img,
+    defaultColor,
+    titleInnerText,
+    onDefaultColor,
+    cleanUpParent,
+    isModal,
+    defaultPin,
+    selectedLabels,
+    togglelabels,
   } = props;
   const [labels, setLabels] = useState([]);
   const dispatch = useDispatch();
+  const userEmail = localStorage.getItem('userEmail');
 
   const { t } = useTranslation();
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
+      nodes: state.nodesReducer.nodes,
       storeLabels: state.labelReducer.storeLabels,
+      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
+      text: state.editorReducer.text,
     };
   });
 
-  const { storeLabels } = mapStateToProps;
+  const { storeLabels, nodes, inputCollabaratorUsers, text } = mapStateToProps;
 
   const undoRedo = (callBack: () => void) => {
     dispatch(callBack());
@@ -132,11 +183,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const handleEditorUndo = () => undoRedo(setUndo);
 
   const handleEditorRedo = () => undoRedo(setRedo);
-
-  const toggleArchive = () => {
-    if (isMainInput) onSetArchive();
-    else onChangeArchived();
-  };
 
   const onLabelFilter = useCallback(
     async (value: string) => {
@@ -153,14 +199,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     [storeLabels],
   );
 
-  const toggleSelectedlabel = useCallback(
-    (e) => {
-      if (isMainInput) togglelabels(e.target.value);
-      else toggleCartLabels(e.target.value);
-    },
-    [isMainInput, togglelabels, toggleCartLabels],
-  );
-
   const toggleCollabarator = () => {
     if (isMainInput) dispatch(toggleIsInputCollabaratorOpen());
     else {
@@ -169,9 +207,278 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     }
   };
 
+  const cleanUp = useCallback(() => {
+    dispatch(setInputCollabaratorUsers([]));
+    dispatch(toggleOnCreateFunctionCall(true));
+
+    setTimeout(() => {
+      dispatch(toggleOnCreateFunctionCall(false));
+    }, 500);
+  }, [dispatch]);
+
   useEffect(() => {
     setLabels(storeLabels);
   }, [storeLabels]);
+
+  const onColorChange = useCallback(
+    async (nodeId: string, color: string, nodeVersion: number): Promise<CartProps> => {
+      try {
+        const updatedNode = {
+          id: nodeId,
+          color,
+          _version: nodeVersion,
+        };
+
+        const data = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        if (isModal) dispatch(getModalNode(item));
+
+        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        return item;
+      } catch (err) {
+        throw new Error('Color update error');
+      }
+    },
+    [dispatch, isModal, nodes],
+  );
+
+  const onRemoveCart = useCallback(
+    async (nodeId: string, nodeVersion: number): Promise<CartProps> => {
+      try {
+        const data = await API.graphql({
+          query: deleteNode,
+          variables: { input: { id: nodeId, _version: nodeVersion } },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.deleteNode;
+
+        // eslint-disable-next-line no-underscore-dangle
+        if (item._deleted) {
+          dispatch(setNodesToProps(nodes.filter((newCart) => newCart.id !== nodeId)));
+
+          if (isModal) dispatch(closeUpdateModalIsOpen());
+        }
+        return item;
+      } catch (err) {
+        throw new Error('Remove node error');
+      }
+    },
+    [dispatch, isModal, nodes],
+  );
+
+  const onChangeArchived = useCallback(
+    async (
+      nodeId: string,
+      archiveAttr: boolean,
+      nodeVersion: number,
+      nodeTitle: string,
+      nodeDescription: string,
+    ): Promise<CartProps> => {
+      try {
+        const updatedNode = {
+          id: nodeId,
+          archived: !archiveAttr,
+          _version: nodeVersion,
+          title: nodeTitle,
+          description: nodeDescription,
+          pined: false,
+        };
+
+        const data = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+
+        if (isModal) dispatch(closeUpdateModalIsOpen());
+
+        return item;
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [dispatch, isModal, nodes],
+  );
+
+  const toggleCartLabels = useCallback(
+    async (nodeId: string, nodeVersion: number, nodeLabels: string): Promise<CartProps> => {
+      try {
+        const data = await API.graphql({ query: getNode, variables: { id: nodeId } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const cart = data.data.getNode;
+        const cartlabels = cart.labels;
+
+        const updatedlabels = cartlabels.includes(nodeLabels)
+          ? cartlabels.filter((cartlabel: string) => cartlabel !== nodeLabels)
+          : [...cartlabels, nodeLabels];
+
+        const updatedNode = { id: nodeId, _version: nodeVersion, labels: updatedlabels };
+
+        const newData = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = newData.data.updateNode;
+
+        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+
+        if (isModal) dispatch(getModalNode(item));
+
+        return item;
+      } catch (err) {
+        throw new Error('Toggle Update Label for Carts Error');
+      }
+    },
+    [dispatch, isModal, nodes],
+  );
+
+  const toggleSelectedlabel = useCallback(
+    (e) => {
+      if (isMainInput) togglelabels(e.target.value);
+      else toggleCartLabels(id, _version, e.target.value);
+    },
+    [isMainInput, togglelabels, toggleCartLabels, id, _version],
+  );
+
+  const toggleArchive = () => {
+    if (isMainInput) onSetArchive();
+    else onChangeArchived(id, archived, _version, title, description);
+  };
+
+  const onSetNodes = useCallback(async () => {
+    try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
+
+      const nodesImg = [];
+
+      img.forEach(async (currentImg) => {
+        nodesImg.push(currentImg.name);
+
+        await Storage.put(currentImg.name, currentImg, {
+          contentType: 'image/png', // contentType is optional
+        });
+      });
+
+      const node = {
+        title: titleInnerText,
+        description: text,
+        labels: selectedLabels,
+        pined: defaultPin,
+        color: defaultColor,
+        archived: false,
+        collabarator: userEmail,
+        collabarators: newCollabarators,
+        img: nodesImg,
+      };
+
+      console.log(titleInnerText);
+      console.log(node);
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const parsedText = JSON.parse(text);
+
+      if (parsedText.blocks[0].text && titleInnerText) {
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        dispatch(setNodesToProps([item, ...nodes]));
+
+        cleanUp();
+        cleanUpParent();
+      }
+    } catch (err) {
+      throw new Error('Create node error');
+    }
+  }, [
+    userEmail,
+    inputCollabaratorUsers,
+    img,
+    titleInnerText,
+    text,
+    selectedLabels,
+    defaultPin,
+    defaultColor,
+    dispatch,
+    nodes,
+    cleanUp,
+    cleanUpParent,
+  ]);
+
+  const onSetArchive = useCallback(async () => {
+    try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
+
+      const nodesImg = [];
+
+      img.forEach(async (currentImg) => {
+        nodesImg.push(currentImg.name);
+
+        await Storage.put(currentImg.name, currentImg, {
+          contentType: 'image/png', // contentType is optional
+        });
+      });
+
+      const node = {
+        title: titleInnerText,
+        description: text,
+        labels: selectedLabels,
+        pined: defaultPin,
+        color: defaultColor,
+        archived: true,
+        collabarator: userEmail,
+        collabarators: newCollabarators,
+        img: nodesImg,
+      };
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const parsedText = JSON.parse(text);
+
+      if (parsedText.blocks[0].text && titleInnerText) {
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        dispatch(setNodesToProps([item, ...nodes]));
+
+        cleanUp();
+        cleanUpParent();
+      }
+    } catch (err) {
+      throw new Error('Create node error');
+    }
+  }, [
+    userEmail,
+    inputCollabaratorUsers,
+    img,
+    titleInnerText,
+    text,
+    selectedLabels,
+    defaultPin,
+    defaultColor,
+    dispatch,
+    nodes,
+    cleanUp,
+    cleanUpParent,
+  ]);
 
   return (
     <>
@@ -196,7 +503,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                     type="button"
                     onClick={() => {
                       if (isMainInput) onDefaultColor(color);
-                      else onColorChange(color);
+                      else onColorChange(id, color, _version);
                     }}
                     className={classNames(
                       color,
@@ -236,8 +543,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                             <input
                               type="checkbox"
                               value={localLabel.title}
-                              onClick={(e) => {
-                                if (label !== localLabel.title) toggleSelectedlabel(e);
+                              onChange={(e) => {
+                                if (label !== localLabel.title) {
+                                  toggleSelectedlabel(e);
+                                  console.log('label', labels);
+                                  console.log('select', selectedLabels);
+                                }
                               }}
                               checked={selectedLabels.includes(localLabel.title)}
                             />
@@ -281,14 +592,18 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
             </>
           )}
           {!isMainInput && (
-            <button onClick={onRemoveCart} type="button" className={classNames(styles.icon_btn)}>
+            <button
+              onClick={() => onRemoveCart(id, _version)}
+              type="button"
+              className={classNames(styles.icon_btn)}
+            >
               <Icon name="delete" color="premium" size="xs" />
             </button>
           )}
         </div>
         {(isMainInput || shadow) && (
           <button
-            onClick={onSetNode}
+            onClick={onSetNodes}
             type="button"
             className={classNames(styles.btn, styles.close)}
           >

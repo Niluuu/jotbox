@@ -4,6 +4,7 @@ import { initialStateStr } from '../../utils/editor/initialState';
 export const editor = createSlice({
   name: 'editor',
   initialState: {
+    editorFocus: true,
     text: initialStateStr,
     shouldUndo: false,
     shouldRedo: false,
@@ -27,6 +28,9 @@ export const editor = createSlice({
     setRedo: (state) => {
       state.shouldRedo = !state.shouldRedo;
     },
+    setEditorFocus: (state) => {
+      state.editorFocus = !state.editorFocus;
+    },
   },
 });
 
@@ -36,6 +40,7 @@ export const {
   setRedo,
   setUpdatedText,
   toggleOnCreateFunctionCall,
+  setEditorFocus,
 } = editor.actions;
 
 export default editor.reducer;

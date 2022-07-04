@@ -17,7 +17,7 @@ import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
 import { updateNode } from '../../graphql/mutations';
-import { setNodesToProps } from '../../reducers/nodes';
+import { setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
 import { getModalNode } from '../../reducers/getNodeId';
 
 interface CartProps {
@@ -103,7 +103,7 @@ const Collabarator: FC<CollabaratorProps> = ({
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
         dispatch(getModalNode(item));
 
         return item;
@@ -111,7 +111,7 @@ const Collabarator: FC<CollabaratorProps> = ({
         throw new Error('Update node error');
       }
     },
-    [dispatch, nodes],
+    [dispatch],
   );
 
   const getAllNodes = useCallback(async () => {

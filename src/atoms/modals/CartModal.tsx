@@ -20,7 +20,7 @@ import Collabarator from '../../component/collabarator/Collabarator';
 import '../../component/cart/Color.scss';
 import Images from './Images';
 import { updateNode } from '../../graphql/mutations';
-import { setNodesToProps } from '../../reducers/nodes';
+import { getNodesToProps, setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
 import { getNode } from '../../graphql/queries';
 
 interface CartProps {
@@ -92,22 +92,22 @@ const CartModal: FC = () => {
           description: updatedText,
         };
 
-        await API.graphql({
+        const data = await API.graphql({
           query: updateNode,
           variables: { input: updatedNode },
         });
 
-        dispatch(setNodesToProps([]));
-        dispatch(
-          setNodesToProps(
-            nodes.map((newCart) => (newCart.id === id ? { ...newCart, ...updatedNode } : newCart)),
-          ),
-        );
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        dispatch(getNodesToProps([]));
+        dispatch(updateNodesToProps(item));
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [dispatch, nodes, updatedText],
+    [dispatch, updatedText],
   );
 
   const onUpdate = useCallback(
@@ -153,13 +153,13 @@ const CartModal: FC = () => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
         return item;
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [dispatch, nodes],
+    [dispatch],
   );
 
   const modalChangePin = useCallback(async () => {
@@ -209,13 +209,14 @@ const CartModal: FC = () => {
         //  @ts-ignore
         const item = newData.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
+
         return item;
       } catch (err) {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [dispatch, nodes],
+    [dispatch],
   );
 
   const modalToggleCartLabels = useCallback(

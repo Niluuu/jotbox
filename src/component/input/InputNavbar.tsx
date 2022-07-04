@@ -19,7 +19,7 @@ import {
 } from '../../reducers/collabarator';
 import { setUndo, setRedo, toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { RootState } from '../../app/store';
-import { setNodesToProps } from '../../reducers/nodes';
+import { removeNodesToProps, setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import { getNode } from '../../graphql/queries';
 import { closeUpdateModalIsOpen, getModalNode } from '../../reducers/getNodeId';
@@ -239,13 +239,14 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
 
         if (isModal) dispatch(getModalNode(item));
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
+
         return item;
       } catch (err) {
         throw new Error('Color update error');
       }
     },
-    [dispatch, isModal, nodes],
+    [dispatch, isModal],
   );
 
   const onRemoveCart = useCallback(
@@ -261,7 +262,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
 
         // eslint-disable-next-line no-underscore-dangle
         if (item._deleted) {
-          dispatch(setNodesToProps(nodes.filter((newCart) => newCart.id !== nodeId)));
+          dispatch(removeNodesToProps(nodeId));
 
           if (isModal) dispatch(closeUpdateModalIsOpen());
         }
@@ -270,7 +271,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         throw new Error('Remove node error');
       }
     },
-    [dispatch, isModal, nodes],
+    [dispatch, isModal],
   );
 
   const onChangeArchived = useCallback(
@@ -299,7 +300,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
 
         if (isModal) dispatch(closeUpdateModalIsOpen());
 
@@ -308,7 +309,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         throw new Error('Update node error');
       }
     },
-    [dispatch, isModal, nodes],
+    [dispatch, isModal],
   );
 
   const toggleCartLabels = useCallback(
@@ -334,7 +335,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         //  @ts-ignore
         const item = newData.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
 
         if (isModal) dispatch(getModalNode(item));
 
@@ -343,7 +344,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [dispatch, isModal, nodes],
+    [dispatch, isModal],
   );
 
   const toggleSelectedlabel = useCallback(
@@ -398,7 +399,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         //  @ts-ignore
         const item = data.data.createNode;
 
-        dispatch(setNodesToProps([item, ...nodes]));
+        dispatch(setNodesToProps(item));
 
         cleanUp();
         cleanUpParent();
@@ -416,7 +417,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     defaultPin,
     defaultColor,
     dispatch,
-    nodes,
     cleanUp,
     cleanUpParent,
   ]);
@@ -457,7 +457,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         //  @ts-ignore
         const item = data.data.createNode;
 
-        dispatch(setNodesToProps([item, ...nodes]));
+        dispatch(setNodesToProps(item));
 
         cleanUp();
         cleanUpParent();
@@ -475,7 +475,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     defaultPin,
     defaultColor,
     dispatch,
-    nodes,
     cleanUp,
     cleanUpParent,
   ]);

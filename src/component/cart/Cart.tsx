@@ -12,7 +12,7 @@ import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import './Color.scss';
 import { updateNode } from '../../graphql/mutations';
-import { setNodesToProps } from '../../reducers/nodes';
+import { setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
 import { getNode } from '../../graphql/queries';
 
@@ -130,13 +130,14 @@ const Cart: FC<CartProps> = (props) => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
+
         return item;
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [dispatch, nodes],
+    [dispatch],
   );
 
   const toggleCartLabels = useCallback(
@@ -162,13 +163,14 @@ const Cart: FC<CartProps> = (props) => {
         //  @ts-ignore
         const item = newData.data.updateNode;
 
-        dispatch(setNodesToProps(nodes.map((newCart) => (newCart.id === nodeId ? item : newCart))));
+        dispatch(updateNodesToProps(item));
+
         return item;
       } catch (err) {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [dispatch, nodes],
+    [dispatch],
   );
 
   return (

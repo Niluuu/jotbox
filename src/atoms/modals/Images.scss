@@ -4,114 +4,77 @@ img {
 }
 
 .images {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: space-between !important;
+  > div {
+    display: grid;
+    grid-template-columns: 12fr;
+    grid-column-gap: 3px;
 
-  &_div {
-    width: 100% !important;
-    height: 215px !important;
-    z-index: -5 !important;
-    position: relative !important;
-    margin-bottom: 2px !important;
-
-    svg {
-      position: absolute !important;
-      z-index: 5 !important;
-      bottom: 4px !important;
-      right: 8px !important;
-    }
-
-    img {
-      width: 100% !important;
+    > div {
       height: 215px !important;
-      position: absolute !important;
-    }
+      z-index: -5 !important;
+      position: relative !important;
+      margin-bottom: 2px;
 
-    &_half {
-      width: 49.9% !important;
+      svg {
+        position: absolute !important;
+        z-index: 5 !important;
+        bottom: 4px !important;
+        right: 8px !important;
+      }
+
+      img {
+        width: 100% !important;
+        height: 215px !important;
+        position: absolute !important;
+      }
+    }
+  }
+  
+  .grid_2 {
+    grid-template-columns: 6fr 6fr;
+
+    > div {
       height: 140px !important;
-      z-index: -5 !important;
-      position: relative !important;
-      margin-bottom: 2px !important;
-
-      svg {
-        position: absolute !important;
-        z-index: 5 !important;
-        bottom: 4px !important;
-        right: 8px !important;
-      }
 
       img {
-        width: 100% !important;
-
         height: 140px !important;
-        position: absolute !important;
       }
     }
+  }
+  
+  .grid_3 {
+    grid-template-columns: 4fr 4fr 4fr;
 
-    &_three {
-      width: 33.1% !important;
+    > div {
       height: 110px !important;
-      z-index: -5 !important;
-      position: relative !important;
-      margin-bottom: 2px !important;
-
-      svg {
-        position: absolute !important;
-        z-index: 5 !important;
-        bottom: 4px !important;
-        right: 8px !important;
-      }
 
       img {
-        width: 100% !important;
         height: 110px !important;
-        position: absolute !important;
       }
     }
 
-    &_four {
-      width: 24.8% !important;
+  }
+
+  .grid_4 {
+    grid-template-columns: 3fr 3fr 3fr 3fr;
+
+    > div {
       height: 90px !important;
-      z-index: -5 !important;
-      position: relative !important;
-      margin-bottom: 2px !important;
-
-      svg {
-        position: absolute !important;
-        z-index: 5 !important;
-        bottom: 4px !important;
-        right: 8px !important;
-      }
 
       img {
-        width: 100% !important;
-
         height: 90px !important;
-        position: absolute !important;
       }
     }
+  }
 
-    &_five {
-      width: 19.8% !important;
+  .grid_5 {
+    grid-template-columns: 2.4fr 2.4fr 2.4fr 2.4fr 2.4fr;
+
+    > div {
       height: 70px !important;
-      z-index: -5 !important;
-      position: relative !important;
-      margin-bottom: 2px !important;
-
-      svg {
-        position: absolute !important;
-        z-index: 5 !important;
-        bottom: 4px !important;
-        right: 8px !important;
-      }
 
       img {
-        width: 100% !important;
-
         height: 70px !important;
-        position: absolute !important;
       }
     }
   }

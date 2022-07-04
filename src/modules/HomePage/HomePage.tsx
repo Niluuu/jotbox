@@ -13,7 +13,7 @@ import { RootState } from '../../app/store';
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
 import { toggleOnCreateFunctionCall } from '../../reducers/editor';
-import { setNodesToProps } from '../../reducers/nodes';
+import { getNodesToProps } from '../../reducers/nodes';
 import { setInputCollabaratorUsers } from '../../reducers/collabarator';
 import NotFound from '../../component/not-found/NotFound';
 
@@ -70,7 +70,7 @@ const HomePage: FC<HomeProps> = () => {
       // eslint-disable-next-line no-underscore-dangle
       const filteredItems = items.filter((elm: CartProps) => elm._deleted === null);
 
-      dispatch(setNodesToProps(filteredItems));
+      dispatch(getNodesToProps(filteredItems));
 
       return filteredItems;
     } catch (err) {
@@ -85,7 +85,7 @@ const HomePage: FC<HomeProps> = () => {
         newCart.title.toLowerCase().includes(filterByTitleLetter.toLowerCase()),
       );
 
-      dispatch(setNodesToProps(newNodes));
+      dispatch(getNodesToProps(newNodes));
     } catch (err) {
       throw new Error('Error filter by Letter');
     }

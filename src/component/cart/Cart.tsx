@@ -1,6 +1,9 @@
+/* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
-import { FC, useState, useRef } from 'react';
+import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
+import { API, Storage } from 'aws-amplify';
+import { useDispatch, useSelector } from 'react-redux';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
@@ -8,12 +11,20 @@ import inputStyles from '../input/MainInput.module.scss';
 import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import './Color.scss';
+import { updateNode } from '../../graphql/mutations';
+import { setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
+import { RootState } from '../../app/store';
+import { getNode } from '../../graphql/queries';
 
 interface CartProps {
   /**
    * Node Id
    */
   id: string;
+  /**
+   * Node version of node
+   */
+  _version?: number;
   /**
    * Node title
    */
@@ -31,10 +42,6 @@ interface CartProps {
    */
   labels?: string[] | null;
   /**
-   * Node version of node
-   */
-  _version?: number;
-  /**
    * Node archived or not?
    */
   archived: boolean;
@@ -42,28 +49,6 @@ interface CartProps {
    * Node color
    */
   color: string;
-  /**
-   * Delete node
-   */
-  onRemoveCart?: (id: string, _version: number) => void;
-  /**
-   * Toggle node pined
-   */
-  onChangePin?: (id: string, pined: boolean, _version: number) => void;
-  /**
-   * Change node archived
-   */
-  onChangeArchived?: (
-    id: string,
-    archived: boolean,
-    _version: number,
-    title: string,
-    description: string,
-  ) => void;
-  /**
-   * Node color change func
-   */
-  onColorChange?: (id: string, color: string, _version: number) => void;
   /**
    * Layout type for cart size
    */
@@ -73,14 +58,11 @@ interface CartProps {
    */
   popupCart?: boolean;
   /**
-   * Toggle labels of Node function
-   */
-  toggleCartLabels?: (id: string, _version: number, label: string) => void;
-  /**
    * Collobarators of the Node Cart
    */
   collabarators: string[];
   onOpenModal: () => void;
+  img: string[];
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -91,24 +73,106 @@ const Cart: FC<CartProps> = (props) => {
     description,
     labels,
     _version,
-    onChangePin,
-    onChangeArchived,
-    onRemoveCart,
     gridType,
     popupCart,
     color,
-    onColorChange,
-    toggleCartLabels,
     archived,
     collabarators,
     onOpenModal,
+    img,
   } = props;
+  const mapStateToProps = useSelector((state: RootState) => {
+    return {
+      nodes: state.nodesReducer.nodes,
+    };
+  });
+
+  const { nodes } = mapStateToProps;
+
+  const [images, setImages] = useState([]);
+
   const [isMain] = useState(false);
   const editorRef = useRef(null);
+  const dispatch = useDispatch();
 
   const isLarge = !title;
 
   const userEmail = localStorage.getItem('userEmail');
+
+  useEffect(() => {
+    if (img) {
+      const requestedImages = img.map(async (image) => {
+        const data = await Storage.get(image);
+        return data;
+      });
+
+      Promise.all(requestedImages).then((values) => {
+        setImages(values);
+      });
+    }
+  }, [img]);
+
+  const onChangePin = useCallback(
+    async (nodeId: string, nodePined: boolean, nodeVersion: number): Promise<CartProps> => {
+      try {
+        const updatedNode = {
+          id: nodeId,
+          pined: nodePined,
+          archived: false,
+          _version: nodeVersion,
+        };
+
+        const data = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        dispatch(updateNodesToProps(item));
+
+        return item;
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [dispatch],
+  );
+
+  const toggleCartLabels = useCallback(
+    async (nodeId: string, nodeVersion: number, nodeLabels: string): Promise<CartProps> => {
+      try {
+        const data = await API.graphql({ query: getNode, variables: { nodeId } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const cart = data.data.getNode;
+        const cartlabels = cart.labels;
+
+        const updatedlabels = cartlabels.includes(nodeLabels)
+          ? cartlabels.filter((cartlabel: string) => cartlabel !== nodeLabels)
+          : [...cartlabels, nodeLabels];
+
+        const updatedNode = { id: nodeId, _version: nodeVersion, labels: updatedlabels };
+
+        const newData = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = newData.data.updateNode;
+
+        dispatch(updateNodesToProps(item));
+
+        return item;
+      } catch (err) {
+        throw new Error('Toggle Update Label for Carts Error');
+      }
+    },
+    [dispatch],
+  );
+
   return (
     <div className={styles.cart_wrapper}>
       <div
@@ -120,6 +184,7 @@ const Cart: FC<CartProps> = (props) => {
           popupCart && styles.popupCart,
         )}
       >
+        {images.length !== 0 && images.map((image) => <img key={image} src={image} />)}
         <button type="button" className={classNames(styles.icon_btn, styles.pin)}>
           <Icon
             onClick={() => onChangePin(id, !pined, _version)}
@@ -196,15 +261,16 @@ const Cart: FC<CartProps> = (props) => {
         )}
         <div className={styles.input_navbar}>
           <InputNavbar
+            id={id}
+            _version={_version}
+            archived={archived}
+            title={title}
+            description={description}
             isCart
             onOpenModal={() => onOpenModal()}
             isMainInput={isMain}
             currentColor={color}
             selectedLabels={labels}
-            onRemoveCart={() => onRemoveCart(id, _version)}
-            onColorChange={(currentColor) => onColorChange(id, currentColor, _version)}
-            toggleCartLabels={(label) => toggleCartLabels(id, _version, label)}
-            onChangeArchived={() => onChangeArchived(id, !archived, _version, title, description)}
           />
         </div>
       </div>

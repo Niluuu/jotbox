@@ -7,8 +7,19 @@ export const nodes = createSlice({
     updateNodes: false,
   },
   reducers: {
-    setNodesToProps: (state, action) => {
+    getNodesToProps: (state, action) => {
       state.nodes = action.payload;
+    },
+    setNodesToProps: (state, action) => {
+      state.nodes = [action.payload, ...state.nodes];
+    },
+    updateNodesToProps: (state, action) => {
+      state.nodes = state.nodes.map((newCart) =>
+        newCart.id === action.payload.id ? action.payload : newCart,
+      );
+    },
+    removeNodesToProps: (state, action) => {
+      state.nodes = state.nodes.filter((newCart) => newCart.id !== action.payload);
     },
     setUpdateNodes: (state) => {
       state.updateNodes = !state.updateNodes;
@@ -16,6 +27,12 @@ export const nodes = createSlice({
   },
 });
 
-export const { setNodesToProps, setUpdateNodes } = nodes.actions;
+export const {
+  getNodesToProps,
+  setNodesToProps,
+  updateNodesToProps,
+  removeNodesToProps,
+  setUpdateNodes,
+} = nodes.actions;
 
 export default nodes.reducer;

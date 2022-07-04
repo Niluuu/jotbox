@@ -20,6 +20,7 @@ interface CartProps {
   collabarators: string[];
   collabarator: string;
   _deleted: boolean;
+  img: string[];
 }
 
 interface CartLayoutProps {
@@ -31,33 +32,10 @@ interface CartLayoutProps {
    * Nodes
    */
   carts: CartProps[];
-  /**
-   * Node change functions
-   */
-  onRemoveCart?: (id: string, _version: number) => void;
-  onChangeArchived?: (
-    id: string,
-    archived: boolean,
-    _version: number,
-    title: string,
-    description: string,
-  ) => void;
-  onChangePin?: (id: string, pined: boolean, _version: number) => void;
-  onColorChange?: (id: string, color: string, _version: number) => void;
-  toggleCartLabels?: (id: string, _version: number, label: string) => void;
   archivePage?: boolean;
 }
 
-const CartLayout: FC<CartLayoutProps> = ({
-  gridType,
-  carts,
-  onChangeArchived,
-  onChangePin,
-  onRemoveCart,
-  onColorChange,
-  toggleCartLabels,
-  archivePage,
-}) => {
+const CartLayout: FC<CartLayoutProps> = ({ gridType, carts, archivePage }) => {
   const { label } = useParams();
   const dispatch = useDispatch();
   const labeledCarts =
@@ -96,13 +74,9 @@ const CartLayout: FC<CartLayoutProps> = ({
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
                 archived={cart.archived}
-                onChangeArchived={onChangeArchived}
-                onChangePin={onChangePin}
-                onRemoveCart={onRemoveCart}
                 gridType={gridType}
-                onColorChange={onColorChange}
-                toggleCartLabels={toggleCartLabels}
                 onOpenModal={() => onOpenModal(cart)}
+                img={cart.img}
               />
             ))}
         </div>
@@ -129,13 +103,9 @@ const CartLayout: FC<CartLayoutProps> = ({
                 /* eslint no-underscore-dangle: 0 */
                 _version={cart._version}
                 archived={cart.archived}
-                onChangeArchived={onChangeArchived}
-                onChangePin={onChangePin}
-                onRemoveCart={onRemoveCart}
                 gridType={gridType}
-                onColorChange={onColorChange}
-                toggleCartLabels={toggleCartLabels}
                 onOpenModal={() => onOpenModal(cart)}
+                img={cart.img}
               />
             ))}
         </div>

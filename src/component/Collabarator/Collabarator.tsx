@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,9 @@ import {
 import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
+import { updateNode } from '../../graphql/mutations';
+import { setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
+import { getModalNode } from '../../reducers/getNodeId';
 
 interface CartProps {
   id: string;
@@ -28,35 +32,42 @@ interface CartProps {
   color: string;
   collabarators: string[];
   collabarator: string;
+  img: string[];
 }
 
 interface CollabaratorProps {
   owner?: string;
   isMainInput?: boolean;
   isOpen?: boolean;
-  /**
-   * Node collabarators change func
-   */
-  onChangeCollabarators?: (collabarators: string[]) => void;
   cartCollabarators?: string[];
+  /**
+   * Node Id
+   */
+  id?: string;
+  /**
+   * Node version of node
+   */
+  _version?: number;
 }
 /**
  * Main Collabarator component for user interaction
  */
 const Collabarator: FC<CollabaratorProps> = ({
   isMainInput,
-  onChangeCollabarators,
   cartCollabarators,
   isOpen,
   owner,
+  id,
+  _version,
 }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
+      nodes: state.nodesReducer.nodes,
     };
   });
 
-  const { inputCollabaratorUsers } = mapStateToProps;
+  const { inputCollabaratorUsers, nodes } = mapStateToProps;
 
   const userEmail = localStorage.getItem('userEmail');
   const collabarators = { contains: userEmail };
@@ -70,6 +81,38 @@ const Collabarator: FC<CollabaratorProps> = ({
   const { t } = useTranslation();
 
   const [suggestions, setSuggestions] = useState([]);
+
+  const onChangeCollabarators = useCallback(
+    async (
+      nodeId: string,
+      nodeVersion: number,
+      nodeCollabarators: string[],
+    ): Promise<CartProps> => {
+      try {
+        const updatedNode = {
+          id: nodeId,
+          _version: nodeVersion,
+          collabarators: nodeCollabarators,
+        };
+
+        const data = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.updateNode;
+
+        dispatch(updateNodesToProps(item));
+        dispatch(getModalNode(item));
+
+        return item;
+      } catch (err) {
+        throw new Error('Update node error');
+      }
+    },
+    [dispatch],
+  );
 
   const getAllNodes = useCallback(async () => {
     try {
@@ -129,7 +172,7 @@ const Collabarator: FC<CollabaratorProps> = ({
       dispatch(setInputCollabaratorUsers(users));
       dispatch(toggleIsInputCollabaratorOpen());
     } else {
-      onChangeCollabarators(users);
+      onChangeCollabarators(id, _version, users);
       dispatch(toggleIsCartCollabaratorOpen());
     }
   };

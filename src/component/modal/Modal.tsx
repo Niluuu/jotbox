@@ -6,35 +6,14 @@ import '../cart/Color.scss';
 import { Icon } from '../Icon/Icon';
 
 export interface ModalProps {
-  /**
-   * Control Login Open/Closed state
-   */
-  isOpen?: boolean;
-  /**
-   * Pass close action
-   */
-  toggleModal?: () => void;
-  /**
-   * Title of modal
-   */
-  title?: string;
-  /**
-   * Should modal be bigger?
-   */
-  isLarge?: boolean;
-  isTop?: boolean;
-  /**
-   * Should exit modal icon appear?
-   */
-  removeIcon?: boolean;
-  /**
-   * Is modal for Carts?
-   */
-  cartmodal?: boolean;
-  /**
-   * Color of Modal (Cart)
-   */
-  color?: string;
+  isOpen?: boolean; // Control Login Open/Closed state
+  toggleModal?: () => void; // Pass close action
+  title?: string; // Title of modal
+  isLarge?: boolean; // Should modal be bigger?
+  isTop?: boolean; // is in top?
+  removeIcon?: boolean; // Should exit modal icon appear?
+  cartmodal?: boolean; // Is modal for Carts?
+  color?: string; // Color of Modal (Cart)
   left?: boolean;
 }
 

@@ -4,19 +4,9 @@ import styles from './Sider.module.scss';
 import { Submenu } from '../../component/submenu/Submenu';
 
 export interface SiderProps {
-  /**
-   * onclick for toggle sidebar
-   */
-  onClick: () => void;
-  /**
-   * sidebar is open or not
-   */
-  isSidebarOpen: boolean;
+  onClick: () => void; // onclick for toggle sidebar
+  isSidebarOpen: boolean; // sidebar is open or not
 }
-
-/**
- * Main Sider component for user interaction
- */
 
 export const Sider: FC<SiderProps> = ({ isSidebarOpen, onClick }) => {
   return (

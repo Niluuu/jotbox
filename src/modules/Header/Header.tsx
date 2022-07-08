@@ -6,15 +6,10 @@ import SearchInput from '../../component/input/SearchInput';
 import { Navbar } from './Navbar';
 
 export interface HeaderProps {
-  /**
-   * onclick for toggle sidebar
-   */
-  onClick: () => void;
+  onClick: () => void; // onclick for toggle sidebar
 }
 
-/**
- * Main Header component for user interaction
- */
+// Main Header component for user interaction
 
 export const Header: FC<HeaderProps> = ({ onClick }) => {
   return (

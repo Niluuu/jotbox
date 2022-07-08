@@ -6,22 +6,10 @@ import { FC, ReactNode } from 'react';
 import styles from './Popover.module.scss';
 
 export interface PopoverProps {
-  /**
-   * Passed to controlled Popover
-   */
-  isOpen?: boolean;
-  /**
-   * Content of the Popover
-   */
-  content?: ReactNode;
-  /**
-   * placement of the content
-   */
-  placement?: 'bottom-end' | 'bottom-start';
-  /**
-   * Remove shadow
-   */
-  noShadow?: boolean;
+  isOpen?: boolean; // Passed to controlled Popover
+  content?: ReactNode; // Content of the Popover
+  placement?: 'bottom-end' | 'bottom-start'; // placement of the content
+  noShadow?: boolean; // Remove shadow
 }
 
 /**

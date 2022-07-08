@@ -12,55 +12,22 @@ import { InputNavbar } from '../input/InputNavbar';
 import MainEditor from '../../modules/Editor/MainEditor';
 import './Color.scss';
 import { updateNode } from '../../graphql/mutations';
-import { setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
+import { updateNodesToProps } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
 import { getNode } from '../../graphql/queries';
 
 interface CartProps {
-  /**
-   * Node Id
-   */
-  id: string;
-  /**
-   * Node version of node
-   */
-  _version?: number;
-  /**
-   * Node title
-   */
-  title: string;
-  /**
-   * Node description
-   */
-  description: string;
-  /**
-   * Node is pined?
-   */
-  pined: boolean;
-  /**
-   * Node labels
-   */
-  labels?: string[] | null;
-  /**
-   * Node archived or not?
-   */
-  archived: boolean;
-  /**
-   * Node color
-   */
-  color: string;
-  /**
-   * Layout type for cart size
-   */
-  gridType: boolean;
-  /**
-   * ?
-   */
-  popupCart?: boolean;
-  /**
-   * Collobarators of the Node Cart
-   */
-  collabarators: string[];
+  id: string; // Node Id
+  _version?: number; // Node version of node
+  title: string; // Node title
+  description: string; // Node description
+  pined: boolean; //  Node is pined?
+  labels?: string[] | null; //  Node labels
+  archived: boolean; // Node archived or not?
+  color: string; // Node color
+  gridType: boolean; // Layout type for cart size
+  popupCart?: boolean; // ?
+  collabarators: string[]; // Collobarators of the Node Cart
   onOpenModal: () => void;
   img: string[];
 }

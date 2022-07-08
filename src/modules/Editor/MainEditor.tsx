@@ -31,46 +31,16 @@ import { initialStateStr } from '../../utils/editor/initialState';
 interface MainEditorProps {
   linkMode?: boolean;
   createLinkToEditor?: () => void;
-  /**
-   * Editor initial state of text
-   */
-  initialState?: string;
-  /**
-   * Editor focus ref (cannot find type)
-   */
-  editorRef?: any;
-  /**
-   * Color of Editor in Cart
-   */
-  color?: string;
-  /**
-   * Color of Editor in MainInput
-   */
-  defaultColor?: string;
-  /**
-   * Should editor appear in MainInput?
-   */
-  isMainInput?: boolean;
-  /**
-   * Should editor appear in Modal?
-   */
-  isModal?: boolean;
-  /**
-   * Ref to autofocus add link
-   */
-  linkRef?: React.LegacyRef<HTMLInputElement> | null;
-  /**
-   * Ref to autofocus add link
-   */
-  textRef?: React.LegacyRef<HTMLInputElement> | null;
-  /**
-   * Ref to autofocus text of add link
-   */
-  isLarge?: boolean;
-  /**
-   * If editor readOnly mode
-   */
-  readOnly?: boolean;
+  initialState?: string; // Editor initial state of text
+  editorRef?: any; // Editor focus ref (cannot find type)
+  color?: string; // Color of Editor in Cart
+  defaultColor?: string; // Color of Editor in MainInput
+  isMainInput?: boolean; // Should editor appear in MainInput?
+  isModal?: boolean; // Should editor appear in Modal?
+  linkRef?: React.LegacyRef<HTMLInputElement> | null; // Ref to autofocus add link
+  textRef?: React.LegacyRef<HTMLInputElement> | null; // Ref to autofocus add link
+  isLarge?: boolean; // Ref to autofocus text of add link
+  readOnly?: boolean; // If editor readOnly mode
 }
 
 const MainEditor: FC<MainEditorProps> = ({

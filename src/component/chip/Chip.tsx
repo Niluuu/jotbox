@@ -10,7 +10,7 @@ export interface ChipProps {
  * Main Chip component for user interaction
  */
 
-export const Chip: React.FC<ChipProps> = ({ delateIcon, onDelate, children }) => {
+export const Chip: React.FC<ChipProps> = ({ onDelate, children }) => {
   return (
     <div className={styles.chip}>
       <span>{children}</span>

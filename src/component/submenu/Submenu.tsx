@@ -17,22 +17,12 @@ import restrictDouble from '../../utils/restrictDouble/restrictDouble';
 import { setUpdateNodes } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
 import { setStoreLabels } from '../../reducers/labels';
+import { LabelType } from '../../utils/types';
 
-type LabelType = {
-  id: string;
-  _version: number;
-  title: string;
-};
 
 export interface SubmenuProps {
-  /**
-   * ClassName
-   */
-  className?: string;
-  /**
-   * onclick for toggle sidebar
-   */
-  onClick?: () => void;
+  className?: string; // ClassName
+  onClick?: () => void; // onclick for toggle sidebar
 }
 
 /**

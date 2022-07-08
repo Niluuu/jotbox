@@ -1,42 +1,21 @@
-/* eslint-disable max-lines */
-import { FC, useState, useCallback, useRef, useEffect } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
-import { API, Storage } from 'aws-amplify';
-import { getNode, listNodes } from '../../graphql/queries';
+import { API } from 'aws-amplify';
+import { listNodes } from '../../graphql/queries';
 import styles from './HomePage.module.scss';
 import MainInput from '../../component/input/MainInput';
 import CartLayout from '../../atoms/cart-layout/CartLayout';
 import Layout from '../../atoms/layout/Layout';
 import { RootState } from '../../app/store';
-import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import CartModal from '../../atoms/modals/CartModal';
-import { toggleOnCreateFunctionCall } from '../../reducers/editor';
 import { getNodesToProps } from '../../reducers/nodes';
-import { setInputCollabaratorUsers } from '../../reducers/collabarator';
 import NotFound from '../../component/not-found/NotFound';
-
-interface CartProps {
-  id: string;
-  title: string;
-  description: string;
-  pined: boolean;
-  archived: boolean;
-  labels: string[];
-  _version: number;
-  _deleted: boolean;
-  color: string;
-  collabarators: string[];
-  collabarator: string;
-  img: string[];
-}
+import { CartProps } from '../../utils/types';
 
 interface HomeProps {
-  /**
-   * Is archived page or not
-   */
-  archive?: boolean;
+  archive?: boolean; // Is archived page or not
 }
 
 const HomePage: FC<HomeProps> = () => {

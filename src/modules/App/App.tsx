@@ -9,14 +9,12 @@ import ProtectedRoute from '../../component/protectedRoute/ProtectedRoute';
 
 const App: FC = () => {
   return (
-    <>
-      <Switch>
-        <Route path="/signup" component={SignUpPage} />
-        <Route path="/signin" component={SignInPage} />
-        <Route path="/confirmCode" component={ConfirmPage} />
-        <ProtectedRoute path="/" component={HomePage} />
-      </Switch>
-    </>
+    <Switch>
+      <Route path="/signup" component={SignUpPage} />
+      <Route path="/signin" component={SignInPage} />
+      <Route path="/confirmCode" component={ConfirmPage} />
+      <ProtectedRoute path="/" component={HomePage} />
+    </Switch>
   );
 };
 

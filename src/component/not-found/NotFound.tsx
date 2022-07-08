@@ -2,10 +2,7 @@ import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface NotFoundProps {
-  /**
-   * Is main input focused
-   */
-  toggleIsPage: () => void;
+  toggleIsPage: () => void; // Is main input focused
 }
 
 const NotFound: FC<NotFoundProps> = ({ toggleIsPage }) => {

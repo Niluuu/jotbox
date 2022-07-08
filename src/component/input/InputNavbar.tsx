@@ -23,112 +23,35 @@ import { removeNodesToProps, setNodesToProps, updateNodesToProps } from '../../r
 import { createNode, deleteNode, updateNode } from '../../graphql/mutations';
 import { getNode } from '../../graphql/queries';
 import { closeUpdateModalIsOpen, getModalNode } from '../../reducers/getNodeId';
-
-interface CartProps {
-  id: string;
-  title: string;
-  description: string;
-  pined: boolean;
-  archived: boolean;
-  labels: string[];
-  _version: number;
-  _deleted: boolean;
-  color: string;
-  collabarators: string[];
-  collabarator: string;
-  img: string[];
-}
+import { CartProps } from '../../utils/types';
 
 interface InputNavbarProps {
-  /**
-   * Is main input navbar?
-   */
-  isMainInput?: boolean;
-  /**
-   * Create node func
-   */
-  onSetNode?: () => void;
-  /**
-   * Archived node func
-   */
-  onSetArchive?: () => void;
-  /**
-   * Node toggle archived func
-   */
-  onChangeArchived?: () => void;
-  /**
-   * Create link text to editor
-   */
-  createLinkToEditor?: () => void;
-  /**
-   * Node current color
-   */
-  currentColor?: string;
-  /**
-   * Node pre color
-   */
-  defaultColor?: string;
-  /**
-   * Node set defoult color func
-   */
-  onDefaultColor?: (optionalColor: string) => void;
-  /**
-   * Node initial labels
-   */
-  initiallabels?: string[];
-  /**
-   * Oncreate node toggleselected labels
-   */
-  togglelabels?: (label: string) => void;
-  /**
-   * Oncreate selected labels
-   */
-  selectedLabels: string[];
-  /**
-   * Is Modal? Should navbar has shadow in Modal?
-   */
-  shadow?: boolean;
-  /**
-   * Attr Link should not bee in carts
-   */
-  isCart?: boolean;
-  /**
-   * Open Cart Modal function
-   */
-  onOpenModal?: () => void;
+  isMainInput?: boolean; // Is main input navbar?
+  onSetNode?: () => void; // Create node func
+  onSetArchive?: () => void; // Archived node func
+  onChangeArchived?: () => void; //  Node toggle archived func
+  createLinkToEditor?: () => void; // Create link text to editor
+  currentColor?: string; // Node current color
+  defaultColor?: string; // Node pre color
+  onDefaultColor?: (optionalColor: string) => void; // Node set defoult color func
+  initiallabels?: string[]; // Node initial labels
+  togglelabels?: (label: string) => void; // Oncreate node toggleselected labels
+  selectedLabels: string[]; // Oncreate selected labels
+  shadow?: boolean; // Is Modal? Should navbar has shadow in Modal?
+  isCart?: boolean; // Attr Link should not bee in carts
+  onOpenModal?: () => void;// Open Cart Modal function
   updateModalIsOpen?: boolean;
   hide?: boolean;
   label?: string;
-  /**
-   * Node Id
-   */
-  id?: string;
-  /**
-   * Node version of node
-   */
-  _version?: number;
-  /**
-   * Node archived or not?
-   */
-  archived?: boolean;
-  /**
-   * Node title
-   */
-  title?: string;
-  /**
-   * Node description
-   */
-  description?: string;
-  /**
-   * Node labels
-   */
-  labels?: string[] | null;
-  img?: any[];
+  id?: string; // Node Id
+  _version?: number; // Node version of node
+  archived?: boolean; // Node archived or not?
+  title?: string; // Node title
+  description?: string; // Node description
+  labels?: string[] | null; //  Node labels
+  img?: any[]; // Node Images
   cleanUpParent?: () => void;
-  /**
-   * Node title
-   */
-  titleInnerText?: string | null;
+  titleInnerText?: string | null; //  Node title
   defaultPin?: boolean;
   isModal?: boolean;
 }
@@ -158,11 +81,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     selectedLabels,
     togglelabels,
   } = props;
+  const { t } = useTranslation();
   const [labels, setLabels] = useState([]);
   const dispatch = useDispatch();
   const userEmail = localStorage.getItem('userEmail');
-
-  const { t } = useTranslation();
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
@@ -173,7 +95,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     };
   });
 
-  const { storeLabels, nodes, inputCollabaratorUsers, text } = mapStateToProps;
+  const { storeLabels, inputCollabaratorUsers, text } = mapStateToProps;
 
   const undoRedo = (callBack: () => void) => {
     dispatch(callBack());

@@ -6,23 +6,10 @@ import styles from './Logo.module.scss';
 import LogoSvg from '../../assets/images/jotbox.png';
 
 export interface LogoProps {
-  /**
-   * Text only
-   */
-  hideIcon?: boolean;
-  /**
-   * Optional click handler
-   */
-  onClick?: () => void;
-  /**
-   * className
-   */
-  className?: string;
-  /**
-   * TitleName
-   */
-
-  title?: string;
+  hideIcon?: boolean; // Text only
+  onClick?: () => void; // Optional click handler
+  className?: string; //  className
+  title?: string; // TitleName
 }
 
 /**

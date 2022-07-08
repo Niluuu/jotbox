@@ -6,17 +6,14 @@ import styles from './Hamburger.module.scss';
 
 type HamburgerProps = {
   className?: string;
-  /**
-   * onclick for toggle sidebar
-   */
-  onClick: () => void;
+  onClick: () => void; // onclick for toggle sidebar
 };
 
 const Hamburger: FC<HamburgerProps> = ({ className, onClick }) => (
   <button
     type="button"
     className={classNames(className, styles.header_button)}
-    data-hamburger=""
+    data-hamburger="hamburger"
     onClick={onClick}
   >
     <svg focusable="false" viewBox="0 0 24 24">

@@ -2,33 +2,12 @@ import classNames from 'classnames';
 import styles from './Button.module.scss';
 
 export interface ButtonProps {
-  /**
-   * How large should the button be?
-   */
-  size?: 'small' | 'medium' | 'large';
-
-  /**
-   * Button Type
-   */
-
-  type?: 'submit' | 'button' | 'reset';
-
-  /**
-   * Pick from possible colors
-   */
-  color?: 'primary' | 'secondary' | 'gray' | 'white';
-  /**
-   * Change the type of button to IconButton
-   */
-  iconButton?: boolean;
-  /**
-   * Optional class
-   */
-  className?: string;
-  /**
-   * Optional click handler
-   */
-  onClick?: () => void;
+  size?: 'small' | 'medium' | 'large'; // How large should the button be?
+  type?: 'submit' | 'button' | 'reset'; // Button Type
+  color?: 'primary' | 'secondary' | 'gray' | 'white'; // Pick from possible colors
+  iconButton?: boolean; // Change the type of button to IconButton
+  className?: string; // Optional class
+  onClick?: () => void; // Optional click handler
 }
 
 /**

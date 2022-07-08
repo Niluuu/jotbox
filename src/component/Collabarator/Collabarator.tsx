@@ -17,41 +17,23 @@ import { RootState } from '../../app/store';
 import emailVerify from '../../utils/hooks/emailVerify';
 import { listNodes } from '../../graphql/queries';
 import { updateNode } from '../../graphql/mutations';
-import { setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
+import { updateNodesToProps } from '../../reducers/nodes';
 import { getModalNode } from '../../reducers/getNodeId';
-
-interface CartProps {
-  id: string;
-  title: string;
-  description: string;
-  pined: boolean;
-  archived: boolean;
-  labels: string[];
-  _version: number;
-  _deleted: boolean;
-  color: string;
-  collabarators: string[];
-  collabarator: string;
-  img: string[];
-}
+import { CartProps } from '../../utils/types';
 
 interface CollabaratorProps {
   owner?: string;
   isMainInput?: boolean;
   isOpen?: boolean;
   cartCollabarators?: string[];
-  /**
-   * Node Id
-   */
-  id?: string;
-  /**
-   * Node version of node
-   */
-  _version?: number;
+  id?: string; // Node Id
+  _version?: number; // Node version of node
 }
+
 /**
  * Main Collabarator component for user interaction
  */
+
 const Collabarator: FC<CollabaratorProps> = ({
   isMainInput,
   cartCollabarators,
@@ -67,7 +49,7 @@ const Collabarator: FC<CollabaratorProps> = ({
     };
   });
 
-  const { inputCollabaratorUsers, nodes } = mapStateToProps;
+  const { inputCollabaratorUsers } = mapStateToProps;
 
   const userEmail = localStorage.getItem('userEmail');
   const collabarators = { contains: userEmail };

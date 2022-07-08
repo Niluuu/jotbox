@@ -12,10 +12,6 @@ import { Avatar } from '../../component/avatar/Avatar';
 import { toggleGrid } from '../../reducers/layout';
 import { setRefreshPage } from '../../reducers/refreshPage';
 
-/**
- * Main Header component for user interaction
- */
-
 export const Navbar: FC = () => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);

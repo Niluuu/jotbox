@@ -14,7 +14,7 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_5">
           {images.map((image) => (
-            <div className="images_div_five">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -27,7 +27,7 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_4">
           {images.slice(0, 4).map((image) => (
-            <div className="images_div_four">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -35,7 +35,7 @@ const Images: FC<ImagesType> = ({ images }) => {
         </div>
         <div className="grid_5">
           {images.slice(4, 9).map((image) => (
-            <div className="images_div_five">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -48,15 +48,16 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_3">
           {images.slice(0, 3).map((image) => (
-            <div className="images_div_three">
+            <div>
               <img src={image} />
             </div>
           ))}
         </div>
         <div className="grid_4">
           {images.slice(3, 8).map((image) => (
-            <div className="images_div_four">
+            <div>
               <img src={image} />
+              <Icon name="delete" size="xs" />
             </div>
           ))}
         </div>
@@ -67,7 +68,7 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_2">
           {images.slice(0, 2).map((image) => (
-            <div className="images_div_half">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -75,7 +76,7 @@ const Images: FC<ImagesType> = ({ images }) => {
         </div>
         <div className="grid_3">
           {images.slice(2, 6).map((image) => (
-            <div className="images_div_three">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -88,7 +89,7 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_4">
           {images.map((image) => (
-            <div className="images_div_four">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -101,7 +102,7 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_3">
           {images.map((image) => (
-            <div className="images_div_three">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -114,7 +115,7 @@ const Images: FC<ImagesType> = ({ images }) => {
       <div className="images">
         <div className="grid_2">
           {images.map((image) => (
-            <div className="images_div_half">
+            <div>
               <img src={image} />
               <Icon name="delete" size="xs" />
             </div>
@@ -126,7 +127,7 @@ const Images: FC<ImagesType> = ({ images }) => {
     <div className="images">
       <div className="grid">
         {images.map((image) => (
-          <div className="images_div">
+          <div>
             <img src={image} />
             <Icon name="delete" size="xs" />
           </div>

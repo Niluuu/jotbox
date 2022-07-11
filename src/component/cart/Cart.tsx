@@ -15,6 +15,7 @@ import { updateNode } from '../../graphql/mutations';
 import { updateNodesToProps } from '../../reducers/nodes';
 import { RootState } from '../../app/store';
 import { getNode } from '../../graphql/queries';
+import CartImages from './CartImages';
 
 interface CartProps {
   id: string; // Node Id
@@ -48,14 +49,6 @@ const Cart: FC<CartProps> = (props) => {
     onOpenModal,
     img,
   } = props;
-  const mapStateToProps = useSelector((state: RootState) => {
-    return {
-      nodes: state.nodesReducer.nodes,
-    };
-  });
-
-  const { nodes } = mapStateToProps;
-
   const [images, setImages] = useState([]);
 
   const [isMain] = useState(false);
@@ -151,7 +144,7 @@ const Cart: FC<CartProps> = (props) => {
           popupCart && styles.popupCart,
         )}
       >
-        {images.length !== 0 && images.map((image) => <img key={image} src={image} />)}
+        {images.length !== 0 && <CartImages images={images} />}
         <button type="button" className={classNames(styles.icon_btn, styles.pin)}>
           <Icon
             onClick={() => onChangePin(id, !pined, _version)}

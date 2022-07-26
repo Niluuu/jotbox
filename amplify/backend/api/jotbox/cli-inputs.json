@@ -12,12 +12,8 @@
         "mode": "AWS_IAM"
       }
     ],
-    "conflictResolution": {
-      "defaultResolutionStrategy": {
-        "type": "AUTOMERGE"
-      }
-    },
+    "conflictResolution": {},
     "apiName": "jotbox",
-    "gqlSchemaPath": "/tmp/amplify-4f6d6abc-da5c-4b99-af15-ffe606946dea/amplify/backend/api/jotbox/schema.graphql"
+    "gqlSchemaPath": "C:\\Users\\hp\\Desktop\\projects\\jotbox\\amplify\\backend\\api\\jotbox\\schema.graphql"
   }
 }

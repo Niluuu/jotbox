@@ -31,6 +31,11 @@ interface CartProps {
   collabarators: string[]; // Collobarators of the Node Cart
   onOpenModal: () => void;
   img: string[];
+  checkouts?: Array<{
+    id: string;
+    title: string;
+    checked: boolean;
+  }>;
 }
 
 const Cart: FC<CartProps> = (props) => {
@@ -48,6 +53,7 @@ const Cart: FC<CartProps> = (props) => {
     collabarators,
     onOpenModal,
     img,
+    checkouts = [],
   } = props;
   const [images, setImages] = useState([]);
 
@@ -72,48 +78,39 @@ const Cart: FC<CartProps> = (props) => {
     }
   }, [img]);
 
-  const onChangePin = useCallback(
-    async (nodeId: string, nodePined: boolean, nodeVersion: number): Promise<CartProps> => {
-      try {
-        const updatedNode = {
-          id: nodeId,
-          pined: nodePined,
-          archived: false,
-          _version: nodeVersion,
-        };
+  const onChangePin = useCallback(async (): Promise<CartProps> => {
+    try {
+      const updatedNode = {
+        id,
+        pined,
+        archived: false,
+        _version,
+      };
 
-        const data = await API.graphql({
-          query: updateNode,
-          variables: { input: updatedNode },
-        });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const item = data.data.updateNode;
+      const data = await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.updateNode;
 
-        dispatch(updateNodesToProps(item));
+      dispatch(updateNodesToProps(item));
 
-        return item;
-      } catch (err) {
-        throw new Error('Update node error');
-      }
-    },
-    [dispatch],
-  );
+      return item;
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, [_version, dispatch, id, pined]);
 
   const toggleCartLabels = useCallback(
-    async (nodeId: string, nodeVersion: number, nodeLabels: string): Promise<CartProps> => {
+    async (nodeLabels: string): Promise<CartProps> => {
       try {
-        const data = await API.graphql({ query: getNode, variables: { nodeId } });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const cart = data.data.getNode;
-        const cartlabels = cart.labels;
+        const updatedlabels = labels.includes(nodeLabels)
+          ? labels.filter((cartlabel: string) => cartlabel !== nodeLabels)
+          : [...labels, nodeLabels];
 
-        const updatedlabels = cartlabels.includes(nodeLabels)
-          ? cartlabels.filter((cartlabel: string) => cartlabel !== nodeLabels)
-          : [...cartlabels, nodeLabels];
-
-        const updatedNode = { id: nodeId, _version: nodeVersion, labels: updatedlabels };
+        const updatedNode = { id, _version, labels: updatedlabels };
 
         const newData = await API.graphql({
           query: updateNode,
@@ -130,7 +127,56 @@ const Cart: FC<CartProps> = (props) => {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [dispatch],
+    [_version, dispatch, id, labels],
+  );
+
+  const toggleCartCheckouts = useCallback(
+    async (checkoutId): Promise<CartProps> => {
+      try {
+        const updatedCheckouts = checkouts.map((checkout) =>
+          checkout.id === checkoutId ? { ...checkout, checked: !checkout.checked } : checkout,
+        );
+
+        const updatedNode = { id, _version, checkouts: updatedCheckouts };
+
+        const newData = await API.graphql({
+          query: updateNode,
+          variables: { input: updatedNode },
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = newData.data.updateNode;
+
+        dispatch(updateNodesToProps(item));
+
+        return item;
+      } catch (err) {
+        throw new Error('Toggle Update Label for Carts Error');
+      }
+    },
+    [_version, checkouts, dispatch, id],
+  );
+
+  const restrictUsers = checkouts.slice(0, 6);
+
+  const selectedCheckouts = restrictUsers.filter((checkout) => checkout.checked);
+  const unSelectedCheckouts = restrictUsers.filter((checkout) => !checkout.checked);
+
+  const checkoutContent = (checkout) => (
+    <div className={classNames(styles.checkout_item, !checkout.focused ? styles.focused : null)}>
+      <Icon
+        color="premium"
+        size="xs"
+        onClick={() => toggleCartCheckouts(checkout.id)}
+        name={checkout.checked ? 'edit-bordered' : 'box'}
+      />
+      <input
+        onClick={() => !popupCart && onOpenModal()}
+        className={checkout.checked ? styles.checked : null}
+        value={checkout.title}
+        type="text"
+      />
+    </div>
   );
 
   return (
@@ -147,26 +193,41 @@ const Cart: FC<CartProps> = (props) => {
         {images.length !== 0 && <CartImages images={images} />}
         <button type="button" className={classNames(styles.icon_btn, styles.pin)}>
           <Icon
-            onClick={() => onChangePin(id, !pined, _version)}
+            onClick={() => onChangePin()}
             name={pined ? 'pin-black' : 'pin'}
             color="premium"
             size="xs"
           />
         </button>
-        <div onClick={() => !popupCart && onOpenModal()} className={styles.cart_content}>
+        <div className={styles.cart_content}>
           {title && (
-            <div className={classNames(styles.cart_title)}>
+            <div
+              onClick={() => !popupCart && onOpenModal()}
+              className={classNames(styles.cart_title)}
+            >
               <p>{title}</p>
             </div>
           )}
-          {description && (
-            <MainEditor
-              isLarge={isLarge}
-              color={color}
-              initialState={description}
-              editorRef={editorRef}
-              readOnly
-            />
+          <div onClick={() => !popupCart && onOpenModal()}>
+            {description && checkouts.length === 0 && (
+              <MainEditor
+                isLarge={isLarge}
+                color={color}
+                initialState={description}
+                editorRef={editorRef}
+                readOnly
+              />
+            )}
+          </div>
+          {checkouts.length > 0 && (
+            <div className={classNames(styles.checkout)}>
+              {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}
+              {selectedCheckouts.length > 0 && (
+                <div style={{ borderTop: '1px solid #cbcbcb' }}>
+                  {selectedCheckouts.map((checkout) => checkoutContent(checkout))}
+                </div>
+              )}
+            </div>
           )}
         </div>
         <Icon name="done" color="premium" className={styles.done_icon} size="xs" />
@@ -174,19 +235,13 @@ const Cart: FC<CartProps> = (props) => {
           <div className={styles.main_chips}>
             {labels.length > 2 ? (
               <>
-                <Chip onDelate={() => toggleCartLabels(id, _version, labels[0])}>
-                  {' '}
-                  {labels[0]}{' '}
-                </Chip>
-                <Chip onDelate={() => toggleCartLabels(id, _version, labels[1])}>
-                  {' '}
-                  {labels[1]}{' '}
-                </Chip>
+                <Chip onDelate={() => toggleCartLabels(labels[0])}> {labels[0]} </Chip>
+                <Chip onDelate={() => toggleCartLabels(labels[1])}> {labels[1]} </Chip>
                 <div className={styles.extralabel}> +{labels.length - 2} </div>
               </>
             ) : (
               labels.map((label) => (
-                <Chip key={label} onDelate={() => toggleCartLabels(id, _version, label)}>
+                <Chip key={label} onDelate={() => toggleCartLabels(label)}>
                   {' '}
                   {label}{' '}
                 </Chip>

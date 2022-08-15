@@ -20,7 +20,7 @@ import Collabarator from '../../component/collabarator/Collabarator';
 import '../../component/cart/Color.scss';
 import Images from './Images';
 import { updateNode } from '../../graphql/mutations';
-import { getNodesToProps, setNodesToProps, updateNodesToProps } from '../../reducers/nodes';
+import { updateNodesToProps } from '../../reducers/nodes';
 import { getNode } from '../../graphql/queries';
 
 interface CartProps {
@@ -48,7 +48,7 @@ const CartModal: FC = () => {
       updatedText: state.editorReducer.updatedText,
     };
   });
-  const { isCartCollabaratorOpen, nodes, updatedText } = mapStateToProps;
+  const { isCartCollabaratorOpen, updatedText } = mapStateToProps;
   const { modalNode, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
 
   const dispatch = useDispatch();
@@ -59,6 +59,47 @@ const CartModal: FC = () => {
   const linkRef = useRef(null);
   const textRef = useRef(null);
   const [images, setImages] = useState([]);
+
+  const [checkouts, setCheckouts] = useState(
+    modalNode && modalNode.checkouts
+      ? modalNode.checkouts.map((checkout) => ({ ...checkout, focused: false }))
+      : [],
+  );
+  const mainCheckoutRef = useRef<HTMLInputElement>(null);
+
+  const onChangeMainCheckout = (title: string) => {
+    mainCheckoutRef.current.blur();
+    mainCheckoutRef.current.value = '';
+
+    const newCheckout = { title, focused: true, id: Date.now(), checked: false };
+    setCheckouts([...checkouts, newCheckout]);
+  };
+
+  const onChangeCheckouts = (id: number, title: string) => {
+    setCheckouts(
+      checkouts.map((checkout) => (checkout.id === id ? { ...checkout, title } : checkout)),
+    );
+  };
+
+  const onFocusCheckouts = (id: number) => {
+    setCheckouts(
+      checkouts.map((checkout) =>
+        checkout.id === id ? { ...checkout, focused: !checkout.focused } : checkout,
+      ),
+    );
+  };
+
+  const onCheckoutChecked = (id: number) => {
+    setCheckouts(
+      checkouts.map((checkout) =>
+        checkout.id === id ? { ...checkout, checked: !checkout.checked } : checkout,
+      ),
+    );
+  };
+
+  const onRemoveCheckout = (id: number) => {
+    setCheckouts(checkouts.filter((checkout) => checkout.id !== id));
+  };
 
   const onLinkEditor = () => {
     if (textRef.current.value.length === 0) textRef.current.focus();
@@ -83,7 +124,9 @@ const CartModal: FC = () => {
   }, [modalNode]);
 
   const onChangeNodeContent = useCallback(
-    async (id: string, title: string, _version: number): Promise<void> => {
+    async (title: string): Promise<void> => {
+      const { id, _version } = modalNode;
+
       try {
         const updatedNode = {
           id,
@@ -101,73 +144,72 @@ const CartModal: FC = () => {
         //  @ts-ignore
         const item = data.data.updateNode;
 
-        dispatch(getNodesToProps([]));
         dispatch(updateNodesToProps(item));
       } catch (err) {
         throw new Error('Update node error');
       }
     },
-    [dispatch, updatedText],
+    [dispatch, modalNode, updatedText],
   );
 
-  const onUpdate = useCallback(
-    async (id) => {
-      try {
-        const version = modalNode !== undefined && modalNode._version;
-        dispatch(getModalNode(undefined));
-        dispatch(closeUpdateModalIsOpen());
-        // eslint-disable-next-line no-underscore-dangle
-        await onChangeNodeContent(id, titleRef.current.innerText, version);
-      } catch (err) {
-        throw new Error('Update cart: Something went wrong');
-      }
-    },
-    [modalNode, dispatch, onChangeNodeContent],
-  );
+  const onChangePin = useCallback(async (): Promise<CartProps> => {
+    const { id, _version, pined } = modalNode;
+    try {
+      const updatedNode = {
+        id,
+        pined,
+        archived: false,
+        _version,
+      };
 
-  const toggleModal = useCallback(
-    (id) => {
-      if (!isCartCollabaratorOpen) {
-        onUpdate(id);
-        setUpdatedColor(undefined);
-      }
-    },
-    [onUpdate, isCartCollabaratorOpen],
-  );
+      const data = await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.updateNode;
 
-  const onChangePin = useCallback(
-    async (nodeId: string, nodePined: boolean, nodeVersion: number): Promise<CartProps> => {
-      try {
-        const updatedNode = {
-          id: nodeId,
-          pined: nodePined,
-          archived: false,
-          _version: nodeVersion,
-        };
+      dispatch(updateNodesToProps(item));
+      return item;
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, [dispatch, modalNode]);
 
-        const data = await API.graphql({
-          query: updateNode,
-          variables: { input: updatedNode },
-        });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const item = data.data.updateNode;
+  const onChangeCheckout = useCallback(async (): Promise<CartProps> => {
+    const { id, _version } = modalNode;
+    try {
+      const updatedNode = {
+        id,
+        _version,
+        checkouts: checkouts.map((checkout) => ({
+          id: checkout.id,
+          title: checkout.title,
+          checked: checkout.checked,
+        })),
+      };
 
-        dispatch(updateNodesToProps(item));
-        return item;
-      } catch (err) {
-        throw new Error('Update node error');
-      }
-    },
-    [dispatch],
-  );
+      const data = await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.updateNode;
+
+      dispatch(updateNodesToProps(item));
+      return item;
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, [checkouts, dispatch, modalNode]);
 
   const modalChangePin = useCallback(async () => {
-    const { id, _version, pined } = modalNode;
-    const data = await onChangePin(id, !pined, _version);
+    const data = await onChangePin();
 
     dispatch(getModalNode(data));
-  }, [dispatch, modalNode, onChangePin]);
+  }, [dispatch, onChangePin]);
 
   useEffect(() => {
     if (modalNode !== undefined) {
@@ -187,9 +229,10 @@ const CartModal: FC = () => {
   }, [modalNode]);
 
   const toggleCartLabels = useCallback(
-    async (nodeId: string, nodeVersion: number, nodeLabels: string): Promise<CartProps> => {
+    async (nodeLabels: string): Promise<CartProps> => {
       try {
-        const data = await API.graphql({ query: getNode, variables: { nodeId } });
+        const { id, _version } = modalNode;
+        const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
         const cart = data.data.getNode;
@@ -199,7 +242,7 @@ const CartModal: FC = () => {
           ? cartlabels.filter((cartlabel: string) => cartlabel !== nodeLabels)
           : [...cartlabels, nodeLabels];
 
-        const updatedNode = { id: nodeId, _version: nodeVersion, labels: updatedlabels };
+        const updatedNode = { id, _version, labels: updatedlabels };
 
         const newData = await API.graphql({
           query: updateNode,
@@ -216,18 +259,64 @@ const CartModal: FC = () => {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [dispatch],
+    [dispatch, modalNode],
   );
 
   const modalToggleCartLabels = useCallback(
     async (label) => {
-      const { id, _version } = modalNode;
-      const data = await toggleCartLabels(id, _version, label);
+      const data = await toggleCartLabels(label);
 
       dispatch(getModalNode(data));
     },
-    [dispatch, modalNode, toggleCartLabels],
+    [dispatch, toggleCartLabels],
   );
+
+  const onUpdate = useCallback(async () => {
+    try {
+      dispatch(getModalNode(undefined));
+      dispatch(closeUpdateModalIsOpen());
+
+      if (modalNode.checkouts && modalNode.checkouts.length > 0) {
+        await onChangeCheckout();
+      } else {
+        // eslint-disable-next-line no-underscore-dangle
+        await onChangeNodeContent(titleRef.current.innerText);
+      }
+    } catch (err) {
+      throw new Error('Update cart: Something went wrong');
+    }
+  }, [modalNode, dispatch, onChangeNodeContent, onChangeCheckout]);
+
+  const toggleModal = useCallback(() => {
+    if (!isCartCollabaratorOpen) {
+      onUpdate();
+      setUpdatedColor(undefined);
+    }
+  }, [onUpdate, isCartCollabaratorOpen]);
+
+  const checkoutContent = (checkout) => (
+    <div className={classNames(styles.checkout_item, !checkout.focused ? styles.focused : null)}>
+      <Icon
+        color="premium"
+        size="xs"
+        onClick={() => onCheckoutChecked(checkout.id)}
+        name={checkout.checked ? 'edit-bordered' : 'box'}
+      />
+      <input
+        className={checkout.checked ? styles.checked : null}
+        autoFocus={checkout.focused}
+        onFocus={() => onFocusCheckouts(checkout.id)}
+        onBlur={() => onFocusCheckouts(checkout.id)}
+        onChange={(e) => onChangeCheckouts(checkout.id, e.target.value)}
+        value={checkout.title}
+        type="text"
+      />
+      <Icon color="premium" size="xs" name="exit" onClick={() => onRemoveCheckout(checkout.id)} />
+    </div>
+  );
+
+  const selectedCheckouts = checkouts.filter((checkout) => checkout.checked);
+  const unSelectedCheckouts = checkouts.filter((checkout) => !checkout.checked);
 
   const userEmail = localStorage.getItem('userEmail');
   const isModal = true;
@@ -238,7 +327,7 @@ const CartModal: FC = () => {
       isLarge
       isOpen={updateModalIsOpen}
       cartmodal
-      toggleModal={() => modalNode !== undefined && toggleModal(modalNode.id)}
+      toggleModal={() => modalNode !== undefined && toggleModal()}
     >
       {modalNode !== undefined && (
         <Collabarator
@@ -290,18 +379,43 @@ const CartModal: FC = () => {
 
             <div className={styles.main_row}>
               {modalNode && (
-                <MentionContext.Provider value={() => toggleModal(modalNode.id)}>
-                  <MainEditor
-                    linkRef={linkRef}
-                    textRef={textRef}
-                    linkMode={linkMode}
-                    createLinkToEditor={createLinkToEditor}
-                    editorRef={editorRef}
-                    initialState={modalNode.description}
-                    color={updatedColor}
-                    isModal
-                  />
-                </MentionContext.Provider>
+                <>
+                  {modalNode.checkouts && modalNode.checkouts.length > 0 ? (
+                    <div className={classNames(styles.checkout)}>
+                      {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}
+                      <div className={styles.checkout_main}>
+                        <input
+                          autoFocus
+                          ref={mainCheckoutRef}
+                          placeholder="Add your List"
+                          onChange={(e) => onChangeMainCheckout(e.target.value)}
+                          type="text"
+                        />
+                      </div>
+                      {selectedCheckouts.length > 0 && (
+                        <>
+                          {' '}
+                          <br />
+                          {selectedCheckouts.length} Completed Items <br />
+                          {selectedCheckouts.map((checkout) => checkoutContent(checkout))}
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <MentionContext.Provider value={() => toggleModal()}>
+                      <MainEditor
+                        linkRef={linkRef}
+                        textRef={textRef}
+                        linkMode={linkMode}
+                        createLinkToEditor={createLinkToEditor}
+                        editorRef={editorRef}
+                        initialState={modalNode.description}
+                        color={updatedColor}
+                        isModal
+                      />
+                    </MentionContext.Provider>
+                  )}
+                </>
               )}
               <div className={styles.main_chips}>
                 {modalNode.labels && modalNode.labels.length > 10 ? (
@@ -339,7 +453,7 @@ const CartModal: FC = () => {
               archived={modalNode.archived}
               title={modalNode.title}
               description={modalNode.description}
-              onSetNode={() => toggleModal(modalNode.id)}
+              onSetNode={() => toggleModal()}
               updateModalIsOpen={updateModalIsOpen}
               initiallabels={modalNode && modalNode.labels}
               createLinkToEditor={onLinkEditor}

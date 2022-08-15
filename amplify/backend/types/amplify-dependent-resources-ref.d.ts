@@ -17,11 +17,5 @@ export type AmplifyDependentResourcesAttributes = {
             "AppClientIDWeb": "string",
             "AppClientID": "string"
         }
-    },
-    "storage": {
-        "s3jotboxstorage27261fdb": {
-            "BucketName": "string",
-            "Region": "string"
-        }
     }
 }

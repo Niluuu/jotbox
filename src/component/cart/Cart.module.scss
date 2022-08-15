@@ -332,3 +332,44 @@
   left: 5px;
   cursor: pointer;
 }
+
+.checked {
+  text-decoration: line-through;
+}
+
+.checkout {
+  font-family: 'Roboto';
+
+  svg {
+    cursor: pointer;
+  }
+
+  &_main {
+    width: 100%;
+
+    input {
+      width: 100%;
+      border: 1px solid transparent;
+      border-bottom: 1px solid #c0c0c0;
+      padding: 10px 0;
+
+      &:focus {
+        border-top: 1px solid #c0c0c0;
+      }
+    }
+  }
+
+  &_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+
+    input {
+      width: 100%;
+      border: 1px solid transparent;
+      padding: 6px;
+    }
+  }
+}

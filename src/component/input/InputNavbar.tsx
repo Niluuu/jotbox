@@ -39,7 +39,7 @@ interface InputNavbarProps {
   selectedLabels: string[]; // Oncreate selected labels
   shadow?: boolean; // Is Modal? Should navbar has shadow in Modal?
   isCart?: boolean; // Attr Link should not bee in carts
-  onOpenModal?: () => void;// Open Cart Modal function
+  onOpenModal?: () => void; // Open Cart Modal function
   updateModalIsOpen?: boolean;
   hide?: boolean;
   label?: string;
@@ -54,6 +54,7 @@ interface InputNavbarProps {
   titleInnerText?: string | null; //  Node title
   defaultPin?: boolean;
   isModal?: boolean;
+  checkouts?: Array<{ title: string; checked: boolean }>;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -80,6 +81,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     defaultPin,
     selectedLabels,
     togglelabels,
+    checkouts,
   } = props;
   const { t } = useTranslation();
   const [labels, setLabels] = useState([]);
@@ -143,12 +145,12 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   }, [storeLabels]);
 
   const onColorChange = useCallback(
-    async (nodeId: string, color: string, nodeVersion: number): Promise<CartProps> => {
+    async (color: string): Promise<CartProps> => {
       try {
         const updatedNode = {
-          id: nodeId,
+          id,
           color,
-          _version: nodeVersion,
+          _version,
         };
 
         const data = await API.graphql({
@@ -168,76 +170,64 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         throw new Error('Color update error');
       }
     },
-    [dispatch, isModal],
+    [_version, dispatch, id, isModal],
   );
 
-  const onRemoveCart = useCallback(
-    async (nodeId: string, nodeVersion: number): Promise<CartProps> => {
-      try {
-        const data = await API.graphql({
-          query: deleteNode,
-          variables: { input: { id: nodeId, _version: nodeVersion } },
-        });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const item = data.data.deleteNode;
+  const onRemoveCart = useCallback(async (): Promise<CartProps> => {
+    try {
+      const data = await API.graphql({
+        query: deleteNode,
+        variables: { input: { id, _version } },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.deleteNode;
 
-        // eslint-disable-next-line no-underscore-dangle
-        if (item._deleted) {
-          dispatch(removeNodesToProps(nodeId));
-
-          if (isModal) dispatch(closeUpdateModalIsOpen());
-        }
-        return item;
-      } catch (err) {
-        throw new Error('Remove node error');
-      }
-    },
-    [dispatch, isModal],
-  );
-
-  const onChangeArchived = useCallback(
-    async (
-      nodeId: string,
-      archiveAttr: boolean,
-      nodeVersion: number,
-      nodeTitle: string,
-      nodeDescription: string,
-    ): Promise<CartProps> => {
-      try {
-        const updatedNode = {
-          id: nodeId,
-          archived: !archiveAttr,
-          _version: nodeVersion,
-          title: nodeTitle,
-          description: nodeDescription,
-          pined: false,
-        };
-
-        const data = await API.graphql({
-          query: updateNode,
-          variables: { input: updatedNode },
-        });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const item = data.data.updateNode;
-
-        dispatch(updateNodesToProps(item));
+      // eslint-disable-next-line no-underscore-dangle
+      if (item._deleted) {
+        dispatch(removeNodesToProps(id));
 
         if (isModal) dispatch(closeUpdateModalIsOpen());
-
-        return item;
-      } catch (err) {
-        throw new Error('Update node error');
       }
-    },
-    [dispatch, isModal],
-  );
+      return item;
+    } catch (err) {
+      throw new Error('Remove node error');
+    }
+  }, [_version, dispatch, id, isModal]);
+
+  const onChangeArchived = useCallback(async (): Promise<CartProps> => {
+    try {
+      const updatedNode = {
+        id,
+        archived: !archived,
+        _version,
+        title,
+        description,
+        pined: false,
+      };
+
+      const data = await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.updateNode;
+
+      dispatch(updateNodesToProps(item));
+
+      if (isModal) dispatch(closeUpdateModalIsOpen());
+
+      return item;
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, [_version, archived, description, dispatch, id, isModal, title]);
 
   const toggleCartLabels = useCallback(
-    async (nodeId: string, nodeVersion: number, nodeLabels: string): Promise<CartProps> => {
+    async (nodeLabels: string): Promise<CartProps> => {
       try {
-        const data = await API.graphql({ query: getNode, variables: { id: nodeId } });
+        const data = await API.graphql({ query: getNode, variables: { id } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
         const cart = data.data.getNode;
@@ -247,7 +237,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
           ? cartlabels.filter((cartlabel: string) => cartlabel !== nodeLabels)
           : [...cartlabels, nodeLabels];
 
-        const updatedNode = { id: nodeId, _version: nodeVersion, labels: updatedlabels };
+        const updatedNode = { id, _version, labels: updatedlabels };
 
         const newData = await API.graphql({
           query: updateNode,
@@ -266,20 +256,20 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         throw new Error('Toggle Update Label for Carts Error');
       }
     },
-    [dispatch, isModal],
+    [_version, dispatch, id, isModal],
   );
 
   const toggleSelectedlabel = useCallback(
     (e) => {
       if (isMainInput) togglelabels(e.target.value);
-      else toggleCartLabels(id, _version, e.target.value);
+      else toggleCartLabels(e.target.value);
     },
-    [isMainInput, togglelabels, toggleCartLabels, id, _version],
+    [isMainInput, togglelabels, toggleCartLabels],
   );
 
   const toggleArchive = () => {
     if (isMainInput) onSetArchive();
-    else onChangeArchived(id, archived, _version, title, description);
+    else onChangeArchived();
   };
 
   const onSetNodes = useCallback(async () => {
@@ -306,16 +296,10 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         collabarator: userEmail,
         collabarators: newCollabarators,
         img: nodesImg,
+        // checkouts: checkouts,
       };
 
-      console.log(titleInnerText);
-      console.log(node);
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      const parsedText = JSON.parse(text);
-
-      if (parsedText.blocks[0].text && titleInnerText) {
+      if (titleInnerText) {
         const data = await API.graphql({ query: createNode, variables: { input: node } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
@@ -367,6 +351,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
         collabarator: userEmail,
         collabarators: newCollabarators,
         img: nodesImg,
+        // checkouts: checkouts,
       };
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -424,7 +409,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
                     type="button"
                     onClick={() => {
                       if (isMainInput) onDefaultColor(color);
-                      else onColorChange(id, color, _version);
+                      else onColorChange(color);
                     }}
                     className={classNames(
                       color,
@@ -514,7 +499,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
           )}
           {!isMainInput && (
             <button
-              onClick={() => onRemoveCart(id, _version)}
+              onClick={() => onRemoveCart()}
               type="button"
               className={classNames(styles.icon_btn)}
             >

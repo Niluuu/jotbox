@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
 import { FC, useState, useRef, useCallback } from 'react';
@@ -25,6 +26,44 @@ const MainInput: FC = () => {
   const [defaultPin, setDefaultPin] = useState(false);
   const [defaultColor, setDefaultColor] = useState('default');
   const [selectedLabels, setselectedLabels] = useState([]);
+
+  const [checkoutToggle, setCheckoutToggle] = useState(false);
+  const [checkouts, setCheckouts] = useState([]);
+  const mainCheckoutRef = useRef<HTMLInputElement>(null);
+
+  const onChangeMainCheckout = (title: string) => {
+    mainCheckoutRef.current.blur();
+    mainCheckoutRef.current.value = '';
+
+    const newCheckout = { title, focused: true, id: Date.now(), checked: false };
+    setCheckouts([...checkouts, newCheckout]);
+  };
+
+  const onChangeCheckouts = (id: number, title: string) => {
+    setCheckouts(
+      checkouts.map((checkout) => (checkout.id === id ? { ...checkout, title } : checkout)),
+    );
+  };
+
+  const onFocusCheckouts = (id: number) => {
+    setCheckouts(
+      checkouts.map((checkout) =>
+        checkout.id === id ? { ...checkout, focused: !checkout.focused } : checkout,
+      ),
+    );
+  };
+
+  const onCheckoutChecked = (id: number) => {
+    setCheckouts(
+      checkouts.map((checkout) =>
+        checkout.id === id ? { ...checkout, checked: !checkout.checked } : checkout,
+      ),
+    );
+  };
+
+  const onRemoveCheckout = (id: number) => {
+    setCheckouts(checkouts.filter((checkout) => checkout.id !== id));
+  };
 
   const togglelabels = useCallback(
     (toggledLabel) => {
@@ -63,6 +102,8 @@ const MainInput: FC = () => {
   const handleClickOutside = () =>
     setTimeout(() => {
       setFocused(false);
+      setCheckoutToggle(false);
+      setCheckouts([]);
     }, 350);
 
   const handleClickInside = () =>
@@ -82,7 +123,7 @@ const MainInput: FC = () => {
     };
   });
 
-  const { grid, text, isInputCollabaratorOpen , inputCollabaratorUsers } = mapStateToProps;
+  const { grid, text, isInputCollabaratorOpen, inputCollabaratorUsers } = mapStateToProps;
 
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
@@ -138,6 +179,30 @@ const MainInput: FC = () => {
     [imgUrl, onAddDefaultImage, setFocused],
   );
 
+  const checkoutContent = (checkout) => (
+    <div className={classNames(styles.checkout_item, !checkout.focused ? styles.focused : null)}>
+      <Icon
+        color="premium"
+        size="xs"
+        onClick={() => onCheckoutChecked(checkout.id)}
+        name={checkout.checked ? 'edit-bordered' : 'box'}
+      />
+      <input
+        className={checkout.checked ? styles.checked : null}
+        autoFocus={checkout.focused}
+        onFocus={() => onFocusCheckouts(checkout.id)}
+        onBlur={() => onFocusCheckouts(checkout.id)}
+        onChange={(e) => onChangeCheckouts(checkout.id, e.target.value)}
+        value={checkout.title}
+        type="text"
+      />
+      <Icon color="premium" size="xs" name="exit" onClick={() => onRemoveCheckout(checkout.id)} />
+    </div>
+  );
+
+  const selectedCheckouts = checkouts.filter((checkout) => checkout.checked);
+  const unSelectedCheckouts = checkouts.filter((checkout) => !checkout.checked);
+
   return (
     <div
       onKeyUp={(e) => {
@@ -183,30 +248,60 @@ const MainInput: FC = () => {
             )}
           </button>
         </div>
-
-        <div
-          style={{ display: isInputCollabaratorOpen && 'none' }}
-          className={styles.main_row}
-          onFocus={handleClickInside}
-          onClick={handleClickInside}
-        >
-          <MainEditor
-            linkRef={linkRef}
-            textRef={textRef}
-            isMainInput
-            defaultColor={defaultColor}
-            linkMode={linkMode}
-            createLinkToEditor={createLinkToEditor}
-            editorRef={editorRef}
-            initialState={text}
-          />
-        </div>
+        {!checkoutToggle && checkouts.length === 0 && (
+          <div
+            style={{ display: isInputCollabaratorOpen && 'none' }}
+            className={styles.main_row}
+            onFocus={handleClickInside}
+            onClick={handleClickInside}
+          >
+            <MainEditor
+              linkRef={linkRef}
+              textRef={textRef}
+              isMainInput
+              defaultColor={defaultColor}
+              linkMode={linkMode}
+              createLinkToEditor={createLinkToEditor}
+              editorRef={editorRef}
+              initialState={text}
+            />
+          </div>
+        )}
+        {checkoutToggle && (
+          <div className={styles.checkout}>
+            {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}
+            <div className={styles.checkout_main}>
+              <input
+                autoFocus
+                ref={mainCheckoutRef}
+                placeholder="Add your List"
+                onChange={(e) => onChangeMainCheckout(e.target.value)}
+                type="text"
+              />
+            </div>
+            {selectedCheckouts.length > 0 && (
+              <>
+                {' '}
+                <br />
+                {selectedCheckouts.length} Completed Items <br />
+                {selectedCheckouts.map((checkout) => checkoutContent(checkout))}
+              </>
+            )}
+          </div>
+        )}
         {!focused ? (
           <div
             style={{ display: isInputCollabaratorOpen && 'none' }}
             className={classNames(styles.bottom_tools)}
           >
-            <button type="button" className={styles.icon_btn}>
+            <button
+              onClick={() => {
+                handleClickInside();
+                setCheckoutToggle(true);
+              }}
+              type="button"
+              className={styles.icon_btn}
+            >
               <Icon name="edit-bordered" color="premium" size="xs" />
             </button>
             <button type="button" className={styles.icon_btn}>
@@ -265,6 +360,11 @@ const MainInput: FC = () => {
               cleanUpParent={cleanUpParent}
               titleInnerText={titleRef.current.innerText}
               defaultPin={defaultPin}
+              checkouts={checkouts.map((checkout) => ({
+                id: checkout.id,
+                title: checkout.title,
+                checked: checkout.checked,
+              }))}
             />
           </>
         ) : null}

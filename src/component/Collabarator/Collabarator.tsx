@@ -65,15 +65,11 @@ const Collabarator: FC<CollabaratorProps> = ({
   const [suggestions, setSuggestions] = useState([]);
 
   const onChangeCollabarators = useCallback(
-    async (
-      nodeId: string,
-      nodeVersion: number,
-      nodeCollabarators: string[],
-    ): Promise<CartProps> => {
+    async (nodeCollabarators: string[]): Promise<CartProps> => {
       try {
         const updatedNode = {
-          id: nodeId,
-          _version: nodeVersion,
+          id,
+          _version,
           collabarators: nodeCollabarators,
         };
 
@@ -93,7 +89,7 @@ const Collabarator: FC<CollabaratorProps> = ({
         throw new Error('Update node error');
       }
     },
-    [dispatch],
+    [_version, dispatch, id],
   );
 
   const getAllNodes = useCallback(async () => {
@@ -154,7 +150,7 @@ const Collabarator: FC<CollabaratorProps> = ({
       dispatch(setInputCollabaratorUsers(users));
       dispatch(toggleIsInputCollabaratorOpen());
     } else {
-      onChangeCollabarators(id, _version, users);
+      onChangeCollabarators(users);
       dispatch(toggleIsCartCollabaratorOpen());
     }
   };

@@ -27,7 +27,7 @@ import { CartProps } from '../../utils/types';
 
 interface InputNavbarProps {
   isMainInput?: boolean; // Is main input navbar?
-  onSetNode?: () => void; // Create node func
+  onSetNodes?: () => void; // Create node func
   onSetArchive?: () => void; // Archived node func
   onChangeArchived?: () => void; //  Node toggle archived func
   createLinkToEditor?: () => void; // Create link text to editor
@@ -50,11 +50,7 @@ interface InputNavbarProps {
   description?: string; // Node description
   labels?: string[] | null; //  Node labels
   img?: any[]; // Node Images
-  cleanUpParent?: () => void;
-  titleInnerText?: string | null; //  Node title
-  defaultPin?: boolean;
   isModal?: boolean;
-  checkouts?: Array<{ title: string; checked: boolean }>;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -72,32 +68,26 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     archived,
     title,
     description,
-    img,
     defaultColor,
-    titleInnerText,
     onDefaultColor,
-    cleanUpParent,
     isModal,
-    defaultPin,
     selectedLabels,
     togglelabels,
-    checkouts,
+    onSetNodes,
+    onSetArchive,
   } = props;
   const { t } = useTranslation();
   const [labels, setLabels] = useState([]);
   const dispatch = useDispatch();
-  const userEmail = localStorage.getItem('userEmail');
 
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       nodes: state.nodesReducer.nodes,
-      storeLabels: state.labelReducer.storeLabels,
-      inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
-      text: state.editorReducer.text,
+      storeLabels: state.labelReducer.storeLabels
     };
   });
 
-  const { storeLabels, inputCollabaratorUsers, text } = mapStateToProps;
+  const { storeLabels } = mapStateToProps;
 
   const undoRedo = (callBack: () => void) => {
     dispatch(callBack());
@@ -271,120 +261,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     if (isMainInput) onSetArchive();
     else onChangeArchived();
   };
-
-  const onSetNodes = useCallback(async () => {
-    try {
-      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
-
-      const nodesImg = [];
-
-      img.forEach(async (currentImg) => {
-        nodesImg.push(currentImg.name);
-
-        await Storage.put(currentImg.name, currentImg, {
-          contentType: 'image/png', // contentType is optional
-        });
-      });
-
-      const node = {
-        title: titleInnerText,
-        description: text,
-        labels: selectedLabels,
-        pined: defaultPin,
-        color: defaultColor,
-        archived: false,
-        collabarator: userEmail,
-        collabarators: newCollabarators,
-        img: nodesImg,
-        // checkouts: checkouts,
-      };
-
-      if (titleInnerText) {
-        const data = await API.graphql({ query: createNode, variables: { input: node } });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const item = data.data.createNode;
-
-        dispatch(setNodesToProps(item));
-
-        cleanUp();
-        cleanUpParent();
-      }
-    } catch (err) {
-      throw new Error('Create node error');
-    }
-  }, [
-    userEmail,
-    inputCollabaratorUsers,
-    img,
-    titleInnerText,
-    text,
-    selectedLabels,
-    defaultPin,
-    defaultColor,
-    dispatch,
-    cleanUp,
-    cleanUpParent,
-  ]);
-
-  const onSetArchive = useCallback(async () => {
-    try {
-      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
-
-      const nodesImg = [];
-
-      img.forEach(async (currentImg) => {
-        nodesImg.push(currentImg.name);
-
-        await Storage.put(currentImg.name, currentImg, {
-          contentType: 'image/png', // contentType is optional
-        });
-      });
-
-      const node = {
-        title: titleInnerText,
-        description: text,
-        labels: selectedLabels,
-        pined: defaultPin,
-        color: defaultColor,
-        archived: true,
-        collabarator: userEmail,
-        collabarators: newCollabarators,
-        img: nodesImg,
-        // checkouts: checkouts,
-      };
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      const parsedText = JSON.parse(text);
-
-      if (parsedText.blocks[0].text && titleInnerText) {
-        const data = await API.graphql({ query: createNode, variables: { input: node } });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //  @ts-ignore
-        const item = data.data.createNode;
-
-        dispatch(setNodesToProps(item));
-
-        cleanUp();
-        cleanUpParent();
-      }
-    } catch (err) {
-      throw new Error('Create node error');
-    }
-  }, [
-    userEmail,
-    inputCollabaratorUsers,
-    img,
-    titleInnerText,
-    text,
-    selectedLabels,
-    defaultPin,
-    defaultColor,
-    dispatch,
-    cleanUp,
-    cleanUpParent,
-  ]);
 
   return (
     <>

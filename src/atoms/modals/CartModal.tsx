@@ -22,21 +22,9 @@ import Images from './Images';
 import { updateNode } from '../../graphql/mutations';
 import { updateNodesToProps } from '../../reducers/nodes';
 import { getNode } from '../../graphql/queries';
-
-interface CartProps {
-  id: string;
-  title: string;
-  description: string;
-  pined: boolean;
-  archived: boolean;
-  labels: string[];
-  _version: number;
-  _deleted: boolean;
-  color: string;
-  collabarators: string[];
-  collabarator: string;
-  img: string[];
-}
+import { CartProps } from '../../utils/types';
+import Checkouts from '../../component/Checkouts/Checkouts';
+import { setModalCheckouts } from '../../reducers/checkouts';
 
 const CartModal: FC = () => {
   const mapStateToProps = useSelector((state: RootState) => {
@@ -46,9 +34,10 @@ const CartModal: FC = () => {
       isCartCollabaratorOpen: state.collabaratorReducer.isCartCollabaratorOpen,
       nodes: state.nodesReducer.nodes,
       updatedText: state.editorReducer.updatedText,
+      modalCheckouts: state.checkoutsReducer.modalCheckouts,
     };
   });
-  const { isCartCollabaratorOpen, updatedText } = mapStateToProps;
+  const { isCartCollabaratorOpen, updatedText, modalCheckouts } = mapStateToProps;
   const { modalNode, updateModalIsOpen } = mapStateToProps.nodeIdReducer;
 
   const dispatch = useDispatch();
@@ -60,46 +49,36 @@ const CartModal: FC = () => {
   const textRef = useRef(null);
   const [images, setImages] = useState([]);
 
-  const [checkouts, setCheckouts] = useState(
-    modalNode && modalNode.checkouts
-      ? modalNode.checkouts.map((checkout) => ({ ...checkout, focused: false }))
-      : [],
-  );
-  const mainCheckoutRef = useRef<HTMLInputElement>(null);
+  const onChangeCartCheckout = useCallback(async (): Promise<CartProps> => {
+    try {
+      const { id, _version } = modalNode;
 
-  const onChangeMainCheckout = (title: string) => {
-    mainCheckoutRef.current.blur();
-    mainCheckoutRef.current.value = '';
+      const todoCheckouts = modalCheckouts.map((checkout) => ({
+        id: checkout.id,
+        title: checkout.title,
+        checked: checkout.checked,
+      }));
 
-    const newCheckout = { title, focused: true, id: Date.now(), checked: false };
-    setCheckouts([...checkouts, newCheckout]);
-  };
+      const updatedNode = {
+        id,
+        _version,
+        todo: JSON.stringify(todoCheckouts),
+      };
 
-  const onChangeCheckouts = (id: number, title: string) => {
-    setCheckouts(
-      checkouts.map((checkout) => (checkout.id === id ? { ...checkout, title } : checkout)),
-    );
-  };
+      const data = await API.graphql({
+        query: updateNode,
+        variables: { input: updatedNode },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const item = data.data.updateNode;
 
-  const onFocusCheckouts = (id: number) => {
-    setCheckouts(
-      checkouts.map((checkout) =>
-        checkout.id === id ? { ...checkout, focused: !checkout.focused } : checkout,
-      ),
-    );
-  };
-
-  const onCheckoutChecked = (id: number) => {
-    setCheckouts(
-      checkouts.map((checkout) =>
-        checkout.id === id ? { ...checkout, checked: !checkout.checked } : checkout,
-      ),
-    );
-  };
-
-  const onRemoveCheckout = (id: number) => {
-    setCheckouts(checkouts.filter((checkout) => checkout.id !== id));
-  };
+      dispatch(updateNodesToProps(item));
+      return item;
+    } catch (err) {
+      throw new Error('Update node error');
+    }
+  }, [modalCheckouts, dispatch, modalNode]);
 
   const onLinkEditor = () => {
     if (textRef.current.value.length === 0) textRef.current.focus();
@@ -115,19 +94,10 @@ const CartModal: FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (modalNode !== undefined) {
-      const { color } = modalNode;
-
-      setUpdatedColor(color);
-    }
-  }, [modalNode]);
-
   const onChangeNodeContent = useCallback(
     async (title: string): Promise<void> => {
-      const { id, _version } = modalNode;
-
       try {
+        const { id, _version } = modalNode;
         const updatedNode = {
           id,
           _version,
@@ -153,8 +123,8 @@ const CartModal: FC = () => {
   );
 
   const onChangePin = useCallback(async (): Promise<CartProps> => {
-    const { id, _version, pined } = modalNode;
     try {
+      const { id, _version, pined } = modalNode;
       const updatedNode = {
         id,
         pined,
@@ -171,62 +141,13 @@ const CartModal: FC = () => {
       const item = data.data.updateNode;
 
       dispatch(updateNodesToProps(item));
+      dispatch(getModalNode(item));
+
       return item;
     } catch (err) {
       throw new Error('Update node error');
     }
   }, [dispatch, modalNode]);
-
-  const onChangeCheckout = useCallback(async (): Promise<CartProps> => {
-    const { id, _version } = modalNode;
-    try {
-      const updatedNode = {
-        id,
-        _version,
-        checkouts: checkouts.map((checkout) => ({
-          id: checkout.id,
-          title: checkout.title,
-          checked: checkout.checked,
-        })),
-      };
-
-      const data = await API.graphql({
-        query: updateNode,
-        variables: { input: updatedNode },
-      });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //  @ts-ignore
-      const item = data.data.updateNode;
-
-      dispatch(updateNodesToProps(item));
-      return item;
-    } catch (err) {
-      throw new Error('Update node error');
-    }
-  }, [checkouts, dispatch, modalNode]);
-
-  const modalChangePin = useCallback(async () => {
-    const data = await onChangePin();
-
-    dispatch(getModalNode(data));
-  }, [dispatch, onChangePin]);
-
-  useEffect(() => {
-    if (modalNode !== undefined) {
-      const { img } = modalNode;
-
-      if (img) {
-        const requestedImages = img.map(async (image) => {
-          const data = await Storage.get(image);
-          return data;
-        });
-
-        Promise.all(requestedImages).then((values) => {
-          setImages(values);
-        });
-      }
-    }
-  }, [modalNode]);
 
   const toggleCartLabels = useCallback(
     async (nodeLabels: string): Promise<CartProps> => {
@@ -253,6 +174,7 @@ const CartModal: FC = () => {
         const item = newData.data.updateNode;
 
         dispatch(updateNodesToProps(item));
+        dispatch(getModalNode(item));
 
         return item;
       } catch (err) {
@@ -262,22 +184,13 @@ const CartModal: FC = () => {
     [dispatch, modalNode],
   );
 
-  const modalToggleCartLabels = useCallback(
-    async (label) => {
-      const data = await toggleCartLabels(label);
-
-      dispatch(getModalNode(data));
-    },
-    [dispatch, toggleCartLabels],
-  );
-
   const onUpdate = useCallback(async () => {
     try {
       dispatch(getModalNode(undefined));
       dispatch(closeUpdateModalIsOpen());
 
-      if (modalNode.checkouts && modalNode.checkouts.length > 0) {
-        await onChangeCheckout();
+      if (modalNode && modalNode.todo && modalNode.todo.length > 0) {
+        await onChangeCartCheckout();
       } else {
         // eslint-disable-next-line no-underscore-dangle
         await onChangeNodeContent(titleRef.current.innerText);
@@ -285,7 +198,7 @@ const CartModal: FC = () => {
     } catch (err) {
       throw new Error('Update cart: Something went wrong');
     }
-  }, [modalNode, dispatch, onChangeNodeContent, onChangeCheckout]);
+  }, [modalNode, dispatch, onChangeNodeContent, onChangeCartCheckout]);
 
   const toggleModal = useCallback(() => {
     if (!isCartCollabaratorOpen) {
@@ -294,29 +207,27 @@ const CartModal: FC = () => {
     }
   }, [onUpdate, isCartCollabaratorOpen]);
 
-  const checkoutContent = (checkout) => (
-    <div className={classNames(styles.checkout_item, !checkout.focused ? styles.focused : null)}>
-      <Icon
-        color="premium"
-        size="xs"
-        onClick={() => onCheckoutChecked(checkout.id)}
-        name={checkout.checked ? 'edit-bordered' : 'box'}
-      />
-      <input
-        className={checkout.checked ? styles.checked : null}
-        autoFocus={checkout.focused}
-        onFocus={() => onFocusCheckouts(checkout.id)}
-        onBlur={() => onFocusCheckouts(checkout.id)}
-        onChange={(e) => onChangeCheckouts(checkout.id, e.target.value)}
-        value={checkout.title}
-        type="text"
-      />
-      <Icon color="premium" size="xs" name="exit" onClick={() => onRemoveCheckout(checkout.id)} />
-    </div>
-  );
+  useEffect(() => {
+    if (modalNode) {
+      const { img, color } = modalNode;
 
-  const selectedCheckouts = checkouts.filter((checkout) => checkout.checked);
-  const unSelectedCheckouts = checkouts.filter((checkout) => !checkout.checked);
+      if (img) {
+        const requestedImages = img.map(async (image) => {
+          const data = await Storage.get(image);
+          return data;
+        });
+
+        Promise.all(requestedImages).then((values) => {
+          setImages(values);
+        });
+      }
+
+      setUpdatedColor(color);
+      dispatch(
+        setModalCheckouts(modalNode.todo.map((checkout) => ({ ...checkout, focused: false }))),
+      );
+    }
+  }, [modalNode, dispatch]);
 
   const userEmail = localStorage.getItem('userEmail');
   const isModal = true;
@@ -344,9 +255,9 @@ const CartModal: FC = () => {
           <div style={{ position: 'relative', display: isCartCollabaratorOpen && 'none' }}>
             <button type="button" className={styles.icon_btn}>
               {!modalNode.pined ? (
-                <Icon name="pin" color="premium" size="xs" onClick={modalChangePin} />
+                <Icon name="pin" color="premium" size="xs" onClick={onChangePin} />
               ) : (
-                <Icon name="pin-black" color="premium" size="xs" onClick={modalChangePin} />
+                <Icon name="pin-black" color="premium" size="xs" onClick={onChangePin} />
               )}
             </button>
             {images.length !== 0 && <Images images={images} />}
@@ -380,27 +291,8 @@ const CartModal: FC = () => {
             <div className={styles.main_row}>
               {modalNode && (
                 <>
-                  {modalNode.checkouts && modalNode.checkouts.length > 0 ? (
-                    <div className={classNames(styles.checkout)}>
-                      {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}
-                      <div className={styles.checkout_main}>
-                        <input
-                          autoFocus
-                          ref={mainCheckoutRef}
-                          placeholder="Add your List"
-                          onChange={(e) => onChangeMainCheckout(e.target.value)}
-                          type="text"
-                        />
-                      </div>
-                      {selectedCheckouts.length > 0 && (
-                        <>
-                          {' '}
-                          <br />
-                          {selectedCheckouts.length} Completed Items <br />
-                          {selectedCheckouts.map((checkout) => checkoutContent(checkout))}
-                        </>
-                      )}
-                    </div>
+                  {modalNode.todo && modalNode.todo.length > 0 ? (
+                    <Checkouts isModal />
                   ) : (
                     <MentionContext.Provider value={() => toggleModal()}>
                       <MainEditor
@@ -421,7 +313,7 @@ const CartModal: FC = () => {
                 {modalNode.labels && modalNode.labels.length > 10 ? (
                   <>
                     {modalNode.labels.slice(0, 10).map((label) => (
-                      <Chip key={label} onDelate={() => modalToggleCartLabels(label)}>
+                      <Chip key={label} onDelate={() => toggleCartLabels(label)}>
                         {label}
                       </Chip>
                     ))}
@@ -429,7 +321,7 @@ const CartModal: FC = () => {
                   </>
                 ) : (
                   modalNode.labels.map((label) => (
-                    <Chip key={label} onDelate={() => modalToggleCartLabels(label)}>
+                    <Chip key={label} onDelate={() => toggleCartLabels(label)}>
                       {label}
                     </Chip>
                   ))
@@ -453,7 +345,7 @@ const CartModal: FC = () => {
               archived={modalNode.archived}
               title={modalNode.title}
               description={modalNode.description}
-              onSetNode={() => toggleModal()}
+              onSetNodes={() => toggleModal()}
               updateModalIsOpen={updateModalIsOpen}
               initiallabels={modalNode && modalNode.labels}
               createLinkToEditor={onLinkEditor}

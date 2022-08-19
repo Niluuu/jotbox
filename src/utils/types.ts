@@ -11,6 +11,11 @@ export type CartProps = {
   collabarators: string[];
   collabarator: string;
   img: string[];
+  todo: Array<{
+    id: string;
+    title: string;
+    checked: boolean;
+  }>;
 };
 
 export type LabelType = {

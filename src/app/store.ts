@@ -7,6 +7,7 @@ import nodesReducer from '../reducers/nodes';
 import filterByTitleReducer from '../reducers/filterByTitle';
 import collabaratorReducer from '../reducers/collabarator';
 import refreshPageReducer from '../reducers/refreshPage';
+import checkoutsReducer from '../reducers/checkouts';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     filterByTitleReducer,
     collabaratorReducer,
     refreshPageReducer,
+    checkoutsReducer,
   },
 });
 

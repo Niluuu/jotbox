@@ -83,6 +83,7 @@ export const getNode = /* GraphQL */ `
       collabarators
       labels
       img
+      todo
       _version
       _deleted
       _lastChangedAt
@@ -110,6 +111,7 @@ export const listNodes = /* GraphQL */ `
         collabarators
         labels
         img
+        todo
         _version
         _deleted
         _lastChangedAt
@@ -146,6 +148,7 @@ export const syncNodes = /* GraphQL */ `
         collabarators
         labels
         img
+        todo
         _version
         _deleted
         _lastChangedAt

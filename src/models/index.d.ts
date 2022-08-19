@@ -39,6 +39,7 @@ export declare class Node {
   readonly collabarators: (string | null)[];
   readonly labels?: (string | null)[] | null;
   readonly img?: (string | null)[] | null;
+  readonly todo?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Node, NodeMetaData>);

@@ -8,14 +8,19 @@ export const nodes = createSlice({
   },
   reducers: {
     getNodesToProps: (state, action) => {
-      state.nodes = action.payload;
+      state.nodes = action.payload.map((parsTodo) => ({
+        ...parsTodo,
+        todo: JSON.parse(parsTodo.todo),
+      }));
     },
     setNodesToProps: (state, action) => {
-      state.nodes = [action.payload, ...state.nodes];
+      state.nodes = [{ ...action.payload, todo: JSON.parse(action.payload.todo) }, ...state.nodes];
     },
     updateNodesToProps: (state, action) => {
       state.nodes = state.nodes.map((newCart) =>
-        newCart.id === action.payload.id ? action.payload : newCart,
+        newCart.id === action.payload.id
+          ? { ...action.payload, todo: JSON.parse(action.payload.todo) }
+          : newCart,
       );
     },
     removeNodesToProps: (state, action) => {

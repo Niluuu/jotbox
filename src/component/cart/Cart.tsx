@@ -3,7 +3,7 @@
 import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { API, Storage } from 'aws-amplify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Chip } from '../chip/Chip';
 import { Icon } from '../Icon/Icon';
 import styles from './Cart.module.scss';
@@ -13,8 +13,6 @@ import MainEditor from '../../modules/Editor/MainEditor';
 import './Color.scss';
 import { updateNode } from '../../graphql/mutations';
 import { updateNodesToProps } from '../../reducers/nodes';
-import { RootState } from '../../app/store';
-import { getNode } from '../../graphql/queries';
 import CartImages from './CartImages';
 
 interface CartProps {
@@ -56,7 +54,6 @@ const Cart: FC<CartProps> = (props) => {
     checkouts = [],
   } = props;
   const [images, setImages] = useState([]);
-
   const [isMain] = useState(false);
   const editorRef = useRef(null);
   const dispatch = useDispatch();
@@ -82,7 +79,7 @@ const Cart: FC<CartProps> = (props) => {
     try {
       const updatedNode = {
         id,
-        pined,
+        pined: !pined,
         archived: false,
         _version,
       };
@@ -137,7 +134,7 @@ const Cart: FC<CartProps> = (props) => {
           checkout.id === checkoutId ? { ...checkout, checked: !checkout.checked } : checkout,
         );
 
-        const updatedNode = { id, _version, checkouts: updatedCheckouts };
+        const updatedNode = { id, _version, todo: JSON.stringify(updatedCheckouts) };
 
         const newData = await API.graphql({
           query: updateNode,
@@ -172,7 +169,7 @@ const Cart: FC<CartProps> = (props) => {
       />
       <input
         onClick={() => !popupCart && onOpenModal()}
-        className={checkout.checked ? styles.checked : null}
+        className={classNames('color-input', checkout.checked ? styles.checked : null)}
         value={checkout.title}
         type="text"
       />
@@ -208,8 +205,8 @@ const Cart: FC<CartProps> = (props) => {
               <p>{title}</p>
             </div>
           )}
-          <div onClick={() => !popupCart && onOpenModal()}>
-            {description && checkouts.length === 0 && (
+          {description && checkouts.length === 0 && (
+            <div onClick={() => !popupCart && onOpenModal()}>
               <MainEditor
                 isLarge={isLarge}
                 color={color}
@@ -217,8 +214,8 @@ const Cart: FC<CartProps> = (props) => {
                 editorRef={editorRef}
                 readOnly
               />
-            )}
-          </div>
+            </div>
+          )}
           {checkouts.length > 0 && (
             <div className={classNames(styles.checkout)}>
               {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
 import { useParams } from 'react-router';
+import { API, Storage } from 'aws-amplify';
 import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
@@ -15,9 +16,15 @@ import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
 import Collabarator from '../collabarator/Collabarator';
 import Images from '../../atoms/modals/Images';
-import { setEditorFocus } from '../../reducers/editor';
+import { setEditorFocus, toggleOnCreateFunctionCall } from '../../reducers/editor';
+import { setNodesToProps } from '../../reducers/nodes';
+import { setInputCollabaratorUsers } from '../../reducers/collabarator';
+import { createNode } from '../../graphql/mutations';
+import Checkouts from '../Checkouts/Checkouts';
+import { setMainCheckouts } from '../../reducers/checkouts';
 
 const MainInput: FC = () => {
+  const userEmail = localStorage.getItem('userEmail');
   const linkRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLInputElement>(null);
   const [linkMode, setlinkMode] = useState(false);
@@ -28,42 +35,6 @@ const MainInput: FC = () => {
   const [selectedLabels, setselectedLabels] = useState([]);
 
   const [checkoutToggle, setCheckoutToggle] = useState(false);
-  const [checkouts, setCheckouts] = useState([]);
-  const mainCheckoutRef = useRef<HTMLInputElement>(null);
-
-  const onChangeMainCheckout = (title: string) => {
-    mainCheckoutRef.current.blur();
-    mainCheckoutRef.current.value = '';
-
-    const newCheckout = { title, focused: true, id: Date.now(), checked: false };
-    setCheckouts([...checkouts, newCheckout]);
-  };
-
-  const onChangeCheckouts = (id: number, title: string) => {
-    setCheckouts(
-      checkouts.map((checkout) => (checkout.id === id ? { ...checkout, title } : checkout)),
-    );
-  };
-
-  const onFocusCheckouts = (id: number) => {
-    setCheckouts(
-      checkouts.map((checkout) =>
-        checkout.id === id ? { ...checkout, focused: !checkout.focused } : checkout,
-      ),
-    );
-  };
-
-  const onCheckoutChecked = (id: number) => {
-    setCheckouts(
-      checkouts.map((checkout) =>
-        checkout.id === id ? { ...checkout, checked: !checkout.checked } : checkout,
-      ),
-    );
-  };
-
-  const onRemoveCheckout = (id: number) => {
-    setCheckouts(checkouts.filter((checkout) => checkout.id !== id));
-  };
 
   const togglelabels = useCallback(
     (toggledLabel) => {
@@ -103,7 +74,7 @@ const MainInput: FC = () => {
     setTimeout(() => {
       setFocused(false);
       setCheckoutToggle(false);
-      setCheckouts([]);
+      dispatch(setMainCheckouts([]));
     }, 350);
 
   const handleClickInside = () =>
@@ -120,10 +91,17 @@ const MainInput: FC = () => {
       text: state.editorReducer.text,
       isInputCollabaratorOpen: state.collabaratorReducer.isInputCollabaratorOpen,
       inputCollabaratorUsers: state.collabaratorReducer.inputCollabaratorUsers,
+      mainCheckouts: state.checkoutsReducer.mainCheckouts,
     };
   });
 
-  const { grid, text, isInputCollabaratorOpen, inputCollabaratorUsers } = mapStateToProps;
+  const {
+    grid,
+    text,
+    isInputCollabaratorOpen,
+    inputCollabaratorUsers,
+    mainCheckouts,
+  } = mapStateToProps;
 
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
@@ -142,20 +120,12 @@ const MainInput: FC = () => {
     createLinkToEditor();
   };
 
-  const cleanUpParent = useCallback(() => {
-    titleRef.current.innerHTML = '';
-    setDefaultPin(false);
-    setDefaultColor('default');
-    setselectedLabels([]);
-    setsImg([]);
-  }, []);
-
-  const [img, setsImg] = useState([]);
+  const [img, setImg] = useState([]);
 
   const onAddDefaultImage = useCallback(
     async (image: any): Promise<void> => {
       try {
-        setsImg([...img, image]);
+        setImg([...img, image]);
       } catch (err) {
         throw new Error('Update node error');
       }
@@ -179,29 +149,159 @@ const MainInput: FC = () => {
     [imgUrl, onAddDefaultImage, setFocused],
   );
 
-  const checkoutContent = (checkout) => (
-    <div className={classNames(styles.checkout_item, !checkout.focused ? styles.focused : null)}>
-      <Icon
-        color="premium"
-        size="xs"
-        onClick={() => onCheckoutChecked(checkout.id)}
-        name={checkout.checked ? 'edit-bordered' : 'box'}
-      />
-      <input
-        className={checkout.checked ? styles.checked : null}
-        autoFocus={checkout.focused}
-        onFocus={() => onFocusCheckouts(checkout.id)}
-        onBlur={() => onFocusCheckouts(checkout.id)}
-        onChange={(e) => onChangeCheckouts(checkout.id, e.target.value)}
-        value={checkout.title}
-        type="text"
-      />
-      <Icon color="premium" size="xs" name="exit" onClick={() => onRemoveCheckout(checkout.id)} />
-    </div>
-  );
+  const cleanUp = useCallback(() => {
+    titleRef.current.innerHTML = '';
+    setDefaultPin(false);
+    setDefaultColor('default');
+    setselectedLabels([]);
+    setImg([]);
 
-  const selectedCheckouts = checkouts.filter((checkout) => checkout.checked);
-  const unSelectedCheckouts = checkouts.filter((checkout) => !checkout.checked);
+    dispatch(setMainCheckouts([]));
+    dispatch(setInputCollabaratorUsers([]));
+    dispatch(toggleOnCreateFunctionCall(true));
+
+    setTimeout(() => {
+      dispatch(toggleOnCreateFunctionCall(false));
+    }, 500);
+  }, [dispatch]);
+
+  const onSetNodes = useCallback(async () => {
+    try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
+
+      const nodesImg = [];
+
+      img.forEach(async (currentImg) => {
+        nodesImg.push(currentImg.name);
+
+        await Storage.put(currentImg.name, currentImg, {
+          contentType: 'image/png', // contentType is optional
+        });
+      });
+
+      const todoCheckouts = mainCheckouts.map((checkout) => ({
+        id: checkout.id,
+        title: checkout.title,
+        checked: checkout.checked,
+      }));
+
+      const node = {
+        title: titleRef.current.innerText,
+        description: text,
+        labels: selectedLabels,
+        pined: defaultPin,
+        color: defaultColor,
+        archived: false,
+        collabarator: userEmail,
+        collabarators: newCollabarators,
+        img: nodesImg,
+        todo: JSON.stringify(todoCheckouts),
+      };
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const parsedText = JSON.parse(text);
+
+      if (
+        (parsedText.blocks[0].text || mainCheckouts.length) &&
+        titleRef.current.innerText.length
+      ) {
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        dispatch(setNodesToProps(item));
+        cleanUp();
+      } else if (titleRef.current.innerText.length) {
+        editorRef.current?.focus();
+      } else {
+        titleRef.current?.focus();
+      }
+    } catch (err) {
+      throw new Error('Create node error');
+    }
+  }, [
+    userEmail,
+    inputCollabaratorUsers,
+    img,
+    mainCheckouts,
+    text,
+    selectedLabels,
+    defaultPin,
+    defaultColor,
+    dispatch,
+    cleanUp,
+  ]);
+
+  const onSetArchive = useCallback(async () => {
+    try {
+      const newCollabarators = [userEmail, ...inputCollabaratorUsers];
+
+      const nodesImg = [];
+
+      img.forEach(async (currentImg) => {
+        nodesImg.push(currentImg.name);
+
+        await Storage.put(currentImg.name, currentImg, {
+          contentType: 'image/png', // contentType is optional
+        });
+      });
+
+      const todoCheckouts = mainCheckouts.map((checkout) => ({
+        id: checkout.id,
+        title: checkout.title,
+        checked: checkout.checked,
+      }));
+
+      const node = {
+        title: titleRef.current.innerText,
+        description: text,
+        labels: selectedLabels,
+        pined: defaultPin,
+        color: defaultColor,
+        archived: true,
+        collabarator: userEmail,
+        collabarators: newCollabarators,
+        img: nodesImg,
+        todo: JSON.stringify(todoCheckouts),
+      };
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //  @ts-ignore
+      const parsedText = JSON.parse(text);
+
+      if (
+        (parsedText.blocks[0].text || mainCheckouts.length) &&
+        titleRef.current.innerText.length
+      ) {
+        const data = await API.graphql({ query: createNode, variables: { input: node } });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //  @ts-ignore
+        const item = data.data.createNode;
+
+        dispatch(setNodesToProps(item));
+        cleanUp();
+      } else if (titleRef.current.innerText.length) {
+        editorRef.current?.focus();
+      } else {
+        titleRef.current?.focus();
+      }
+    } catch (err) {
+      throw new Error('Create node error');
+    }
+  }, [
+    userEmail,
+    inputCollabaratorUsers,
+    img,
+    mainCheckouts,
+    text,
+    selectedLabels,
+    defaultPin,
+    defaultColor,
+    dispatch,
+    cleanUp,
+  ]);
 
   return (
     <div
@@ -248,7 +348,7 @@ const MainInput: FC = () => {
             )}
           </button>
         </div>
-        {!checkoutToggle && checkouts.length === 0 && (
+        {!checkoutToggle && mainCheckouts.length === 0 && (
           <div
             style={{ display: isInputCollabaratorOpen && 'none' }}
             className={styles.main_row}
@@ -267,28 +367,7 @@ const MainInput: FC = () => {
             />
           </div>
         )}
-        {checkoutToggle && (
-          <div className={styles.checkout}>
-            {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}
-            <div className={styles.checkout_main}>
-              <input
-                autoFocus
-                ref={mainCheckoutRef}
-                placeholder="Add your List"
-                onChange={(e) => onChangeMainCheckout(e.target.value)}
-                type="text"
-              />
-            </div>
-            {selectedCheckouts.length > 0 && (
-              <>
-                {' '}
-                <br />
-                {selectedCheckouts.length} Completed Items <br />
-                {selectedCheckouts.map((checkout) => checkoutContent(checkout))}
-              </>
-            )}
-          </div>
-        )}
+        {checkoutToggle && <Checkouts />}
         {!focused ? (
           <div
             style={{ display: isInputCollabaratorOpen && 'none' }}
@@ -356,15 +435,8 @@ const MainInput: FC = () => {
               togglelabels={() => togglelabels}
               selectedLabels={selectedLabels}
               label={label}
-              img={img}
-              cleanUpParent={cleanUpParent}
-              titleInnerText={titleRef.current.innerText}
-              defaultPin={defaultPin}
-              checkouts={checkouts.map((checkout) => ({
-                id: checkout.id,
-                title: checkout.title,
-                checked: checkout.checked,
-              }))}
+              onSetNodes={onSetNodes}
+              onSetArchive={onSetArchive}
             />
           </>
         ) : null}

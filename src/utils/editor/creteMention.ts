@@ -1,16 +1,4 @@
-interface CartProps {
-  id: string;
-  title: string;
-  description: string;
-  pined: boolean;
-  archived: boolean;
-  labels: string[];
-  _version: number;
-  _deleted: boolean;
-  color: string;
-  collabarators: string[];
-  collabarator: string;
-}
+import { CartProps } from '../types';
 
 interface createMentionsType {
   name: string;

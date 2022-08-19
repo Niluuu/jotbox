@@ -7,21 +7,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './CartLayout.module.scss';
 import Cart from '../../component/cart/Cart';
 import { getModalNode } from '../../reducers/getNodeId';
-
-interface CartProps {
-  _version: number;
-  id: string;
-  title: string;
-  description: string;
-  pined: boolean;
-  archived: boolean;
-  labels: string[];
-  color: string;
-  collabarators: string[];
-  collabarator: string;
-  _deleted: boolean;
-  img: string[];
-}
+import { CartProps } from '../../utils/types';
 
 interface CartLayoutProps {
   /**
@@ -40,7 +26,6 @@ const CartLayout: FC<CartLayoutProps> = ({ gridType, carts, archivePage }) => {
   const dispatch = useDispatch();
   const labeledCarts =
     label !== undefined ? carts.filter((cart) => cart.labels.includes(label)) : carts;
-
   const { t } = useTranslation();
 
   const onOpenModal = useCallback(
@@ -77,6 +62,7 @@ const CartLayout: FC<CartLayoutProps> = ({ gridType, carts, archivePage }) => {
                 gridType={gridType}
                 onOpenModal={() => onOpenModal(cart)}
                 img={cart.img}
+                checkouts={cart.todo}
               />
             ))}
         </div>
@@ -106,6 +92,7 @@ const CartLayout: FC<CartLayoutProps> = ({ gridType, carts, archivePage }) => {
                 gridType={gridType}
                 onOpenModal={() => onOpenModal(cart)}
                 img={cart.img}
+                checkouts={cart.todo}
               />
             ))}
         </div>

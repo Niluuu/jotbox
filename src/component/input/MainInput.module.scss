@@ -52,6 +52,15 @@
 
   &_row {
     width: 100%;
+    display: none;
+
+    div {
+      width: 85% !important;
+    }
+
+    &.open {
+      display: flex;
+    }
   }
 
   &_chips {
@@ -462,6 +471,10 @@
     padding: 0;
     margin: 0 10px;
     position: relative;
+    
+    &:hover {
+      background: rgb(235, 235, 235);
+    }
 
     svg {
       width: 18px;

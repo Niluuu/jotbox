@@ -40,6 +40,8 @@ interface InputNavbarProps {
   shadow?: boolean; // Is Modal? Should navbar has shadow in Modal?
   isCart?: boolean; // Attr Link should not bee in carts
   onOpenModal?: () => void; // Open Cart Modal function
+  switchToEditor?: () => void;
+  switchToTodo?: () => void;
   updateModalIsOpen?: boolean;
   hide?: boolean;
   label?: string;
@@ -51,6 +53,7 @@ interface InputNavbarProps {
   labels?: string[] | null; //  Node labels
   img?: any[]; // Node Images
   isModal?: boolean;
+  checkoutToggle?: boolean;
 }
 
 export const InputNavbar: FC<InputNavbarProps> = (props) => {
@@ -75,6 +78,9 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
     togglelabels,
     onSetNodes,
     onSetArchive,
+    switchToEditor,
+    switchToTodo,
+    checkoutToggle,
   } = props;
   const { t } = useTranslation();
   const [labels, setLabels] = useState([]);
@@ -83,7 +89,7 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       nodes: state.nodesReducer.nodes,
-      storeLabels: state.labelReducer.storeLabels
+      storeLabels: state.labelReducer.storeLabels,
     };
   });
 
@@ -120,15 +126,6 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
       if (isCart) onOpenModal();
     }
   };
-
-  const cleanUp = useCallback(() => {
-    dispatch(setInputCollabaratorUsers([]));
-    dispatch(toggleOnCreateFunctionCall(true));
-
-    setTimeout(() => {
-      dispatch(toggleOnCreateFunctionCall(false));
-    }, 500);
-  }, [dispatch]);
 
   useEffect(() => {
     setLabels(storeLabels);
@@ -275,6 +272,15 @@ export const InputNavbar: FC<InputNavbarProps> = (props) => {
           <button onClick={toggleCollabarator} type="button" className={styles.icon_btn}>
             <Icon name="user-add" color="premium" size="xs" />
           </button>
+          {checkoutToggle ? (
+            <button onClick={switchToEditor} type="button" className={styles.icon_btn}>
+              <Icon name="edit" color="premium" size="xs" />
+            </button>
+          ) : (
+            <button onClick={switchToTodo} type="button" className={styles.icon_btn}>
+              <Icon name="edit" color="premium" size="xs" />
+            </button>
+          )}
           <Popover
             placement="bottom-start"
             content={

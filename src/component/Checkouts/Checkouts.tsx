@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/require-default-props */
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import uniqid from 'uniqid';
@@ -12,9 +12,10 @@ import { setMainCheckouts, setModalCheckouts } from '../../reducers/checkouts';
 
 interface CheckoutsProps {
   isModal?: boolean;
+  open?: boolean;
 }
 
-const Checkouts: FC<CheckoutsProps> = ({ isModal }) => {
+const Checkouts: FC<CheckoutsProps> = ({ isModal, open }) => {
   const mapStateToProps = useSelector((state: RootState) => {
     return {
       mainCheckouts: state.checkoutsReducer.mainCheckouts,
@@ -40,24 +41,6 @@ const Checkouts: FC<CheckoutsProps> = ({ isModal }) => {
       dispatch(setModalCheckouts([...modalCheckouts, newCheckout]));
     } else {
       dispatch(setMainCheckouts([...mainCheckouts, newCheckout]));
-    }
-  };
-
-  const onChangeCheckouts = (id: number, title: string) => {
-    if (isModal) {
-      dispatch(
-        setModalCheckouts(
-          modalCheckouts.map((checkout) =>
-            checkout.id === id ? { ...checkout, title } : checkout,
-          ),
-        ),
-      );
-    } else {
-      dispatch(
-        setMainCheckouts(
-          mainCheckouts.map((checkout) => (checkout.id === id ? { ...checkout, title } : checkout)),
-        ),
-      );
     }
   };
 
@@ -101,6 +84,30 @@ const Checkouts: FC<CheckoutsProps> = ({ isModal }) => {
     }
   };
 
+  const onKeyCheckout = (key: string) => {
+    if (key === 'Enter') {
+      mainCheckoutRef.current.focus();
+    }
+  };
+
+  const onChangeCheckouts = (id: number, title: string) => {
+    if (isModal) {
+      dispatch(
+        setModalCheckouts(
+          modalCheckouts.map((checkout) =>
+            checkout.id === id ? { ...checkout, title } : checkout,
+          ),
+        ),
+      );
+    } else {
+      dispatch(
+        setMainCheckouts(
+          mainCheckouts.map((checkout) => (checkout.id === id ? { ...checkout, title } : checkout)),
+        ),
+      );
+    }
+  };
+
   const onCheckoutChecked = (id: number) => {
     if (isModal) {
       dispatch(
@@ -138,6 +145,10 @@ const Checkouts: FC<CheckoutsProps> = ({ isModal }) => {
         name={checkout.checked ? 'edit-bordered' : 'box'}
       />
       <input
+        onKeyUp={(e) => {
+          onKeyCheckout(e.key);
+          onBlurCheckouts(checkout.id);
+        }}
         className={classNames('color-input', checkout.checked ? styles.checked : null)}
         autoFocus={checkout.focused}
         onFocus={() => onFocusCheckouts(checkout.id)}
@@ -154,7 +165,7 @@ const Checkouts: FC<CheckoutsProps> = ({ isModal }) => {
   const unSelectedCheckouts = defaultCheckouts.filter((checkout) => !checkout.checked);
 
   return (
-    <div className={classNames(styles.checkout, isModal ? styles.modal : null)}>
+    <div className={classNames(styles.checkout, isModal ? styles.modal : null, open ? styles.open : null)}>
       {unSelectedCheckouts.map((checkout) => checkoutContent(checkout))}
       <div className={styles.checkout_main}>
         <input

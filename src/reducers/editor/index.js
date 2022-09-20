@@ -8,6 +8,7 @@ export const editor = createSlice({
     text: initialStateStr,
     shouldUndo: false,
     shouldRedo: false,
+    switchEditor: false,
     updatedText:
       '{"blocks":[{"key":"cbbnn","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
     onCreateFuncCall: false,
@@ -28,6 +29,9 @@ export const editor = createSlice({
     setRedo: (state) => {
       state.shouldRedo = !state.shouldRedo;
     },
+    setSwitchEditor: (state) => {
+      state.switchEditor = !state.switchEditor;
+    },
     setEditorFocus: (state) => {
       state.editorFocus = !state.editorFocus;
     },
@@ -41,6 +45,7 @@ export const {
   setUpdatedText,
   toggleOnCreateFunctionCall,
   setEditorFocus,
+  setSwitchEditor
 } = editor.actions;
 
 export default editor.reducer;

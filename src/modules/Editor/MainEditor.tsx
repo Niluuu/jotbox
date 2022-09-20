@@ -63,10 +63,12 @@ const MainEditor: FC<MainEditorProps> = ({
       onCreateFuncCall: state.editorReducer.onCreateFuncCall,
       shouldUndo: state.editorReducer.shouldUndo,
       shouldRedo: state.editorReducer.shouldRedo,
+      text: state.editorReducer.text,
+      switchEditor: state.editorReducer.switchEditor,
     };
   });
 
-  const { nodes, onCreateFuncCall, shouldUndo, shouldRedo } = mapStateToProps;
+  const { nodes, onCreateFuncCall, shouldUndo, shouldRedo, text, switchEditor } = mapStateToProps;
 
   const initialEditorState = isMainInput
     ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialStateStr)))
@@ -80,6 +82,13 @@ const MainEditor: FC<MainEditorProps> = ({
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isMainInput && switchEditor) {
+      setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(text))));
+      console.log(text)
+    }
+  }, [isMainInput, text, switchEditor]);
 
   useEffect(() => {
     if (isMainInput && onCreateFuncCall) {

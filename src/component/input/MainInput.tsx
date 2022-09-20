@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import Editor from '@draft-js-plugins/editor';
 import { useParams } from 'react-router';
 import { API, Storage } from 'aws-amplify';
+import uniqid from 'uniqid';
 import { RootState } from '../../app/store';
 import styles from './MainInput.module.scss';
 import { Icon } from '../Icon/Icon';
@@ -16,7 +17,12 @@ import useOnClickOutside from '../../utils/hooks/useOnClickOutside';
 import { Chip } from '../chip/Chip';
 import Collabarator from '../collabarator/Collabarator';
 import Images from '../../atoms/modals/Images';
-import { setEditorFocus, toggleOnCreateFunctionCall } from '../../reducers/editor';
+import {
+  setEditorFocus,
+  setSwitchEditor,
+  setText,
+  toggleOnCreateFunctionCall,
+} from '../../reducers/editor';
 import { setNodesToProps } from '../../reducers/nodes';
 import { setInputCollabaratorUsers } from '../../reducers/collabarator';
 import { createNode } from '../../graphql/mutations';
@@ -74,7 +80,6 @@ const MainInput: FC = () => {
     setTimeout(() => {
       setFocused(false);
       setCheckoutToggle(false);
-      dispatch(setMainCheckouts([]));
     }, 350);
 
   const handleClickInside = () =>
@@ -102,6 +107,45 @@ const MainInput: FC = () => {
     inputCollabaratorUsers,
     mainCheckouts,
   } = mapStateToProps;
+
+  const switchToEditor = useCallback(() => {
+    const blocks = mainCheckouts.map((checkout) => ({
+      key: `${uniqid()}`,
+      text: checkout.title,
+      type: 'unstyled',
+      depth: 0,
+      inlineStyleRanges: [],
+      entityRanges: [],
+      data: {},
+    }));
+
+    dispatch(
+      setText(
+        JSON.stringify({
+          blocks,
+          entityMap: {},
+        }),
+      ),
+    );
+
+    dispatch(setSwitchEditor());
+    setTimeout(() => dispatch(setSwitchEditor()));
+
+    dispatch(setMainCheckouts([]));
+    setCheckoutToggle(false);
+  }, [dispatch, mainCheckouts]);
+
+  const switchToTodo = useCallback(() => {
+    const newCheckouts = JSON.parse(text).blocks.map((checkout) => ({
+      title: checkout.text,
+      focused: false,
+      id: uniqid(),
+      checked: false,
+    }));
+
+    dispatch(setMainCheckouts(newCheckouts));
+    setCheckoutToggle(true);
+  }, [dispatch, text]);
 
   const createLinkToEditor = () => {
     setlinkMode((prev) => !prev);
@@ -202,10 +246,7 @@ const MainInput: FC = () => {
       //  @ts-ignore
       const parsedText = JSON.parse(text);
 
-      if (
-        (parsedText.blocks[0].text || mainCheckouts.length) &&
-        titleRef.current.innerText.length
-      ) {
+      if (parsedText.blocks[0].text || mainCheckouts.length) {
         const data = await API.graphql({ query: createNode, variables: { input: node } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
@@ -213,10 +254,8 @@ const MainInput: FC = () => {
 
         dispatch(setNodesToProps(item));
         cleanUp();
-      } else if (titleRef.current.innerText.length) {
-        editorRef.current?.focus();
       } else {
-        titleRef.current?.focus();
+        editorRef.current?.focus();
       }
     } catch (err) {
       throw new Error('Create node error');
@@ -271,10 +310,7 @@ const MainInput: FC = () => {
       //  @ts-ignore
       const parsedText = JSON.parse(text);
 
-      if (
-        (parsedText.blocks[0].text || mainCheckouts.length) &&
-        titleRef.current.innerText.length
-      ) {
+      if (parsedText.blocks[0].text || mainCheckouts.length) {
         const data = await API.graphql({ query: createNode, variables: { input: node } });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //  @ts-ignore
@@ -282,10 +318,8 @@ const MainInput: FC = () => {
 
         dispatch(setNodesToProps(item));
         cleanUp();
-      } else if (titleRef.current.innerText.length) {
-        editorRef.current?.focus();
       } else {
-        titleRef.current?.focus();
+        editorRef.current?.focus();
       }
     } catch (err) {
       throw new Error('Create node error');
@@ -348,26 +382,24 @@ const MainInput: FC = () => {
             )}
           </button>
         </div>
-        {!checkoutToggle && mainCheckouts.length === 0 && (
-          <div
-            style={{ display: isInputCollabaratorOpen && 'none' }}
-            className={styles.main_row}
-            onFocus={handleClickInside}
-            onClick={handleClickInside}
-          >
-            <MainEditor
-              linkRef={linkRef}
-              textRef={textRef}
-              isMainInput
-              defaultColor={defaultColor}
-              linkMode={linkMode}
-              createLinkToEditor={createLinkToEditor}
-              editorRef={editorRef}
-              initialState={text}
-            />
-          </div>
-        )}
-        {checkoutToggle && <Checkouts />}
+        <div
+          style={{ display: isInputCollabaratorOpen && 'none' }}
+          className={classNames(styles.main_row, !checkoutToggle ? styles.open : null)}
+          onFocus={handleClickInside}
+          onClick={handleClickInside}
+        >
+          <MainEditor
+            linkRef={linkRef}
+            textRef={textRef}
+            isMainInput
+            defaultColor={defaultColor}
+            linkMode={linkMode}
+            createLinkToEditor={createLinkToEditor}
+            editorRef={editorRef}
+            initialState={text}
+          />
+        </div>
+        <Checkouts open={checkoutToggle} />
         {!focused ? (
           <div
             style={{ display: isInputCollabaratorOpen && 'none' }}
@@ -427,6 +459,9 @@ const MainInput: FC = () => {
             )}
 
             <InputNavbar
+              switchToEditor={switchToEditor}
+              switchToTodo={switchToTodo}
+              checkoutToggle={checkoutToggle}
               hide={isInputCollabaratorOpen}
               isMainInput
               createLinkToEditor={onLinkEditor}

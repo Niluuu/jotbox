@@ -60,8 +60,6 @@ export const onCreateNode = /* GraphQL */ `
       collabarator
       collabarators
       labels
-      img
-      todo
       _version
       _deleted
       _lastChangedAt
@@ -83,8 +81,6 @@ export const onUpdateNode = /* GraphQL */ `
       collabarator
       collabarators
       labels
-      img
-      todo
       _version
       _deleted
       _lastChangedAt
@@ -106,8 +102,6 @@ export const onDeleteNode = /* GraphQL */ `
       collabarator
       collabarators
       labels
-      img
-      todo
       _version
       _deleted
       _lastChangedAt

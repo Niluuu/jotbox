@@ -1,32 +1,14 @@
 {
-  "staging": {
+  "production": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-jotbox-staging-141731-authRole",
-      "UnauthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-staging-141731-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-staging-141731-authRole",
+      "AuthRoleName": "amplify-jotbox-production-95647-authRole",
+      "UnauthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-production-95647-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-production-95647-authRole",
       "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-jotbox-staging-141731-deployment",
-      "UnauthRoleName": "amplify-jotbox-staging-141731-unauthRole",
-      "StackName": "amplify-jotbox-staging-141731",
-      "StackId": "arn:aws:cloudformation:eu-central-1:729271425433:stack/amplify-jotbox-staging-141731/5ca45470-06a4-11ed-9cbc-028c84c58e74",
-      "AmplifyAppId": "d17oh96r8b4gc1"
-    },
-    "categories": {
-      "auth": {
-        "jotbox": {}
-      }
-    }
-  },
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-jotbox-dev-160221-authRole",
-      "UnauthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-dev-160221-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::729271425433:role/amplify-jotbox-dev-160221-authRole",
-      "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-jotbox-dev-160221-deployment",
-      "UnauthRoleName": "amplify-jotbox-dev-160221-unauthRole",
-      "StackName": "amplify-jotbox-dev-160221",
-      "StackId": "arn:aws:cloudformation:eu-central-1:729271425433:stack/amplify-jotbox-dev-160221/b361a720-6d77-11ec-b730-0a7ff9c1ed8a",
+      "DeploymentBucketName": "amplify-jotbox-production-95647-deployment",
+      "UnauthRoleName": "amplify-jotbox-production-95647-unauthRole",
+      "StackName": "amplify-jotbox-production-95647",
+      "StackId": "arn:aws:cloudformation:eu-central-1:729271425433:stack/amplify-jotbox-production-95647/8abea350-b3fd-11ec-ba47-02116c0b61ae",
       "AmplifyAppId": "d17oh96r8b4gc1"
     },
     "categories": {

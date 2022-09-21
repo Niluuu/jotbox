@@ -149,21 +149,6 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
-                "img": {
-                    "name": "img",
-                    "isArray": true,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
-                "todo": {
-                    "name": "todo",
-                    "isArray": false,
-                    "type": "AWSJSON",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -282,5 +267,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "611c097e964e0e889350ce174dbd0ca6"
+    "version": "ca941d9c43786f31dae7cb674b54e565"
 };

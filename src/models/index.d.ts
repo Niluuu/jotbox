@@ -1,8 +1,4 @@
-import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
-
-
-
-
+import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 
 type LabelMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
@@ -38,8 +34,6 @@ export declare class Node {
   readonly collabarator: string;
   readonly collabarators: (string | null)[];
   readonly labels?: (string | null)[] | null;
-  readonly img?: (string | null)[] | null;
-  readonly todo?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Node, NodeMetaData>);
